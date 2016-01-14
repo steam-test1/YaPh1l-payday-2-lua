@@ -150,7 +150,11 @@ function InventoryDescription.create_description_item(item, tweak, colors, ingam
 		desc = desc .. func_add_lb(ingame_format) .. func_add_lb(ingame_format) .. bonus_string
 	end
 	if tweak.name_id and not tweak.weapon_id or tweak.name_id and tweak.rarity == "legendary" then
-		local desc_string = func_color_text(managers.localization:text(tweak.name_id .. "_desc"), color_default, ingame_format)
+		local formatted_text = managers.localization:text(tweak.name_id .. "_desc")
+		if not ingame_format then
+			formatted_text = string.gsub(formatted_text, "\"", "'")
+		end
+		local desc_string = func_color_text(formatted_text, color_default, ingame_format)
 		desc = desc .. func_add_lb(ingame_format) .. func_add_lb(ingame_format) .. desc_string
 	end
 	local collection = {}

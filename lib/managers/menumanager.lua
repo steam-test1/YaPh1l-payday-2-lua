@@ -83,7 +83,7 @@ function MenuManager:init(is_start_menu)
 		self:register_menu(loot_menu)
 	end
 	self._controller:add_trigger("toggle_menu", callback(self, self, "toggle_menu_state"))
-	if MenuCallbackHandler:is_pc_controller() then
+	if MenuCallbackHandler:is_pc_controller() and MenuCallbackHandler:is_not_steam_controller() then
 		self._controller:add_trigger("toggle_chat", callback(self, self, "toggle_chatinput"))
 	end
 	if SystemInfo:platform() == Idstring("WIN32") then
@@ -257,7 +257,10 @@ function MenuManager:is_in_root(menu_name)
 	return false
 end
 function MenuManager:is_pc_controller()
-	return self:active_menu() and self:active_menu().input and self:active_menu().input._controller and self:active_menu().input._controller.TYPE == "pc" or managers.controller:get_default_wrapper_type() == "pc"
+	return self:active_menu() and self:active_menu().input and self:active_menu().input._controller and self:active_menu().input._controller.TYPE == "pc" or managers.controller:get_default_wrapper_type() == "pc" or self:is_steam_controller()
+end
+function MenuManager:is_steam_controller()
+	return self:active_menu() and self:active_menu().input and self:active_menu().input._controller and self:active_menu().input._controller.TYPE == "steam" or managers.controller:get_default_wrapper_type() == "steam"
 end
 function MenuManager:toggle_menu_state()
 	if self._is_start_menu then
@@ -1134,6 +1137,10 @@ function MenuCallbackHandler:dlc_buy_berry_pc()
 	print("[MenuCallbackHandler:dlc_buy_berry_pc]")
 	Steam:overlay_activate("store", 422400)
 end
+function MenuCallbackHandler:dlc_buy_peta_pc()
+	print("[MenuCallbackHandler:dlc_buy_peta_pc]")
+	Steam:overlay_activate("store", 433730)
+end
 function MenuCallbackHandler:dlc_buy_ps3()
 	print("[MenuCallbackHandler:dlc_buy_ps3]")
 	managers.dlc:buy_product("dlc1")
@@ -1192,6 +1199,7 @@ function MenuCallbackHandler:choice_job_plan_filter(item)
 end
 function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 	local dlcs = {
+		"peta",
 		"berry",
 		"steel",
 		"dragon",
@@ -1317,6 +1325,9 @@ function MenuCallbackHandler:visible_callback_steel()
 end
 function MenuCallbackHandler:visible_callback_berry()
 	return self:is_dlc_latest_locked("berry")
+end
+function MenuCallbackHandler:visible_callback_peta()
+	return self:is_dlc_latest_locked("peta")
 end
 function MenuCallbackHandler:not_has_all_dlcs()
 	return not self:has_all_dlcs()
@@ -1469,6 +1480,12 @@ end
 function MenuCallbackHandler:is_not_pc_controller()
 	return not self:is_pc_controller()
 end
+function MenuCallbackHandler:is_steam_controller()
+	return managers.menu:is_steam_controller()
+end
+function MenuCallbackHandler:is_not_steam_controller()
+	return not self:is_steam_controller()
+end
 function MenuCallbackHandler:is_not_editor()
 	return not Application:editor()
 end
@@ -1503,9 +1520,17 @@ function MenuCallbackHandler:has_peer_4()
 	return not not managers.network:session() and managers.network:session():peer(4)
 end
 function MenuCallbackHandler:on_visit_forum()
+	if not MenuCallbackHandler:is_overlay_enabled() then
+		managers.menu:show_enable_steam_overlay()
+		return
+	end
 	Steam:overlay_activate("url", "http://forums.steampowered.com/forums/forumdisplay.php?f=1225")
 end
 function MenuCallbackHandler:on_visit_gamehub()
+	if not MenuCallbackHandler:is_overlay_enabled() then
+		managers.menu:show_enable_steam_overlay()
+		return
+	end
 	Steam:overlay_activate("url", "http://steamcommunity.com/app/218620")
 end
 function MenuCallbackHandler:on_buy_dlc1()
@@ -2449,7 +2474,11 @@ function MenuCallbackHandler:find_friends()
 end
 function MenuCallbackHandler:invite_friends()
 	if managers.network.matchmake.lobby_handler then
-		Steam:overlay_activate("invite", managers.network.matchmake.lobby_handler:id())
+		if MenuCallbackHandler:is_overlay_enabled() then
+			Steam:overlay_activate("invite", managers.network.matchmake.lobby_handler:id())
+		else
+			managers.menu:show_enable_steam_overlay()
+		end
 	end
 end
 function MenuCallbackHandler:invite_friend(item)
@@ -7076,14 +7105,17 @@ function MenuChooseWeaponRewardInitiator:modify_node(original_node, data)
 		return true
 	end
 	local chk_dropable_func = function(weapon)
-		local loot_table = managers.blackmarket:get_lootdropable_mods_by_weapon_id(weapon.weapon_id)
+		local loot_table = managers.blackmarket:get_lootdropable_mods_by_weapon_id(weapon.weapon_id, nil, true)
 		return loot_table and #loot_table > 0 or false
+	end
+	local function chk_parent_func(weapon)
+		return weapon_tweak[weapon.weapon_id] and not weapon_tweak[weapon.weapon_id].parent_weapon_id
 	end
 	local category, loot_table, data
 	for i, category_data in ipairs({primaries, secondaries}) do
 		for _, weapon_data in ipairs(category_data) do
-			if chk_dlc_func(weapon_data) then
-				loot_table = managers.blackmarket:get_lootdropable_mods_by_weapon_id(weapon_data.weapon_id)
+			if chk_dlc_func(weapon_data) and chk_parent_func(weapon_data) then
+				loot_table = managers.blackmarket:get_lootdropable_mods_by_weapon_id(weapon_data.weapon_id, nil, true)
 				if #loot_table > 0 then
 					data = deep_clone(weapon_data)
 					data.loot_table = loot_table
