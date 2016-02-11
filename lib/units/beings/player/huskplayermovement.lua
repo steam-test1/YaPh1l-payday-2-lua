@@ -794,6 +794,9 @@ function HuskPlayerMovement:_upd_attention_standard(dt)
 			self._machine:force_modifier(self._look_modifier_name)
 		end
 	end
+	self:_sync_look_direction(dt)
+end
+function HuskPlayerMovement:_sync_look_direction(dt)
 	if self._sync_look_dir then
 		local tar_look_dir = tmp_vec1
 		mvec3_set(tar_look_dir, self._sync_look_dir)
@@ -1028,6 +1031,7 @@ function HuskPlayerMovement:update_sync_look_dir(dt)
 	local rot_amount = math.min(rot_speed * dt, error_angle)
 	local error_axis = self._look_dir:cross(tar_look_dir)
 	local rot_adj = Rotation(error_axis, rot_amount)
+	print(self._look_dir)
 	self._look_dir = self._look_dir:rotate_with(rot_adj)
 	if self._vehicle_shooting_stance == PlayerDriving.STANCE_NORMAL and not self._allow_shooting then
 		self._head_modifier:set_target_z(self._look_dir)
@@ -1528,6 +1532,7 @@ function HuskPlayerMovement:_start_movement(path)
 	data.seg_len = mvec3_norm(data.seg_dir)
 end
 function HuskPlayerMovement:_upd_attention_bipod(dt)
+	self:_sync_look_direction(dt)
 end
 function HuskPlayerMovement:_upd_move_bipod(t, dt)
 	if self._state == "standard" then

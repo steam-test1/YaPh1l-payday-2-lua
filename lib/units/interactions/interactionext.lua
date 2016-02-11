@@ -121,11 +121,7 @@ function BaseInteractionExt:update(distance_to_player)
 end
 local is_PS3 = SystemInfo:platform() == Idstring("PS3")
 function BaseInteractionExt:_btn_interact()
-	if not managers.menu:is_pc_controller() then
-		return nil
-	end
-	local type = managers.controller:get_default_wrapper_type()
-	return "[" .. managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] .. "]"
+	return managers.localization:btn_macro("interact", false)
 end
 function BaseInteractionExt:can_select(player)
 	if not self:_has_required_upgrade(alive(player) and player:movement() and player:movement().current_state_name and player:movement():current_state_name()) then

@@ -153,6 +153,7 @@ clbks = {left = callback(self, self, "open_skilltree_menu"), right = false, up =
 				local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
 				local specialization_data = tweak_data.skilltree.specializations[current_specialization]
 				local specialization_text = specialization_data and managers.localization:text(specialization_data.name_id) or " "
+				local guis_catalog = "guis/"
 				if specialization_data then
 					local current_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "current_tier")
 					local max_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "max_tier")
@@ -161,9 +162,13 @@ clbks = {left = callback(self, self, "open_skilltree_menu"), right = false, up =
 					end
 					texture_rect_x = tier_data.icon_xy and tier_data.icon_xy[1] or 0
 					texture_rect_y = tier_data.icon_xy and tier_data.icon_xy[2] or 0
+					if tier_data.texture_bundle_folder then
+						guis_catalog = guis_catalog .. "dlcs/" .. tostring(tier_data.texture_bundle_folder) .. "/"
+					end
 					specialization_text = specialization_text .. " (" .. tostring(current_tier) .. "/" .. tostring(max_tier) .. ")"
 				end
-				local specialization_box = self:create_box({name = "specialization", w = box_width, h = box_height, image_size_mul = 0.8, unselected_text = managers.localization:to_upper_text("menu_specialization"), text = specialization_text, image = "guis/textures/pd2/specialization/icons_atlas", 
+				local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/icons_atlas"
+				local specialization_box = self:create_box({name = "specialization", w = box_width, h = box_height, image_size_mul = 0.8, unselected_text = managers.localization:to_upper_text("menu_specialization"), text = specialization_text, image = icon_atlas_texture, 
 image_rect = {(texture_rect_x) * 64, (texture_rect_y) * 64, 64, 64}, select_anim = select_anim, unselect_anim = unselect_anim, bg_color = Color.black:with_alpha(0.05), bg_blend_mode = "normal", 
 clbks = {left = callback(self, self, "open_specialization_menu"), right = false, up = callback(self, self, "previous_specialization"), down = callback(self, self, "next_specialization")}})
 				local box_matrix = {
@@ -278,36 +283,59 @@ sides = {1, 1, 1, 1}})
 					self._legends = {}
 					if managers.menu:is_pc_controller() then
 						self._legends_panel:set_righttop(self._panel:w(), 0)
-						local panel = self._legends_panel:panel({name = "select", visible = false})
-						local icon = panel:bitmap({name = "icon", texture = "guis/textures/pd2/mouse_buttons", 
+						if not managers.menu:is_steam_controller() then
+							local panel = self._legends_panel:panel({name = "select", visible = false})
+							local icon = panel:bitmap({name = "icon", texture = "guis/textures/pd2/mouse_buttons", 
 texture_rect = {1, 1, 17, 23}, w = 17, h = 23, blend_mode = "add"})
-						do
-							local text = panel:text({text = managers.localization:to_upper_text("menu_mouse_select"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
-							make_fine_text(text)
-							text:set_left(icon:right() + 2)
-							text:set_center_y(icon:center_y())
-							panel:set_w(text:right())
-							self._legends.select = panel
-						end
-						local panel = self._legends_panel:panel({name = "preview", visible = false})
-						local icon = panel:bitmap({name = "icon", texture = "guis/textures/pd2/mouse_buttons", 
+							do
+								local text = panel:text({text = managers.localization:to_upper_text("menu_mouse_select"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
+								make_fine_text(text)
+								text:set_left(icon:right() + 2)
+								text:set_center_y(icon:center_y())
+								panel:set_w(text:right())
+								self._legends.select = panel
+							end
+							local panel = self._legends_panel:panel({name = "preview", visible = false})
+							local icon = panel:bitmap({name = "icon", texture = "guis/textures/pd2/mouse_buttons", 
 texture_rect = {18, 1, 17, 23}, w = 17, h = 23, blend_mode = "add"})
-						do
-							local text = panel:text({text = managers.localization:to_upper_text("menu_mouse_preview"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
-							make_fine_text(text)
-							text:set_left(icon:right() + 2)
-							text:set_center_y(icon:center_y())
-							panel:set_w(text:right())
-							self._legends.preview = panel
-						end
-						local panel = self._legends_panel:panel({name = "switch", visible = false})
-						local icon = panel:bitmap({name = "icon", texture = "guis/textures/pd2/mouse_buttons", 
+							do
+								local text = panel:text({text = managers.localization:to_upper_text("menu_mouse_preview"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
+								make_fine_text(text)
+								text:set_left(icon:right() + 2)
+								text:set_center_y(icon:center_y())
+								panel:set_w(text:right())
+								self._legends.preview = panel
+							end
+							local panel = self._legends_panel:panel({name = "switch", visible = false})
+							local icon = panel:bitmap({name = "icon", texture = "guis/textures/pd2/mouse_buttons", 
 texture_rect = {35, 1, 17, 23}, w = 17, h = 23, blend_mode = "add"})
-						do
 							local text = panel:text({text = managers.localization:to_upper_text("menu_mouse_switch"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
 							make_fine_text(text)
 							text:set_left(icon:right() + 2)
 							text:set_center_y(icon:center_y())
+							panel:set_w(text:right())
+							self._legends.switch = panel
+						else
+							local panel = self._legends_panel:panel({name = "select", visible = false})
+							do
+								local text = panel:text({text = managers.localization:steam_btn("grip_l") .. " " .. managers.localization:to_upper_text("menu_mouse_select"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
+								make_fine_text(text)
+								text:set_center_y(panel:h() / 2)
+								panel:set_w(text:right())
+								self._legends.select = panel
+							end
+							local panel = self._legends_panel:panel({name = "preview", visible = false})
+							do
+								local text = panel:text({text = managers.localization:steam_btn("grip_r") .. " " .. managers.localization:to_upper_text("menu_mouse_preview"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
+								make_fine_text(text)
+								text:set_center_y(panel:h() / 2)
+								panel:set_w(text:right())
+								self._legends.preview = panel
+							end
+							local panel = self._legends_panel:panel({name = "switch", visible = false})
+							local text = panel:text({text = managers.localization:btn_macro("previous_page") .. managers.localization:btn_macro("next_page") .. " " .. managers.localization:to_upper_text("menu_mouse_switch"), font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add"})
+							make_fine_text(text)
+							text:set_center_y(panel:h() / 2)
 							panel:set_w(text:right())
 							self._legends.switch = panel
 						end
@@ -581,7 +609,7 @@ sides = {1, 1, 2, 1}})
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 374 445 836 1334 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 374 445 836 1348 
 end
 
 PlayerInventoryGui._update_legends = function(self, name)
@@ -2576,6 +2604,7 @@ PlayerInventoryGui.previous_specialization = function(self)
 		local texture_rect_x = 0
 		local texture_rect_y = 0
 		local specialization_text = specialization_data and managers.localization:text(specialization_data.name_id) or " "
+		local guis_catalog = "guis/"
 		if specialization_data then
 			local current_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "current_tier")
 			local max_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "max_tier")
@@ -2584,9 +2613,13 @@ PlayerInventoryGui.previous_specialization = function(self)
 			end
 			texture_rect_x = tier_data.icon_xy and tier_data.icon_xy[1] or 0
 			texture_rect_y = tier_data.icon_xy and tier_data.icon_xy[2] or 0
+			if tier_data.texture_bundle_folder then
+				guis_catalog = guis_catalog .. "dlcs/" .. tostring(tier_data.texture_bundle_folder) .. "/"
+			end
 			specialization_text = specialization_text .. " (" .. tostring(current_tier) .. "/" .. tostring(max_tier) .. ")"
 		end
-		self:update_box(box, {text = specialization_text, 
+		local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/icons_atlas"
+		self:update_box(box, {text = specialization_text, image = icon_atlas_texture, 
 image_rect = {(texture_rect_x) * 64, (texture_rect_y) * 64, 64, 64}}, true)
 		self:_update_loadout_boxes()
 		self:_update_info_specialization("specialization")
@@ -2604,6 +2637,7 @@ PlayerInventoryGui.next_specialization = function(self)
 		local texture_rect_x = 0
 		local texture_rect_y = 0
 		local specialization_text = specialization_data and managers.localization:text(specialization_data.name_id) or " "
+		local guis_catalog = "guis/"
 		if specialization_data then
 			local current_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "current_tier")
 			local max_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "max_tier")
@@ -2612,9 +2646,13 @@ PlayerInventoryGui.next_specialization = function(self)
 			end
 			texture_rect_x = tier_data.icon_xy and tier_data.icon_xy[1] or 0
 			texture_rect_y = tier_data.icon_xy and tier_data.icon_xy[2] or 0
+			if tier_data.texture_bundle_folder then
+				guis_catalog = guis_catalog .. "dlcs/" .. tostring(tier_data.texture_bundle_folder) .. "/"
+			end
 			specialization_text = specialization_text .. " (" .. tostring(current_tier) .. "/" .. tostring(max_tier) .. ")"
 		end
-		self:update_box(box, {text = specialization_text, 
+		local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/icons_atlas"
+		self:update_box(box, {text = specialization_text, image = icon_atlas_texture, 
 image_rect = {(texture_rect_x) * 64, (texture_rect_y) * 64, 64, 64}}, true)
 		self:_update_loadout_boxes()
 		self:_update_info_specialization("specialization")
@@ -2772,15 +2810,15 @@ end
 
 PlayerInventoryGui.next_page = function(self)
 	local box = self:_get_selected_box()
-	if box and box.panel:tree_visible() and box.clbks and box.clbks.up then
-		box.clbks.up(box)
+	if box and box.panel:tree_visible() and box.clbks and box.clbks.down then
+		box.clbks.down(box)
 	end
 end
 
 PlayerInventoryGui.previous_page = function(self)
 	local box = self:_get_selected_box()
-	if box and box.panel:tree_visible() and box.clbks and box.clbks.down then
-		box.clbks.down(box)
+	if box and box.panel:tree_visible() and box.clbks and box.clbks.up then
+		box.clbks.up(box)
 	end
 end
 
@@ -2796,13 +2834,13 @@ PlayerInventoryGui.special_btn_pressed = function(self, button)
 		end
 	end
 	if button == Idstring("menu_toggle_voice_message") then
-		if self._show_all_panel:visible() then
-			self._show_all_panel:hide()
+		if self._show_all_panels then
+			self._show_all_panels = false
 			self._panel:show()
 			self._fullscreen_panel:show()
 		end
 	else
-		self._show_all_panel:show()
+		self._show_all_panels = true
 		self._panel:hide()
 		self._fullscreen_panel:hide()
 	end

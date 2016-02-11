@@ -88,7 +88,9 @@ function StatisticsTweakData:statistics_table()
 		"pbr2",
 		"cane",
 		"peta",
-		"peta2"
+		"peta2",
+		"pal",
+		"man"
 	}
 	local job_list = {
 		"jewelry_store",
@@ -149,7 +151,9 @@ function StatisticsTweakData:statistics_table()
 		"pbr2",
 		"cane",
 		"peta",
-		"peta_prof"
+		"peta_prof",
+		"pal",
+		"man"
 	}
 	local mask_list = {
 		"character_locked",
@@ -413,7 +417,13 @@ function StatisticsTweakData:statistics_table()
 		"goat_goat",
 		"fancy_goat",
 		"tall_goat",
-		"wet_goat"
+		"wet_goat",
+		"unborn",
+		"devourer",
+		"divided",
+		"viking",
+		"nutcracker",
+		"horned_king"
 	}
 	local weapon_list = {
 		"ak5",
@@ -510,7 +520,8 @@ function StatisticsTweakData:statistics_table()
 		"par",
 		"model70",
 		"sparrow",
-		"m37"
+		"m37",
+		"china"
 	}
 	local melee_list = {
 		"weapon",
@@ -583,7 +594,8 @@ function StatisticsTweakData:statistics_table()
 		"stick",
 		"pitchfork",
 		"scoutknife",
-		"shawn"
+		"shawn",
+		"nin"
 	}
 	local grenade_list = {
 		"frag",

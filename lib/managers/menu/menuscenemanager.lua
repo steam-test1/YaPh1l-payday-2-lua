@@ -2564,3 +2564,8 @@ function MenuSceneManager:_destroy_economy_safe()
 end
 function MenuSceneManager:set_blackmarket_tradable_loaded()
 end
+function MenuSceneManager:destroy()
+	if self._vp then
+		self._vp:destroy()
+	end
+end

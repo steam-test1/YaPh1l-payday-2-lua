@@ -396,6 +396,8 @@ function PostEffectLightScaleFeeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_apply_ambient_id, ids_deferred, ids_deferred_lighting, ids_apply_ambient)
 	material:set_variable(ids_effect_light_scale, self._current)
 end
+local _apply_fov_ratio = function(current)
+end
 PostShadowSlice0Feeder = PostShadowSlice0Feeder or CoreClass.class(Vector3Feeder)
 PostShadowSlice0Feeder.DATA_PATH_KEY = Idstring("post_effect/shadow_processor/shadow_rendering/shadow_modifier/slice0"):key()
 PostShadowSlice0Feeder.APPLY_GROUP_ID = Feeder.get_next_id()
@@ -403,6 +405,7 @@ PostShadowSlice0Feeder.IS_GLOBAL = nil
 PostShadowSlice0Feeder.FILTER_CATEGORY = "Shadow"
 function PostShadowSlice0Feeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_shadow_modifier_id, ids_shadow_processor, ids_shadow_rendering, ids_shadow_modifier)
+	_apply_fov_ratio(self._current)
 	material:set_variable(ids_slice0, self._current)
 end
 PostShadowSlice1Feeder = PostShadowSlice1Feeder or CoreClass.class(Vector3Feeder)
@@ -412,6 +415,7 @@ PostShadowSlice1Feeder.IS_GLOBAL = nil
 PostShadowSlice1Feeder.FILTER_CATEGORY = "Shadow"
 function PostShadowSlice1Feeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_shadow_modifier_id, ids_shadow_processor, ids_shadow_rendering, ids_shadow_modifier)
+	_apply_fov_ratio(self._current)
 	material:set_variable(ids_slice1, self._current)
 end
 PostShadowSlice2Feeder = PostShadowSlice2Feeder or CoreClass.class(Vector3Feeder)
@@ -421,6 +425,7 @@ PostShadowSlice2Feeder.IS_GLOBAL = nil
 PostShadowSlice2Feeder.FILTER_CATEGORY = "Shadow"
 function PostShadowSlice2Feeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_shadow_modifier_id, ids_shadow_processor, ids_shadow_rendering, ids_shadow_modifier)
+	_apply_fov_ratio(self._current)
 	material:set_variable(ids_slice2, self._current)
 end
 PostShadowSlice3Feeder = PostShadowSlice3Feeder or CoreClass.class(Vector3Feeder)
@@ -430,6 +435,7 @@ PostShadowSlice3Feeder.IS_GLOBAL = nil
 PostShadowSlice3Feeder.FILTER_CATEGORY = "Shadow"
 function PostShadowSlice3Feeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_shadow_modifier_id, ids_shadow_processor, ids_shadow_rendering, ids_shadow_modifier)
+	_apply_fov_ratio(self._current)
 	material:set_variable(ids_slice3, self._current)
 end
 PostShadowSliceDepthsFeeder = PostShadowSliceDepthsFeeder or CoreClass.class(Vector3Feeder)
@@ -439,6 +445,7 @@ PostShadowSliceDepthsFeeder.IS_GLOBAL = nil
 PostShadowSliceDepthsFeeder.FILTER_CATEGORY = "Shadow"
 function PostShadowSliceDepthsFeeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_shadow_modifier_id, ids_shadow_processor, ids_shadow_rendering, ids_shadow_modifier)
+	_apply_fov_ratio(self._current)
 	material:set_variable(ids_shadow_slice_depths, self._current)
 end
 PostShadowSliceOverlapFeeder = PostShadowSliceOverlapFeeder or CoreClass.class(Vector3Feeder)
@@ -448,6 +455,7 @@ PostShadowSliceOverlapFeeder.IS_GLOBAL = nil
 PostShadowSliceOverlapFeeder.FILTER_CATEGORY = "Shadow"
 function PostShadowSliceOverlapFeeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_shadow_modifier_id, ids_shadow_processor, ids_shadow_rendering, ids_shadow_modifier)
+	_apply_fov_ratio(self._current)
 	material:set_variable(ids_shadow_slice_overlap, self._current)
 end
 UnderlayPathFeeder.AFFECTED_LIST = {

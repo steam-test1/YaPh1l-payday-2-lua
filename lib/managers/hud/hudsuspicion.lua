@@ -197,7 +197,7 @@ function HUDSuspicion:animate_eye()
 					self:hide()
 					return
 				end
-			elseif value == 0 then
+			elseif value <= 0 then
 				time_to_end = time_to_end - dt * 2
 				if time_to_end <= 0 then
 					self._eye_animation = nil
@@ -241,7 +241,7 @@ function HUDSuspicion:hide()
 end
 function HUDSuspicion:feed_value(value)
 	self:show()
-	self._suspicion_value = value
+	self._suspicion_value = math.min(value, 1)
 end
 function HUDSuspicion:back_to_stealth()
 	self._back_to_stealth = true

@@ -228,6 +228,7 @@ function PlayerDriving:_enter_shooting_stance()
 	self:_postion_player_on_seat()
 	self:_set_camera_limits("shooting")
 	self._unit:camera():play_redirect(self.IDS_EQUIP)
+	managers.controller:set_ingame_mode("main")
 end
 function PlayerDriving:_exit_shooting_stance()
 	self._stance = PlayerDriving.STANCE_NORMAL
@@ -250,6 +251,7 @@ function PlayerDriving:_exit_shooting_stance()
 	else
 		self._unit:camera():play_redirect(self.IDS_EQUIP)
 	end
+	managers.controller:set_ingame_mode("driving")
 end
 function PlayerDriving:_check_action_exit_vehicle(t, input)
 	if input.btn_vehicle_exit_press then
