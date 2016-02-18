@@ -365,9 +365,6 @@ function NetworkPeer:tradable_verify_outfit(signature)
 end
 function NetworkPeer:on_verify_tradable_outfit(outfit_version, error, list)
 	self._wait_for_verify_tradable_outfit = nil
-	if NetworkAccountSTEAM.TEST_INVENTORY then
-		return
-	end
 	if outfit_version ~= self._outfit_version then
 		return
 	end
