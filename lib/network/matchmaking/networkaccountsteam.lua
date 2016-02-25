@@ -358,8 +358,8 @@ end
 function NetworkAccountSTEAM:inventory_is_loading()
 	return self._inventory_is_loading
 end
-function NetworkAccountSTEAM:inventory_reward(reward_callback)
-	Steam:inventory_reward(reward_callback)
+function NetworkAccountSTEAM:inventory_reward(reward_callback, item)
+	Steam:inventory_reward(reward_callback, item or 1)
 	return true
 end
 function NetworkAccount:inventory_reward_unlock(safe, safe_instance_id, drill_instance_id, reward_unlock_callback)
@@ -414,7 +414,7 @@ function NetworkAccountSTEAM:_chk_inventory_outfit_refresh()
 end
 function NetworkAccountSTEAM:inventory_outfit_verify(steam_id, outfit_data, outfit_callback)
 	if outfit_data == "" then
-		return outfit_callback and outfit_callback(false, {})
+		return outfit_callback and outfit_callback(nil, false, {})
 	end
 	Steam:inventory_signature_verify(steam_id, outfit_data, outfit_callback)
 end

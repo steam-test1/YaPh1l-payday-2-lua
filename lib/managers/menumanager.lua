@@ -1159,10 +1159,10 @@ function MenuCallbackHandler:is_not_trial()
 	return not self:is_trial()
 end
 function MenuCallbackHandler:has_preorder()
-	return managers.dlc:has_preorder()
+	return managers.dlc:is_dlc_unlocked("preorder")
 end
 function MenuCallbackHandler:not_has_preorder()
-	return not managers.dlc:has_preorder()
+	return not managers.dlc:is_dlc_unlocked("preorder")
 end
 function MenuCallbackHandler:has_all_dlcs()
 	return true
@@ -1232,24 +1232,12 @@ function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 		"armored_transport"
 	}
 	local dlc_tweak_data = tweak_data.dlc
+	local has_dlc
 	for _, dlc in ipairs(dlcs) do
-		if dlc_tweak_data[dlc] then
-			local dlc_func = dlc_tweak_data[dlc].dlc
-			if dlc_tweak_data[dlc].free then
-				return false
-			elseif dlc_func then
-				if not managers.dlc[dlc_func](managers.dlc, dlc_tweak_data[dlc]) then
-					return dlc == check_dlc
-				end
-			else
-				Application:error("[is_dlc_lastest_locked] DLC do not have a dlc check function tweak_data_dlc.dlc", dlc)
-			end
-			if dlc == check_dlc then
-			else
-				else
-					Application:error("[is_dlc_lastest_locked] DLC do not exist in dlc tweak data", dlc)
-				end
-			end
+		has_dlc = managers.dlc:is_dlc_unlocked(dlc)
+		if not has_dlc then
+			return dlc == check_dlc
+		end
 	end
 	return false
 end
@@ -1339,18 +1327,6 @@ function MenuCallbackHandler:visible_callback_pal()
 end
 function MenuCallbackHandler:not_has_all_dlcs()
 	return not self:has_all_dlcs()
-end
-function MenuCallbackHandler:has_armored_transport()
-	return managers.dlc:has_armored_transport()
-end
-function MenuCallbackHandler:not_has_armored_transport()
-	return not self:has_armored_transport()
-end
-function MenuCallbackHandler:has_gage_pack()
-	return managers.dlc:has_gage_pack()
-end
-function MenuCallbackHandler:not_has_gage_pack()
-	return not self:has_gage_pack()
 end
 function MenuCallbackHandler:reputation_check(data)
 	return managers.experience:current_level() >= data:value()

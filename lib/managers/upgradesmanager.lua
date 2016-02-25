@@ -111,14 +111,14 @@ function UpgradesManager:_next_tree()
 	return tree or self._global.target_tree
 end
 function UpgradesManager:num_trees()
-	return managers.dlc:has_preorder() and 4 or 3
+	return managers.dlc:is_dlc_unlocked("preorder") and 4 or 3
 end
 function UpgradesManager:_autochange_tree(exlude_tree)
 	local progress = clone(Global.upgrades_manager.progress)
 	if exlude_tree then
 		progress[exlude_tree] = nil
 	end
-	if not managers.dlc:has_preorder() then
+	if not managers.dlc:is_dlc_unlocked("preorder") then
 		progress[4] = nil
 	end
 	local n_tree = 0
@@ -484,7 +484,7 @@ function UpgradesManager:get_level_from_step(step)
 	return 0
 end
 function UpgradesManager:progress()
-	if managers.dlc:has_preorder() then
+	if managers.dlc:is_dlc_unlocked("preorder") then
 		return {
 			self._global.progress[1],
 			self._global.progress[2],
