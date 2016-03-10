@@ -576,7 +576,7 @@ function InfamyTreeGui:_update_description(name, unlocked)
 					end
 				end
 			end
-			local _, infamous_base_chance, infamous_mod = managers.lootdrop:infamous_chance()
+			local _, infamous_base_chance, infamous_mod = managers.lootdrop:infamous_chance({disable_difficulty = true})
 			local infamous_chance = items_total > 0 and infamous_base_chance * (items_infamous / items_total) or 0
 			local mult = 10
 			local base_text = math.floor(infamous_chance * 100 * mult + 0.5) / mult

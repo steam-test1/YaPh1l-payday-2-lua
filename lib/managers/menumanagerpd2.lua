@@ -895,6 +895,7 @@ function MenuCallbackHandler:got_new_steam_lootdrop(item)
 	return managers.blackmarket:has_new_tradable_items()
 end
 function MenuCallbackHandler:leave_steam_inventory(item)
+	MenuCallbackHandler:leave_blackmarket(item)
 end
 function MenuCallbackHandler:can_toggle_chat()
 	local input = managers.menu:active_menu() and managers.menu:active_menu().input

@@ -32,6 +32,12 @@ function MissionAccessCamera:set_rotation(rotation)
 	self._original_rotation = rotation
 	self._unit:set_rotation(rotation)
 end
+function MissionAccessCamera:get_original_rotation()
+	return self._original_rotation
+end
+function MissionAccessCamera:get_offset_rotation()
+	return self._offset_rotation
+end
 function MissionAccessCamera:start(time)
 	self._playing = true
 	self._unit:anim_stop(Idstring("camera_animation"))
@@ -53,11 +59,11 @@ end
 function MissionAccessCamera:zoomed_value()
 	return self._fov / self._default_fov
 end
-function MissionAccessCamera:set_offset_rotation(yaw, pitch)
+function MissionAccessCamera:set_offset_rotation(yaw, pitch, roll)
 	self._offset_rotation = self._offset_rotation or Rotation()
 	yaw = yaw + mrotation.yaw(self._original_rotation)
 	pitch = pitch + mrotation.pitch(self._original_rotation)
-	mrotation.set_yaw_pitch_roll(self._offset_rotation, yaw, pitch, 0)
+	mrotation.set_yaw_pitch_roll(self._offset_rotation, yaw, pitch, roll)
 	self._unit:set_rotation(self._offset_rotation)
 end
 function MissionAccessCamera:destroy()

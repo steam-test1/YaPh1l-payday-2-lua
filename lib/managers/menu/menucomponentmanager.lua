@@ -322,6 +322,9 @@ MenuComponentManager.accept_input = function(self, accept)
 end
 
 MenuComponentManager.input_focus = function(self)
+	if managers.blackmarket and managers.blackmarket:is_preloading_weapons() then
+		return true
+	end
 	if managers.system_menu and managers.system_menu:is_active() and not managers.system_menu:is_closing() then
 		return true
 	end

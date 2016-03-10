@@ -189,7 +189,7 @@ function PlayerProfileGuiObject:init(ws)
 	if not skill_text or not skill_text:bottom() then
 	end
 	self._panel:set_size(exp_ring:w() + max_left_len + 15 + max_right_len + 10, math.max(total_money_text:bottom(), hoxton_text:bottom()) + 8)
-	self._panel:set_bottom(self._panel:parent():h() - 70)
+	self._panel:set_bottom(self._panel:parent():h() - 60)
 	BoxGuiObject:new(self._panel, {
 		sides = {
 			1,

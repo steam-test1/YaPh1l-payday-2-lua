@@ -395,7 +395,8 @@ function MenuManager:show_NPCommerce_browse_success()
 	managers.system_menu:show(dialog_data)
 end
 function MenuManager:show_dlc_require_restart()
-	if not managers.system_menu:is_active() then
+	if not managers.system_menu:is_active() and not self._shown_dlc_require_restart then
+		self._shown_dlc_require_restart = true
 		local dialog_data = {}
 		dialog_data.title = managers.localization:text("dialog_dlc_require_restart")
 		dialog_data.text = managers.localization:text("dialog_dlc_require_restart_desc")
