@@ -156,7 +156,6 @@ function CriminalsManager:add_character(name, unit, peer_id, ai)
 					managers.hud:reset_player_hpbar()
 				end
 				unit:sound():set_voice(data.static_data.voice)
-				unit:inventory():set_mask_visibility(unit:inventory()._mask_visibility)
 			else
 				if not ai or not managers.localization:text("menu_" .. name) then
 				end

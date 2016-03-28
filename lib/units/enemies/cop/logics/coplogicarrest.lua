@@ -596,8 +596,10 @@ function CopLogicArrest._say_scary_stuff_discovered(data)
 	if not data.attention_obj then
 		return
 	end
-	data.unit:sound():stop()
-	data.unit:sound():say("a07a", true)
+	if data.SO_access_str ~= "taser" then
+		data.unit:sound():stop()
+		data.unit:sound():say("a07a", true)
+	end
 end
 function CopLogicArrest.death_clbk(data, damage_info)
 	if not alive(damage_info.attacker_unit) then
@@ -645,7 +647,7 @@ function CopLogicArrest._chk_say_discovery(data, my_data, attention_obj)
 	if not attention_obj then
 		return
 	end
-	if not my_data.discovery_said and attention_obj.reaction == AIAttentionObject.REACT_SCARED then
+	if not my_data.discovery_said and attention_obj.reaction == AIAttentionObject.REACT_SCARED and data.SO_access_str ~= "taser" then
 		my_data.discovery_said = true
 		data.unit:sound():say("a07a", true)
 	end
@@ -656,6 +658,9 @@ function CopLogicArrest.on_police_call_success(data)
 	data.internal_data.called_the_police = true
 end
 function CopLogicArrest._say_call_the_police(data, my_data)
+	if data.SO_access_str == "taser" then
+		return
+	end
 	local blame_list = {
 		dead_civ = "a11",
 		dead_cop = "a12",

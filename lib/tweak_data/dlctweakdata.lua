@@ -35,6 +35,7 @@ function DLCTweakData:init(tweak_data)
 		steel = true,
 		peta = true,
 		pal = true,
+		coco = true,
 		super = 1,
 		rip = true,
 		pd2_goty = 1,
@@ -4480,6 +4481,15 @@ function DLCTweakData:init(tweak_data)
 		{
 			type_items = "textures",
 			item_entry = "split",
+			amount = 1
+		}
+	}
+	self.coco = {}
+	self.coco.content = {}
+	self.coco.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "jimmy_duct",
 			amount = 1
 		}
 	}

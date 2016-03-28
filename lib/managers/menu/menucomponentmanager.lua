@@ -1566,6 +1566,10 @@ MenuComponentManager.show_game_chat_gui = function(self)
 	end
 end
 
+MenuComponentManager.input_focut_game_chat_gui = function(self)
+	return not self._game_chat_gui or self._game_chat_gui:input_focus() == true
+end
+
 MenuComponentManager._disable_chat_gui = function(self)
 	if self._game_chat_gui and not self._lobby_chat_gui_active and not self._crimenet_chat_gui_active and not self._preplanning_chat_gui_active then
 		self._game_chat_gui:set_enabled(false)

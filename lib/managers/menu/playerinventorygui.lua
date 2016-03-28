@@ -90,7 +90,8 @@ PlayerInventoryGui.init = function(self, ws, fullscreen_ws, node)
 	self._input_focus = 1
 	WalletGuiObject.set_wallet(self._panel)
 	local y = TOP_ADJUSTMENT
-	local title_text = self._panel:text({name = "title", text = managers.localization:to_upper_text("menu_player_inventory"), font = tweak_data.menu.pd2_large_font, font_size = tweak_data.menu.pd2_large_font_size, color = tweak_data.screen_colors.text, layer = 1})
+	local title_string = "menu_player_inventory"
+	local title_text = self._panel:text({name = "title", text = managers.localization:to_upper_text(title_string), font = tweak_data.menu.pd2_large_font, font_size = tweak_data.menu.pd2_large_font_size, color = tweak_data.screen_colors.text, layer = 1})
 	make_fine_text(title_text)
 	local back_button = self._panel:text({name = "back_button", text = managers.localization:to_upper_text("menu_back"), align = "right", vertical = "bottom", font = tweak_data.menu.pd2_large_font, font_size = tweak_data.menu.pd2_large_font_size, color = tweak_data.screen_colors.button_stage_3, layer = 1})
 	make_fine_text(back_button)
@@ -609,7 +610,7 @@ sides = {1, 1, 2, 1}})
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 374 445 836 1348 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 375 446 837 1349 
 end
 
 PlayerInventoryGui._update_legends = function(self, name)
@@ -2785,6 +2786,7 @@ PlayerInventoryGui._move = function(self, dir, box)
 			selected_box.panel:animate(selected_box.unselect_anim, selected_box)
 		end
 		self._data.selected_box = linked_box_name
+		managers.menu_component:post_event("highlight")
 		new_box.selected = true
 		self:_update_stats(new_box.name)
 		self:_update_box_status(new_box, true)

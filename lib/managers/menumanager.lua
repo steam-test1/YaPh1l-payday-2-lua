@@ -1145,6 +1145,10 @@ function MenuCallbackHandler:dlc_buy_pal_pc()
 	print("[MenuCallbackHandler:dlc_buy_pal_pc]")
 	Steam:overlay_activate("store", 441600)
 end
+function MenuCallbackHandler:dlc_buy_coco_pc()
+	print("[MenuCallbackHandler:dlc_buy_coco_pc]")
+	Steam:overlay_activate("store", 218620)
+end
 function MenuCallbackHandler:dlc_buy_ps3()
 	print("[MenuCallbackHandler:dlc_buy_ps3]")
 	managers.dlc:buy_product("dlc1")
@@ -6910,7 +6914,7 @@ function MenuCallbackHandler:mod_option_toggle_enabled(item)
 end
 MenuCrimeNetChallengeInitiator = MenuCrimeNetChallengeInitiator or class(MenuCrimeNetGageAssignmentInitiator)
 function MenuCrimeNetChallengeInitiator:modify_node(original_node, data)
-	local node = self:setup_node(original_node)
+	local node, first_item = self:setup_node(original_node)
 	if not managers.challenge:visited_crimenet() then
 		node:set_default_item_name("_introduction")
 		node:select_item("_introduction")
@@ -6924,7 +6928,7 @@ function MenuCrimeNetChallengeInitiator:modify_node(original_node, data)
 	return node
 end
 function MenuCrimeNetChallengeInitiator:refresh_node(node)
-	self:setup_node(node)
+	local _, first_item = self:setup_node(node)
 	if not node:selected_item() or not node:item(node:selected_item():name()) then
 		node:set_default_item_name("_summary")
 		node:select_item("_summary")
@@ -6951,6 +6955,7 @@ function MenuCrimeNetChallengeInitiator:setup_node(node)
 		name_lozalized = managers.localization:text("menu_challenge_summary_title")
 	})
 	self:create_divider(node, 2)
+	local first_item
 	if not managers.challenge:is_retrieving() and managers.challenge:is_validated() then
 		do
 			local challenges = {}
@@ -7011,6 +7016,7 @@ function MenuCrimeNetChallengeInitiator:setup_node(node)
 				end)
 				for assignment, data in ipairs(node_data) do
 					self:create_item(node, data)
+					first_item = first_item or data.id
 				end
 			end
 		end
@@ -7030,7 +7036,8 @@ function MenuCrimeNetChallengeInitiator:setup_node(node)
 	local data_node = {}
 	local new_item = node:create_item(data_node, params)
 	node:add_item(new_item)
-	return node
+	first_item = first_item or "back"
+	return node, first_item
 end
 function MenuCallbackHandler:update_challenge_menu_node()
 	if not managers.menu:active_menu() then

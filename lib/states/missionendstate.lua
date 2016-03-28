@@ -257,10 +257,9 @@ MissionEndState.play_finishing_sound = function(self, success)
 	if self._server_left then
 		return 
 	end
-	if managers.groupai:state():bain_state() then
-		 -- WARNING: missing end command somewhere! Added here
+	if not success or not "Play_ban_g02x" then
+		managers.dialog:queue_dialog(not managers.groupai:state():bain_state() or "Play_ban_g01x", {})
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 14 
 end
 
 MissionEndState.completion_bonus_done = function(self, total_xp_bonus)
@@ -692,7 +691,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						local weapon_tweak = nil
 						for _,weapon_id in ipairs(used_weapons) do
 							weapon_tweak = tweak_data.weapon[weapon_id]
-							if not weapon_tweak or weapon_tweak.category ~= category and (category ~= "pistol" or weapon_tweak.category ~= "akimbo") then
+							if not weapon_tweak or weapon_tweak.category ~= category and (category ~= "pistol" or weapon_tweak.sub_category ~= "pistol") then
 								used_weapon_category_pass = false
 							end
 					else
