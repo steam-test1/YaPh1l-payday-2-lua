@@ -15,19 +15,11 @@ end
 MissionEndState.setup_controller = function(self)
 	if not self._controller then
 		self._controller = managers.controller:create_controller("victoryscreen", managers.controller:get_default_wrapper_index(), false)
-		if Network:is_server() then
-			self._controller:set_enabled(true)
-		end
-		 -- WARNING: missing end command somewhere! Added here
+		self._controller:set_enabled(true)
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 20 
 end
 
 MissionEndState.set_controller_enabled = function(self, enabled)
-	if self._controller then
-		 -- WARNING: missing end command somewhere! Added here
-	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 4 
 end
 
 MissionEndState.at_enter = function(self, old_state, params)
@@ -158,6 +150,7 @@ MissionEndState.at_enter = function(self, old_state, params)
 	if not self._success or not managers.music:jukebox_menu_track("heistresult") then
 		managers.music:post_event(managers.music:jukebox_menu_track("heistlost"))
 	end
+	managers.enemy:add_delayed_clbk("play_finishing_sound", callback(self, self, "play_finishing_sound", self._success), Application:time() + 2)
 	local ghost_bonus = 0
 	if self._type == "victory" or self._type == "gameover" then
 		if not params or params then
@@ -257,8 +250,8 @@ MissionEndState.play_finishing_sound = function(self, success)
 	if self._server_left then
 		return 
 	end
-	if not success or not "Play_ban_g02x" then
-		managers.dialog:queue_dialog(not managers.groupai:state():bain_state() or "Play_ban_g01x", {})
+	if not success and managers.groupai:state():bain_state() then
+		managers.dialog:queue_dialog("Play_ban_g01x", {})
 	end
 end
 
@@ -475,13 +468,9 @@ MissionEndState._clear_controller = function(self)
 	if not self._controller then
 		return 
 	end
-	if Network:is_server() then
-		self._controller:set_enabled(false)
-		self._controller:destroy()
-		self._controller = nil
-		 -- WARNING: missing end command somewhere! Added here
-	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 10 
+	self._controller:set_enabled(false)
+	self._controller:destroy()
+	self._controller = nil
 end
 
 MissionEndState.debug_continue = function(self)

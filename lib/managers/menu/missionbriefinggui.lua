@@ -1168,9 +1168,6 @@ function LoadoutItem:init(panel, text, i, assets_names, menu_component_data)
 	self:select_asset(self._my_menu_component_data.selected or 1, true)
 end
 function LoadoutItem:post_init()
-	if Application:production_build() then
-		self._panel:set_debug(false)
-	end
 end
 function LoadoutItem:select(no_sound)
 	LoadoutItem.super.select(self, no_sound)

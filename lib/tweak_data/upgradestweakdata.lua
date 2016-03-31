@@ -1705,7 +1705,8 @@ function UpgradesTweakData:init()
 			"bayonet",
 			"m1928",
 			"sparrow",
-			"gator"
+			"gator",
+			"pl14"
 		}
 	}
 	self.level_tree[15] = {
@@ -1723,7 +1724,8 @@ function UpgradesTweakData:init()
 			"akm",
 			"g36",
 			"hunter",
-			"iceaxe"
+			"iceaxe",
+			"zeus"
 		}
 	}
 	self.level_tree[17] = {
@@ -2269,6 +2271,7 @@ function UpgradesTweakData:init()
 	self:_china_weapon_definitions()
 	self:_sr2_weapon_definitions()
 	self:_x_sr2_weapon_definitions()
+	self:_pl14_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -7085,6 +7088,9 @@ function UpgradesTweakData:_melee_weapon_definitions()
 	self.definitions.ballistic = {
 		category = "melee_weapon"
 	}
+	self.definitions.zeus = {
+		category = "melee_weapon"
+	}
 end
 function UpgradesTweakData:_grenades_definitions()
 	self.definitions.molotov = {category = "grenade", dlc = "bbq"}
@@ -9748,5 +9754,12 @@ function UpgradesTweakData:_x_sr2_weapon_definitions()
 		category = "weapon",
 		weapon_id = "x_sr2",
 		factory_id = "wpn_fps_smg_x_sr2"
+	}
+end
+function UpgradesTweakData:_pl14_weapon_definitions()
+	self.definitions.pl14 = {
+		category = "weapon",
+		weapon_id = "pl14",
+		factory_id = "wpn_fps_pis_pl14"
 	}
 end

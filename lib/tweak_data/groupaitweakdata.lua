@@ -155,7 +155,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_spook_1/ene_spook_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_spook_akan_1/ene_spook_akan_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_spooc_asval_smg/ene_akan_fbi_spooc_asval_smg")
 			}
 		},
 		access = access_type_all,
@@ -169,7 +169,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_cop_4/ene_cop_4")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_2/ene_soldier_akan_2")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_cop_r870/ene_akan_cs_cop_r870")
 			}
 		},
 		access = access_type_walk_only
@@ -180,7 +180,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_cop_2/ene_cop_2")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_1/ene_soldier_akan_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_cop_akmsu_smg/ene_akan_cs_cop_akmsu_smg")
 			}
 		},
 		access = access_type_walk_only
@@ -191,7 +191,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_swat_1/ene_swat_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_3/ene_soldier_akan_3")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_swat_ak47_ass/ene_akan_cs_swat_ak47_ass")
 			}
 		},
 		access = access_type_all
@@ -202,7 +202,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_swat_2/ene_swat_2")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_1/ene_soldier_akan_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_swat_r870/ene_akan_cs_swat_r870")
 			}
 		},
 		access = access_type_all
@@ -213,7 +213,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_swat_heavy_1/ene_swat_heavy_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_heavy_1/ene_soldier_akan_heavy_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_ak47_ass/ene_akan_cs_heavy_ak47_ass")
 			}
 		},
 		access = access_type_all
@@ -224,7 +224,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_swat_heavy_1/ene_swat_heavy_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_heavy_1/ene_soldier_akan_heavy_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_ak47_ass/ene_akan_cs_heavy_ak47_ass")
 			}
 		},
 		access = access_type_walk_only
@@ -235,7 +235,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_tazer_1/ene_tazer_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_tazer_akan_1/ene_tazer_akan_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_tazer_ak47_ass/ene_akan_cs_tazer_ak47_ass")
 			}
 		},
 		access = access_type_all,
@@ -247,7 +247,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_shield_2/ene_shield_2")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_shield_akan_1/ene_shield_akan_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_shield_c45/ene_akan_cs_shield_c45")
 			}
 		},
 		access = access_type_walk_only,
@@ -260,8 +260,8 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_fbi_2/ene_fbi_2")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_1/ene_soldier_akan_1"),
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_2/ene_soldier_akan_2")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_cop_ak47_ass/ene_akan_cs_cop_ak47_ass"),
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_cop_ak47_ass/ene_akan_cs_cop_ak47_ass")
 			}
 		},
 		access = access_type_all
@@ -273,8 +273,8 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_fbi_3/ene_fbi_3")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_3/ene_soldier_akan_3"),
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_2/ene_soldier_akan_2")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_cop_asval_smg/ene_akan_cs_cop_asval_smg"),
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_cop_asval_smg/ene_akan_cs_cop_asval_smg")
 			}
 		},
 		access = access_type_all
@@ -285,7 +285,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_fbi_3/ene_fbi_3")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_2/ene_soldier_akan_2")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_cop_asval_smg/ene_akan_cs_cop_asval_smg")
 			}
 		},
 		access = access_type_all
@@ -297,7 +297,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 					Idstring("units/payday2/characters/ene_fbi_swat_1/ene_fbi_swat_1")
 				},
 				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_2/ene_soldier_akan_2")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_ak47_ass/ene_akan_fbi_swat_ak47_ass")
 				}
 			},
 			access = access_type_all
@@ -309,7 +309,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 					Idstring("units/payday2/characters/ene_city_swat_1/ene_city_swat_1")
 				},
 				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_3/ene_soldier_akan_3")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_ak47_ass/ene_akan_fbi_swat_dw_ak47_ass")
 				}
 			},
 			access = access_type_all
@@ -322,7 +322,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 					Idstring("units/payday2/characters/ene_fbi_swat_2/ene_fbi_swat_2")
 				},
 				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_1/ene_soldier_akan_1")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_r870/ene_akan_fbi_swat_r870")
 				}
 			},
 			access = access_type_all
@@ -335,8 +335,8 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 					Idstring("units/payday2/characters/ene_city_swat_3/ene_city_swat_3")
 				},
 				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_3/ene_soldier_akan_3"),
-					Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_2/ene_soldier_akan_2")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_r870/ene_akan_fbi_swat_dw_r870"),
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_r870/ene_akan_fbi_swat_dw_r870")
 				}
 			},
 			access = access_type_all
@@ -348,7 +348,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_fbi_heavy_1/ene_fbi_heavy_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_heavy_1/ene_soldier_akan_heavy_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
 			}
 		},
 		access = access_type_all
@@ -359,7 +359,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_fbi_heavy_1/ene_fbi_heavy_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_soldier_akan_heavy_1/ene_soldier_akan_heavy_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
 			}
 		},
 		access = access_type_walk_only
@@ -370,7 +370,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_shield_1/ene_shield_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_mad/characters/ene_shield_akan_1/ene_shield_akan_1")
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_sr2_smg/ene_akan_fbi_shield_sr2_smg")
 			}
 		},
 		access = access_type_walk_only,
@@ -384,7 +384,8 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 					Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2")
 				},
 				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_bulldozer_akan_1/ene_bulldozer_akan_1")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870")
 				}
 			},
 			access = access_type_walk_only,
@@ -398,7 +399,8 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 					Idstring("units/payday2/characters/ene_bulldozer_3/ene_bulldozer_3")
 				},
 				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_bulldozer_akan_1/ene_bulldozer_akan_1")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg")
 				}
 			},
 			access = access_type_walk_only,

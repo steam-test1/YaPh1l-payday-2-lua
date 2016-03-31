@@ -350,8 +350,7 @@ function GenericDLCManager:has_dbd_clan()
 	return self:is_dlc_unlocked("dbd_clan")
 end
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
-	return self:has_goty_weapon_bundle_2014() and self:has_goty_heist_bundle_2014() and self:has_soundtrack_or_cce() and self:is_dlcs_unlocked({
-		"xmas_soundtrack",
+	return self:has_goty_weapon_bundle_2014() and self:has_goty_heist_bundle_2014() and self:is_dlcs_unlocked({
 		"character_pack_clover"
 	})
 end
@@ -1145,6 +1144,7 @@ function WINDLCManager:init()
 			bobblehead = {app_id = "328860", no_install = true},
 			peta = {app_id = "433730", no_install = true},
 			pal = {app_id = "441600", no_install = true},
+			mad = {app_id = "218620", no_install = true},
 			pd2_clan = {
 				source_id = "103582791433980119"
 			},

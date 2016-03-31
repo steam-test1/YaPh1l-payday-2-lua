@@ -644,9 +644,6 @@ MenuComponentManager.confirm_pressed = function(self)
 	if self._player_inventory_gui and self._player_inventory_gui:confirm_pressed() then
 		return true
 	end
-	if Application:production_build() and self._debug_font_gui then
-		self._debug_font_gui:toggle()
-	end
 end
 
 MenuComponentManager.back_pressed = function(self)
@@ -2905,9 +2902,6 @@ MenuComponentManager.close_debug_fonts_gui = function(self)
 end
 
 MenuComponentManager.toggle_debug_fonts_gui = function(self)
-	if Application:production_build() and self._debug_fonts_gui then
-		self._debug_fonts_gui:toggle_debug()
-	end
 end
 
 MenuComponentManager.reload_debug_fonts_gui = function(self)

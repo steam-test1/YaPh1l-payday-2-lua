@@ -110,12 +110,6 @@ function CopLogicTravel.enter(data, new_logic_name, enter_params)
 	my_data.path_safely = data.team.foes[tweak_data.levels:get_default_team_ID("player")]
 	my_data.path_ahead = data.objective.path_ahead or data.team.id == tweak_data.levels:get_default_team_ID("player")
 	data.unit:brain():set_update_enabled_state(false)
-	if Application:production_build() then
-		my_data.pathing_debug = {
-			from_pos = Vector3(),
-			to_pos = Vector3()
-		}
-	end
 end
 function CopLogicTravel.exit(data, new_logic_name, enter_params)
 	CopLogicBase.exit(data, new_logic_name, enter_params)
@@ -269,16 +263,6 @@ function CopLogicTravel._upd_pathing(data, my_data)
 			if path ~= "failed" then
 				my_data.advance_path = path
 			else
-				if Application:production_build() then
-					local txt = "[CopLogicTravel:_upd_pathing] advance_path failed"
-					if managers.groupai:state():whisper_mode() and managers.groupai:visualization_enabled() then
-						debug_pause_unit(data.unit, txt, data.unit, my_data.coarse_path_index, inspect(my_data.coarse_path))
-						Application:draw_line(data.m_pos, my_data.pathing_debug.from_pos, 1, 0, 0)
-						Application:draw_cone(my_data.pathing_debug.to_pos, my_data.pathing_debug.from_pos, 20, 1, 0, 0)
-					else
-						print(txt, data.unit, my_data.coarse_path_index, inspect(my_data.coarse_path))
-					end
-				end
 				data.path_fail_t = data.t
 				data.objective_failed_clbk(data.unit, data.objective)
 				return
@@ -1033,10 +1017,6 @@ function CopLogicTravel._check_start_path_ahead(data)
 	local prio = data.logic.get_pathing_prio(data)
 	local from_pos = data.pos_rsrv.move_dest.position
 	local nav_segs = CopLogicTravel._get_allowed_travel_nav_segs(data, my_data, to_pos)
-	if Application:production_build() then
-		mvector3.set(my_data.pathing_debug.from_pos, from_pos)
-		mvector3.set(my_data.pathing_debug.to_pos, to_pos)
-	end
 	data.unit:brain():search_for_path_from_pos(my_data.advance_path_search_id, from_pos, to_pos, prio, nil, nav_segs)
 end
 function CopLogicTravel.get_pathing_prio(data)
@@ -1160,10 +1140,6 @@ function CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data)
 	my_data.processing_advance_path = true
 	local prio = data.logic.get_pathing_prio(data)
 	local nav_segs = CopLogicTravel._get_allowed_travel_nav_segs(data, my_data, to_pos)
-	if Application:production_build() then
-		mvector3.set(my_data.pathing_debug.from_pos, data.m_pos)
-		mvector3.set(my_data.pathing_debug.to_pos, to_pos)
-	end
 	data.unit:brain():search_for_path(my_data.advance_path_search_id, to_pos, prio, nil, nav_segs)
 end
 function CopLogicTravel._begin_coarse_pathing(data, my_data)

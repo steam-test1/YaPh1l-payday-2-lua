@@ -19,6 +19,7 @@ function PlayerBase:init(unit)
 	self._stats_screen_visible = false
 	managers.game_play_central:restart_portal_effects()
 	self:_chk_set_unit_upgrades()
+	managers.job:set_memory("mad_3", true)
 end
 function PlayerBase:post_init()
 	self._unit:movement():post_init()
