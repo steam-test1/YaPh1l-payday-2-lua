@@ -12303,7 +12303,7 @@ function WeaponFactoryTweakData:_init_gre_m79()
 end
 function WeaponFactoryTweakData:_init_g3()
 	self.parts.wpn_fps_ass_g3_body_lower = {
-		type = "upper_reciever",
+		type = "lower_reciever",
 		name_id = "bm_wp_g3_body_lower",
 		a_obj = "a_body",
 		unit = "units/pd2_dlc_gage_assault/weapons/wpn_fps_ass_g3_pts/wpn_fps_ass_g3_body_lower",
@@ -20079,7 +20079,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20087,7 +20087,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20095,7 +20095,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20103,7 +20103,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20111,7 +20111,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20119,7 +20119,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20127,7 +20127,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20135,7 +20135,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20143,7 +20143,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20151,7 +20151,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20159,7 +20159,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20167,7 +20167,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 0, -5.19)
+						translation = Vector3(-0.03, 0, -5.21)
 					}
 				}
 			},
@@ -20175,7 +20175,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 				a_obj = "a_o_sm",
 				stance_mod = {
 					wpn_fps_ass_m14 = {
-						translation = Vector3(0.05, 6, -5.16)
+						translation = Vector3(-0.03, 6, -5.21)
 					}
 				}
 			}

@@ -24,7 +24,6 @@ CopDamage.DEBUG_HP = CopDamage.DEBUG_HP or false
 function CopDamage.MAD_3_ACHIEVEMENT(attack_data)
 	if attack_data.variant ~= "melee" and attack_data.attacker_unit and not attack_data.attacker_unit:base().tased then
 		managers.job:set_memory("mad_3", false)
-		print("fail mad_3")
 	end
 end
 CopDamage._hurt_severities = {
@@ -1291,7 +1290,6 @@ function CopDamage:_remove_debug_gui()
 end
 function CopDamage:die(attack_data)
 	local variant = attack_data.variant
-	print(inspect(attack_data))
 	CopDamage.MAD_3_ACHIEVEMENT(attack_data)
 	self:_remove_debug_gui()
 	self._unit:base():set_slot(self._unit, 17)
@@ -1378,6 +1376,8 @@ function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, hit
 	local hit_pos = mvector3.copy(self._unit:movement():m_pos())
 	mvector3.set_z(hit_pos, hit_pos.z + hit_offset_height)
 	attack_data.pos = hit_pos
+	attack_data.attacker_unit = attacker_unit
+	attack_data.variant = "bullet"
 	local attack_dir, distance
 	if attacker_unit then
 		attack_dir = hit_pos - attacker_unit:movement():m_head_pos()
@@ -1441,7 +1441,7 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 	end
 	local variant = CopDamage._ATTACK_VARIANTS[i_attack_variant]
 	local damage = damage_percent * self._HEALTH_INIT_PRECENT
-	local attack_data = {variant = variant}
+	local attack_data = {variant = variant, attacker_unit = attacker_unit}
 	local result
 	if death then
 		result = {type = "death", variant = variant}
@@ -1459,7 +1459,6 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 		result = {type = result_type, variant = variant}
 		self:_apply_damage_to_health(damage)
 	end
-	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
 	local attack_dir
@@ -1529,7 +1528,7 @@ function CopDamage:sync_damage_fire(attacker_unit, damage_percent, start_dot_dan
 	local variant = "fire"
 	local damage = damage_percent * self._HEALTH_INIT_PRECENT
 	local is_fire_dot_damage = false
-	local attack_data = {variant = variant}
+	local attack_data = {variant = variant, attacker_unit = attacker_unit}
 	local result
 	if weapon_type then
 		local fire_dot
@@ -1564,7 +1563,6 @@ function CopDamage:sync_damage_fire(attacker_unit, damage_percent, start_dot_dan
 		result = {type = result_type, variant = variant}
 		self:_apply_damage_to_health(damage)
 	end
-	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
 	attack_data.ignite_character = true
@@ -1625,7 +1623,7 @@ function CopDamage:sync_damage_dot(attacker_unit, damage_percent, death, variant
 		return
 	end
 	local damage = damage_percent * self._HEALTH_INIT_PRECENT
-	local attack_data = {variant = variant}
+	local attack_data = {variant = variant, attacker_unit = attacker_unit}
 	local result
 	if death then
 		result = {type = "death", variant = variant}
@@ -1647,7 +1645,6 @@ function CopDamage:sync_damage_dot(attacker_unit, damage_percent, death, variant
 		self:_apply_damage_to_health(damage)
 	end
 	attack_data.variant = variant
-	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
 	self:_on_damage_received(attack_data)
@@ -1668,9 +1665,8 @@ function CopDamage:_sync_dismember(attacker_unit)
 	return dismember_victim
 end
 function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effect_percent, i_body, hit_offset_height, variant, death)
-	local attack_data = {}
+	local attack_data = {attacker_unit = attacker_unit, variant = "melee"}
 	local body = self._unit:body(i_body)
-	attack_data.attacker_unit = attacker_unit
 	local damage = damage_percent * self._HEALTH_INIT_PRECENT
 	local result
 	if death then
@@ -1694,8 +1690,6 @@ function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effec
 		self:_apply_damage_to_health(damage)
 		attack_data.variant = result_type
 	end
-	attack_data.variant = "melee"
-	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
 	local attack_dir
@@ -1726,7 +1720,7 @@ function CopDamage:sync_damage_tase(attacker_unit, damage_percent, variant, deat
 	end
 	self._tase_effect = World:effect_manager():spawn(self._tase_effect_table)
 	local damage = damage_percent * self._HEALTH_INIT_PRECENT
-	local attack_data = {}
+	local attack_data = {attacker_unit = attacker_unit, variant = variant}
 	local result
 	if death then
 		result = {type = "death", variant = "bullet"}
@@ -1746,8 +1740,6 @@ function CopDamage:sync_damage_tase(attacker_unit, damage_percent, variant, deat
 		}
 		self:_apply_damage_to_health(damage)
 	end
-	attack_data.variant = result.variant
-	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
 	local attack_dir
