@@ -2515,8 +2515,6 @@ Play the full version soon to get your full PAYDAY!]],
 		mad_3 = {
 			award = "mad_3",
 			difficulty = {
-				"normal",
-				"hard",
 				"overkill",
 				"overkill_145",
 				"overkill_290"
