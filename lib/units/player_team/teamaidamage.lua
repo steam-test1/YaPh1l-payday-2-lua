@@ -784,6 +784,7 @@ function TeamAIDamage:_on_incapacitated()
 end
 function TeamAIDamage:clbk_exit_to_dead()
 	self._to_dead_clbk_id = nil
+	self._to_dead_t = nil
 	self:_die()
 	self._unit:network():send("from_server_damage_bleeding")
 	local dmg_info = {

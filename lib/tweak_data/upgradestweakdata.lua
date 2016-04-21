@@ -2272,6 +2272,8 @@ function UpgradesTweakData:init()
 	self:_sr2_weapon_definitions()
 	self:_x_sr2_weapon_definitions()
 	self:_pl14_weapon_definitions()
+	self:_x_mp5_weapon_definitions()
+	self:_x_akmsu_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -9761,5 +9763,19 @@ function UpgradesTweakData:_pl14_weapon_definitions()
 		category = "weapon",
 		weapon_id = "pl14",
 		factory_id = "wpn_fps_pis_pl14"
+	}
+end
+function UpgradesTweakData:_x_mp5_weapon_definitions()
+	self.definitions.x_mp5 = {
+		category = "weapon",
+		weapon_id = "x_mp5",
+		factory_id = "wpn_fps_smg_x_mp5"
+	}
+end
+function UpgradesTweakData:_x_akmsu_weapon_definitions()
+	self.definitions.x_akmsu = {
+		category = "weapon",
+		weapon_id = "x_akmsu",
+		factory_id = "wpn_fps_smg_x_akmsu"
 	}
 end
