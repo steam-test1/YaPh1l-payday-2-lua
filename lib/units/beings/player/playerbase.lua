@@ -158,6 +158,24 @@ function PlayerBase:_chk_set_unit_upgrades()
 		if managers.player:has_category_upgrade("sentry_gun", "shield") then
 			managers.network:session():send_to_host("sync_upgrade", "sentry_gun", "shield", 1)
 		end
+		if managers.player:has_category_upgrade("sentry_gun", "extra_ammo_multiplier") then
+			managers.network:session():send_to_host("sync_upgrade", "sentry_gun", "extra_ammo_multiplier", 1)
+		end
+		if managers.player:has_category_upgrade("sentry_gun", "armor_multiplier") then
+			managers.network:session():send_to_host("sync_upgrade", "sentry_gun", "armor_multiplier", 1)
+		end
+		if managers.player:has_category_upgrade("sentry_gun", "armor_multiplier2") then
+			managers.network:session():send_to_host("sync_upgrade", "sentry_gun", "armor_multiplier2", 1)
+		end
+		if managers.player:has_category_upgrade("sentry_gun", "damage_multiplier") then
+			managers.network:session():send_to_host("sync_upgrade", "sentry_gun", "damage_multiplier", 1)
+		end
+		if managers.player:has_category_upgrade("sentry_gun", "less_noisy") then
+			managers.network:session():send_to_host("sync_upgrade", "sentry_gun", "less_noisy", 1)
+		end
+		if managers.player:has_category_upgrade("sentry_gun", "fire_rate_reduction") then
+			managers.network:session():send_to_host("sync_upgrade", "sentry_gun", "fire_rate_reduction", 1)
+		end
 		if managers.player:has_category_upgrade("ecm_jammer", "affects_cameras") then
 			managers.network:session():send_to_host("sync_upgrade", "ecm_jammer", "affects_cameras", 1)
 		end

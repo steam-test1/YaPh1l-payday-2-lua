@@ -9,6 +9,8 @@ function SentryGunBase:init(unit)
 		self._validate_clbk_id = "sentry_gun_validate" .. tostring(unit:key())
 		managers.enemy:add_delayed_clbk(self._validate_clbk_id, callback(self, self, "_clbk_validate"), Application:time() + 60)
 	end
+	self._use_armor_piercing = false
+	self.sentry_gun = true
 end
 function SentryGunBase:_clbk_validate()
 	self._validate_clbk_id = nil
@@ -57,7 +59,7 @@ function SentryGunBase:post_init()
 		self._unit:brain():set_active(true)
 	end
 end
-function SentryGunBase.spawn(owner, pos, rot, ammo_multiplier, armor_multiplier, damage_multiplier, peer_id, verify_equipment)
+function SentryGunBase.spawn(owner, pos, rot, peer_id, verify_equipment)
 	local attached_data = SentryGunBase._attach(pos, rot)
 	if not attached_data then
 		return
@@ -65,19 +67,22 @@ function SentryGunBase.spawn(owner, pos, rot, ammo_multiplier, armor_multiplier,
 	if verify_equipment and not managers.player:verify_equipment(peer_id, "sentry_gun") then
 		return
 	end
-	local spread_multiplier, rot_speed_multiplier, has_shield
+	local sentry_owner
 	if owner and owner:base().upgrade_value then
-		spread_multiplier = owner:base():upgrade_value("sentry_gun", "spread_multiplier") or 1
-		rot_speed_multiplier = owner:base():upgrade_value("sentry_gun", "rot_speed_multiplier") or 1
-		has_shield = owner:base():upgrade_value("sentry_gun", "shield")
-	else
-		spread_multiplier = managers.player:upgrade_value("sentry_gun", "spread_multiplier", 1)
-		rot_speed_multiplier = managers.player:upgrade_value("sentry_gun", "rot_speed_multiplier", 1)
-		has_shield = managers.player:has_category_upgrade("sentry_gun", "shield")
+		sentry_owner = owner
 	end
+	local player_skill = PlayerSkill
+	local ammo_multiplier = player_skill.skill_data("sentry_gun", "extra_ammo_multiplier", 1, sentry_owner)
+	local armor_multiplier = 1 + (player_skill.skill_data("sentry_gun", "armor_multiplier", 1, sentry_owner) - 1) + (player_skill.skill_data("sentry_gun", "armor_multiplier2", 1, sentry_owner) - 1)
+	local damage_multiplier = player_skill.skill_data("sentry_gun", "damage_multiplier", 1, sentry_owner)
+	local spread_multiplier = player_skill.skill_data("sentry_gun", "spread_multiplier", 1, sentry_owner)
+	local rot_speed_multiplier = player_skill.skill_data("sentry_gun", "rot_speed_multiplier", 1, sentry_owner)
+	local fire_rate_reduction = player_skill.skill_data("sentry_gun", "fire_rate_reduction", 1, sentry_owner)
+	local has_shield = player_skill.has_skill("sentry_gun", "shield", sentry_owner)
+	local less_noisy = player_skill.has_skill("sentry_gun", "less_noisy", sentry_owner)
 	local unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_sentry/gen_equipment_sentry"), pos, rot)
 	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, 0, peer_id or 0)
-	unit:base():setup(owner, ammo_multiplier, armor_multiplier, damage_multiplier, spread_multiplier, rot_speed_multiplier, has_shield, attached_data)
+	unit:base():setup(owner, ammo_multiplier, armor_multiplier, damage_multiplier, spread_multiplier, rot_speed_multiplier, has_shield, attached_data, less_noisy, fire_rate_reduction)
 	local team
 	if owner then
 		team = owner:movement():team()
@@ -148,7 +153,7 @@ end
 function SentryGunBase:server_information()
 	return self._server_information
 end
-function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, damage_multiplier, spread_multiplier, rot_speed_multiplier, has_shield, attached_data)
+function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, damage_multiplier, spread_multiplier, rot_speed_multiplier, has_shield, attached_data, less_noisy, fire_rate_reduction)
 	if Network:is_client() and not self._skip_authentication then
 		self._validate_clbk_id = "sentry_gun_validate" .. tostring(unit:key())
 		managers.enemy:add_delayed_clbk(self._validate_clbk_id, callback(self, self, "_clbk_validate"), Application:time() + 60)
@@ -159,6 +164,9 @@ function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, damage_mu
 	self._damage_multiplier = damage_multiplier
 	self._spread_multiplier = spread_multiplier
 	self._rot_speed_multiplier = rot_speed_multiplier
+	self._less_noisy = less_noisy
+	self._is_less_noisy = false
+	self._fire_rate_reduction = fire_rate_reduction
 	if has_shield then
 		self:enable_shield()
 	end
@@ -190,7 +198,7 @@ function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, damage_mu
 		spread_mul = spread_multiplier,
 		creates_alerts = true
 	}
-	self._unit:weapon():setup(setup_data, damage_multiplier)
+	self._unit:weapon():setup(setup_data, damage_multiplier, fire_rate_reduction, less_noisy)
 	self._unit:set_extension_update_enabled(Idstring("base"), true)
 	self:_setup_contour()
 	return true
@@ -286,6 +294,9 @@ function SentryGunBase:show_blocked_hint(interaction_tweak_data, player, skip_hi
 		managers.hint:show_hint("hint_nea_sentry_gun")
 	end
 end
+function SentryGunBase:switch_fire_mode(ap_bullets)
+	self._use_armor_piercing = self._unit:weapon():switch_fire_mode(self._unit, ap_bullets)
+end
 local refill_ratios = {
 	1,
 	0.9375,
@@ -343,7 +354,7 @@ function SentryGunBase:get_net_event_id(player)
 	return event_id, wanted_event_id, possible_event_id
 end
 function SentryGunBase:interaction_text_id()
-	return "debug_interact_sentry_gun_reload"
+	return "hud_action_sentry_gun_switch_fire_mode"
 end
 function SentryGunBase:add_string_macros(macroes)
 	local event_id, wanted_event_id, possible_event_id = self:get_net_event_id(managers.player:local_player())
@@ -450,6 +461,9 @@ function SentryGunBase:save(save_data)
 	save_data.base = my_save_data
 	my_save_data.tweak_table_id = self._tweak_table_id
 	my_save_data.is_module = self._is_module
+end
+function SentryGunBase:ammo_ratio()
+	return self._unit:weapon():ammo_ratio()
 end
 function SentryGunBase:load(save_data)
 	self._was_dropin = true

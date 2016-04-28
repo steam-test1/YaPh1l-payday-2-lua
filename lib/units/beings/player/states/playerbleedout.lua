@@ -99,7 +99,7 @@ function PlayerBleedOut:update(t, dt)
 	end
 end
 function PlayerBleedOut:_update_check_actions(t, dt)
-	local input = self:_get_input()
+	local input = self:_get_input(t, dt)
 	self._unit:camera():set_shaker_parameter("headbob", "amplitude", 0)
 	self:_update_throw_projectile_timers(t, input)
 	self:_update_reload_timers(t, dt, input)

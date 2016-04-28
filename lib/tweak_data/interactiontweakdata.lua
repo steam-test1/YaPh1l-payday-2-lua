@@ -828,6 +828,19 @@ function InteractionTweakData:init()
 	self.sentry_gun_revive.sound_done = "bar_bag_generic_finished"
 	self.sentry_gun_revive.action_text_id = "hud_action_reload_sentry"
 	self.sentry_gun_revive.no_contour = true
+	self.sentry_gun = {}
+	self.sentry_gun.icon = "equipment_ammo_bag"
+	self.sentry_gun.timer = 3.5
+	self.sentry_gun.blocked_hint = "hint_reload_sentry"
+	self.sentry_gun.sound_start = "bar_bag_generic"
+	self.sentry_gun.sound_interupt = "bar_bag_generic_cancel"
+	self.sentry_gun.sound_done = "bar_bag_generic_finished"
+	self.sentry_gun.action_text_id = "hud_action_sentry_gun_switch_fire_mode"
+	self.sentry_gun.action_text_id_close = "hud_action_pickup_sentry_gun"
+	self.sentry_gun.interact_distance = 800
+	self.sentry_gun.interact_distance_close = 200
+	self.sentry_gun.no_contour = true
+	self.sentry_gun.verify_owner = true
 	self.bodybags_bag = {}
 	self.bodybags_bag.icon = "equipment_ammo_bag"
 	self.bodybags_bag.text_id = "debug_interact_bodybags_bag_take_bodybag"
@@ -858,6 +871,10 @@ function InteractionTweakData:init()
 	self.ammo_bag.sound_interupt = "bar_bag_generic_cancel"
 	self.ammo_bag.sound_done = "bar_bag_generic_finished"
 	self.ammo_bag.action_text_id = "hud_action_taking_ammo"
+	self.ammo_bag.upgrade_timer_multiplier = {
+		category = "player",
+		upgrade = "deploy_interact_faster"
+	}
 	self.doctor_bag = {}
 	self.doctor_bag.icon = "equipment_doctor_bag"
 	self.doctor_bag.text_id = "debug_interact_doctor_bag_heal"
@@ -868,9 +885,15 @@ function InteractionTweakData:init()
 	self.doctor_bag.sound_interupt = "bar_helpup_cancel"
 	self.doctor_bag.sound_done = "bar_helpup_finished"
 	self.doctor_bag.action_text_id = "hud_action_healing"
-	self.doctor_bag.upgrade_timer_multiplier = {
-		category = "doctor_bag",
-		upgrade = "interaction_speed_multiplier"
+	self.doctor_bag.upgrade_timer_multipliers = {
+		{
+			category = "doctor_bag",
+			upgrade = "interaction_speed_multiplier"
+		},
+		{
+			category = "player",
+			upgrade = "deploy_interact_faster"
+		}
 	}
 	self.ecm_jammer = {}
 	self.ecm_jammer.icon = "equipment_ecm_jammer"
@@ -879,9 +902,15 @@ function InteractionTweakData:init()
 		category = "ecm_jammer",
 		upgrade = "can_activate_feedback"
 	}
-	self.ecm_jammer.upgrade_timer_multiplier = {
-		category = "ecm_jammer",
-		upgrade = "interaction_speed_multiplier"
+	self.ecm_jammer.upgrade_timer_multipliers = {
+		{
+			category = "ecm_jammer",
+			upgrade = "interaction_speed_multiplier"
+		},
+		{
+			category = "player",
+			upgrade = "deploy_interact_faster"
+		}
 	}
 	self.ecm_jammer.timer = 2
 	self.ecm_jammer.no_contour = true

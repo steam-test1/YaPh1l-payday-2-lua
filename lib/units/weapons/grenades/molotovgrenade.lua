@@ -237,7 +237,7 @@ function MolotovGrenade:detonate(normal)
 end
 function MolotovGrenade:_detonate(normal)
 	if self._detonated == false then
-		self:detonate(normal)
+		self:_spawn_environment_fire(normal)
 		managers.network:session():send_to_peers_synched("sync_detonate_molotov_grenade", self._unit, "base", GrenadeBase.EVENT_IDS.detonate, normal)
 	end
 end
@@ -248,19 +248,15 @@ function MolotovGrenade:sync_detonate_molotov_grenade(event_id, normal)
 end
 function MolotovGrenade:_detonate_on_client(normal)
 	if self._detonated == false then
-		self:detonate(normal)
+		self:_spawn_environment_fire(normal)
 	end
 end
-function MolotovGrenade:_detonate_on_client_OLD(normal)
-	if self._detonated == false then
-		self._detonated_position = self._unit:position()
-		local pos = self._detonated_position
-		local range = self._range
-		local slot_mask = managers.slot:get_mask("explosion_targets")
-		managers.fire:play_sound_and_effects(pos, normal, range, self._custom_params)
-		self._detonated = true
-		self._unit:set_visible(false)
-	end
+function MolotovGrenade:_spawn_environment_fire(normal)
+	local position = self._unit:position()
+	local rotation = self._unit:rotation()
+	local data = tweak_data.env_effect:molotov_fire()
+	EnvironmentFire.spawn(position, rotation, data, normal, self._thrower_unit)
+	self._unit:set_slot(0)
 end
 function MolotovGrenade:bullet_hit()
 	if not Network:is_server() then

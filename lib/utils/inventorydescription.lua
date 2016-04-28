@@ -313,13 +313,26 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 		if weapon_tweak.stats[stat.stat_name or stat.name] or stat.name == "totalammo" or stat.name == "fire_rate" then
 			if stat.name == "magazine" then
 				skill_stats[stat.name].value = managers.player:upgrade_value(name, "clip_ammo_increase", 0)
+				local has_magazine = weapon_tweak.has_magazine
+				local is_single_shot = managers.blackmarket:is_single_shot(blueprint, weapon_tweak.category)
+				local add_modifier = false
+				if weapon_tweak.category == "shotgun" and has_magazine then
+					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("shotgun", "magazine_capacity_inc", 0)
+					add_modifier = managers.player:has_category_upgrade("shotgun", "magazine_capacity_inc")
+				elseif weapon_tweak.category == "pistol" and managers.player:has_category_upgrade("pistol", "magazine_capacity_inc") then
+					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("pistol", "magazine_capacity_inc", 0)
+					add_modifier = true
+				elseif weapon_tweak.FIRE_MODE == "auto" and not is_single_shot then
+					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("player", "automatic_mag_increase", 0)
+					add_modifier = managers.player:has_category_upgrade("player", "automatic_mag_increase")
+				end
 				if not weapon_tweak.upgrade_blocks or not weapon_tweak.upgrade_blocks.weapon or not table.contains(weapon_tweak.upgrade_blocks.weapon, "clip_ammo_increase") then
 					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("weapon", "clip_ammo_increase", 0)
 				end
 				if not weapon_tweak.upgrade_blocks or not weapon_tweak.upgrade_blocks[weapon_tweak.category] or not table.contains(weapon_tweak.upgrade_blocks[weapon_tweak.category], "clip_ammo_increase") then
 					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value(weapon_tweak.category, "clip_ammo_increase", 0)
 				end
-				skill_stats[stat.name].skill_in_effect = managers.player:has_category_upgrade(name, "clip_ammo_increase") or managers.player:has_category_upgrade("weapon", "clip_ammo_increase")
+				skill_stats[stat.name].skill_in_effect = managers.player:has_category_upgrade(name, "clip_ammo_increase") or managers.player:has_category_upgrade("weapon", "clip_ammo_increase") or add_modifier
 			elseif stat.name == "totalammo" then
 			else
 				base_value = math.max(base_stats[stat.name].value + mods_stats[stat.name].value, 0)
@@ -328,16 +341,17 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 				end
 				multiplier = 1
 				modifier = 0
+				local is_single_shot = managers.blackmarket:is_single_shot(blueprint, weapon_tweak.category)
 				if stat.name == "damage" then
 					multiplier = managers.blackmarket:damage_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, detection_risk, nil, blueprint)
 					modifier = math.floor(managers.blackmarket:damage_addend(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, detection_risk, nil, blueprint) * tweak_data.gui.stats_present_multiplier * multiplier)
 				elseif stat.name == "spread" then
 					local fire_mode = single_mod and "single" or auto_mod and "auto" or weapon_tweak.FIRE_MODE or "single"
-					multiplier = managers.blackmarket:accuracy_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, nil, nil, fire_mode, blueprint)
-					modifier = managers.blackmarket:accuracy_addend(name, weapon_tweak.category, weapon_tweak.sub_category, base_index, silencer, nil, fire_mode, blueprint) * tweak_data.gui.stats_present_multiplier
+					multiplier = managers.blackmarket:accuracy_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, nil, nil, fire_mode, blueprint, nil, is_single_shot)
+					modifier = managers.blackmarket:accuracy_addend(name, weapon_tweak.category, weapon_tweak.sub_category, base_index, silencer, nil, fire_mode, blueprint, nil, is_single_shot) * tweak_data.gui.stats_present_multiplier
 				elseif stat.name == "recoil" then
 					multiplier = managers.blackmarket:recoil_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, blueprint)
-					modifier = managers.blackmarket:recoil_addend(name, weapon_tweak.category, weapon_tweak.sub_category, base_index, silencer, blueprint) * tweak_data.gui.stats_present_multiplier
+					modifier = managers.blackmarket:recoil_addend(name, weapon_tweak.category, weapon_tweak.sub_category, base_index, silencer, blueprint, nil, is_single_shot) * tweak_data.gui.stats_present_multiplier
 				elseif stat.name == "suppression" then
 					multiplier = managers.blackmarket:threat_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer)
 				elseif stat.name == "concealment" then

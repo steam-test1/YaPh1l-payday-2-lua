@@ -1,5 +1,6 @@
 PlayerCarry = PlayerCarry or class(PlayerStandard)
 PlayerCarry.target_tilt = -5
+local armor_init = tweak_data.player.damage.ARMOR_INIT
 function PlayerCarry:init(unit)
 	PlayerCarry.super.init(self, unit)
 end
@@ -82,7 +83,7 @@ function PlayerCarry:_check_dye_explode()
 	self._dye_risk.next_t = managers.player:player_timer():time() + 2 + math.random(3)
 end
 function PlayerCarry:_update_check_actions(t, dt)
-	local input = self:_get_input()
+	local input = self:_get_input(t, dt)
 	self:_determine_move_direction()
 	self:_update_interaction_timers(t)
 	self:_update_throw_projectile_timers(t, input)
@@ -164,6 +165,13 @@ function PlayerCarry:_get_max_walk_speed(...)
 		multiplier = 1
 	else
 		multiplier = math.clamp(multiplier * managers.player:upgrade_value("carry", "movement_speed_multiplier", 1), 0, 1)
+	end
+	if managers.player:has_category_upgrade("player", "armor_carry_bonus") then
+		local base_max_armor = armor_init + managers.player:body_armor_value("armor") + managers.player:body_armor_skill_addend()
+		local mul = managers.player:upgrade_value("player", "armor_carry_bonus", 1)
+		for i = 1, base_max_armor do
+			multiplier = multiplier * mul
+		end
 	end
 	return PlayerCarry.super._get_max_walk_speed(self, ...) * multiplier
 end

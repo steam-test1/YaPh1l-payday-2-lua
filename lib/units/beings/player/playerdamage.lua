@@ -6,6 +6,8 @@ PlayerDamage._ARMOR_DAMAGE_REDUCTION = tweak_data.player.damage.ARMOR_DAMAGE_RED
 PlayerDamage._ARMOR_DAMAGE_REDUCTION_STEPS = tweak_data.player.damage.ARMOR_DAMAGE_REDUCTION_STEPS
 function PlayerDamage:init(unit)
 	self._unit = unit
+	self._max_health_reduction = managers.player:upgrade_value("player", "max_health_reduction", 1)
+	self._healing_reduction = managers.player:upgrade_value("player", "healing_reduction", 1)
 	self._revives = Application:digest_value(0, true)
 	self:replenish()
 	self._bleed_out_health = Application:digest_value(tweak_data.player.damage.BLEED_OUT_HEALTH_INIT * managers.player:upgrade_value("player", "bleed_out_health_multiplier", 1), true)
@@ -33,6 +35,17 @@ function PlayerDamage:init(unit)
 	self._can_take_dmg_timer = 0
 	self._regen_on_the_side_timer = 0
 	self._regen_on_the_side = false
+	self._interaction = managers.interaction
+	self._armor_regen_mul = managers.player:upgrade_value("player", "armor_regen_time_mul", 1)
+	self._dire_need = managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot")
+	local function revive_player()
+		self:revive(true)
+	end
+	managers.player:register_message(Message.RevivePlayer, self, revive_player)
+end
+function PlayerDamage:recharge_pistol_messiah()
+	local recharge = managers.player:upgrade_value("player", "recharge_pistol_messiah", 0)
+	self._messiah_charges = math.max(self._messiah_charges + recharge, 1)
 end
 function PlayerDamage:post_init()
 	self:send_set_status()
@@ -110,7 +123,7 @@ function PlayerDamage:update(unit, t, dt)
 	end
 	if self._regenerate_timer and not self._dead and not self._bleed_out and not self._check_berserker_done then
 		if not is_berserker_active and not self._bleed_out_blocked_by_zipline then
-			self._regenerate_timer = self._regenerate_timer - dt * (self._regenerate_speed or 1)
+			self._regenerate_timer = self._regenerate_timer - dt * ((self._regenerate_speed or 1) * self._armor_regen_mul)
 			local top_fade = math.clamp(self._hurt_value - 0.8, 0, 1) / 0.2
 			local hurt = self._hurt_value - (1 - top_fade) * ((1 + math.sin(t * 500)) / 2) / 10
 			managers.environment_controller:set_hurt_value(hurt)
@@ -184,9 +197,7 @@ function PlayerDamage:band_aid_health()
 	if managers.platform:presence() == "Playing" and (self:arrested() or self:need_revive()) then
 		return
 	end
-	self:set_health(self:_max_health())
-	self:_send_set_health()
-	self:_set_health_effect()
+	self:change_health(self:_max_health() * self._healing_reduction)
 	self._said_hurt = false
 	if math.rand(1) < managers.player:upgrade_value("first_aid_kit", "downs_restore_chance", 0) then
 		self._revives = Application:digest_value(math.min(tweak_data.player.damage.LIVES_INIT + managers.player:upgrade_value("player", "additional_lives", 0), Application:digest_value(self._revives, false) + 1), true)
@@ -233,6 +244,9 @@ function PlayerDamage:_regenerate_armor()
 	self._regenerate_speed = nil
 	self:_send_set_armor()
 end
+function PlayerDamage:is_regenerating_armor()
+	return self._regenerate_timer ~= nil
+end
 function PlayerDamage:_inline_RIP1()
 end
 function PlayerDamage:restore_health(health_restored, is_static, chk_health_ratio)
@@ -240,10 +254,10 @@ function PlayerDamage:restore_health(health_restored, is_static, chk_health_rati
 		return false
 	end
 	if is_static then
-		return self:change_health(health_restored)
+		return self:change_health(health_restored * self._healing_reduction)
 	else
 		local max_health = self:_max_health()
-		return self:change_health(max_health * health_restored)
+		return self:change_health(max_health * (health_restored * self._healing_reduction))
 	end
 end
 function PlayerDamage:restore_armor(armor_restored)
@@ -348,7 +362,8 @@ function PlayerDamage:change_health(change_of_health)
 	return self:set_health(self:get_real_health() + change_of_health)
 end
 function PlayerDamage:set_health(health)
-	local max_health = self:_max_health()
+	local max_health = self:_max_health() * self._max_health_reduction
+	health = math.min(health, max_health)
 	self._current_max_health = self._current_max_health or max_health
 	if self._current_max_health ~= max_health then
 		local prev_health_ratio = health / self._current_max_health
@@ -367,7 +382,7 @@ function PlayerDamage:set_health(health)
 	end
 	managers.hud:set_player_health({
 		current = self:get_real_health(),
-		total = max_health,
+		total = self:_max_health(),
 		revives = Application:digest_value(self._revives, false)
 	})
 	return prev_health ~= Application:digest_value(self._health, false)
@@ -407,7 +422,7 @@ function PlayerDamage:_armor_damage_reduction()
 	return 0
 end
 function PlayerDamage:full_health()
-	local diff = math.abs(self:get_real_health() - self:_max_health())
+	local diff = math.abs(self:get_real_health() - self:_max_health() * self._max_health_reduction)
 	return diff < 0.001
 end
 function PlayerDamage:damage_tase(attack_data)
@@ -465,6 +480,7 @@ function PlayerDamage:damage_melee(attack_data)
 	end
 	local dmg_mul = managers.player:damage_reduction_skill_multiplier("melee", self._unit:movement()._current_state, attack_data.attacker_unit and attack_data.attacker_unit:base()._tweak_table)
 	attack_data.damage = attack_data.damage * dmg_mul
+	self:_damage_reduction(attack_data)
 	self._unit:sound():play("melee_hit_body", nil, nil)
 	local result = self:damage_bullet(attack_data)
 	local vars = {
@@ -477,6 +493,7 @@ function PlayerDamage:damage_melee(attack_data)
 		managers.player:set_player_state("standard")
 	end
 	self._unit:movement():push(attack_data.push_vel)
+	managers.player:send_message(Message.OnPlayerDamage, nil, nil)
 	return result
 end
 function PlayerDamage:is_friendly_fire(unit)
@@ -576,6 +593,7 @@ function PlayerDamage:damage_bullet(attack_data)
 	if 0 >= self:get_real_armor() then
 		armor_reduction_multiplier = 1
 	end
+	self:_damage_reduction(attack_data)
 	local health_subtracted = self:_calc_armor_damage(attack_data)
 	if attack_data.armor_piercing then
 		attack_data.damage = attack_data.damage - health_subtracted
@@ -592,7 +610,13 @@ function PlayerDamage:damage_bullet(attack_data)
 		self._kill_taunt_clbk_id = "kill_taunt" .. tostring(self._unit:key())
 		managers.enemy:add_delayed_clbk(self._kill_taunt_clbk_id, callback(self, self, "clbk_kill_taunt", attack_data), TimerManager:game():time() + tweak_data.timespeed.downed.fade_in + tweak_data.timespeed.downed.sustain + tweak_data.timespeed.downed.fade_out)
 	end
+	managers.player:send_message(Message.OnPlayerDamage, nil, nil)
 	self:_call_listeners(damage_info)
+end
+function PlayerDamage:_damage_reduction(attack_data)
+	if managers.player:has_activate_temporary_upgrade("temporary", "revived_damage_resist") then
+		attack_data.damage = attack_data.damage * managers.player:temporary_upgrade_value("temporary", "revived_damage_resist", 1)
+	end
 end
 function PlayerDamage:_calc_armor_damage(attack_data)
 	local health_subtracted = 0
@@ -633,6 +657,7 @@ end
 function PlayerDamage:_calc_health_damage(attack_data)
 	local health_subtracted = 0
 	health_subtracted = self:get_real_health()
+	attack_data.damage = attack_data.damage * managers.player:upgrade_value("player", "health_damage_reduction", 1)
 	self:change_health(-attack_data.damage)
 	health_subtracted = health_subtracted - self:get_real_health()
 	local bullet_or_explosion_or_melee = attack_data.variant and (attack_data.variant == "bullet" or attack_data.variant == "explosion") or attack_data.variant == "melee"
@@ -788,10 +813,12 @@ function PlayerDamage:damage_explosion(attack_data)
 		return
 	end
 	local dmg_mul = managers.player:damage_reduction_skill_multiplier("explosion", self._unit:movement()._current_state, attack_data.attacker_unit and attack_data.attacker_unit:base()._tweak_table)
+	self:_damage_reduction(attack_data)
 	attack_data.damage = damage * dmg_mul
 	local armor_subtracted = self:_calc_armor_damage(attack_data)
 	attack_data.damage = attack_data.damage - (armor_subtracted or 0)
 	local health_subtracted = self:_calc_health_damage(attack_data)
+	managers.player:send_message(Message.OnPlayerDamage, nil, nil)
 	self:_call_listeners(damage_info)
 end
 function PlayerDamage:damage_fire(attack_data)
@@ -820,6 +847,7 @@ function PlayerDamage:damage_fire(attack_data)
 	if self._bleed_out then
 		return
 	end
+	self:_damage_reduction(attack_data)
 	local dmg_mul = managers.player:damage_reduction_skill_multiplier("fire", self._unit:movement()._current_state, attack_data.attacker_unit and attack_data.attacker_unit:base()._tweak_table)
 	attack_data.damage = damage * dmg_mul
 	local armor_subtracted = self:_calc_armor_damage(attack_data)
@@ -860,10 +888,15 @@ function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_s
 				managers.hud:set_teammate_condition(HUDManager.PLAYER_PANEL, "mugshot_swansong", managers.localization:text("debug_mugshot_downed"))
 				managers.player:activate_temporary_upgrade("temporary", "berserker_damage_multiplier")
 				self._check_berserker_done = true
-				if alive(managers.interaction:active_unit()) and not managers.interaction:active_unit():interaction():can_interact(self._unit) then
+				if alive(self._interaction:active_unit()) and not self._interaction:active_unit():interaction():can_interact(self._unit) then
 					self._unit:movement():interupt_interact()
 				end
 			end
+		end
+		local auto_recovery_kit = FirstAidKitBase.GetFirstAidKit(self._unit:position())
+		if auto_recovery_kit then
+			auto_recovery_kit:take(self._unit)
+			return
 		end
 		self._hurt_value = 0.2
 		self._damage_to_hot_stack = {}
@@ -1104,7 +1137,7 @@ function PlayerDamage:revive(helped_self)
 	self._downed_timer = nil
 	self._downed_start_time = nil
 	if not arrested then
-		self:set_health(self:_max_health() * tweak_data.player.damage.REVIVE_HEALTH_STEPS[self._revive_health_i] * (self._revive_health_multiplier or 1))
+		self:set_health(self:_max_health() * self._max_health_reduction * tweak_data.player.damage.REVIVE_HEALTH_STEPS[self._revive_health_i] * (self._revive_health_multiplier or 1) * managers.player:upgrade_value("player", "revived_health_regain", 1))
 		self:set_armor(self:_total_armor())
 		self._revive_health_i = math.min(#tweak_data.player.damage.REVIVE_HEALTH_STEPS, self._revive_health_i + 1)
 		self._revive_miss = 2
@@ -1119,6 +1152,18 @@ function PlayerDamage:revive(helped_self)
 	self:_set_health_effect()
 	managers.hud:pd_stop_progress()
 	self._revive_health_multiplier = nil
+	if managers.player:has_inactivate_temporary_upgrade("temporary", "revived_damage_resist") then
+		managers.player:activate_temporary_upgrade("temporary", "revived_damage_resist")
+	end
+	if managers.player:has_inactivate_temporary_upgrade("temporary", "increased_movement_speed") then
+		managers.player:activate_temporary_upgrade("temporary", "increased_movement_speed")
+	end
+	if managers.player:has_inactivate_temporary_upgrade("temporary", "swap_weapon_faster") then
+		managers.player:activate_temporary_upgrade("temporary", "swap_weapon_faster")
+	end
+	if managers.player:has_inactivate_temporary_upgrade("temporary", "reload_weapon_faster") then
+		managers.player:activate_temporary_upgrade("temporary", "reload_weapon_faster")
+	end
 end
 function PlayerDamage:need_revive()
 	return self._bleed_out or self._incapacitated
@@ -1181,6 +1226,12 @@ function PlayerDamage:set_regenerate_timer_to_max()
 	local mul = managers.player:body_armor_regen_multiplier(alive(self._unit) and self._unit:movement():current_state()._moving, self:health_ratio())
 	self._regenerate_timer = tweak_data.player.damage.REGENERATE_TIME * mul
 	self._regenerate_speed = self._regenerate_speed or 1
+	if self._dire_need then
+		local function clbk()
+			return self:is_regenerating_armor()
+		end
+		managers.player:add_coroutine(PlayerAction.DireNeed, PlayerAction.DireNeed, clbk, managers.player:upgrade_value("player", "armor_depleted_stagger_shot", 0))
+	end
 end
 function PlayerDamage:_send_set_health()
 	if self._unit:network() then

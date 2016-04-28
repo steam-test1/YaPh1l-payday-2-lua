@@ -1,5 +1,12 @@
 PlayerTased = PlayerTased or class(PlayerStandard)
 PlayerTased._update_movement = PlayerBleedOut._update_movement
+function PlayerTased:init(unit)
+	PlayerTased.super.init(self, unit)
+	local function clbk()
+		self:give_shock_to_taser_no_damage()
+	end
+	managers.player:register_message(Message.EscapeTase, managers.player, clbk)
+end
 function PlayerTased:enter(state_data, enter_data)
 	PlayerTased.super.enter(self, state_data, enter_data)
 	self._ids_tased_boost = Idstring("tased_boost")
@@ -37,6 +44,11 @@ function PlayerTased:enter(state_data, enter_data)
 	self._rumble_electrified = managers.rumble:play("electrified")
 	self.tased = true
 	self._state_data = state_data
+	local player_manager = managers.player
+	if player_manager:has_category_upgrade("player", "escape_taser") then
+		local target_time = player_manager:upgrade_value("player", "escape_taser", 2)
+		player_manager:add_coroutine("escape_tase", PlayerAction.EscapeTase, player_manager, target_time)
+	end
 end
 function PlayerTased:_enter(enter_data)
 	self._unit:base():set_slot(self._unit, 2)
@@ -82,7 +94,7 @@ function PlayerTased:update(t, dt)
 	PlayerTased.super.update(self, t, dt)
 end
 function PlayerTased:_update_check_actions(t, dt)
-	local input = self:_get_input()
+	local input = self:_get_input(t, dt)
 	if t > self._next_shock then
 		self._num_shocks = self._num_shocks + 1
 		self._next_shock = t + 0.25 + math.rand(1)
@@ -130,8 +142,6 @@ function PlayerTased:_update_check_actions(t, dt)
 	end
 	self:_update_foley(t, input)
 	local new_action
-	if not new_action then
-	end
 	self:_check_action_interact(t, input)
 	local new_action
 end
@@ -217,9 +227,6 @@ function PlayerTased:_check_action_primary_attack(t, input)
 					new_action = true
 					if fired then
 						local weap_tweak_data = tweak_data.weapon[weap_base:get_name_id()]
-						if not self._state_data.in_steelsight then
-						elseif weap_tweak_data.animations.recoil_steelsight then
-						end
 						local recoil_multiplier = weap_base:recoil() * weap_base:recoil_multiplier() + weap_base:recoil_addend()
 						local up, down, left, right = unpack(weap_tweak_data.kick[self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"])
 						self._camera_unit:base():recoil_kick(up * recoil_multiplier, down * recoil_multiplier, left * recoil_multiplier, right * recoil_multiplier)
@@ -354,12 +361,33 @@ function PlayerTased:give_shock_to_taser()
 	if not alive(self._counter_taser_unit) then
 		return
 	end
+	do return end
 	self:_give_shock_to_taser(self._counter_taser_unit)
 end
 function PlayerTased:_give_shock_to_taser(taser_unit)
 	local action_data = {
 		variant = "counter_tased",
 		damage = taser_unit:character_damage()._HEALTH_INIT * (tweak_data.upgrades.counter_taser_damage or 0.2),
+		damage_effect = taser_unit:character_damage()._HEALTH_INIT * 2,
+		attacker_unit = self._unit,
+		attack_dir = -taser_unit:movement()._action_common_data.fwd,
+		col_ray = {
+			position = mvector3.copy(taser_unit:movement():m_head_pos()),
+			body = taser_unit:body("body")
+		}
+	}
+	taser_unit:character_damage():damage_melee(action_data)
+end
+function PlayerTased:give_shock_to_taser_no_damage()
+	local voice_type, plural, prime_target = self:_get_unit_intimidation_action(true, false, false, true, false)
+	self._counter_taser_unit = prime_target.unit
+	if not alive(self._counter_taser_unit) then
+		return
+	end
+	local taser_unit = self._counter_taser_unit
+	local action_data = {
+		variant = "counter_tased",
+		damage = 0,
 		damage_effect = taser_unit:character_damage()._HEALTH_INIT * 2,
 		attacker_unit = self._unit,
 		attack_dir = -taser_unit:movement()._action_common_data.fwd,

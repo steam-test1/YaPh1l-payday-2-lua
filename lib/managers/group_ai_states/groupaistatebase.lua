@@ -603,7 +603,7 @@ function GroupAIStateBase:hostage_count()
 	return self._hostage_headcount
 end
 function GroupAIStateBase:has_room_for_police_hostage()
-	local nr_hostages_allowed = 0
+	local nr_hostages_allowed = 4
 	for u_key, u_data in pairs(self._player_criminals) do
 		if u_data.unit:base().is_local_player then
 			if managers.player:has_category_upgrade("player", "intimidate_enemies") then
@@ -2100,17 +2100,17 @@ function GroupAIStateBase:_update_point_of_no_return(t, dt)
 		managers.hud:feed_point_of_no_return_timer(self._point_of_no_return_timer, is_inside)
 	end
 end
-function GroupAIStateBase:spawn_one_teamAI(is_drop_in, char_name, spawn_on_unit)
+function GroupAIStateBase:spawn_one_teamAI(is_drop_in, char_name, pos, rotation)
 	if not managers.groupai:state():team_ai_enabled() or not self._ai_enabled or not managers.criminals:character_taken_by_name(char_name) and managers.criminals:nr_AI_criminals() >= managers.criminals.MAX_NR_TEAM_AI then
 		return
 	end
 	local objective = self:_determine_spawn_objective_for_criminal_AI()
 	if objective and objective.type == "follow" then
-		local player = spawn_on_unit or objective.follow_unit
-		local player_pos = player:position()
+		local player = objective.follow_unit
+		local player_pos = pos or player:position()
 		local tracker = player:movement():nav_tracker()
 		local spawn_pos, spawn_rot
-		if (is_drop_in or spawn_on_unit) and not self:whisper_mode() then
+		if is_drop_in and not self:whisper_mode() then
 			local spawn_fwd = player:movement():m_head_rot():y()
 			mvector3.set_z(spawn_fwd, 0)
 			mvector3.normalize(spawn_fwd)
@@ -4516,6 +4516,17 @@ function GroupAIStateBase:get_following_hostages(owner)
 		return
 	end
 	return owner_data.following_hostages
+end
+function GroupAIStateBase:check_criminals_dead()
+	local all_criminals = self:all_char_criminals()
+	local total_count = #all_criminals
+	local count = 0
+	for u_key, u_data in pairs(all_criminals) do
+		if u_data == "dead" then
+			count = count + 1
+		end
+	end
+	return count == total_count
 end
 function GroupAIStateBase:register_turret(unit)
 	self._turret_units = self._turret_units or {}

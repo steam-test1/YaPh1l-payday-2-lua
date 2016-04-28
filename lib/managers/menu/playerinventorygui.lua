@@ -1730,16 +1730,16 @@ mod_data = {selected_tab = icon.type, name = managers.blackmarket:equipped_secon
 	end
 	local skilltree_box = self._boxes_by_name.skilltree.panel
 	local icon_box = nil
-	local w = (skilltree_box:w() - 2 * (#tweak_data.skilltree.trees - 1) - 8) / #tweak_data.skilltree.trees
+	local w = (skilltree_box:w() - 2 * (#tweak_data.skilltree.skill_pages_order - 1) - 8) / #tweak_data.skilltree.skill_pages_order
 	local h = w
 	local x = skilltree_box:left() + 4
 	local y = skilltree_box:center_y() - 2 - h / 2
 	local mod_links = {up = "skilltree", down = "skilltree", left = "skilltree", right = "skilltree"}
 	do
 		local box_name, points, progress, num_skills = nil, nil, nil, nil
-		for tree,data in ipairs(tweak_data.skilltree.trees) do
-			box_name = "icon_skilltree_" .. data.skill
-			points = managers.skilltree:get_tree_progress_new(tree)
+		for tree,page in ipairs(tweak_data.skilltree.skill_pages_order) do
+			box_name = "icon_skilltree_" .. tostring(tree)
+			points = managers.skilltree:get_page_progress_new(page)
 			if points ~= 0 or not Color(0.5, 0.5, 0.5) then
 				icon_box = self:create_box({name = box_name, w = w, h = h + 20, padding = 0, can_select = false, use_borders = false, text = tostring(points), text_color = tweak_data.screen_colors.text, text_vertical = "bottom", text_align = "center", image = "guis/textures/pd2/inv_skillcards_icons", 
 texture_rect = {(tree - 1) * 24, 0, 22, 31}, alpha = 1, select_anim = select_anim, unselect_anim = select_anim, bg_blend_mode = "normal", layer = 3, clbks = false, links = mod_links})
@@ -1749,7 +1749,7 @@ texture_rect = {(tree - 1) * 24, 0, 22, 31}, alpha = 1, select_anim = select_ani
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 376 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 378 
 end
 
 PlayerInventoryGui.create_box = function(self, params, index)
@@ -2521,8 +2521,7 @@ PlayerInventoryGui.next_character = function(self)
 end
 
 PlayerInventoryGui.open_skilltree_menu = function(self)
-	managers.menu:open_node("skilltree", {
-{hide_specialization = true}})
+	managers.menu:open_node("skilltree_new", {})
 end
 
 PlayerInventoryGui.preview_skilltree = function(self)

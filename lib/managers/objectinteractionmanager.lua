@@ -16,11 +16,12 @@ function ObjectInteractionManager:update(t, dt)
 	if self._interactive_count > 0 and alive(player_unit) then
 		local player_pos = player_unit:movement():m_head_pos()
 		self:_update_targeted(player_pos, player_unit)
+		self:_update_range(player_pos)
 	end
 end
-function ObjectInteractionManager:interact(player)
+function ObjectInteractionManager:interact(player, data)
 	if alive(self._active_unit) then
-		local interacted, timer = self._active_unit:interaction():interact_start(player)
+		local interacted, timer = self._active_unit:interaction():interact_start(player, data)
 		if timer then
 			self._active_object_locked_data = true
 		end
@@ -219,4 +220,21 @@ function ObjectInteractionManager:_in_close_list(unit)
 		end
 	end
 	return false
+end
+function ObjectInteractionManager:on_interaction_released(data)
+	if self._active_unit then
+		self._active_unit:interaction():on_interaction_released(data)
+	end
+end
+function ObjectInteractionManager:_update_range(player_pos)
+	if not self._active_unit or not self._active_unit:interaction().interact_distance_close then
+		return
+	end
+	local interact_distance_close = self._active_unit:interaction():interact_distance_close()
+	local distance = mvector3.distance(player_pos, self._active_unit:position())
+	if interact_distance_close > distance then
+		self._active_unit:interaction():set_close()
+	else
+		self._active_unit:interaction():set_far()
+	end
 end

@@ -1,4 +1,4 @@
-# PAYDAY 2 Lua
+# PAYDAY 2 Lua (Skill Tree Open Beta)
 Decompiled source code of PAYDAY 2's Lua scripts
 
 ### Currently broken (or missing) files:

@@ -30,6 +30,7 @@ require("lib/tweak_data/PrePlanningTweakData")
 require("lib/tweak_data/InteractionTweakData")
 require("lib/tweak_data/VehicleTweakData")
 require("lib/tweak_data/EconomyTweakData")
+require("lib/tweak_data/EnvEffectTweakData")
 TweakData = TweakData or class()
 function TweakData:_init_wip_tweak_data()
 end
@@ -326,6 +327,7 @@ function TweakData:init()
 	self.vehicle = VehicleTweakData:new(self)
 	self.economy = EconomyTweakData:new(self)
 	self._init_wip_economy(self.economy, self)
+	self.env_effect = EnvEffectTweakData:new()
 	self.criminals = {}
 	self.criminals.character_names = {
 		"russian",

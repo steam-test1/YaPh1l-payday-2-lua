@@ -146,12 +146,10 @@ function FPCameraPlayerBase:break_recoil()
 end
 function FPCameraPlayerBase:recoil_kick(up, down, left, right)
 	if math.abs(self._recoil_kick.accumulated) < 20 then
-		local v
-		v = math.lerp(up, down, math.random())
+		local v = math.lerp(up, down, math.random())
 		self._recoil_kick.accumulated = (self._recoil_kick.accumulated or 0) + v
 	end
-	local h
-	h = math.lerp(left, right, math.random())
+	local h = math.lerp(left, right, math.random())
 	self._recoil_kick.h.accumulated = (self._recoil_kick.h.accumulated or 0) + h
 end
 local bezier_values = {
@@ -1107,7 +1105,6 @@ function FPCameraPlayerBase:spawn_mask()
 	end
 end
 function FPCameraPlayerBase:relink_mask()
-	print("FPCameraPlayerBase:relink_mask()")
 end
 function FPCameraPlayerBase:unspawn_mask()
 	if alive(self._mask_unit) then

@@ -146,7 +146,7 @@ function CharacterTweakData:_init_gensec(presets)
 	self.gensec.crouch_move = nil
 	self.gensec.surrender_break_time = {20, 30}
 	self.gensec.suppression = presets.suppression.hard
-	self.gensec.surrender = presets.surrender.hard
+	self.gensec.surrender = presets.surrender.easy
 	self.gensec.ecm_vulnerability = 1
 	self.gensec.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -177,7 +177,7 @@ function CharacterTweakData:_init_cop(presets)
 	self.cop.move_speed = presets.move_speed.normal
 	self.cop.surrender_break_time = {10, 15}
 	self.cop.suppression = presets.suppression.easy
-	self.cop.surrender = presets.surrender.normal
+	self.cop.surrender = presets.surrender.easy
 	self.cop.ecm_vulnerability = 1
 	self.cop.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -205,7 +205,7 @@ function CharacterTweakData:_init_fbi(presets)
 	self.fbi.move_speed = presets.move_speed.very_fast
 	self.fbi.surrender_break_time = {7, 12}
 	self.fbi.suppression = presets.suppression.hard_def
-	self.fbi.surrender = presets.surrender.normal
+	self.fbi.surrender = presets.surrender.easy
 	self.fbi.ecm_vulnerability = 1
 	self.fbi.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -232,7 +232,7 @@ function CharacterTweakData:_init_swat(presets)
 	self.swat.move_speed = presets.move_speed.fast
 	self.swat.surrender_break_time = {6, 10}
 	self.swat.suppression = presets.suppression.hard_agg
-	self.swat.surrender = presets.surrender.hard
+	self.swat.surrender = presets.surrender.easy
 	self.swat.ecm_vulnerability = 1
 	self.swat.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -261,7 +261,7 @@ function CharacterTweakData:_init_heavy_swat(presets)
 	self.heavy_swat.move_speed = presets.move_speed.fast
 	self.heavy_swat.surrender_break_time = {6, 8}
 	self.heavy_swat.suppression = presets.suppression.hard_agg
-	self.heavy_swat.surrender = presets.surrender.hard
+	self.heavy_swat.surrender = presets.surrender.easy
 	self.heavy_swat.ecm_vulnerability = 1
 	self.heavy_swat.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -287,7 +287,7 @@ function CharacterTweakData:_init_fbi_swat(presets)
 	self.fbi_swat.move_speed = presets.move_speed.very_fast
 	self.fbi_swat.surrender_break_time = {6, 10}
 	self.fbi_swat.suppression = presets.suppression.hard_def
-	self.fbi_swat.surrender = presets.surrender.hard
+	self.fbi_swat.surrender = presets.surrender.easy
 	self.fbi_swat.ecm_vulnerability = 1
 	self.fbi_swat.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -315,7 +315,7 @@ function CharacterTweakData:_init_fbi_heavy_swat(presets)
 	self.fbi_heavy_swat.move_speed = presets.move_speed.fast
 	self.fbi_heavy_swat.surrender_break_time = {6, 8}
 	self.fbi_heavy_swat.suppression = presets.suppression.hard_agg
-	self.fbi_heavy_swat.surrender = presets.surrender.hard
+	self.fbi_heavy_swat.surrender = presets.surrender.easy
 	self.fbi_heavy_swat.ecm_vulnerability = 1
 	self.fbi_heavy_swat.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -341,7 +341,7 @@ function CharacterTweakData:_init_city_swat(presets)
 	self.city_swat.move_speed = presets.move_speed.very_fast
 	self.city_swat.surrender_break_time = {6, 10}
 	self.city_swat.suppression = presets.suppression.hard_def
-	self.city_swat.surrender = presets.surrender.hard
+	self.city_swat.surrender = presets.surrender.easy
 	self.city_swat.ecm_vulnerability = 1
 	self.city_swat.ecm_hurts = {
 		ears = {min_duration = 8, max_duration = 10}
@@ -5321,25 +5321,25 @@ function CharacterTweakData:_presets(tweak_data)
 	end
 	presets.surrender = {}
 	presets.surrender.easy = {
-		base_chance = 0.75,
-		significant_chance = 0.1,
+		base_chance = 0.9,
+		significant_chance = 0,
 		violence_timeout = 2,
 		reasons = {
 			health = {
-				[1] = 0.2,
-				[0.3] = 1
+				[1] = 0.7,
+				[0.9] = 0.8
 			},
-			weapon_down = 0.8,
+			weapon_down = 1,
 			pants_down = 1,
-			isolated = 0.1
+			isolated = 1
 		},
 		factors = {
 			flanked = 0.07,
 			unaware_of_aggressor = 0.08,
 			enemy_weap_cold = 0.15,
 			aggressor_dis = {
-				[1000] = 0.02,
-				[300] = 0.15
+				[1000] = 0.8,
+				[300] = 1
 			}
 		}
 	}

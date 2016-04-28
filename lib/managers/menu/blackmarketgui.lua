@@ -2632,6 +2632,13 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 				name = "bm_menu_btn_equip_deployable",
 				callback = callback(self, self, "lo_equip_deployable_callback")
 			},
+			lo_d_equip_secondary = {
+				prio = 1,
+				btn = "BTN_A",
+				pc_btn = nil,
+				name = "bm_menu_btn_equip_deployable",
+				callback = callback(self, self, "lo_equip_deployable_callback_secondary")
+			},
 			lo_mw_equip = {
 				prio = 1,
 				btn = "BTN_A",
@@ -3871,7 +3878,7 @@ function BlackMarketGui:_get_armor_stats(name)
 				value = managers.player:body_armor_value("concealment", upgrade_level)
 			}
 			skill_stats[stat.name] = {
-				value = managers.blackmarket:concealment_modifier("armors")
+				value = managers.blackmarket:concealment_modifier("armors", upgrade_level)
 			}
 		elseif stat.name == "movement" then
 			local base = tweak_data.player.movement_state.standard.movement.speed.STANDARD_MAX / 100 * tweak_data.gui.stats_present_multiplier
@@ -7429,6 +7436,7 @@ function BlackMarketGui:populate_deployables(data)
 	end
 	local guis_catalog = "guis/"
 	local index = 0
+	local second_deployable = managers.player:has_category_upgrade("player", "second_deployable")
 	for i, deployable_data in ipairs(sort_data) do
 		guis_catalog = "guis/"
 		local bundle_folder = tweak_data.blackmarket.deployables[deployable_data[1]] and tweak_data.blackmarket.deployables[deployable_data[1]].texture_bundle_folder
@@ -7443,13 +7451,36 @@ function BlackMarketGui:populate_deployables(data)
 		new_data.slot = i
 		new_data.unlocked = table.contains(managers.player:availible_equipment(1), new_data.name)
 		new_data.level = 0
-		new_data.equipped = managers.player:equipment_in_slot(1) == new_data.name
+		local slot = 0
+		local count = 1
+		if second_deployable then
+			count = 2
+		end
+		for i = 1, count do
+			if managers.player:equipment_in_slot(i) == new_data.name then
+				slot = i
+				break
+			end
+		end
+		new_data.slot = slot
+		new_data.equipped = slot ~= 0
+		if new_data.equipped and second_deployable then
+			if slot == 1 then
+				new_data.equipped_text = "PRIMARY"
+			end
+			if slot == 2 then
+				new_data.equipped_text = "SECONDARY"
+			end
+		end
 		new_data.stream = false
 		new_data.skill_based = new_data.level == 0
 		new_data.skill_name = "bm_menu_skill_locked_" .. new_data.name
 		new_data.lock_texture = self:get_lock_icon(new_data)
 		if new_data.unlocked and not new_data.equipped then
 			table.insert(new_data, "lo_d_equip")
+		end
+		if second_deployable and new_data.unlocked and not new_data.equipped then
+			table.insert(new_data, "lo_d_equip_secondary")
 		end
 		data[i] = new_data
 		index = i
@@ -11188,7 +11219,13 @@ function BlackMarketGui:preview_weapon_without_mod_callback(data)
 	end
 end
 function BlackMarketGui:lo_equip_deployable_callback(data)
-	managers.blackmarket:equip_deployable(data.name)
+	data.target_slot = 1
+	managers.blackmarket:equip_deployable(data)
+	self:reload()
+end
+function BlackMarketGui:lo_equip_deployable_callback_secondary(data)
+	data.target_slot = 2
+	managers.blackmarket:equip_deployable(data)
 	self:reload()
 end
 function BlackMarketGui:lo_equip_grenade_callback(data)

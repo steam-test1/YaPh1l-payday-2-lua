@@ -312,27 +312,25 @@ function NetworkPeer:verify_bag(carry_id, pickup)
 	return false
 end
 function NetworkPeer:verify_deployable(id)
-	if tweak_data.equipments.max_amount[id] then
-		if not self._deployable then
-			self._deployable = id
-			self._depolyable_count = 1
+	local max_amount = tweak_data.equipments.max_amount[id]
+	if max_amount then
+		if max_amount < 0 then
 			return true
-		elseif self._deployable == id and self._depolyable_count < tweak_data.equipments.max_amount[id] then
-			self._depolyable_count = self._depolyable_count + 1
+		elseif not self._deployable or not self._deployable[id] and table.size(self._deployable) < 2 then
+			self._deployable = self._deployable or {}
+			self._deployable[id] = 1
 			return true
-		elseif not self._deployable_swap and (self._deployable == "sentry_gun" and id == "trip_mine" or self._deployable == "trip_mine" and id == "sentry_gun") then
-			self._deployable_swap = true
-			self._deployable = id
-			self._depolyable_count = 1
+		elseif self._deployable[id] and max_amount > self._deployable[id] then
+			self._deployable[id] = self._deployable[id] + 1
 			return true
 		end
 	end
 	if Network:is_server() then
-		self:mark_cheater(self._deployable ~= id and VoteManager.REASON.wrong_equipment or VoteManager.REASON.many_equipments, true)
+		self:mark_cheater(self._deployable and table.size(self._deployable) > 2 and VoteManager.REASON.wrong_equipment or VoteManager.REASON.many_equipments, true)
 	else
-		managers.network:session():server_peer():mark_cheater(self._deployable ~= id and VoteManager.REASON.wrong_equipment or VoteManager.REASON.many_equipments, Network:is_server())
+		managers.network:session():server_peer():mark_cheater(self._deployable and table.size(self._deployable) > 2 and VoteManager.REASON.wrong_equipment or VoteManager.REASON.many_equipments, Network:is_server())
 	end
-	print("[NetworkPeer:verify_deployable]: Failed to deploy equipment", self:id(), id, self._deployable, self._depolyable_count)
+	print("[NetworkPeer:verify_deployable]: Failed to deploy equipment", self:id(), id, inspect(self._deployable))
 	return false
 end
 function NetworkPeer:is_cheater()

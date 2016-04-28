@@ -92,7 +92,7 @@ end
 function PlayerBipod:set_tweak_data(name)
 end
 function PlayerBipod:_update_check_actions(t, dt)
-	local input = self:_get_input()
+	local input = self:_get_input(t, dt)
 	self:_determine_move_direction()
 	self:_update_interaction_timers(t)
 	self:_update_throw_projectile_timers(t, input)

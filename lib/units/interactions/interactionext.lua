@@ -37,6 +37,8 @@ end
 function BaseInteractionExt:external_upd_interaction_topology()
 	self:_upd_interaction_topology()
 end
+function BaseInteractionExt:on_interaction_released(data)
+end
 function BaseInteractionExt:_upd_interaction_topology()
 	if self._tweak_data.interaction_obj then
 		self._interact_obj = self._unit:get_object(self._tweak_data.interaction_obj)
@@ -136,6 +138,9 @@ function BaseInteractionExt:can_select(player)
 	if self._tweak_data.special_equipment_block and managers.player:has_special_equipment(self._tweak_data.special_equipment_block) then
 		return false
 	end
+	if self._tweak_data.verify_owner and self._unit:base():get_owner() ~= player then
+		return false
+	end
 	return true
 end
 function BaseInteractionExt:selected(player)
@@ -172,6 +177,28 @@ function BaseInteractionExt:selected(player)
 	end
 	managers.hud:show_interact({text = text, icon = icon})
 	return true
+end
+function BaseInteractionExt:set_close()
+	if self._distance ~= "close" then
+		self._distance = "close"
+		local string_macros = {}
+		self:_add_string_macros(string_macros)
+		local text_id = self._tweak_data.action_text_id_close
+		local text = managers.localization:text(text_id, string_macros)
+		local icon = self._tweak_data.icon
+		managers.hud:show_interact({text = text, icon = icon})
+	end
+end
+function BaseInteractionExt:set_far()
+	if self._distance ~= "far" then
+		self._distance = "far"
+		local string_macros = {}
+		self:_add_string_macros(string_macros)
+		local text_id = not self._tweak_data.text_id and alive(self._unit) and self._unit:base().interaction_text_id and self._unit:base():interaction_text_id()
+		local text = managers.localization:text(text_id, string_macros)
+		local icon = self._tweak_data.icon
+		managers.hud:show_interact({text = text, icon = icon})
+	end
 end
 function BaseInteractionExt:_add_string_macros(macros)
 	macros.BTN_INTERACT = self:_btn_interact()
@@ -248,7 +275,7 @@ function BaseInteractionExt:_interact_say(data)
 	self._interact_say_clbk = nil
 	player:sound():say(say_line, true)
 end
-function BaseInteractionExt:interact_start(player)
+function BaseInteractionExt:interact_start(player, data)
 	local blocked, skip_hint, custom_hint = self:_interact_blocked(player)
 	if blocked then
 		if not skip_hint and (custom_hint or self._tweak_data.blocked_hint) then
@@ -363,7 +390,7 @@ function BaseInteractionExt:can_interact(player)
 	end
 	return managers.player:has_special_equipment(self._tweak_data.special_equipment)
 end
-function BaseInteractionExt:_interact_blocked(player)
+function BaseInteractionExt:_interact_blocked(player, data)
 	return false
 end
 function BaseInteractionExt:active()
@@ -488,6 +515,9 @@ UseInteractionExt = UseInteractionExt or class(BaseInteractionExt)
 function UseInteractionExt:unselect()
 	UseInteractionExt.super.unselect(self)
 	managers.hud:remove_interact()
+end
+function UseInteractionExt:interact_start(player, data)
+	return UseInteractionExt.super.interact_start(self, player, data)
 end
 function UseInteractionExt:interact(player)
 	if not self:can_interact(player) then
@@ -865,6 +895,51 @@ function AmmoBagInteractionExt:interact(player)
 	end
 	return interacted
 end
+SentryGunInteractionExt = SentryGunInteractionExt or class(UseInteractionExt)
+function SentryGunInteractionExt:_interact_blocked(player)
+	if self._distance == "close" then
+		return false
+	end
+	return true, true
+end
+function SentryGunInteractionExt:on_interaction_released(data)
+	if not data or not managers.player:has_category_upgrade("sentry_gun", "less_noisy") then
+		return
+	end
+	if data._unit == self._unit:base():get_owner() and data.switch_bullet_type then
+		self._unit:base():switch_fire_mode(managers.player:has_category_upgrade("sentry_gun", "ap_bullets"))
+	end
+end
+function SentryGunInteractionExt:interact_start(player, data)
+	if self._unit:base():get_owner() ~= data._unit then
+		return false
+	elseif data.pickup_sentry then
+		local val, timer = SentryGunInteractionExt.super.interact_start(self, player, data)
+		return val, timer
+	end
+	return false
+end
+function SentryGunInteractionExt:interact(player)
+	SentryGunInteractionExt.super.super.interact(self, player)
+	local equipped_wpn = managers.player:get_current_state():get_equipped_weapon()
+	if equipped_wpn then
+		local ammo_ratio = self._unit:base():ammo_ratio()
+		local ammo = equipped_wpn:get_max_ammo_excluding_clip() * 0.2 * ammo_ratio
+		ammo = math.floor(ammo)
+		local index = managers.player:equipped_weapon_index()
+		equipped_wpn:add_ammo_to_pool(ammo, index)
+		if Network:is_client() then
+			managers.network:session():send_to_peers_synched("remove_sentry_gun", self._unit)
+		else
+			World:delete_unit(self._unit)
+		end
+		managers.player:add_sentry_gun(1)
+	end
+	return true
+end
+function SentryGunInteractionExt:interact_distance_close()
+	return self._tweak_data.interact_distance_close
+end
 GrenadeCrateInteractionExt = GrenadeCrateInteractionExt or class(UseInteractionExt)
 function GrenadeCrateInteractionExt:_interact_blocked(player)
 	return managers.player:got_max_grenades()
@@ -890,6 +965,9 @@ end
 function DoctorBagBaseInteractionExt:interact(player)
 	DoctorBagBaseInteractionExt.super.super.interact(self, player)
 	local interacted = self._unit:base():take(player)
+	if interacted then
+		managers.player:send_message(Message.OnDoctorBagUsed, nil, player)
+	end
 	return interacted
 end
 C4BagInteractionExt = C4BagInteractionExt or class(UseInteractionExt)
@@ -1058,7 +1136,6 @@ function ZipLineInteractionExt:_interact_blocked(player)
 end
 function ZipLineInteractionExt:interact(player)
 	ZipLineInteractionExt.super.super.interact(self, player)
-	print("ZipLineInteractionExt:interact")
 	self._unit:zipline():on_interacted(player)
 end
 IntimitateInteractionExt = IntimitateInteractionExt or class(BaseInteractionExt)
@@ -1075,6 +1152,7 @@ function IntimitateInteractionExt:interact(player)
 	if not self:can_interact(player) then
 		return
 	end
+	local player_manager = managers.player
 	local has_equipment = managers.player:has_special_equipment(self._tweak_data.special_equipment)
 	if self._tweak_data.equipment_consume and has_equipment then
 		managers.player:remove_special(self._tweak_data.special_equipment)
@@ -1148,7 +1226,7 @@ function IntimitateInteractionExt:interact(player)
 		self:set_active(false)
 		self._unit:brain():on_tied(player, true)
 	elseif self.tweak_data == "hostage_trade" then
-		self._unit:brain():on_trade(player)
+		self._unit:brain():on_trade(player:position(), player:rotation(), true)
 		if managers.blackmarket:equipped_mask().mask_id == tweak_data.achievement.relation_with_bulldozer.mask then
 			managers.achievment:award_progress(tweak_data.achievement.relation_with_bulldozer.stat)
 		end
@@ -1183,7 +1261,7 @@ function IntimitateInteractionExt:interact(player)
 		self:remove_interact()
 		self:set_active(false)
 		player:sound():play("cable_tie_apply")
-		self._unit:brain():on_tied(player)
+		self._unit:brain():on_tied(player, false, not managers.player:has_category_upgrade("player", "super_syndrome"))
 	end
 end
 function IntimitateInteractionExt:_at_interact_start(player, timer)
@@ -1590,14 +1668,23 @@ function MissionDoorDeviceInteractionExt:server_place_mission_door_device(player
 	else
 		self:result_place_mission_door_device(can_place)
 	end
-	local info_id = self:get_player_info_id(player)
+	local network_session = managers.network:session()
 	self:remove_interact()
-	self:set_info_id(info_id)
-	managers.network:session():send_to_peers_synched("sync_interaction_info_id", self._unit, info_id)
+	local is_saw = self._unit:base() and self._unit:base().is_saw
+	local is_drill = self._unit:base() and self._unit:base().is_drill
+	if is_drill or is_saw then
+		local user_unit
+		if player and player:base() and not player:base().is_local_player then
+			user_unit = player
+		end
+		local upgrades = Drill.get_upgrades(self._unit, user_unit)
+		self._unit:base():set_skill_upgrades(upgrades)
+		network_session:send_to_peers_synched("sync_drill_upgrades", self._unit, upgrades.auto_repair_level, upgrades.speed_upgrade_level, upgrades.silent_drill, upgrades.reduced_alert)
+	end
 	if self._unit:damage() then
 		self._unit:damage():run_sequence_simple("interact", {unit = player})
 	end
-	managers.network:session():send_to_peers_synched("sync_interacted", self._unit, -2, self.tweak_data, 1)
+	network_session:send_to_peers_synched("sync_interacted", self._unit, -2, self.tweak_data, 1)
 	self:set_active(false)
 	self:check_for_upgrade()
 	if self._unit:mission_door_device() then
@@ -1621,106 +1708,11 @@ function MissionDoorDeviceInteractionExt:result_place_mission_door_device(placed
 end
 function MissionDoorDeviceInteractionExt:check_for_upgrade()
 	if self._unit:timer_gui() and self._unit:timer_gui():is_visible() and self._unit:base() and self._unit:timer_gui()._upgrade_tweak_data and self._unit:base().get_skill_upgrades then
-		local player_info_id = self:get_player_info_id()
-		local player_info_table = self:split_info_id(player_info_id)
-		local unit_info_table = self._unit:base():get_skill_upgrades()
-		for i in pairs(player_info_table) do
-			if not unit_info_table[i] then
-				self:set_tweak_data(self._unit:timer_gui()._upgrade_tweak_data)
-				self:set_active(true)
-			else
-			end
+		local player_drill_upgrades = Drill.get_upgrades(self._unit, nil)
+		if player_drill_upgrades and self._unit:base():compare_skill_upgrades(player_drill_upgrades) then
+			self:set_tweak_data(self._unit:timer_gui()._upgrade_tweak_data)
+			self:set_active(true)
 		end
-	end
-end
-function MissionDoorDeviceInteractionExt:get_player_info_id(player)
-	local INFO_IDS = BaseInteractionExt.INFO_IDS
-	local info_id = 0
-	local is_saw = self._unit:base() and self._unit:base().is_saw
-	local is_hacking = self._unit:base() and self._unit:base().is_hacking_device
-	local is_drill = self._unit:base() and self._unit:base().is_drill
-	if player then
-		break
-	end
-	local is_local_player = true
-	do break end
-	do
-		local saw_speed_upgrade_level = 0
-		if is_local_player then
-			saw_speed_upgrade_level = managers.player:upgrade_level("player", "saw_speed_multiplier", 0)
-		else
-			saw_speed_upgrade_level = player:base():upgrade_level("player", "saw_speed_multiplier") or 0
-		end
-		if saw_speed_upgrade_level == 1 then
-			info_id = info_id + INFO_IDS[1]
-		elseif saw_speed_upgrade_level == 2 then
-			info_id = info_id + INFO_IDS[1] + INFO_IDS[2]
-		else
-			if saw_speed_upgrade_level >= 3 then
-				info_id = info_id + INFO_IDS[1] + INFO_IDS[2]
-				Application:debug("MissionDoorDeviceInteractionExt:set_player_info_id", "saw speed upgrade level is above 2, syncing only supports 2 upgrade levels")
-				do break end
-				if is_hacking then
-				elseif is_drill or is_saw then
-					local drill_speed_upgrade_level = 0
-					local got_reduced_alert = false
-					local got_silent_drill = false
-					local got_auto_repair = false
-					if is_local_player then
-						drill_speed_upgrade_level = managers.player:upgrade_level("player", "drill_speed_multiplier", 0)
-						got_reduced_alert = managers.player:has_category_upgrade("player", "drill_alert_rad")
-						got_silent_drill = managers.player:has_category_upgrade("player", "silent_drill")
-						got_auto_repair = managers.player:has_category_upgrade("player", "drill_autorepair")
-					else
-						drill_speed_upgrade_level = player:base():upgrade_level("player", "drill_speed_multiplier") or 0
-						got_reduced_alert = player:base():upgrade_level("player", "drill_alert_rad") == 1
-						got_silent_drill = player:base():upgrade_level("player", "silent_drill") == 1
-						got_auto_repair = player:base():upgrade_level("player", "drill_autorepair") == 1
-					end
-					if drill_speed_upgrade_level == 1 then
-						info_id = info_id + INFO_IDS[1]
-					elseif drill_speed_upgrade_level == 2 then
-						info_id = info_id + INFO_IDS[1] + INFO_IDS[2]
-					elseif drill_speed_upgrade_level >= 3 then
-						info_id = info_id + INFO_IDS[1] + INFO_IDS[2]
-						Application:debug("MissionDoorDeviceInteractionExt:set_player_info_id", "drill speed upgrade level is above 2, syncing only supports 2 upgrade levels")
-					end
-					if got_reduced_alert then
-						info_id = info_id + INFO_IDS[3]
-					end
-					if got_silent_drill then
-						info_id = info_id + INFO_IDS[4]
-					end
-					if got_auto_repair then
-						info_id = info_id + INFO_IDS[5]
-					end
-				end
-			else
-			end
-		end
-	end
-	return info_id
-end
-function MissionDoorDeviceInteractionExt:split_info_id(info_id)
-	local INFO_IDS = BaseInteractionExt.INFO_IDS
-	local info_table = {}
-	local ids_left = info_id
-	for i = #INFO_IDS, 1, -1 do
-		local id = INFO_IDS[i]
-		if ids_left >= id then
-			ids_left = ids_left - id
-			info_table[i] = true
-		end
-	end
-	return info_table
-end
-function MissionDoorDeviceInteractionExt:set_info_id(info_id)
-	local upgrades_gotten = self:split_info_id(info_id)
-	local is_saw = self._unit:base() and self._unit:base().is_saw
-	local is_hacking = self._unit:base() and self._unit:base().is_hacking_device
-	local is_drill = self._unit:base() and self._unit:base().is_drill
-	if is_saw or is_drill or is_hacking then
-		self._unit:base():set_skill_upgrades(upgrades_gotten)
 	end
 end
 function MissionDoorDeviceInteractionExt:sync_net_event(event_id)

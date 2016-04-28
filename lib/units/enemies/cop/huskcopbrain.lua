@@ -54,11 +54,11 @@ function HuskCopBrain:load(load_data)
 		self._unit:contour():add("friendly", nil, nil)
 	end
 end
-function HuskCopBrain:on_tied(aggressor_unit)
-	self._unit:network():send_to_host("unit_tied", aggressor_unit)
+function HuskCopBrain:on_tied(aggressor_unit, not_tied, can_flee)
+	self._unit:network():send_to_host("unit_tied", aggressor_unit, can_flee)
 end
-function HuskCopBrain:on_trade(trading_unit)
-	self._unit:network():send_to_host("unit_traded", trading_unit)
+function HuskCopBrain:on_trade(position, rotation)
+	self._unit:network():send_to_host("unit_traded", position, rotation)
 end
 function HuskCopBrain:on_cool_state_changed(state)
 end

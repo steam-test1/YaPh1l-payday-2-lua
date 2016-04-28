@@ -327,8 +327,6 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		radial_info_meter_bg:set_color(Color(1, 0, 0, 0))
 		radial_info_meter_bg:hide()
 	end
-	if main_player then
-	end
 	local x, y, w, h = radial_health_panel:shape()
 	teammate_panel:bitmap({
 		name = "condition_icon",

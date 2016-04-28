@@ -631,7 +631,7 @@ function WeaponTweakData:_init_data_saw_npc()
 end
 function WeaponTweakData:_init_data_sentry_gun_npc()
 	self.sentry_gun.name_id = "debug_sentry_gun"
-	self.sentry_gun.DAMAGE = 1
+	self.sentry_gun.DAMAGE = 3
 	self.sentry_gun.SUPPRESSION = 1
 	self.sentry_gun.SPREAD = 5
 	self.sentry_gun.FIRE_RANGE = 5000
@@ -2416,11 +2416,11 @@ end
 function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	local low, high
 	if selection_index == 2 then
-		low = 0.03
-		high = 0.04
+		low = 0.01
+		high = 0.035
 	else
-		low = 0.03
-		high = 0.04
+		low = 0.01
+		high = 0.035
 	end
 	return {
 		max_ammo * low,
@@ -2519,9 +2519,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.glock_17.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.glock_17.FIRE_MODE = "single"
 	self.glock_17.fire_mode_data = {}
-	self.glock_17.fire_mode_data.fire_rate = 0.12
+	self.glock_17.fire_mode_data.fire_rate = 0.125
 	self.glock_17.single = {}
-	self.glock_17.single.fire_rate = 0.12
+	self.glock_17.single.fire_rate = 0.125
 	self.glock_17.timers = {}
 	self.glock_17.timers.reload_not_empty = 1.47
 	self.glock_17.timers.reload_empty = 2.12
@@ -3469,6 +3469,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.saiga = {}
 	self.saiga.category = "shotgun"
+	self.saiga.has_magazine = true
 	self.saiga.damage_melee = damage_melee_default
 	self.saiga.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.saiga.sounds = {}
@@ -3979,9 +3980,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.deagle.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.deagle.FIRE_MODE = "single"
 	self.deagle.fire_mode_data = {}
-	self.deagle.fire_mode_data.fire_rate = 0.15
+	self.deagle.fire_mode_data.fire_rate = 0.25
 	self.deagle.single = {}
-	self.deagle.single.fire_rate = 0.15
+	self.deagle.single.fire_rate = 0.25
 	self.deagle.timers = {}
 	self.deagle.timers.reload_not_empty = 1.85
 	self.deagle.timers.reload_empty = 3.1
@@ -4034,7 +4035,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.deagle.animations.recoil_steelsight = true
 	self.deagle.panic_suppression_chance = 0.2
 	self.deagle.stats = {
-		damage = 145,
+		damage = 120,
 		spread = 20,
 		recoil = 8,
 		spread_moving = 20,
@@ -4141,9 +4142,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.colt_1911.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.colt_1911.FIRE_MODE = "single"
 	self.colt_1911.fire_mode_data = {}
-	self.colt_1911.fire_mode_data.fire_rate = 0.12
+	self.colt_1911.fire_mode_data.fire_rate = 0.166
 	self.colt_1911.single = {}
-	self.colt_1911.single.fire_rate = 0.12
+	self.colt_1911.single.fire_rate = 0.166
 	self.colt_1911.timers = {}
 	self.colt_1911.timers.reload_not_empty = 1.47
 	self.colt_1911.timers.reload_empty = 2.12
@@ -4501,9 +4502,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.b92fs.AMMO_PICKUP = self:_pickup_chance(self.b92fs.AMMO_MAX, 1)
 	self.b92fs.FIRE_MODE = "single"
 	self.b92fs.fire_mode_data = {}
-	self.b92fs.fire_mode_data.fire_rate = 0.09
+	self.b92fs.fire_mode_data.fire_rate = 0.125
 	self.b92fs.single = {}
-	self.b92fs.single.fire_rate = 0.09
+	self.b92fs.single.fire_rate = 0.125
 	self.b92fs.spread = {}
 	self.b92fs.spread.standing = self.new_m4.spread.standing
 	self.b92fs.spread.crouching = self.new_m4.spread.crouching
@@ -4573,9 +4574,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.new_raging_bull.timers.equip = 0.45
 	self.new_raging_bull.FIRE_MODE = "single"
 	self.new_raging_bull.fire_mode_data = {}
-	self.new_raging_bull.fire_mode_data.fire_rate = 0.21
+	self.new_raging_bull.fire_mode_data.fire_rate = 0.166
 	self.new_raging_bull.single = {}
-	self.new_raging_bull.single.fire_rate = 0.21
+	self.new_raging_bull.single.fire_rate = 0.166
 	self.new_raging_bull.name_id = "bm_w_raging_bull"
 	self.new_raging_bull.desc_id = "bm_w_raging_bull_desc"
 	self.new_raging_bull.description_id = "des_new_raging_bull"
@@ -4769,9 +4770,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.usp.DAMAGE = 1
 	self.usp.FIRE_MODE = "single"
 	self.usp.fire_mode_data = {}
-	self.usp.fire_mode_data.fire_rate = 0.08
+	self.usp.fire_mode_data.fire_rate = 0.166
 	self.usp.single = {}
-	self.usp.single.fire_rate = 0.09
+	self.usp.single.fire_rate = 0.166
 	self.usp.CLIP_AMMO_MAX = 13
 	self.usp.NR_CLIPS_MAX = 7
 	self.usp.AMMO_MAX = self.usp.CLIP_AMMO_MAX * self.usp.NR_CLIPS_MAX
@@ -4855,9 +4856,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g22c.DAMAGE = 1
 	self.g22c.FIRE_MODE = "single"
 	self.g22c.fire_mode_data = {}
-	self.g22c.fire_mode_data.fire_rate = 0.08
+	self.g22c.fire_mode_data.fire_rate = 0.166
 	self.g22c.single = {}
-	self.g22c.single.fire_rate = 0.09
+	self.g22c.single.fire_rate = 0.166
 	self.g22c.CLIP_AMMO_MAX = 16
 	self.g22c.NR_CLIPS_MAX = 6
 	self.g22c.AMMO_MAX = self.g22c.CLIP_AMMO_MAX * self.g22c.NR_CLIPS_MAX
@@ -5210,9 +5211,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ppk.AMMO_PICKUP = self:_pickup_chance(self.ppk.AMMO_MAX, 1)
 	self.ppk.FIRE_MODE = "single"
 	self.ppk.fire_mode_data = {}
-	self.ppk.fire_mode_data.fire_rate = 0.09
+	self.ppk.fire_mode_data.fire_rate = 0.125
 	self.ppk.single = {}
-	self.ppk.single.fire_rate = 0.09
+	self.ppk.single.fire_rate = 0.125
 	self.ppk.spread = {}
 	self.ppk.spread.standing = self.new_m4.spread.standing
 	self.ppk.spread.crouching = self.new_m4.spread.crouching
@@ -5463,9 +5464,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.p226.AMMO_PICKUP = self:_pickup_chance(self.p226.AMMO_MAX, 1)
 	self.p226.FIRE_MODE = "single"
 	self.p226.fire_mode_data = {}
-	self.p226.fire_mode_data.fire_rate = 0.09
+	self.p226.fire_mode_data.fire_rate = 0.166
 	self.p226.single = {}
-	self.p226.single.fire_rate = 0.09
+	self.p226.single.fire_rate = 0.166
 	self.p226.spread = {}
 	self.p226.spread.standing = self.new_m4.spread.standing
 	self.p226.spread.crouching = self.new_m4.spread.crouching
@@ -7190,9 +7191,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_1911.AMMO_PICKUP = self:_pickup_chance(self.x_1911.AMMO_MAX, 1)
 	self.x_1911.FIRE_MODE = "single"
 	self.x_1911.fire_mode_data = {}
-	self.x_1911.fire_mode_data.fire_rate = 0.12
+	self.x_1911.fire_mode_data.fire_rate = 0.166
 	self.x_1911.single = {}
-	self.x_1911.single.fire_rate = 0.12
+	self.x_1911.single.fire_rate = 0.166
 	self.x_1911.spread = {}
 	self.x_1911.spread.standing = self.colt_1911.spread.standing
 	self.x_1911.spread.crouching = self.colt_1911.spread.crouching
@@ -7458,9 +7459,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g26.AMMO_PICKUP = self:_pickup_chance(self.g26.AMMO_MAX, 1)
 	self.g26.FIRE_MODE = "single"
 	self.g26.fire_mode_data = {}
-	self.g26.fire_mode_data.fire_rate = 0.09
+	self.g26.fire_mode_data.fire_rate = 0.125
 	self.g26.single = {}
-	self.g26.single.fire_rate = 0.09
+	self.g26.single.fire_rate = 0.125
 	self.g26.spread = {}
 	self.g26.spread.standing = self.new_m4.spread.standing
 	self.g26.spread.crouching = self.new_m4.spread.crouching
@@ -7727,9 +7728,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.c96.AMMO_PICKUP = self:_pickup_chance(self.c96.AMMO_MAX, 1)
 	self.c96.FIRE_MODE = "single"
 	self.c96.fire_mode_data = {}
-	self.c96.fire_mode_data.fire_rate = 0.09
+	self.c96.fire_mode_data.fire_rate = 0.125
 	self.c96.single = {}
-	self.c96.single.fire_rate = 0.09
+	self.c96.single.fire_rate = 0.125
 	self.c96.spread = {}
 	self.c96.spread.standing = self.new_m4.spread.standing
 	self.c96.spread.crouching = self.new_m4.spread.crouching
@@ -8264,9 +8265,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hs2000.AMMO_PICKUP = self:_pickup_chance(self.hs2000.AMMO_MAX, 1)
 	self.hs2000.FIRE_MODE = "single"
 	self.hs2000.fire_mode_data = {}
-	self.hs2000.fire_mode_data.fire_rate = 0.09
+	self.hs2000.fire_mode_data.fire_rate = 0.166
 	self.hs2000.single = {}
-	self.hs2000.single.fire_rate = 0.09
+	self.hs2000.single.fire_rate = 0.166
 	self.hs2000.spread = {}
 	self.hs2000.spread.standing = self.new_m4.spread.standing
 	self.hs2000.spread.crouching = self.new_m4.spread.crouching
@@ -8728,9 +8729,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_g22c.AMMO_PICKUP = self:_pickup_chance(self.x_g22c.AMMO_MAX, 1)
 	self.x_g22c.FIRE_MODE = "single"
 	self.x_g22c.fire_mode_data = {}
-	self.x_g22c.fire_mode_data.fire_rate = 0.12
+	self.x_g22c.fire_mode_data.fire_rate = 0.166
 	self.x_g22c.single = {}
-	self.x_g22c.single.fire_rate = 0.12
+	self.x_g22c.single.fire_rate = 0.166
 	self.x_g22c.spread = {}
 	self.x_g22c.spread.standing = self.new_m4.spread.standing
 	self.x_g22c.spread.crouching = self.new_m4.spread.crouching
@@ -8819,9 +8820,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_g17.AMMO_PICKUP = self:_pickup_chance(self.x_g17.AMMO_MAX, 1)
 	self.x_g17.FIRE_MODE = "single"
 	self.x_g17.fire_mode_data = {}
-	self.x_g17.fire_mode_data.fire_rate = 0.12
+	self.x_g17.fire_mode_data.fire_rate = 0.125
 	self.x_g17.single = {}
-	self.x_g17.single.fire_rate = 0.12
+	self.x_g17.single.fire_rate = 0.125
 	self.x_g17.spread = {}
 	self.x_g17.spread.standing = self.new_m4.spread.standing
 	self.x_g17.spread.crouching = self.new_m4.spread.crouching
@@ -8910,9 +8911,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_usp.AMMO_PICKUP = self:_pickup_chance(self.x_usp.AMMO_MAX, 1)
 	self.x_usp.FIRE_MODE = "single"
 	self.x_usp.fire_mode_data = {}
-	self.x_usp.fire_mode_data.fire_rate = 0.12
+	self.x_usp.fire_mode_data.fire_rate = 0.166
 	self.x_usp.single = {}
-	self.x_usp.single.fire_rate = 0.12
+	self.x_usp.single.fire_rate = 0.166
 	self.x_usp.spread = {}
 	self.x_usp.spread.standing = self.new_m4.spread.standing
 	self.x_usp.spread.crouching = self.new_m4.spread.crouching
@@ -9176,6 +9177,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m32.stats_modifiers = {damage = 2}
 	self.aa12 = {}
 	self.aa12.category = "shotgun"
+	self.aa12.has_magazine = true
 	self.aa12.damage_melee = damage_melee_default
 	self.aa12.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.aa12.sounds = {}
@@ -9291,9 +9293,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.peacemaker.fire_mode_data.fire_rate = 0.25
 	self.peacemaker.CAN_TOGGLE_FIREMODE = false
 	self.peacemaker.single = {}
-	self.peacemaker.single.fire_rate = 0.25
+	self.peacemaker.single.fire_rate = 0.166
 	self.peacemaker.auto = {}
-	self.peacemaker.auto.fire_rate = 0.25
+	self.peacemaker.auto.fire_rate = 0.166
 	self.peacemaker.name_id = "bm_w_peacemaker"
 	self.peacemaker.desc_id = "bm_w_peacemaker_desc"
 	self.peacemaker.description_id = "des_peacemaker"
@@ -9569,9 +9571,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mateba.timers.equip = 0.45
 	self.mateba.FIRE_MODE = "single"
 	self.mateba.fire_mode_data = {}
-	self.mateba.fire_mode_data.fire_rate = 0.21
+	self.mateba.fire_mode_data.fire_rate = 0.166
 	self.mateba.single = {}
-	self.mateba.single.fire_rate = 0.21
+	self.mateba.single.fire_rate = 0.166
 	self.mateba.name_id = "bm_w_mateba"
 	self.mateba.desc_id = "bm_w_mateba_desc"
 	self.mateba.description_id = "des_mateba"
@@ -10588,9 +10590,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sparrow.AMMO_PICKUP = self:_pickup_chance(self.sparrow.AMMO_MAX, 1)
 	self.sparrow.FIRE_MODE = "single"
 	self.sparrow.fire_mode_data = {}
-	self.sparrow.fire_mode_data.fire_rate = 0.09
+	self.sparrow.fire_mode_data.fire_rate = 0.25
 	self.sparrow.single = {}
-	self.sparrow.single.fire_rate = 0.09
+	self.sparrow.single.fire_rate = 0.25
 	self.sparrow.spread = {}
 	self.sparrow.spread.standing = self.new_m4.spread.standing
 	self.sparrow.spread.crouching = self.new_m4.spread.crouching
@@ -10629,7 +10631,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sparrow.texture_bundle_folder = "rip"
 	self.sparrow.panic_suppression_chance = 0.2
 	self.sparrow.stats = {
-		damage = 145,
+		damage = 120,
 		spread = 18,
 		recoil = 9,
 		spread_moving = 18,
@@ -11152,9 +11154,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.pl14.AMMO_PICKUP = self:_pickup_chance(self.pl14.AMMO_MAX, 1)
 	self.pl14.FIRE_MODE = "single"
 	self.pl14.fire_mode_data = {}
-	self.pl14.fire_mode_data.fire_rate = 0.09
+	self.pl14.fire_mode_data.fire_rate = 0.25
 	self.pl14.single = {}
-	self.pl14.single.fire_rate = 0.09
+	self.pl14.single.fire_rate = 0.25
 	self.pl14.spread = {}
 	self.pl14.spread.standing = self.new_m4.spread.standing
 	self.pl14.spread.crouching = self.new_m4.spread.crouching
@@ -11192,7 +11194,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.pl14.texture_bundle_folder = "mad"
 	self.pl14.panic_suppression_chance = 0.2
 	self.pl14.stats = {
-		damage = 145,
+		damage = 120,
 		spread = 18,
 		recoil = 9,
 		spread_moving = 18,

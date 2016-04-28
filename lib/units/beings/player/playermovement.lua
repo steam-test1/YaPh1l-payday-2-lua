@@ -68,7 +68,11 @@ function PlayerMovement:post_init()
 		self._nav_tracker = managers.navigation:create_nav_tracker(self._unit:position())
 		self._pos_rsrv_id = managers.navigation:get_pos_reservation_id()
 	end
-	self._unit:inventory():add_listener("PlayerMovement" .. tostring(self._unit:key()), {"add", "equip"}, callback(self, self, "inventory_clbk_listener"))
+	self._unit:inventory():add_listener("PlayerMovement" .. tostring(self._unit:key()), {
+		"add",
+		"equip",
+		"unequip"
+	}, callback(self, self, "inventory_clbk_listener"))
 	self:_setup_states()
 	self._attention_handler = CharacterAttentionObject:new(self._unit, true)
 	self._enemy_weapons_hot_listen_id = "PlayerMovement" .. tostring(self._unit:key())

@@ -2,6 +2,7 @@ SentryGunWeapon = SentryGunWeapon or class()
 local tmp_rot1 = Rotation()
 function SentryGunWeapon:init(unit)
 	self._unit = unit
+	self._current_damage_mul = 1
 	self._timer = TimerManager:game()
 	self._character_slotmask = managers.slot:get_mask("raycastable_characters")
 	self._next_fire_allowed = -1000
@@ -28,6 +29,47 @@ function SentryGunWeapon:init(unit)
 		self._ammo_ratio = 1
 	end
 	self._spread_mul = 1
+	self._use_armor_piercing = false
+	self._reduce_noise = false
+	self._slow_fire_rate = false
+	self._fire_rate_reduction = 1
+	self._from = Vector3()
+	self._to = Vector3()
+end
+function SentryGunWeapon:switch_fire_mode(owner_unit, ap_bullets)
+	self._reduce_noise = not self._reduce_noise
+	if ap_bullets then
+		self._use_armor_piercing = not self._use_armor_piercing
+		self:_set_slow_fire_rate(self._reduce_noise)
+	end
+	self:_set_noise_level(self._reduce_noise)
+	managers.network:session():send_to_peers_synched("sentrygun_sync_state", owner_unit, self._reduce_noise, self._slow_fire_rate)
+	self:flip_fire_sound()
+	return self._use_armor_piercing
+end
+function SentryGunWeapon:flip_fire_sound()
+	if self._shooting then
+		self:_sound_autofire_end()
+		self:_sound_autofire_start()
+	end
+end
+function SentryGunWeapon:_set_sound_switch()
+	if self._reduce_noise then
+		self._unit:sound_source():set_switch("suppressed", "regular")
+	else
+		self._unit:sound_source():set_switch("suppressed", "supressed_a")
+	end
+end
+function SentryGunWeapon:_set_noise_level(reduce_noise)
+	self._alert_size = reduce_noise and self._default_alert_size * 0.5 or self._default_alert_size
+end
+function SentryGunWeapon:_set_slow_fire_rate(slow_fire_rate)
+	self._slow_fire_rate = slow_fire_rate
+	if slow_fire_rate then
+		self._current_damage_mul = self._damage_multiplier
+	else
+		self._current_damage_mul = 1
+	end
 end
 function SentryGunWeapon:_init()
 	self._name_id = self._unit:base():get_name_id()
@@ -62,13 +104,16 @@ function SentryGunWeapon:_init()
 	self._alert_fires = {}
 	self._suppression = my_tweak_data.SUPPRESSION
 end
-function SentryGunWeapon:setup(setup_data, damage_multiplier)
+function SentryGunWeapon:setup(setup_data, damage_multiplier, fire_rate_reduction, less_noisy)
 	self:_init()
 	self._setup = setup_data
+	self._default_alert_size = self._alert_size
+	self._damage_multiplier = damage_multiplier
+	self._current_damage_mul = 1
 	self._owner = setup_data.user_unit
-	self._damage = tweak_data.weapon[self._name_id].DAMAGE * damage_multiplier
 	self._spread_mul = setup_data.spread_mul
 	self._auto_reload = setup_data.auto_reload
+	self._fire_rate_reduction = fire_rate_reduction or 1
 	if setup_data.alert_AI then
 		self._alert_events = {}
 		self._alert_size = tweak_data.weapon[self._name_id].alert_size
@@ -160,7 +205,11 @@ function SentryGunWeapon:trigger_held(blanks, expend_ammo, shoot_player, target_
 	if self._next_fire_allowed <= self._timer:time() then
 		fired = self:fire(blanks, expend_ammo, shoot_player, target_unit)
 		if fired then
-			self._next_fire_allowed = self._next_fire_allowed + tweak_data.weapon[self._name_id].auto.fire_rate
+			local fire_rate = tweak_data.weapon[self._name_id].auto.fire_rate
+			if self._slow_fire_rate then
+				fire_rate = fire_rate * self._fire_rate_reduction
+			end
+			self._next_fire_allowed = self._next_fire_allowed + fire_rate
 			self._interleaving_fire = self._interleaving_fire == 1 and 2 or 1
 		end
 	end
@@ -195,6 +244,8 @@ function SentryGunWeapon:_fire_raycast(from_pos, direction, shoot_player, target
 	mvector3.set(mvec_to, direction)
 	mvector3.multiply(mvec_to, tweak_data.weapon[self._name_id].FIRE_RANGE)
 	mvector3.add(mvec_to, from_pos)
+	self._from = from_pos
+	self._to = mvec_to
 	local col_ray = World:raycast("ray", from_pos, mvec_to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units)
 	local player_hit, player_ray_data
 	if shoot_player then
@@ -222,7 +273,7 @@ function SentryGunWeapon:_fire_raycast(from_pos, direction, shoot_player, target
 	return result
 end
 function SentryGunWeapon:_apply_dmg_mul(damage, col_ray, from_pos)
-	local damage_out = damage
+	local damage_out = damage * self._current_damage_mul
 	if tweak_data.weapon[self._name_id].DAMAGE_MUL_RANGE then
 		local ray_dis = col_ray.distance or mvector3.distance(from_pos, col_ray.position)
 		local ranges = tweak_data.weapon[self._name_id].DAMAGE_MUL_RANGE
@@ -243,14 +294,15 @@ function SentryGunWeapon:_apply_dmg_mul(damage, col_ray, from_pos)
 	return damage_out
 end
 function SentryGunWeapon:_sound_autofire_start()
-	self._autofire_sound_event = self._unit:sound_source():post_event(self._fire_start_snd_event)
+	self._autofire_sound_event = self._unit:sound_source():post_event(self:auto_fire_start_event())
+	self:_set_sound_switch()
 end
 function SentryGunWeapon:_sound_autofire_end()
 	if self._autofire_sound_event then
 		self._autofire_sound_event:stop()
 		self._autofire_sound_event = nil
 	end
-	self._unit:sound_source():post_event(self._fire_stop_snd_event)
+	self._unit:sound_source():post_event(self:auto_fire_end_event())
 end
 function SentryGunWeapon:_sound_autofire_end_empty()
 	if self._autofire_sound_event then
@@ -282,6 +334,20 @@ function SentryGunWeapon:out_of_ammo()
 		return self._ammo_total == 0
 	else
 		return self._ammo_ratio == 0
+	end
+end
+function SentryGunWeapon:auto_fire_start_event()
+	if self._slow_fire_rate then
+		return self._fire_start_snd_event_ap
+	else
+		return self._fire_start_snd_event
+	end
+end
+function SentryGunWeapon:auto_fire_end_event()
+	if self._slow_fire_rate then
+		return self._fire_stop_snd_event_ap
+	else
+		return self._fire_stop_snd_event
 	end
 end
 function SentryGunWeapon:ammo_ratio()
