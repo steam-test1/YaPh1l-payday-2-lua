@@ -24,7 +24,7 @@ end
 function NetworkAccountXBL:show_signin_ui()
 end
 function NetworkAccountXBL:username_id()
-	return Global.user_manager.user_map[Global.user_manager.user_index].username
+	return Global.user_manager.user_index and Global.user_manager.user_map[Global.user_manager.user_index].username or ""
 end
 function NetworkAccountXBL:player_id()
 	return managers.user:get_xuid(nil)

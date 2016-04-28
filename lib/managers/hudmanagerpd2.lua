@@ -216,6 +216,9 @@ function HUDManager:set_teammate_special_equipment_amount(i, equipment_id, amoun
 	self._teammate_panels[i]:set_special_equipment_amount(equipment_id, amount)
 end
 function HUDManager:clear_player_special_equipments()
+	if not self._teammate_panels then
+		return
+	end
 	self._teammate_panels[HUDManager.PLAYER_PANEL]:clear_special_equipment()
 end
 function HUDManager:set_stored_health(stored_health_ratio)

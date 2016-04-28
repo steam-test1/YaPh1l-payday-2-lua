@@ -160,7 +160,7 @@ function MenuNodeCrimenetSpecialGui:_setup_item_panel(safe_rect, res)
 	end
 	local title_text = self.item_panel:parent():text({
 		name = "special_title_text",
-		text = managers.localization:to_upper_text("menu_cn_contract_broker_title"),
+		text = managers.localization:to_upper_text(self.title_id or "menu_cn_contract_broker_title"),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		color = tweak_data.screen_colors.text,
@@ -199,6 +199,8 @@ function MenuNodeCrimenetSpecialGui:close()
 		active_menu.input:set_force_input(false)
 	end
 end
+MenuNodeCrimenetSmartMatchmakingGui = MenuNodeCrimenetSmartMatchmakingGui or class(MenuNodeCrimenetSpecialGui)
+MenuNodeCrimenetSmartMatchmakingGui.title_id = "menu_cn_smart_matchmaking_title"
 MenuNodeCrimenetCasinoGui = MenuNodeCrimenetCasinoGui or class(MenuNodeGui)
 function MenuNodeCrimenetCasinoGui:init(node, layer, parameters)
 	parameters.font = tweak_data.menu.pd2_small_font
