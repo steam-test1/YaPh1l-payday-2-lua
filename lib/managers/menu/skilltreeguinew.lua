@@ -692,8 +692,9 @@ function NewSkillTreeGui:special_btn_pressed(button)
 	if not self._enabled then
 		return
 	end
-	if button == Idstring("menu_respec_tree") then
-		self:respec_active_tree()
+	print("button ", button)
+	if button == Idstring("menu_remove_skill") then
+		self:refund_point(self._selected_item)
 		return true
 	elseif button == Idstring("menu_switch_skillset") then
 		managers.menu:open_node("skill_switch", {})
