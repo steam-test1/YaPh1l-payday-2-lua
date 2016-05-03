@@ -33,6 +33,9 @@ function SentryGunWeapon:init(unit)
 	self._reduce_noise = false
 	self._slow_fire_rate = false
 	self._fire_rate_reduction = 1
+	self._name_id = self._unit:base():get_name_id()
+	local my_tweak_data = tweak_data.weapon[self._name_id]
+	self._default_alert_size = my_tweak_data.alert_size
 	self._from = Vector3()
 	self._to = Vector3()
 end

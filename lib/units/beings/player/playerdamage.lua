@@ -882,6 +882,11 @@ function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_s
 			self._bleed_out_blocked_by_movement_state = true
 			return
 		end
+		local auto_recovery_kit = FirstAidKitBase.GetFirstAidKit(self._unit:position())
+		if auto_recovery_kit then
+			auto_recovery_kit:take(self._unit)
+			return
+		end
 		if can_activate_berserker and not self._check_berserker_done then
 			local has_berserker_skill = managers.player:has_category_upgrade("temporary", "berserker_damage_multiplier")
 			if has_berserker_skill then
@@ -892,11 +897,6 @@ function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_s
 					self._unit:movement():interupt_interact()
 				end
 			end
-		end
-		local auto_recovery_kit = FirstAidKitBase.GetFirstAidKit(self._unit:position())
-		if auto_recovery_kit then
-			auto_recovery_kit:take(self._unit)
-			return
 		end
 		self._hurt_value = 0.2
 		self._damage_to_hot_stack = {}

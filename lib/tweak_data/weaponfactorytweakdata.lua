@@ -14670,7 +14670,7 @@ function WeaponFactoryTweakData:create_ammunition()
 		is_a_unlockable = true,
 		stats = {
 			value = 5,
-			total_ammo_mod = -6,
+			total_ammo_mod = -3,
 			damage = 15,
 			spread = 2,
 			moving_spread = 2
@@ -14682,9 +14682,7 @@ function WeaponFactoryTweakData:create_ammunition()
 			armor_piercing_add = 1,
 			can_shoot_through_enemy = true,
 			can_shoot_through_shield = true,
-			can_shoot_through_wall = true,
-			ammo_pickup_min_mul = 1,
-			ammo_pickup_max_mul = 1
+			can_shoot_through_wall = true
 		},
 		internal_part = true,
 		sub_type = "ammo_slug"
@@ -14699,12 +14697,7 @@ function WeaponFactoryTweakData:create_ammunition()
 		dlc = "gage_pack_shotgun",
 		texture_bundle_folder = "gage_pack_shotgun",
 		is_a_unlockable = true,
-		stats = {
-			value = 5,
-			total_ammo_mod = -6,
-			damage = 15
-		},
-		custom_stats = {ammo_pickup_min_mul = 1, ammo_pickup_max_mul = 1},
+		stats = {value = 5, damage = 15},
 		internal_part = true,
 		sub_type = "ammo_custom"
 	}
@@ -14725,7 +14718,7 @@ function WeaponFactoryTweakData:create_ammunition()
 		is_a_unlockable = true,
 		stats = {
 			value = 5,
-			total_ammo_mod = -5,
+			total_ammo_mod = -2,
 			damage = 3,
 			spread = -3,
 			moving_spread = 3
@@ -14735,9 +14728,7 @@ function WeaponFactoryTweakData:create_ammunition()
 			rays = 1,
 			damage_near_mul = 2,
 			damage_far_mul = 2.5,
-			bullet_class = "InstantExplosiveBulletBase",
-			ammo_pickup_min_mul = 1,
-			ammo_pickup_max_mul = 1
+			bullet_class = "InstantExplosiveBulletBase"
 		},
 		internal_part = true,
 		sub_type = "ammo_explosive"
@@ -14760,9 +14751,7 @@ function WeaponFactoryTweakData:create_ammunition()
 		custom_stats = {
 			damage_near_mul = 2,
 			damage_far_mul = 1.7,
-			armor_piercing_add = 1,
-			ammo_pickup_min_mul = 1,
-			ammo_pickup_max_mul = 1
+			armor_piercing_add = 1
 		},
 		internal_part = true,
 		sub_type = "ammo_piercing"
@@ -14779,7 +14768,7 @@ function WeaponFactoryTweakData:create_ammunition()
 		is_a_unlockable = true,
 		stats = {
 			value = 5,
-			total_ammo_mod = -4,
+			total_ammo_mod = -2,
 			damage = -6,
 			spread = -1,
 			moving_spread = 3
@@ -14791,8 +14780,6 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage_far_mul = 1.15,
 			armor_piercing_add = 1,
 			can_shoot_through_shield = true,
-			ammo_pickup_min_mul = 1,
-			ammo_pickup_max_mul = 1,
 			bullet_class = "FlameBulletBase",
 			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_dragons_breath",
 			fire_dot_data = {

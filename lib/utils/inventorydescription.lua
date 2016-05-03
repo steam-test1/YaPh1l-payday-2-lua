@@ -355,6 +355,12 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 				elseif stat.name == "suppression" then
 					multiplier = managers.blackmarket:threat_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer)
 				elseif stat.name == "concealment" then
+					if silencer and managers.player:has_category_upgrade("player", "silencer_concealment_increase") then
+						modifier = managers.player:upgrade_value("player", "silencer_concealment_increase", 0)
+					end
+					if silencer and managers.player:has_category_upgrade("player", "silencer_concealment_penalty_decrease") then
+						modifier = modifier + math.min(managers.player:upgrade_value("player", "silencer_concealment_penalty_decrease", 0), math.abs(mods_stats[stat.name].index))
+					end
 				elseif stat.name == "fire_rate" then
 					multiplier = managers.blackmarket:fire_rate_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, detection_risk, nil, blueprint)
 				end

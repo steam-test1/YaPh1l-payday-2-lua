@@ -299,7 +299,7 @@ function UpgradesTweakData:_init_pd2_values()
 		1.8
 	}
 	self.values.weapon.passive_damage_multiplier = {1.05}
-	self.values.weapon.knock_down = {0.2, 0.6}
+	self.values.weapon.knock_down = {0.05, 0.2}
 	self.values.weapon.automatic_head_shot_add = {0.1875, 0.625}
 	self.values.assault_rifle.enter_steelsight_speed_multiplier = {2}
 	self.values.assault_rifle.zoom_increase = {2}
@@ -1308,7 +1308,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		dance_instructor = {
 			{"5"},
-			{"100%"}
+			{"50%"}
 		},
 		akimbo_skill = {
 			{"8"},
@@ -1363,8 +1363,8 @@ function UpgradesTweakData:_init_pd2_values()
 			{"16"}
 		},
 		heavy_impact = {
-			{"20%"},
-			{"60%"}
+			{"5%"},
+			{"20%"}
 		},
 		fire_control = {
 			{"12"},
@@ -1399,6 +1399,10 @@ function UpgradesTweakData:_init_pd2_values()
 				"4"
 			},
 			{"1", "50%"}
+		},
+		optic_illusions = {
+			{"1"},
+			{"2"}
 		},
 		hoxton = {
 			{"4"},
@@ -8425,7 +8429,7 @@ function UpgradesTweakData:_pistol_definitions()
 			value = 1
 		}
 	}
-	self.definitions["0"] = {
+	self.definitions.pistol_fire_rate_multiplier = {
 		category = "feature",
 		name_id = "menu_pistol_fire_rate_multiplier",
 		upgrade = {

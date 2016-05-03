@@ -223,7 +223,6 @@ function CopDamage:damage_bullet(attack_data)
 	if PlayerDamage.is_friendly_fire(self, attack_data.attacker_unit) then
 		return "friendly_fire"
 	end
-	print("AP Bullets: ", attack_data.armor_piercing)
 	if self._has_plate and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_plate_name and not attack_data.armor_piercing then
 		local armor_pierce_roll = math.rand(1)
 		local armor_pierce_value = 0

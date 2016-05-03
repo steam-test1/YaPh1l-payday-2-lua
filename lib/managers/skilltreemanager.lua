@@ -357,7 +357,7 @@ function SkillTreeManager:has_enough_skill_points(skill_id)
 	local to_unlock = managers.skilltree:next_skill_step(skill_id)
 	local skill = talent[to_unlock]
 	local total_points, points = self:get_skill_points(skill_id, to_unlock)
-	if total_points < self:points() then
+	if total_points <= self:points() then
 		return true
 	end
 	return false

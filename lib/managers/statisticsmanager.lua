@@ -741,10 +741,10 @@ function StatisticsManager:publish_to_steam(session, success, completion)
 		method = "set",
 		value = 1
 	}
-	stats.info_playing_beta = {
+	stats.info_playing_pc_beta = {
 		type = "int",
 		method = "set",
-		value = 0
+		value = 1
 	}
 	local level_id = managers.job:current_level_id()
 	if completion then

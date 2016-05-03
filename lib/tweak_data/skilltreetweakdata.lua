@@ -848,9 +848,11 @@ function SkillTreeTweakData:init()
 	self.skills.trip_mine_expert = {
 		["name_id"] = "menu_trip_mine_expert_beta",
 		["desc_id"] = "menu_trip_mine_expert_beta_desc",
-		["icon_xy"] = {8, 0},
+		["icon_xy"] = {4, 6},
 		[1] = {
-			upgrades = {},
+			upgrades = {
+				"trip_mine_explosion_size_multiplier_2"
+			},
 			cost = self.costs.default
 		},
 		[2] = {
@@ -1173,7 +1175,8 @@ function SkillTreeTweakData:init()
 			upgrades = {
 				"player_buy_bodybags_asset",
 				"player_additional_assets",
-				"player_cleaner_cost_multiplier"
+				"player_cleaner_cost_multiplier",
+				"player_buy_spotter_asset"
 			},
 			cost = self.costs.pro
 		}
@@ -1448,8 +1451,7 @@ function SkillTreeTweakData:init()
 		[2] = {
 			upgrades = {
 				"player_can_free_run",
-				"player_fall_damage_multiplier",
-				"player_fall_health_damage_multiplier"
+				"player_run_and_reload"
 			},
 			cost = self.costs.pro
 		}
@@ -1927,13 +1929,17 @@ function SkillTreeTweakData:init()
 	self.skills.fire_trap = {
 		["name_id"] = "menu_fire_trap_beta",
 		["desc_id"] = "menu_fire_trap_beta_desc",
-		["icon_xy"] = {8, 0},
+		["icon_xy"] = {0, 0},
 		[1] = {
-			upgrades = {},
+			upgrades = {
+				"trip_mine_fire_trap_1"
+			},
 			cost = self.costs.hightier
 		},
 		[2] = {
-			upgrades = {},
+			upgrades = {
+				"trip_mine_fire_trap_2"
+			},
 			cost = self.costs.hightierpro
 		}
 	}
@@ -2197,9 +2203,9 @@ function SkillTreeTweakData:init()
 		}
 	}
 	self.skills.optic_illusions = {
-		["name_id"] = "menu_optique_illusions",
-		["desc_id"] = "menu_optique_illusions_desc",
-		["icon_xy"] = {8, 0},
+		["name_id"] = "menu_optic_illusions",
+		["desc_id"] = "menu_optic_illusions_desc",
+		["icon_xy"] = {0, 0},
 		[1] = {
 			upgrades = {
 				"player_silencer_concealment_increase_1"
@@ -2210,19 +2216,6 @@ function SkillTreeTweakData:init()
 			upgrades = {
 				"player_silencer_concealment_penalty_decrease_1"
 			},
-			cost = self.costs.hightierpro
-		}
-	}
-	self.skills.more_fire_power = {
-		["name_id"] = "menu_more_fire_power",
-		["desc_id"] = "menu_more_fire_power_desc",
-		["icon_xy"] = {8, 0},
-		[1] = {
-			upgrades = {},
-			cost = self.costs.hightier
-		},
-		[2] = {
-			upgrades = {},
 			cost = self.costs.hightierpro
 		}
 	}
@@ -2371,7 +2364,7 @@ function SkillTreeTweakData:init()
 					"drill_expert"
 				},
 				{
-					"more_fire_power",
+					"cable_guy",
 					"kick_starter"
 				},
 				{"fire_trap"}
@@ -2506,6 +2499,8 @@ function SkillTreeTweakData:init()
 		}
 	}
 	self.default_upgrades = {
+		"player_fall_damage_multiplier",
+		"player_fall_health_damage_multiplier",
 		"carry_interact_speed_multiplier_1",
 		"carry_interact_speed_multiplier_2",
 		"carry_movement_speed_multiplier",

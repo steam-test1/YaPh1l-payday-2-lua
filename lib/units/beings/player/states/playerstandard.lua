@@ -1,3 +1,4 @@
+require("lib/input/BipodDeployControllerInput")
 local mvec3_dis_sq = mvector3.distance_sq
 local mvec3_set = mvector3.set
 local mvec3_set_z = mvector3.set_z
@@ -81,6 +82,11 @@ function PlayerStandard:init(unit)
 	self._interaction = managers.interaction
 	self._on_melee_restart_drill = managers.player:has_category_upgrade("player", "drill_melee_hit_restart_chance")
 	self._player_manager = managers.player
+	self._input = {}
+	local controller = unit:base():controller()
+	if controller:get_type() ~= "pc" then
+		table.insert(self._input, BipodDeployControllerInput:new())
+	end
 end
 function PlayerStandard:enter(state_data, enter_data)
 	PlayerMovementState.enter(self, state_data, enter_data)
@@ -449,24 +455,8 @@ function PlayerStandard:_get_input(t, dt)
 			end
 			i = i + 1
 		end
-		if self._controller:get_type() ~= "pc" then
-			input.btn_weapon_gadget_press = false
-			if pressed and self._controller:get_input_pressed("weapon_gadget") then
-				self._deploy_bipod_t = managers.player:player_timer():time()
-				self._deploy_bipod_waiting = true
-			elseif downed and self._controller:get_input_bool("weapon_gadget") then
-				if self._deploy_bipod_waiting and managers.player:player_timer():time() - self._deploy_bipod_t > 0.5 then
-					input.btn_deploy_bipod = true
-					self._deploy_bipod_t = nil
-					self._deploy_bipod_waiting = false
-				end
-			elseif released and self._controller:get_input_released("weapon_gadget") then
-				self._deploy_bipod_t = nil
-				if self._deploy_bipod_waiting then
-					self._deploy_bipod_waiting = false
-					input.btn_weapon_gadget_press = true
-				end
-			end
+		for i = 1, #self._input do
+			self._input[i]:update(t, dt, self._controller, input)
 		end
 	end
 	return input
@@ -1250,8 +1240,12 @@ function PlayerStandard:_action_interact_forbidden()
 	local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_changing_weapon() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline()
 	return action_forbidden
 end
+function PlayerStandard:_action_interact_forbidden_sentry()
+	local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self:is_deploying() or self:_changing_weapon() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline()
+	return action_forbidden
+end
 function PlayerStandard:_check_action_pickup_sentry(t, input)
-	if input.data and input.data.pickup_sentry and not self:_action_interact_forbidden() then
+	if input.data and input.data.pickup_sentry and not self:_action_interact_forbidden_sentry() then
 		local new_action, timer, interact_object = self._interaction:interact(self._unit, input.data)
 		if interact_object and interact_object:base() and interact_object:base().sentry_gun then
 			if new_action then
