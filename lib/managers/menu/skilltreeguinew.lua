@@ -166,6 +166,7 @@ function NewSkillTreeGui:_setup()
 	})
 	make_fine_text(skillset_text)
 	skillset_panel:set_h(skillset_text:bottom())
+	self._skillset_panel = skillset_panel
 	local skillpoints_panel = info_panel:panel({
 		name = "SkillPointsPanel",
 		y = skillset_panel:bottom() + PADDING
@@ -601,6 +602,10 @@ function NewSkillTreeGui:mouse_pressed(button, x, y)
 		return
 	end
 	if not self._enabled then
+		return
+	end
+	if button == Idstring("0") and self._skillset_panel:inside(x, y) then
+		self:_start_rename_skill_switch()
 		return
 	end
 	if button == Idstring("mouse wheel down") then
@@ -1886,10 +1891,10 @@ function NewSkillTreeGui:_start_rename_skill_switch()
 		local selected_skill_switch = self._skilltree:get_selected_skill_switch()
 		self._renaming_skill_switch = self._skilltree:has_skill_switch_name(selected_skill_switch) and self._skilltree:get_skill_switch_name(selected_skill_switch, false) or ""
 		self._ws:connect_keyboard(Input:keyboard())
-		self._skill_tree_panel:enter_text(callback(self, self, "enter_text"))
-		self._skill_tree_panel:key_press(callback(self, self, "key_press"))
-		self._skill_tree_panel:key_release(callback(self, self, "key_release"))
-		self._rename_caret = self._skill_tree_panel:rect({
+		self._skillset_panel:enter_text(callback(self, self, "enter_text"))
+		self._skillset_panel:key_press(callback(self, self, "key_press"))
+		self._skillset_panel:key_release(callback(self, self, "key_release"))
+		self._rename_caret = self._skillset_panel:rect({
 			name = "caret",
 			layer = 2,
 			x = 0,
@@ -1910,10 +1915,10 @@ function NewSkillTreeGui:_stop_rename_skill_switch()
 		self._renaming_skill_switch = nil
 		if self._caret_connected then
 			self._ws:disconnect_keyboard()
-			self._skill_tree_panel:enter_text(nil)
-			self._skill_tree_panel:key_press(nil)
-			self._skill_tree_panel:key_release(nil)
-			self._skill_tree_panel:remove(self._rename_caret)
+			self._skillset_panel:enter_text(nil)
+			self._skillset_panel:key_press(nil)
+			self._skillset_panel:key_release(nil)
+			self._skillset_panel:remove(self._rename_caret)
 			self._rename_caret = nil
 			self._caret_connected = nil
 		end
@@ -1927,10 +1932,10 @@ function NewSkillTreeGui:_cancel_rename_skill_switch()
 		self._renaming_skill_switch = nil
 		if self._caret_connected then
 			self._ws:disconnect_keyboard()
-			self._skill_tree_panel:enter_text(nil)
-			self._skill_tree_panel:key_press(nil)
-			self._skill_tree_panel:key_release(nil)
-			self._skill_tree_panel:remove(self._rename_caret)
+			self._skillset_panel:enter_text(nil)
+			self._skillset_panel:key_press(nil)
+			self._skillset_panel:key_release(nil)
+			self._skillset_panel:remove(self._rename_caret)
 			self._rename_caret = nil
 			self._caret_connected = nil
 		end
@@ -1939,7 +1944,7 @@ function NewSkillTreeGui:_cancel_rename_skill_switch()
 	end
 end
 function NewSkillTreeGui:_update_rename_skill_switch()
-	local skill_set_text = self._skill_tree_panel:child("skill_set_text")
+	local skill_set_text = self._skillset_panel:child("SkillSetText")
 	if self._renaming_skill_switch then
 		local no_text = self._renaming_skill_switch == ""
 		if no_text then
@@ -2024,8 +2029,8 @@ function NewSkillTreeGui:key_press(o, k)
 	local text = self._renaming_skill_switch
 	local n = utf8.len(text)
 	self._key_pressed = k
-	self._skill_tree_panel:stop()
-	self._skill_tree_panel:animate(callback(self, self, "update_key_down"), k)
+	self._skillset_panel:stop()
+	self._skillset_panel:animate(callback(self, self, "update_key_down"), k)
 	if k == Idstring("backspace") then
 		text = utf8.sub(text, 0, math.max(n - 1, 0))
 	elseif k == Idstring("delete") then

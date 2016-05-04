@@ -848,11 +848,9 @@ function SkillTreeTweakData:init()
 	self.skills.trip_mine_expert = {
 		["name_id"] = "menu_trip_mine_expert_beta",
 		["desc_id"] = "menu_trip_mine_expert_beta_desc",
-		["icon_xy"] = {4, 6},
+		["icon_xy"] = {8, 0},
 		[1] = {
-			upgrades = {
-				"trip_mine_explosion_size_multiplier_2"
-			},
+			upgrades = {},
 			cost = self.costs.default
 		},
 		[2] = {
@@ -1929,17 +1927,13 @@ function SkillTreeTweakData:init()
 	self.skills.fire_trap = {
 		["name_id"] = "menu_fire_trap_beta",
 		["desc_id"] = "menu_fire_trap_beta_desc",
-		["icon_xy"] = {0, 0},
+		["icon_xy"] = {8, 0},
 		[1] = {
-			upgrades = {
-				"trip_mine_fire_trap_1"
-			},
+			upgrades = {},
 			cost = self.costs.hightier
 		},
 		[2] = {
-			upgrades = {
-				"trip_mine_fire_trap_2"
-			},
+			upgrades = {},
 			cost = self.costs.hightierpro
 		}
 	}
@@ -2219,6 +2213,19 @@ function SkillTreeTweakData:init()
 			cost = self.costs.hightierpro
 		}
 	}
+	self.skills.more_fire_power = {
+		["name_id"] = "menu_more_fire_power",
+		["desc_id"] = "menu_more_fire_power_desc",
+		["icon_xy"] = {8, 0},
+		[1] = {
+			upgrades = {},
+			cost = self.costs.hightier
+		},
+		[2] = {
+			upgrades = {},
+			cost = self.costs.hightierpro
+		}
+	}
 	self.trees = {
 		{
 			name_id = "st_menu_mastermind_inspire",
@@ -2364,7 +2371,7 @@ function SkillTreeTweakData:init()
 					"drill_expert"
 				},
 				{
-					"cable_guy",
+					"more_fire_power",
 					"kick_starter"
 				},
 				{"fire_trap"}

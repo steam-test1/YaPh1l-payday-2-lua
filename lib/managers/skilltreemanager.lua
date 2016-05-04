@@ -1,5 +1,5 @@
 SkillTreeManager = SkillTreeManager or class()
-SkillTreeManager.VERSION = 7
+SkillTreeManager.VERSION = 8
 local get_skill_costs = function()
 	local t = {
 		{1, 3},

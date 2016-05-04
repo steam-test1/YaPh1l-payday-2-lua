@@ -7433,14 +7433,12 @@ function WeaponFactoryTweakData:_init_serbu()
 				armor_piercing_add = 1,
 				can_shoot_through_enemy = true,
 				can_shoot_through_shield = true,
-				can_shoot_through_wall = true,
-				ammo_pickup_min_mul = 0.5,
-				ammo_pickup_max_mul = 0.5
+				can_shoot_through_wall = true
 			}
 		},
 		wpn_fps_upg_a_custom = {
 			desc_id = "bm_wp_upg_a_custom2_desc",
-			custom_stats = {ammo_pickup_min_mul = 0.7, ammo_pickup_max_mul = 0.7}
+			custom_stats = {}
 		},
 		wpn_fps_upg_a_custom_free = {
 			desc_id = "bm_wp_upg_a_custom2_desc",
@@ -7981,9 +7979,7 @@ function WeaponFactoryTweakData:_init_huntsman()
 				rays = 1,
 				damage_near_mul = 2,
 				damage_far_mul = 2.5,
-				bullet_class = "InstantExplosiveBulletBase",
-				ammo_pickup_min_mul = 0.5,
-				ammo_pickup_max_mul = 0.7
+				bullet_class = "InstantExplosiveBulletBase"
 			}
 		}
 	}
@@ -8667,9 +8663,7 @@ function WeaponFactoryTweakData:_init_judge()
 			custom_stats = {
 				damage_near_mul = 2,
 				damage_far_mul = 1.7,
-				armor_piercing_add = 1,
-				ammo_pickup_min_mul = 0.9,
-				ammo_pickup_max_mul = 1
+				armor_piercing_add = 1
 			}
 		},
 		wpn_fps_upg_a_explosive = {
@@ -8678,9 +8672,7 @@ function WeaponFactoryTweakData:_init_judge()
 				rays = 1,
 				damage_near_mul = 2,
 				damage_far_mul = 2.5,
-				bullet_class = "InstantExplosiveBulletBase",
-				ammo_pickup_min_mul = 0.7,
-				ammo_pickup_max_mul = 0.9
+				bullet_class = "InstantExplosiveBulletBase"
 			}
 		}
 	}
@@ -11818,14 +11810,12 @@ function WeaponFactoryTweakData:_init_striker()
 				armor_piercing_add = 1,
 				can_shoot_through_enemy = true,
 				can_shoot_through_shield = true,
-				can_shoot_through_wall = true,
-				ammo_pickup_min_mul = 0.5,
-				ammo_pickup_max_mul = 0.5
+				can_shoot_through_wall = true
 			}
 		},
 		wpn_fps_upg_a_custom = {
 			desc_id = "bm_wp_upg_a_custom2_desc",
-			custom_stats = {ammo_pickup_min_mul = 0.7, ammo_pickup_max_mul = 0.7}
+			custom_stats = {}
 		},
 		wpn_fps_upg_a_custom_free = {
 			desc_id = "bm_wp_upg_a_custom2_desc",
@@ -19795,9 +19785,7 @@ function WeaponFactoryTweakData:_init_b682()
 				rays = 1,
 				damage_near_mul = 2,
 				damage_far_mul = 2.5,
-				bullet_class = "InstantExplosiveBulletBase",
-				ammo_pickup_min_mul = 0.5,
-				ammo_pickup_max_mul = 0.7
+				bullet_class = "InstantExplosiveBulletBase"
 			}
 		}
 	}

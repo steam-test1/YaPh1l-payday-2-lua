@@ -1705,7 +1705,7 @@ function BlackMarketManager:_calculate_weapon_concealment(weapon)
 	end
 	if silencer and managers.player:has_category_upgrade("player", "silencer_concealment_penalty_decrease") then
 		local stats = managers.weapon_factory:get_perk_stats("silencer", factory_id, blueprint)
-		if stats then
+		if stats and stats.concealment then
 			bonus = bonus + math.min(managers.player:upgrade_value("player", "silencer_concealment_penalty_decrease", 0), math.abs(stats.concealment))
 		end
 	end

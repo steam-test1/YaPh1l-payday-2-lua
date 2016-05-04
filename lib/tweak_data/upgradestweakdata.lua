@@ -783,7 +783,7 @@ function UpgradesTweakData:_init_pd2_values()
 		armors_allowed = {"level_1", "level_2"},
 		works_with_armor_kit = true,
 		tick_time = 0.5,
-		total_ticks = 3,
+		total_ticks = 6,
 		max_stacks = false,
 		stacking_cooldown = 1.5,
 		add_stack_sources = {
