@@ -66,6 +66,9 @@ end
 function _ScriptViewport:get_environment_value(data_path_key)
 	return self._env_handler:get_value(data_path_key)
 end
+function _ScriptViewport:get_environment_default_value(data_path_key)
+	return self._env_handler:get_default_value(data_path_key)
+end
 function _ScriptViewport:get_environment_path()
 	return self._env_handler:get_path()
 end
@@ -80,6 +83,9 @@ function _ScriptViewport:create_environment_modifier(data_path_key, is_override,
 end
 function _ScriptViewport:destroy_environment_modifier(data_path_key)
 	self._env_handler:destroy_modifier(data_path_key)
+end
+function _ScriptViewport:force_apply_feeders()
+	self._env_handler:force_apply_feeders()
 end
 function _ScriptViewport:update_environment_value(data_path_key)
 	return self._env_handler:update_value(data_path_key)

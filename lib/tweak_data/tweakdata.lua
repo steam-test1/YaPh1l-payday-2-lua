@@ -1,5 +1,4 @@
 require("lib/tweak_data/WeaponTweakData")
-require("lib/tweak_data/WeaponUpgradesTweakData")
 require("lib/tweak_data/EquipmentsTweakData")
 require("lib/tweak_data/CharacterTweakData")
 require("lib/tweak_data/PlayerTweakData")
@@ -289,7 +288,6 @@ function TweakData:init()
 	self.difficulty_name_ids.overkill_290 = "menu_difficulty_apocalypse"
 	self.hud_icons = HudIconsTweakData:new()
 	self.weapon = WeaponTweakData:new(self)
-	self.weapon_upgrades = WeaponUpgradesTweakData:new()
 	self.equipments = EquipmentsTweakData:new()
 	self.player = PlayerTweakData:new()
 	self.levels = LevelsTweakData:new()
@@ -341,7 +339,8 @@ function TweakData:init()
 		"sokol",
 		"dragon",
 		"bodhi",
-		"jimmy"
+		"jimmy",
+		"sydney"
 	}
 	self.criminals.characters = {
 		{
@@ -495,6 +494,17 @@ function TweakData:init()
 				color_id = 4,
 				voice = "rb14",
 				ai_mask_id = "jimmy_duct",
+				mask_id = 4
+			}
+		},
+		{
+			name = "sydney",
+			static_data = {
+				ai_character_id = "ai_sydney",
+				ssuffix = "v",
+				color_id = 4,
+				voice = "rb15",
+				ai_mask_id = "sydney",
 				mask_id = 4
 			}
 		}

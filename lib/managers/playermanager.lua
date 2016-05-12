@@ -2,6 +2,8 @@ PlayerManager = PlayerManager or class()
 PlayerManager.WEAPON_SLOTS = 2
 PlayerManager.TARGET_COCAINE_AMOUNT = 1500
 function PlayerManager:init()
+	self._coroutine_mgr = CoroutineManager:new()
+	self._message_system = MessageSystem:new()
 	self._player_name = Idstring("units/multiplayer/mp_fps_mover/mp_fps_mover")
 	self._players = {}
 	self._nr_players = Global.nr_players or 1
@@ -69,6 +71,12 @@ function PlayerManager:init()
 	self._hostage_close_to_local_t = 0
 	self:_setup()
 end
+function PlayerManager:register_message(message, uid, func)
+	self._message_system:register(message, uid, func)
+end
+function PlayerManager:unregister_message(message, uid)
+	self._message_system:unregister(message, uid)
+end
 function PlayerManager:_setup()
 	self._equipment = {
 		selections = {},
@@ -128,6 +136,7 @@ function PlayerManager:aquire_default_upgrades()
 	self:_verify_equipment_kit(true)
 end
 function PlayerManager:update(t, dt)
+	self._message_system:flush()
 	if self._need_to_send_player_status then
 		self._need_to_send_player_status = nil
 		self:need_send_player_status()
@@ -151,6 +160,7 @@ function PlayerManager:update(t, dt)
 			end
 		end
 	end
+	self._coroutine_mgr:update(t, dt)
 end
 function PlayerManager:add_listener(key, events, clbk)
 	self._listener_holder:add(key, events, clbk)
@@ -210,8 +220,9 @@ function PlayerManager:_internal_load()
 				end
 			end
 		end
-		for i, name in ipairs(self._global.kit.equipment_slots) do
-			local ok_name = self._global.equipment[name] and name or self._global.default_kit.equipment_slots[i]
+		local equipment_list = self:equipment_slots()
+		for i, name in ipairs(equipment_list) do
+			local ok_name = self._global.equipment[name] and name or self:equipment_in_slot(i)
 			if ok_name then
 				do
 					local upgrade = tweak_data.upgrades.definitions[ok_name]
@@ -268,7 +279,7 @@ function PlayerManager:spawn_dropin_penalty(dead, bleed_out, health, used_deploy
 	end
 	if used_deployable then
 		managers.player:clear_equipment()
-		local equipped_deployable = Global.player_manager.kit.equipment_slots[1]
+		local equipped_deployable = managers.blackmarket:equipped_deployable()
 		local deployable_data = tweak_data.equipments[equipped_deployable]
 		if deployable_data and deployable_data.dropin_penalty_function_name then
 			local used_one, redirect = player:equipment()[deployable_data.dropin_penalty_function_name](player:equipment(), self._equipment.selected_index)
@@ -484,7 +495,7 @@ function PlayerManager:_verify_equipment_kit(loading)
 		if managers.blackmarket then
 			managers.blackmarket:equip_deployable(managers.player:availible_equipment(1)[1], loading)
 		else
-			self._global.kit.equipment_slots[1] = managers.player:availible_equipment(1)[1]
+			self:set_equipment_in_slot(managers.player:availible_equipment(1)[1])
 		end
 	end
 end
@@ -633,6 +644,19 @@ function PlayerManager:on_headshot_dealt()
 	if damage_ext and regen_armor_bonus > 0 then
 		damage_ext:restore_armor(regen_armor_bonus)
 	end
+	local equipped_unit = self:get_current_state()._equipped_unit:base()
+	local reload_speed_level = not self:has_activate_temporary_upgrade("temporary", "single_shot_fast_reload")
+	if reload_speed_level and equipped_unit.is_single_shot and equipped_unit:is_single_shot() then
+		self:activate_temporary_upgrade("temporary", "single_shot_fast_reload")
+	end
+	if self:has_category_upgrade("player", "head_shot_ammo_return") and equipped_unit and equipped_unit:is_single_shot() then
+		local upgrade = self:upgrade_value("player", "head_shot_ammo_return")
+		if self._head_shot_ammo_return == nil then
+			self._head_shot_ammo_return = HeadShotAmmoReturn:new(upgrade.time, upgrade.headshots, upgrade.ammo)
+		else
+			self._head_shot_ammo_return:on_headshot()
+		end
+	end
 end
 function PlayerManager:_check_damage_to_hot(t, unit, damage_info)
 	local player_unit = self:player_unit()
@@ -678,7 +702,7 @@ function PlayerManager:unaquire_equipment(upgrade, id)
 	local is_equipped = managers.player:equipment_in_slot(upgrade.slot) == id
 	self._global.equipment[id] = nil
 	if is_equipped then
-		self._global.kit.equipment_slots[upgrade.slot] = nil
+		self:set_equipment_in_slot(nil, upgrade.slot)
 		self:_verify_equipment_kit(false)
 	end
 	if upgrade.aquire then
@@ -1091,6 +1115,11 @@ end
 function PlayerManager:body_armor_skill_addend(override_armor)
 	local addend = 0
 	addend = addend + self:upgrade_value("player", tostring(override_armor or managers.blackmarket:equipped_armor(true, true)) .. "_armor_addend", 0)
+	if self:has_category_upgrade("player", "armor_increase") then
+		local health_multiplier = self:health_skill_multiplier()
+		local max_health = (PlayerDamage._HEALTH_INIT + self:thick_skin_value()) * health_multiplier
+		addend = addend + max_health * self:upgrade_value("player", "armor_increase", 1)
+	end
 	return addend
 end
 function PlayerManager:skill_dodge_chance(running, crouching, on_zipline, override_armor, detection_risk)
@@ -1157,7 +1186,8 @@ function PlayerManager:health_skill_multiplier()
 	multiplier = multiplier + self:upgrade_value("player", "passive_health_multiplier", 1) - 1
 	multiplier = multiplier + self:team_upgrade_value("health", "passive_multiplier", 1) - 1
 	multiplier = multiplier + self:get_hostage_bonus_multiplier("health") - 1
-	if self:num_local_minions() > 0 then
+	multiplier = multiplier - self:upgrade_value("player", "health_decrease", 0)
+	if 0 < self:num_local_minions() then
 		multiplier = multiplier + self:upgrade_value("player", "minion_master_health_multiplier", 1) - 1
 	end
 	return multiplier
@@ -1312,6 +1342,12 @@ function PlayerManager:availible_equipment(slot)
 end
 function PlayerManager:equipment_in_slot(slot)
 	return self._global.kit.equipment_slots[slot]
+end
+function PlayerManager:set_equipment_in_slot(item, slot)
+	self._global.kit.equipment_slots[slot or 1] = item
+end
+function PlayerManager:equipment_slots()
+	return self._global.kit.equipment_slots
 end
 function PlayerManager:toggle_player_rule(rule)
 	self._rules[rule] = not self._rules[rule]
@@ -2696,14 +2732,14 @@ function PlayerManager:get_content_update_viewed(content_update)
 	return self._global.viewed_content_updates[content_update] or false
 end
 function PlayerManager:_verify_loaded_data()
-	local id = self._global.kit.equipment_slots[1]
+	local id = self:equipment_in_slot()
 	if id and not self._global.equipment[id] then
 		print("PlayerManager:_verify_loaded_data()", inspect(self._global.equipment))
-		self._global.kit.equipment_slots[1] = nil
+		self:set_equipment_in_slot(nil)
 		self:_verify_equipment_kit(true)
 	end
 	if managers.menu_scene then
-		managers.menu_scene:set_character_deployable(Global.player_manager.kit.equipment_slots[1], false, 0)
+		managers.menu_scene:set_character_deployable(managers.blackmarket:equipped_deployable(), false, 0)
 	end
 end
 function PlayerManager:sync_save(data)

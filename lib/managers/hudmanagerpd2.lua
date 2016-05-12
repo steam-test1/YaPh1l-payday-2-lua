@@ -156,6 +156,9 @@ function HUDManager:set_weapon_ammo_by_unit(unit)
 end
 function HUDManager:_update_second_weapon_ammo_info(i, unit)
 end
+function HUDManager:damage_taken()
+	self._teammate_panels[HUDManager.PLAYER_PANEL]:_damage_taken()
+end
 function HUDManager:set_player_health(data)
 	self:set_teammate_health(HUDManager.PLAYER_PANEL, data)
 end
