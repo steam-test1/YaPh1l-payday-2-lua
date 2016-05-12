@@ -30,7 +30,7 @@ function PointOfNoReturnElement:_build_panel(panel, panel_sizer)
 		sizer = panel_sizer,
 		value = self._hed.time_easy,
 		floats = 0,
-		tooltip = "Set the time left",
+		tooltip = "Set the time left on Easy difficulty (Currently not used on Payday 2)",
 		min = 1,
 		name_proportions = 1,
 		ctrlr_proportions = 2
@@ -44,7 +44,7 @@ function PointOfNoReturnElement:_build_panel(panel, panel_sizer)
 		sizer = panel_sizer,
 		value = self._hed.time_normal,
 		floats = 0,
-		tooltip = "Set the time left",
+		tooltip = "Set the time left on Normal difficulty",
 		min = 1,
 		name_proportions = 1,
 		ctrlr_proportions = 2
@@ -64,7 +64,7 @@ function PointOfNoReturnElement:_build_panel(panel, panel_sizer)
 		sizer = panel_sizer,
 		value = self._hed.time_hard,
 		floats = 0,
-		tooltip = "Set the time left",
+		tooltip = "Set the time left on Hard difficulty",
 		min = 1,
 		name_proportions = 1,
 		ctrlr_proportions = 2
@@ -78,7 +78,7 @@ function PointOfNoReturnElement:_build_panel(panel, panel_sizer)
 		sizer = panel_sizer,
 		value = self._hed.time_overkill,
 		floats = 0,
-		tooltip = "Set the time left",
+		tooltip = "Set the time left on Very Hard difficulty",
 		min = 1,
 		name_proportions = 1,
 		ctrlr_proportions = 2
@@ -98,7 +98,7 @@ function PointOfNoReturnElement:_build_panel(panel, panel_sizer)
 		sizer = panel_sizer,
 		value = self._hed.time_overkill_145,
 		floats = 0,
-		tooltip = "Set the time left",
+		tooltip = "Set the time left on Overkill difficulty",
 		min = 1,
 		name_proportions = 1,
 		ctrlr_proportions = 2
@@ -118,7 +118,7 @@ function PointOfNoReturnElement:_build_panel(panel, panel_sizer)
 		sizer = panel_sizer,
 		value = self._hed.time_overkill_290,
 		floats = 0,
-		tooltip = "Set the time left",
+		tooltip = "Set the time left on Death Wish difficulty",
 		min = 1,
 		name_proportions = 1,
 		ctrlr_proportions = 2

@@ -21,6 +21,16 @@ CopDamage.WEAPON_TYPE_BULLET = 2
 CopDamage.WEAPON_TYPE_FLAMER = 3
 CopDamage.EVENT_IDS = {FINAL_LOWER_HEALTH_PERCENTAGE_LIMIT = 1}
 CopDamage.DEBUG_HP = CopDamage.DEBUG_HP or false
+CopDamage._event_listeners = EventListenerHolder:new()
+function CopDamage.register_listener(key, event_types, clbk)
+	CopDamage._event_listeners:add(key, event_types, clbk)
+end
+function CopDamage.unregister_listener(key)
+	CopDamage._event_listeners:remove(key)
+end
+function CopDamage._notify_listeners(event, ...)
+	CopDamage._event_listeners:call(event, ...)
+end
 function CopDamage.MAD_3_ACHIEVEMENT(attack_data)
 	if attack_data.variant ~= "melee" and attack_data.attacker_unit and not attack_data.attacker_unit:base().tased then
 		managers.job:set_memory("mad_3", false)
@@ -66,6 +76,7 @@ local mvec_2 = Vector3()
 function CopDamage:init(unit)
 	self._unit = unit
 	local char_tweak = tweak_data.character[unit:base()._tweak_table]
+	self._immune_to_knockback = char_tweak.damage.immune_to_knockback
 	self._HEALTH_INIT = char_tweak.HEALTH_INIT
 	self._health = self._HEALTH_INIT
 	self._health_ratio = 1
@@ -102,6 +113,9 @@ function CopDamage:init(unit)
 		parent = self._spine2_obj
 	}
 	self:_set_lower_health_percentage_limit(self._char_tweak.LOWER_HEALTH_PERCENTAGE_LIMIT)
+end
+function CopDamage:is_immune_to_shield_knockback()
+	return self._immune_to_knockback
 end
 function CopDamage:get_last_time_unit_got_fire_damage()
 	return self._last_time_unit_got_fire_damage
@@ -1826,6 +1840,7 @@ end
 function CopDamage:_on_damage_received(damage_info)
 	self:build_suppression("max", nil)
 	self:_call_listeners(damage_info)
+	CopDamage._notify_listeners("on_damage", damage_info)
 	if damage_info.result.type == "death" then
 		managers.enemy:on_enemy_died(self._unit, damage_info)
 		for c_key, c_data in pairs(managers.groupai:state():all_char_criminals()) do

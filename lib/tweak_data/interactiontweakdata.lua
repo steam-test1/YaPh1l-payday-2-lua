@@ -830,7 +830,7 @@ function InteractionTweakData:init()
 	self.sentry_gun_revive.no_contour = true
 	self.sentry_gun = {}
 	self.sentry_gun.icon = "equipment_ammo_bag"
-	self.sentry_gun.timer = 3.5
+	self.sentry_gun.timer = 0.5
 	self.sentry_gun.blocked_hint = "hint_reload_sentry"
 	self.sentry_gun.sound_start = "bar_bag_generic"
 	self.sentry_gun.sound_interupt = "bar_bag_generic_cancel"
@@ -1371,11 +1371,9 @@ function InteractionTweakData:init()
 	self.shaped_sharge.sound_start = "bar_c4_apply"
 	self.shaped_sharge.sound_interupt = "bar_c4_apply_cancel"
 	self.shaped_sharge.sound_done = "bar_c4_apply_finished"
-	self.shaped_sharge.requires_upgrade = {
-		category = "player",
-		upgrade = "trip_mine_shaped_charge"
-	}
 	self.shaped_sharge.action_text_id = "hud_action_placing_shaped_charge"
+	self.shaped_sharge.slot = 2
+	self.shaped_sharge.blocked_hint = ""
 	self.shaped_charge_single = deep_clone(self.shaped_sharge)
 	self.shaped_charge_single.axis = "z"
 	self.hostage_convert = {}

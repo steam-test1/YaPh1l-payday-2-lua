@@ -21,6 +21,37 @@ end
 PlayerManager = PlayerManager or class()
 PlayerManager.WEAPON_SLOTS = 2
 PlayerManager.TARGET_COCAINE_AMOUNT = 1500
+local get_as_digested = function(amount)
+	local list = {}
+	for i = 1, #amount do
+		table.insert(list, Application:digest_value(amount[i], false))
+	end
+	return list
+end
+local make_double_hud_string = function(a, b)
+	return string.format("%01d|%01d", a, b)
+end
+local function add_hud_item(amount, icon)
+	if #amount > 1 then
+		managers.hud:add_item_from_string({
+			amount_str = make_double_hud_string(amount[1], amount[2]),
+			amount = amount,
+			icon = icon
+		})
+	else
+		managers.hud:add_item({
+			amount = amount[1],
+			icon = icon
+		})
+	end
+end
+local function set_hud_item_amount(index, amount)
+	if #amount > 1 then
+		managers.hud:set_item_amount_from_string(index, make_double_hud_string(amount[1], amount[2]), amount)
+	else
+		managers.hud:set_item_amount(index, amount[1])
+	end
+end
 function PlayerManager:init()
 	self._coroutine_mgr = CoroutineManager:new()
 	self._message_system = MessageSystem:new()
@@ -128,6 +159,9 @@ function PlayerManager:init()
 		end
 		self._message_system:register(Message.OnDoctorBagUsed, self, clbk)
 	end
+end
+function PlayerManager:add_hud_item(amount, icon)
+	add_hud_item(get_as_digested(amount), icon)
 end
 function PlayerManager:mul_melee_damage(value)
 	self._melee_dmg_mul = self._melee_dmg_mul * value
@@ -330,6 +364,8 @@ function PlayerManager:_internal_load()
 		local slot = 2
 		if self:has_category_upgrade("player", "second_deployable") then
 			slot = 3
+		else
+			self._global.kit.equipment_slots[2] = nil
 		end
 		for i, name in ipairs(self._global.kit.equipment_slots) do
 			local ok_name = self._global.equipment[name] and name or self._global.default_kit.equipment_slots[i]
@@ -357,10 +393,7 @@ function PlayerManager:_internal_load()
 	self:update_cocaine_hud()
 	local equipment = self:selected_equipment()
 	if equipment then
-		managers.hud:add_item({
-			amount = Application:digest_value(equipment.amount, false),
-			icon = equipment.icon
-		})
+		add_hud_item(get_as_digested(equipment.amount), equipment.icon)
 	end
 end
 function PlayerManager:_add_level_equipment(player)
@@ -392,7 +425,7 @@ function PlayerManager:spawn_dropin_penalty(dead, bleed_out, health, used_deploy
 	end
 	if used_deployable then
 		managers.player:clear_equipment()
-		local equipped_deployable = Global.player_manager.kit.equipment_slots[1]
+		local equipped_deployable = managers.blackmarket:equipped_deployable()
 		local deployable_data = tweak_data.equipments[equipped_deployable]
 		if deployable_data and deployable_data.dropin_penalty_function_name then
 			local used_one, redirect = player:equipment()[deployable_data.dropin_penalty_function_name](player:equipment(), self._equipment.selected_index)
@@ -612,7 +645,7 @@ function PlayerManager:_verify_equipment_kit(loading)
 			end
 			managers.blackmarket:equip_deployable(data, loading)
 		else
-			self._global.kit.equipment_slots[1] = managers.player:availible_equipment(1)[1]
+			self:set_equipment_in_slot(managers.player:availible_equipment(1)[1])
 		end
 	end
 end
@@ -866,7 +899,7 @@ function PlayerManager:unaquire_equipment(upgrade, id)
 	local is_equipped = managers.player:equipment_in_slot(upgrade.slot) == id
 	self._global.equipment[id] = nil
 	if is_equipped then
-		self._global.kit.equipment_slots[upgrade.slot] = nil
+		self:set_equipment_in_slot(nil, upgrade.slot)
 		self:_verify_equipment_kit(false)
 	end
 	if upgrade.aquire then
@@ -1028,9 +1061,6 @@ function PlayerManager:temporary_upgrade_value(category, upgrade, default)
 	return upgrade_value[1]
 end
 function PlayerManager:equiptment_upgrade_value(category, upgrade, default)
-	if category == "trip_mine" and upgrade == "quantity" then
-		return self:upgrade_value(category, "quantity_1", default) + self:upgrade_value(category, "quantity_2", default) + self:upgrade_value(category, "quantity_3", default)
-	end
 	return self:upgrade_value(category, upgrade, default)
 end
 function PlayerManager:upgrade_level(category, upgrade, default)
@@ -1279,6 +1309,11 @@ end
 function PlayerManager:body_armor_skill_addend(override_armor)
 	local addend = 0
 	addend = addend + self:upgrade_value("player", tostring(override_armor or managers.blackmarket:equipped_armor(true, true)) .. "_armor_addend", 0)
+	if self:has_category_upgrade("player", "armor_increase") then
+		local health_multiplier = self:health_skill_multiplier()
+		local max_health = (PlayerDamage._HEALTH_INIT + self:thick_skin_value()) * health_multiplier
+		addend = addend + max_health * self:upgrade_value("player", "armor_increase", 1)
+	end
 	return addend
 end
 function PlayerManager:skill_dodge_chance(running, crouching, on_zipline, override_armor, detection_risk)
@@ -1346,7 +1381,8 @@ function PlayerManager:health_skill_multiplier()
 	multiplier = multiplier + self:upgrade_value("player", "passive_health_multiplier", 1) - 1
 	multiplier = multiplier + self:team_upgrade_value("health", "passive_multiplier", 1) - 1
 	multiplier = multiplier + self:get_hostage_bonus_multiplier("health") - 1
-	if self:num_local_minions() > 0 then
+	multiplier = multiplier - self:upgrade_value("player", "health_decrease", 0)
+	if 0 < self:num_local_minions() then
 		multiplier = multiplier + self:upgrade_value("player", "minion_master_health_multiplier", 1) - 1
 	end
 	return multiplier
@@ -1501,6 +1537,12 @@ function PlayerManager:availible_equipment(slot)
 end
 function PlayerManager:equipment_in_slot(slot)
 	return self._global.kit.equipment_slots[slot]
+end
+function PlayerManager:set_equipment_in_slot(item, slot)
+	self._global.kit.equipment_slots[slot or 1] = item
+end
+function PlayerManager:equipment_slots()
+	return self._global.kit.equipment_slots
 end
 function PlayerManager:toggle_player_rule(rule)
 	self._rules[rule] = not self._rules[rule]
@@ -2082,39 +2124,53 @@ function PlayerManager:_add_equipment(params)
 	end
 	local equipment = params.equipment
 	local tweak_data = tweak_data.equipments[equipment]
-	local amount = params.amount or (tweak_data.quantity or 0) + self:equiptment_upgrade_value(equipment, "quantity")
+	local amount = {}
+	local amount_digest = {}
+	local quantity = tweak_data.quantity
+	for i = 1, #quantity do
+		local equipment_name = equipment
+		if tweak_data.upgrade_name then
+			equipment_name = tweak_data.upgrade_name[i]
+		end
+		table.insert(amount, (quantity[i] or 0) + self:equiptment_upgrade_value(equipment_name, "quantity"))
+		table.insert(amount_digest, Application:digest_value(0, true))
+	end
 	local icon = params.icon or tweak_data and tweak_data.icon
 	local use_function_name = params.use_function_name or tweak_data and tweak_data.use_function_name
 	local use_function = use_function_name or nil
-	if params.slot and params.slot > 1 then
-		amount = math.ceil(amount / 2)
+	if params.slot and 1 < params.slot then
+		for i = 1, #quantity do
+			amount[i] = math.ceil(amount[i] / 2)
+		end
 	end
 	table.insert(self._equipment.selections, {
 		equipment = equipment,
-		amount = Application:digest_value(0, true),
+		amount = amount_digest,
 		use_function = use_function,
 		action_timer = tweak_data.action_timer,
 		icon = icon
 	})
 	self._equipment.selected_index = self._equipment.selected_index or 1
-	self:update_deployable_equipment_amount_to_peers(equipment, amount)
-	managers.hud:add_item({amount = amount, icon = icon})
-	self:add_equipment_amount(equipment, amount)
-end
-function PlayerManager:add_equipment_amount(equipment, amount)
-	local data, index = self:equipment_data_by_name(equipment)
-	if data then
-		local new_amount = Application:digest_value(data.amount, false) + amount
-		data.amount = Application:digest_value(new_amount, true)
-		managers.hud:set_item_amount(index, new_amount)
+	add_hud_item(amount, icon)
+	for i = 1, #amount do
+		self:update_deployable_equipment_amount_to_peers(equipment, amount[i])
+		self:add_equipment_amount(equipment, amount[i], i)
 	end
 end
-function PlayerManager:set_equipment_amount(equipment, amount)
+function PlayerManager:add_equipment_amount(equipment, amount, slot)
+	local data, index = self:equipment_data_by_name(equipment)
+	if data then
+		local new_amount = Application:digest_value(data.amount[slot or 1], false) + amount
+		data.amount[slot or 1] = Application:digest_value(new_amount, true)
+		set_hud_item_amount(index, get_as_digested(data.amount))
+	end
+end
+function PlayerManager:set_equipment_amount(equipment, amount, slot)
 	local data, index = self:equipment_data_by_name(equipment)
 	if data then
 		local new_amount = amount
-		data.amount = Application:digest_value(new_amount, true)
-		managers.hud:set_item_amount(index, new_amount)
+		data.amount[slot or 1] = Application:digest_value(new_amount, true)
+		set_hud_item_amount(index, get_as_digested(data.amount))
 	end
 end
 function PlayerManager:equipment_data_by_name(equipment)
@@ -2125,10 +2181,10 @@ function PlayerManager:equipment_data_by_name(equipment)
 	end
 	return nil
 end
-function PlayerManager:get_equipment_amount(equipment)
+function PlayerManager:get_equipment_amount(equipment, slot)
 	for i, equipments in ipairs(self._equipment.selections) do
 		if equipments.equipment == equipment then
-			return Application:digest_value(equipments.amount, false)
+			return Application:digest_value(equipments.amount[slot or 1], false)
 		end
 	end
 	return 0
@@ -2141,16 +2197,22 @@ function PlayerManager:has_equipment(equipment)
 	end
 	return false
 end
-function PlayerManager:has_deployable_left(equipment)
-	return self:get_equipment_amount(equipment) > 0
+function PlayerManager:has_deployable_left(equipment, slot)
+	return self:get_equipment_amount(equipment, slot or 1) > 0
 end
 function PlayerManager:select_next_item()
 	if not self._equipment.selected_index then
 		return
 	end
-	local new_index = self._equipment.selected_index + 1 <= #self._equipment.selections and self._equipment.selected_index + 1 or 1
-	local amount = Application:digest_value(self._equipment.selections[new_index].amount, false)
-	if amount > 0 then
+	local new_index = (not (self._equipment.selected_index + 1 <= #self._equipment.selections) or not (self._equipment.selected_index + 1)) and 1
+	local valid = false
+	local count = #self._equipment.selections[new_index].amount
+	for i = 1, count do
+		if Application:digest_value(self._equipment.selections[new_index].amount[i], false) > 0 then
+			valid = true
+		end
+	end
+	if valid then
 		self._equipment.selected_index = new_index
 	end
 end
@@ -2162,8 +2224,10 @@ function PlayerManager:select_previous_item()
 end
 function PlayerManager:clear_equipment()
 	for i, equipment in ipairs(self._equipment.selections) do
-		equipment.amount = Application:digest_value(0, true)
-		managers.hud:set_item_amount(i, 0)
+		for j = 1, #equipment.amount do
+			equipment.amount[j] = Application:digest_value(0, true)
+		end
+		set_hud_item_amount(i, get_as_digested(equipment.amount))
 		self:update_deployable_equipment_amount_to_peers(equipment.equipment, 0)
 	end
 end
@@ -2175,36 +2239,36 @@ function PlayerManager:from_server_equipment_place_result(selected_index, unit)
 	if not equipment then
 		return
 	end
-	local new_amount = Application:digest_value(equipment.amount, false) - 1
-	equipment.amount = Application:digest_value(new_amount, true)
+	local new_amount = Application:digest_value(equipment.amount[1], false) - 1
+	equipment.amount[1] = Application:digest_value(new_amount, true)
 	local equipments_available = self._global.equipment or {}
-	if managers.player:has_category_upgrade("player", "carry_sentry_and_trip") and equipments_available.sentry_gun and equipments_available.trip_mine and new_amount == 0 then
-		if equipment.equipment == "trip_mine" and not self:has_equipment("sentry_gun") then
-			self:add_equipment({equipment = "sentry_gun"})
-			self:select_next_item()
-			return
-		elseif equipment.equipment == "sentry_gun" and not self:has_equipment("trip_mine") then
-			self:add_equipment({equipment = "trip_mine"})
-			self:select_next_item()
-			return
-		end
-	end
 	managers.hud:set_item_amount(self._equipment.selected_index, new_amount)
 	self:update_deployable_equipment_amount_to_peers(equipment.equipment, new_amount)
 end
 function PlayerManager:can_use_selected_equipment(unit)
 	local equipment = self._equipment.selections[self._equipment.selected_index]
-	if not equipment or Application:digest_value(equipment.amount, false) == 0 then
+	if not equipment or Application:digest_value(equipment.amount[1], false) == 0 then
 		return false
 	end
 	return true
 end
+function PlayerManager:switch_equipment()
+	self:select_next_item()
+	local equipment = self:selected_equipment()
+	if equipment then
+		add_hud_item(get_as_digested(equipment.amount), equipment.icon)
+	end
+end
 function PlayerManager:selected_equipment()
 	local equipment = self._equipment.selections[self._equipment.selected_index]
-	if not equipment or Application:digest_value(equipment.amount, false) == 0 then
-		return nil
+	if equipment and equipment.amount then
+		for i = 1, #equipment.amount do
+			if Application:digest_value(equipment.amount[i], false) > 0 then
+				return equipment
+			end
+		end
 	end
-	return equipment
+	return nil
 end
 function PlayerManager:selected_equipment_id()
 	local equipment_data = self:selected_equipment()
@@ -2257,7 +2321,7 @@ function PlayerManager:selected_equipment_sound_done()
 end
 function PlayerManager:use_selected_equipment(unit)
 	local equipment = self._equipment.selections[self._equipment.selected_index]
-	if not equipment or Application:digest_value(equipment.amount, false) == 0 then
+	if not equipment or Application:digest_value(equipment.amount[1], false) == 0 then
 		return
 	end
 	local used_one = false
@@ -2305,23 +2369,11 @@ function PlayerManager:selected_equipment_deploy_timer()
 	multiplier = multiplier * self:upgrade_value("player", "deploy_interact_faster", 1)
 	return (equipment_tweak_data.deploy_time or 1) * multiplier
 end
-function PlayerManager:remove_equipment(equipment_id)
+function PlayerManager:remove_equipment(equipment_id, slot)
 	local equipment, index = self:equipment_data_by_name(equipment_id)
-	local new_amount = Application:digest_value(equipment.amount, false) - 1
-	equipment.amount = Application:digest_value(new_amount, true)
-	local equipments_available = self._global.equipment or {}
-	if managers.player:has_category_upgrade("player", "carry_sentry_and_trip") and equipments_available.sentry_gun and equipments_available.trip_mine and new_amount == 0 then
-		if equipment.equipment == "trip_mine" and not self:has_equipment("sentry_gun") then
-			self:add_equipment({equipment = "sentry_gun"})
-			self:select_next_item()
-			return
-		elseif equipment.equipment == "sentry_gun" and not self:has_equipment("trip_mine") then
-			self:add_equipment({equipment = "trip_mine"})
-			self:select_next_item()
-			return
-		end
-	end
-	managers.hud:set_item_amount(index, new_amount)
+	local new_amount = Application:digest_value(equipment.amount[slot or 1], false) - 1
+	equipment.amount[slot or 1] = Application:digest_value(new_amount, true)
+	set_hud_item_amount(index, get_as_digested(equipment.amount))
 	self:update_deployable_equipment_amount_to_peers(equipment.equipment, new_amount)
 end
 function PlayerManager:verify_equipment(peer_id, equipment_id)
@@ -2392,19 +2444,19 @@ function PlayerManager:register_carry(peer, carry_id)
 end
 function PlayerManager:add_sentry_gun(num)
 	local equipment, index = self:equipment_data_by_name("sentry_gun")
-	local new_amount = Application:digest_value(equipment.amount, false) + num
-	equipment.amount = Application:digest_value(new_amount, true)
+	local new_amount = Application:digest_value(equipment.amount[1], false) + num
+	equipment.amount[1] = Application:digest_value(new_amount, true)
 	local update_hud = false
-	if self._equipment.selected_index and self._equipment.selections[self._equipment.selected_index].equipment ~= "sentry_gun" and Application:digest_value(self._equipment.selections[self._equipment.selected_index].amount, false) == 0 then
+	if self._equipment.selected_index and self._equipment.selections[self._equipment.selected_index].equipment ~= "sentry_gun" and Application:digest_value(self._equipment.selections[self._equipment.selected_index].amount[1], false) == 0 then
 		self._equipment.selected_index = index
 		update_hud = true
 	end
 	if update_hud and equipment then
 		managers.hud:add_item({
-			amount = Application:digest_value(equipment.amount, false),
+			amount = Application:digest_value(equipment.amount[1], false),
 			icon = equipment.icon
 		})
-	else
+	elseif self._equipment.selected_index and self._equipment.selections[self._equipment.selected_index].equipment == "sentry_gun" then
 		managers.hud:set_item_amount(index, new_amount)
 	end
 	self:update_deployable_equipment_amount_to_peers(equipment.equipment, new_amount)
@@ -2940,14 +2992,14 @@ function PlayerManager:get_content_update_viewed(content_update)
 	return self._global.viewed_content_updates[content_update] or false
 end
 function PlayerManager:_verify_loaded_data()
-	local id = self._global.kit.equipment_slots[1]
+	local id = self:equipment_in_slot()
 	if id and not self._global.equipment[id] then
 		print("PlayerManager:_verify_loaded_data()", inspect(self._global.equipment))
-		self._global.kit.equipment_slots[1] = nil
+		self:set_equipment_in_slot(nil)
 		self:_verify_equipment_kit(true)
 	end
 	if managers.menu_scene then
-		managers.menu_scene:set_character_deployable(Global.player_manager.kit.equipment_slots[1], false, 0)
+		managers.menu_scene:set_character_deployable(managers.blackmarket:equipped_deployable(), false, 0)
 	end
 end
 function PlayerManager:sync_save(data)

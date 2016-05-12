@@ -479,6 +479,15 @@ function SkillTreeManager:on_respec_tree(tree, forced_respec_multiplier)
 		managers.statistics:publish_skills_to_steam()
 	end
 end
+function SkillTreeManager:_respec_tree_version7(tree, forced_respec_multiplier)
+	local points_spent = self:points_spent(tree)
+	local unlocked = self:trees_unlocked()
+	if unlocked > 0 then
+		points_spent = points_spent + Application:digest_value(tweak_data.skilltree.unlock_tree_cost[unlocked], false)
+	end
+	self:_reset_skilltree7(tree, forced_respec_multiplier)
+	self:_aquire_points(points_spent, true)
+end
 function SkillTreeManager:_respec_tree_version5(tree, forced_respec_multiplier)
 	local points_spent = self:points_spent(tree)
 	local unlocked = self:trees_unlocked()
@@ -508,6 +517,18 @@ function SkillTreeManager:_reset_skilltree(tree, forced_respec_multiplier)
 			self:_unaquire_skill(skill)
 		end
 	end
+end
+function SkillTreeManager:_reset_skilltree7(tree, forced_respec_multiplier)
+	self:_set_points_spent(tree, 0)
+	self._global.trees[tree].unlocked = false
+	local tree_data = tweak_data.skilltree.trees[tree]
+	for i = #tree_data.tiers, 1, -1 do
+		local tier = tree_data.tiers[i]
+		for _, skill in ipairs(tier) do
+			self:_unaquire_skill(skill)
+		end
+	end
+	self:_unaquire_skill(tree_data.skill)
 end
 function SkillTreeManager:can_unlock_skill_switch(selected_skill_switch)
 	if not self._global.skill_switches[selected_skill_switch] then

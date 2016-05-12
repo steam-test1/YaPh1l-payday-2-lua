@@ -4,7 +4,7 @@ function NewShotgunBase:init(...)
 	self:setup_default()
 	self._player_run_and_shoot = managers.player:has_category_upgrade("player", "run_and_shoot")
 	self._run_and_shoot = managers.player:has_category_upgrade("shotgun", "hip_run_and_shoot") or self._player_run_and_shoot
-	self._hip_fire_rate_inc = managers.player:upgrade_value("shotgun", "hip_rate_of_fire", 0)
+	self._hip_fire_rate_inc = 0
 end
 function NewShotgunBase:setup_default()
 	self._damage_near = tweak_data.weapon[self._name_id].damage_near
@@ -12,6 +12,9 @@ function NewShotgunBase:setup_default()
 	self._rays = tweak_data.weapon[self._name_id].rays or 6
 	self._range = self._damage_far
 	self._use_shotgun_reload = self._use_shotgun_reload or self._use_shotgun_reload == nil
+	if not self:weapon_tweak_data().has_magazine then
+		self._hip_fire_rate_inc = managers.player:upgrade_value("shotgun", "hip_rate_of_fire", 0)
+	end
 end
 function NewShotgunBase:_create_use_setups()
 	local use_data = {}
@@ -117,8 +120,6 @@ function NewShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, s
 	end
 	local spread = self:_get_spread(user_unit)
 	mvector3.set(mvec_direction, direction)
-	if spread then
-	end
 	for i = 1, shoot_through_data and 1 or self._rays do
 		mvector3.set(mvec_spread_direction, mvec_direction)
 		if spread then

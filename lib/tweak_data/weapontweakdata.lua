@@ -111,6 +111,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_pl14_npc()
 	self:_init_data_x_mp5_npc()
 	self:_init_data_x_akmsu_npc()
+	self:_init_data_tecci_npc()
 	self:_precalculate_values()
 end
 function WeaponTweakData:_set_easy()
@@ -1856,6 +1857,19 @@ function WeaponTweakData:_init_data_x_akmsu_npc()
 	self.x_akmsu_npc.alert_size = 1800
 	self.x_akmsu_npc.suppression = 2
 end
+function WeaponTweakData:_init_data_tecci_npc()
+	self.tecci_npc.sounds.prefix = "tecci_npc"
+	self.tecci_npc.use_data.selection_index = 2
+	self.tecci_npc.DAMAGE = 2
+	self.tecci_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
+	self.tecci_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.tecci_npc.CLIP_AMMO_MAX = 20
+	self.tecci_npc.NR_CLIPS_MAX = 5
+	self.tecci_npc.auto.fire_rate = 0.15
+	self.tecci_npc.hold = "rifle"
+	self.tecci_npc.alert_size = 5000
+	self.tecci_npc.suppression = 1
+end
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default
 	if SystemInfo:platform() == Idstring("WIN32") then
@@ -2761,7 +2775,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.r870.animations.recoil_steelsight = true
 	self.r870.panic_suppression_chance = 0.2
 	self.r870.stats = {
-		damage = 59,
+		damage = 90,
 		spread = 11,
 		recoil = 9,
 		spread_moving = 12,
@@ -3541,7 +3555,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.saiga.animations.recoil_steelsight = true
 	self.saiga.panic_suppression_chance = 0.2
 	self.saiga.stats = {
-		damage = 33,
+		damage = 42,
 		spread = 8,
 		recoil = 12,
 		spread_moving = 8,
@@ -4366,7 +4380,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.serbu.animations.recoil_steelsight = true
 	self.serbu.panic_suppression_chance = 0.2
 	self.serbu.stats = {
-		damage = 58,
+		damage = 90,
 		spread = 13,
 		recoil = 10,
 		spread_moving = 10,
@@ -4460,7 +4474,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.huntsman.animations.recoil_steelsight = true
 	self.huntsman.panic_suppression_chance = 0.2
 	self.huntsman.stats = {
-		damage = 145,
+		damage = 155,
 		spread = 16,
 		recoil = 10,
 		spread_moving = 16,
@@ -5000,7 +5014,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.judge.texture_bundle_folder = "pd2_million"
 	self.judge.panic_suppression_chance = 0.2
 	self.judge.stats = {
-		damage = 95,
+		damage = 155,
 		spread = 14,
 		recoil = 8,
 		spread_moving = 14,
@@ -6266,7 +6280,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.benelli.global_value = "gage_pack_shotgun"
 	self.benelli.panic_suppression_chance = 0.2
 	self.benelli.stats = {
-		damage = 40,
+		damage = 55,
 		spread = 8,
 		recoil = 12,
 		spread_moving = 7,
@@ -6356,7 +6370,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.striker.global_value = "gage_pack_shotgun"
 	self.striker.panic_suppression_chance = 0.2
 	self.striker.stats = {
-		damage = 33,
+		damage = 42,
 		spread = 8,
 		recoil = 12,
 		spread_moving = 8,
@@ -6449,7 +6463,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ksg.global_value = "gage_pack_shotgun"
 	self.ksg.panic_suppression_chance = 0.2
 	self.ksg.stats = {
-		damage = 59,
+		damage = 90,
 		spread = 12,
 		recoil = 12,
 		spread_moving = 12,
@@ -7418,7 +7432,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_deagle.animations.recoil_steelsight = true
 	self.x_deagle.panic_suppression_chance = 0.2
 	self.x_deagle.stats = {
-		damage = 145,
+		damage = 120,
 		spread = 20,
 		recoil = 8,
 		spread_moving = 4,
@@ -7587,7 +7601,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.spas12.global_value = "pd2_clan"
 	self.spas12.panic_suppression_chance = 0.2
 	self.spas12.stats = {
-		damage = 40,
+		damage = 55,
 		spread = 8,
 		recoil = 12,
 		spread_moving = 8,
@@ -8686,7 +8700,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.b682.global_value = "pd2_clan"
 	self.b682.texture_bundle_folder = "character_pack_bonnie"
 	self.b682.stats = {
-		damage = 145,
+		damage = 155,
 		spread = 16,
 		recoil = 8,
 		spread_moving = 16,
@@ -9253,7 +9267,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.aa12.texture_bundle_folder = "bbq"
 	self.aa12.panic_suppression_chance = 0.2
 	self.aa12.stats = {
-		damage = 33,
+		damage = 42,
 		spread = 8,
 		recoil = 12,
 		spread_moving = 8,
@@ -10826,7 +10840,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m37.global_value = "peta"
 	self.m37.panic_suppression_chance = 0.2
 	self.m37.stats = {
-		damage = 59,
+		damage = 90,
 		spread = 12,
 		recoil = 14,
 		spread_moving = 12,
@@ -11383,6 +11397,84 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		zoom = 3,
 		concealment = 21,
 		suppression = 8,
+		alert_size = 7,
+		extra_ammo = 6,
+		total_ammo_mod = 21,
+		value = 1
+	}
+	self.tecci = {}
+	self.tecci.category = "assault_rifle"
+	self.tecci.damage_melee = damage_melee_default
+	self.tecci.damage_melee_effect_mul = damage_melee_effect_multiplier_default
+	self.tecci.sounds = {}
+	self.tecci.sounds.fire = "tecci_fire_single"
+	self.tecci.sounds.fire_single = "tecci_fire_single"
+	self.tecci.sounds.fire_auto = "tecci_fire"
+	self.tecci.sounds.stop_fire = "tecci_stop"
+	self.tecci.sounds.dryfire = "primary_dryfire"
+	self.tecci.sounds.enter_steelsight = "m4_tighten"
+	self.tecci.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.tecci.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.tecci.timers = {}
+	self.tecci.timers.reload_not_empty = 3.8
+	self.tecci.timers.reload_empty = 4.7
+	self.tecci.timers.unequip = 0.6
+	self.tecci.timers.equip = 0.6
+	self.tecci.name_id = "bm_w_tecci"
+	self.tecci.desc_id = "bm_w_tecci_desc"
+	self.tecci.description_id = "des_tecci"
+	self.tecci.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
+	self.tecci.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.tecci.use_data = {}
+	self.tecci.use_data.selection_index = 2
+	self.tecci.DAMAGE = 1
+	self.tecci.CLIP_AMMO_MAX = 100
+	self.tecci.NR_CLIPS_MAX = 2
+	self.tecci.AMMO_MAX = self.tecci.CLIP_AMMO_MAX * self.tecci.NR_CLIPS_MAX
+	self.tecci.AMMO_PICKUP = self:_pickup_chance(self.tecci.AMMO_MAX, 1)
+	self.tecci.FIRE_MODE = "auto"
+	self.tecci.fire_mode_data = {}
+	self.tecci.fire_mode_data.fire_rate = 0.09
+	self.tecci.CAN_TOGGLE_FIREMODE = true
+	self.tecci.auto = {}
+	self.tecci.auto.fire_rate = 0.1
+	self.tecci.spread = {}
+	self.tecci.spread.standing = 3
+	self.tecci.spread.crouching = self.tecci.spread.standing * 0.4
+	self.tecci.spread.steelsight = self.tecci.spread.standing * 0.4
+	self.tecci.spread.moving_standing = self.tecci.spread.standing
+	self.tecci.spread.moving_crouching = self.tecci.spread.standing
+	self.tecci.spread.moving_steelsight = self.tecci.spread.steelsight
+	self.tecci.kick = {}
+	self.tecci.kick.standing = {
+		0.6,
+		0.8,
+		-1,
+		1
+	}
+	self.tecci.kick.crouching = self.tecci.kick.standing
+	self.tecci.kick.steelsight = self.tecci.kick.standing
+	self.tecci.shake = {}
+	self.tecci.shake.fire_multiplier = 0.6
+	self.tecci.shake.fire_steelsight_multiplier = -0.6
+	self.tecci.autohit = autohit_rifle_default
+	self.tecci.aim_assist = aim_assist_rifle_default
+	self.tecci.weapon_hold = "tecci"
+	self.tecci.animations = {}
+	self.famas.animations.equip_id = "equip_tecci"
+	self.tecci.animations.recoil_steelsight = true
+	self.tecci.global_value = "opera"
+	self.tecci.texture_bundle_folder = "opera"
+	self.tecci.transition_duration = 0.02
+	self.tecci.panic_suppression_chance = 0.2
+	self.tecci.stats = {
+		damage = 38,
+		spread = 7,
+		recoil = 14,
+		spread_moving = 10,
+		zoom = 3,
+		concealment = 20,
+		suppression = 10,
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
@@ -12131,6 +12223,12 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.tecci_npc = {
+		usage = "m4",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 end
 function WeaponTweakData:_precalculate_values_wip()
 end
@@ -12248,4 +12346,5 @@ function WeaponTweakData:_precalculate_values()
 	self.ak47_ass_npc.AMMO_MAX = self.ak47_ass_npc.CLIP_AMMO_MAX * self.ak47_ass_npc.NR_CLIPS_MAX
 	self.x_mp5_npc.AMMO_MAX = self.x_mp5_npc.CLIP_AMMO_MAX * self.x_mp5_npc.NR_CLIPS_MAX
 	self.x_akmsu_npc.AMMO_MAX = self.x_akmsu_npc.CLIP_AMMO_MAX * self.x_akmsu_npc.NR_CLIPS_MAX
+	self.tecci_npc.AMMO_MAX = self.tecci_npc.CLIP_AMMO_MAX * self.tecci_npc.NR_CLIPS_MAX
 end

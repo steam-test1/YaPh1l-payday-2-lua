@@ -2,10 +2,10 @@ TripMineBase = TripMineBase or class(UnitBase)
 TripMineBase.EVENT_IDS = {}
 TripMineBase.EVENT_IDS.sensor_beep = 1
 TripMineBase.EVENT_IDS.explosion_beep = 2
-function TripMineBase.spawn(pos, rot, sensor_upgrade, fire_trap_level, peer_id)
+function TripMineBase.spawn(pos, rot, sensor_upgrade, peer_id)
 	local unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_tripmine/gen_equipment_tripmine"), pos, rot)
-	managers.network:session():send_to_peers_synched("sync_trip_mine_setup", unit, sensor_upgrade, fire_trap_level, peer_id or 0)
-	unit:base():setup(sensor_upgrade, fire_trap_level)
+	managers.network:session():send_to_peers_synched("sync_trip_mine_setup", unit, sensor_upgrade, peer_id or 0)
+	unit:base():setup(sensor_upgrade)
 	return unit
 end
 function TripMineBase:set_server_information(peer_id)
@@ -53,14 +53,14 @@ end
 function TripMineBase:interaction_text_id()
 	return self._sensor_upgrade and (self:armed() and "hud_int_equipment_sensor_mode_trip_mine" or "hud_int_equipment_normal_mode_trip_mine") or "debug_interact_trip_mine"
 end
-function TripMineBase:sync_setup(sensor_upgrade, fire_trap_level)
+function TripMineBase:sync_setup(sensor_upgrade)
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 		self._validate_clbk_id = nil
 	end
-	self:setup(sensor_upgrade, fire_trap_level)
+	self:setup(sensor_upgrade)
 end
-function TripMineBase:setup(sensor_upgrade, fire_trap_level)
+function TripMineBase:setup(sensor_upgrade)
 	self._slotmask = managers.slot:get_mask("trip_mine_targets")
 	self._first_armed = false
 	self._armed = false
@@ -68,9 +68,6 @@ function TripMineBase:setup(sensor_upgrade, fire_trap_level)
 	self._sensor_upgrade = sensor_upgrade
 	self:set_active(false)
 	self._unit:sound_source():post_event("trip_mine_attach")
-	if fire_trap_level > 0 then
-		self._fire_trap = true
-	end
 	local upgrade = managers.player:has_category_upgrade("trip_mine", "can_switch_on_off") or managers.player:has_category_upgrade("trip_mine", "sensor_toggle")
 	self._unit:contour():add(upgrade and "deployable_interactable" or "deployable_active")
 end
@@ -289,7 +286,7 @@ function TripMineBase:_explode(col_ray)
 	if not managers.network:session() then
 		return
 	end
-	local damage_size = tweak_data.weapon.trip_mines.damage_size * managers.player:upgrade_value("trip_mine", "explosion_size_multiplier_1", 1) * managers.player:upgrade_value("trip_mine", "explosion_size_multiplier_2", 1) * managers.player:upgrade_value("trip_mine", "damage_multiplier", 1)
+	local damage_size = tweak_data.weapon.trip_mines.damage_size * managers.player:upgrade_value("trip_mine", "explosion_size_multiplier_1", 1) * managers.player:upgrade_value("trip_mine", "damage_multiplier", 1)
 	local player = managers.player:player_unit()
 	managers.explosion:give_local_player_dmg(self._position, damage_size, tweak_data.weapon.trip_mines.player_damage)
 	self._unit:set_extension_update_enabled(Idstring("base"), false)
@@ -347,7 +344,15 @@ function TripMineBase:_explode(col_ray)
 	end
 	if managers.network:session() then
 		if player then
-			managers.network:session():send_to_peers_synched("sync_trip_mine_explode", self._unit, player, self._ray_from_pos, self._ray_to_pos, damage_size, damage)
+			if managers.player:has_category_upgrade("trip_mine", "fire_trap") then
+				local fire_trap_data = managers.player:upgrade_value("trip_mine", "fire_trap", nil)
+				if fire_trap_data then
+					managers.network:session():send_to_peers_synched("sync_trip_mine_explode_spawn_fire", self._unit, player, self._ray_from_pos, self._ray_to_pos, damage_size, damage, fire_trap_data[1], fire_trap_data[2])
+					self:_spawn_environment_fire(fire_trap_data[1], fire_trap_data[2])
+				end
+			else
+				managers.network:session():send_to_peers_synched("sync_trip_mine_explode", self._unit, player, self._ray_from_pos, self._ray_to_pos, damage_size, damage)
+			end
 		else
 			managers.network:session():send_to_peers_synched("sync_trip_mine_explode_no_user", self._unit, self._ray_from_pos, self._ray_to_pos, damage_size, damage)
 		end
@@ -362,10 +367,11 @@ function TripMineBase:_explode(col_ray)
 		}
 		managers.groupai:state():propagate_alert(alert_event)
 	end
-	if self._fire_trap then
-		self:_spawn_environment_fire()
-	end
 	self._unit:set_slot(0)
+end
+function TripMineBase:sync_trip_mine_explode_and_spawn_fire(user_unit, ray_from, ray_to, damage_size, damage, added_time, range_multiplier)
+	self:_spawn_environment_fire(added_time, range_multiplier)
+	self:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
 end
 function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
 	self:_play_sound_and_effects()
@@ -390,17 +396,17 @@ function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage
 			end
 		end
 	end
-	if self._fire_trap then
-		self:_spawn_environment_fire()
-	end
 end
-function TripMineBase:_spawn_environment_fire()
+function TripMineBase:_spawn_environment_fire(added_time, range_multiplier)
 	local position = self._unit:position()
 	local rotation = self._unit:rotation()
 	local data = tweak_data.env_effect:trip_mine_fire()
 	local normal = self._unit:rotation():y()
-	EnvironmentFire.spawn(position, rotation, data, normal, self.user_unit)
-	self._unit:set_slot(0)
+	local dir = Vector3()
+	mvector3.set(dir, normal)
+	mvector3.multiply(dir, 20)
+	mvector3.add(position, dir)
+	EnvironmentFire.spawn(position, rotation, data, normal, self.user_unit, added_time, range_multiplier)
 end
 function TripMineBase:_play_sound_and_effects()
 	World:effect_manager():spawn({

@@ -61,6 +61,7 @@ function PlayerStandard:init(unit)
 	self._ext_inventory = unit:inventory()
 	self._ext_anim = unit:anim_data()
 	self._ext_network = unit:network()
+	self._ext_event_listener = unit:event_listener()
 	self._camera_unit = self._ext_camera._camera_unit
 	self._camera_unit_anim_data = self._camera_unit:anim_data()
 	self._machine = unit:anim_state_machine()
@@ -1265,14 +1266,7 @@ function PlayerStandard:_check_action_change_equipment(input)
 	end
 end
 function PlayerStandard:_switch_equipment()
-	managers.player:select_next_item()
-	local equipment = managers.player:selected_equipment()
-	if equipment then
-		managers.hud:add_item({
-			amount = Application:digest_value(equipment.amount, false),
-			icon = equipment.icon
-		})
-	end
+	managers.player:switch_equipment()
 end
 function PlayerStandard:_start_action_interact(t, input, timer, interact_object)
 	self:_interupt_action_reload(t)
@@ -1577,7 +1571,7 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray)
 		managers.game_play_central:physics_push(col_ray)
 		local character_unit, shield_knock
 		local can_shield_knock = managers.player:has_category_upgrade("player", "shield_knock")
-		if can_shield_knock and hit_unit:in_slot(8) and alive(hit_unit:parent()) then
+		if can_shield_knock and hit_unit:in_slot(8) and alive(hit_unit:parent()) and not hit_unit:parent():character_damage():is_immune_to_shield_knockback() then
 			shield_knock = true
 			character_unit = hit_unit:parent()
 		end

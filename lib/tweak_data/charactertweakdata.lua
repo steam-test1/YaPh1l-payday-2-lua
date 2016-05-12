@@ -99,6 +99,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_dragon(presets)
 	self:_init_bodhi(presets)
 	self:_init_jimmy(presets)
+	self:_init_sydney(presets)
 	self:_init_old_hoxton_mission(presets)
 	self._prefix_data = nil
 	self._prefix_data_p1 = nil
@@ -817,7 +818,7 @@ function CharacterTweakData:_init_tank(presets)
 	self:_process_weapon_usage_table(self.tank.weapon)
 	self.tank.detection = presets.detection.normal
 	self.tank.HEALTH_INIT = 550
-	self.tank.headshot_dmg_mul = self.tank.HEALTH_INIT / 24
+	self.tank.headshot_dmg_mul = self.tank.HEALTH_INIT / 40
 	self.tank.damage.explosion_damage_mul = 1
 	self.tank.move_speed = presets.move_speed.very_slow
 	self.tank.allowed_stances = {cbt = true}
@@ -921,7 +922,7 @@ function CharacterTweakData:_init_tank(presets)
 		}
 	}
 	self.tank_hw.HEALTH_INIT = 1100
-	self.tank_hw.headshot_dmg_mul = self.tank.HEALTH_INIT / 24
+	self.tank_hw.headshot_dmg_mul = self.tank.HEALTH_INIT / 40
 	self.tank_hw.damage.explosion_damage_mul = 1
 	self.tank_hw.use_animation_on_fire_damage = false
 	self.tank_hw.flammable = true
@@ -1036,7 +1037,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 700,
 			acc = {0.5, 0.75},
-			dmg_mul = 3,
+			dmg_mul = 3.5,
 			recoil = {0.35, 0.55},
 			mode = {
 				0.2,
@@ -1048,7 +1049,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 1000,
 			acc = {0.45, 0.65},
-			dmg_mul = 2,
+			dmg_mul = 3,
 			recoil = {0.35, 0.55},
 			mode = {
 				0.2,
@@ -1060,7 +1061,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 2000,
 			acc = {0.3, 0.5},
-			dmg_mul = 2,
+			dmg_mul = 3,
 			recoil = {0.35, 1.2},
 			mode = {
 				2,
@@ -1072,7 +1073,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 3000,
 			acc = {0.1, 0.25},
-			dmg_mul = 1,
+			dmg_mul = 2,
 			recoil = {0.35, 1.5},
 			mode = {
 				6,
@@ -1113,7 +1114,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 700,
 			acc = {0.5, 0.8},
-			dmg_mul = 1.5,
+			dmg_mul = 3,
 			recoil = {0.35, 0.55},
 			mode = {
 				1,
@@ -1125,7 +1126,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 1000,
 			acc = {0.4, 0.6},
-			dmg_mul = 1.25,
+			dmg_mul = 2.5,
 			recoil = {0.35, 0.55},
 			mode = {
 				1,
@@ -1137,7 +1138,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 2000,
 			acc = {0.15, 0.5},
-			dmg_mul = 1,
+			dmg_mul = 2,
 			recoil = {0.35, 0.75},
 			mode = {
 				1,
@@ -1149,7 +1150,7 @@ function CharacterTweakData:_init_shield(presets)
 		{
 			r = 3000,
 			acc = {0, 0.25},
-			dmg_mul = 1,
+			dmg_mul = 2,
 			recoil = {0.35, 1.5},
 			mode = {
 				1,
@@ -1183,6 +1184,7 @@ function CharacterTweakData:_init_phalanx_minion(presets)
 	self.phalanx_minion.damage.explosion_damage_mul = 6
 	self.phalanx_minion.damage.hurt_severity = presets.hurt_severities.no_hurts_no_tase
 	self.phalanx_minion.damage.shield_knocked = false
+	self.phalanx_minion.damage.immune_to_knockback = true
 	self.phalanx_minion.ecm_vulnerability = nil
 	self.phalanx_minion.ecm_hurts = {}
 	self.phalanx_minion.priority_shout = "f45"
@@ -1763,6 +1765,26 @@ function CharacterTweakData:_init_jimmy(presets)
 	self.jimmy.weapon_voice = "3"
 	self.jimmy.access = "teamAI1"
 	self.jimmy.arrest = {
+		timeout = 240,
+		aggression_timeout = 6,
+		arrest_timeout = 240
+	}
+end
+function CharacterTweakData:_init_sydney(presets)
+	self.sydney = {}
+	self.sydney.damage = presets.gang_member_damage
+	self.sydney.weapon = deep_clone(presets.weapon.gang_member)
+	self.sydney.weapon.weapons_of_choice = {
+		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
+	}
+	self.sydney.detection = presets.detection.gang_member
+	self.sydney.move_speed = presets.move_speed.fast
+	self.sydney.crouch_move = false
+	self.sydney.speech_prefix = "rb15"
+	self.sydney.weapon_voice = "3"
+	self.sydney.access = "teamAI1"
+	self.sydney.arrest = {
 		timeout = 240,
 		aggression_timeout = 6,
 		arrest_timeout = 240
@@ -6852,7 +6874,7 @@ function CharacterTweakData:character_map()
 				"npc_locke"
 			}
 		},
-		berry = {
+		peta = {
 			path = "units/pd2_dlc_peta/characters/",
 			list = {
 				"civ_male_boris"

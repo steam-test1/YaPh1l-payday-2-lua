@@ -1060,7 +1060,7 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 	local hit_unit = col_ray.unit
 	local shield_knock = false
 	local is_shield = hit_unit:in_slot(8) and alive(hit_unit:parent())
-	if is_shield then
+	if is_shield and not hit_unit:parent():character_damage():is_immune_to_shield_knockback() then
 		shield_knock = weapon_unit:base()._shield_knock
 		local dmg_ratio = math.min(damage, RaycastWeaponBase.MIN_KNOCK_BACK)
 		dmg_ratio = dmg_ratio / RaycastWeaponBase.MIN_KNOCK_BACK

@@ -1224,7 +1224,7 @@ PlayerInventoryGui._update_info_deployable = function(self, name)
 		local deployable_data = tweak_data.blackmarket.deployables[deployable_id]
 	end
 	local text_string = ""
-	if not equipment_data.quantity then
+	if not equipment_data.quantity[1] then
 		local amount = not deployable_data or not equipment_data or 1
 	end
 	amount = amount + (managers.player:equiptment_upgrade_value(deployable_id, "quantity") or 0)

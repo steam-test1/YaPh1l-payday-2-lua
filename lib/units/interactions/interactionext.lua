@@ -138,7 +138,7 @@ function BaseInteractionExt:can_select(player)
 	if self._tweak_data.special_equipment_block and managers.player:has_special_equipment(self._tweak_data.special_equipment_block) then
 		return false
 	end
-	if self._tweak_data.verify_owner and self._unit:base():get_owner() ~= player then
+	if self._tweak_data.verify_owner and not self._unit:base():is_owner() then
 		return false
 	end
 	return true
@@ -239,7 +239,7 @@ function BaseInteractionExt:_has_required_upgrade(movement_state)
 end
 function BaseInteractionExt:_has_required_deployable()
 	if self._tweak_data.required_deployable then
-		return managers.player:has_deployable_left(self._tweak_data.required_deployable)
+		return managers.player:has_deployable_left(self._tweak_data.required_deployable, self._tweak_data.slot or 1)
 	end
 	return true
 end
@@ -911,9 +911,7 @@ function SentryGunInteractionExt:on_interaction_released(data)
 	end
 end
 function SentryGunInteractionExt:interact_start(player, data)
-	if self._unit:base():get_owner() ~= data._unit then
-		return false
-	elseif data.pickup_sentry then
+	if data.pickup_sentry then
 		local val, timer = SentryGunInteractionExt.super.interact_start(self, player, data)
 		return val, timer
 	end
@@ -1701,7 +1699,13 @@ function MissionDoorDeviceInteractionExt:result_place_mission_door_device(placed
 			managers.player:remove_special(self._tweak_data.special_equipment)
 		end
 		if self._tweak_data.deployable_consume then
-			managers.player:remove_equipment(self._tweak_data.required_deployable)
+			managers.player:remove_equipment(self._tweak_data.required_deployable, self._tweak_data.slot or 1)
+		end
+		if self._tweak_data.deployable_consume and self._tweak_data.required_deployable then
+			local equipment = managers.player:selected_equipment()
+			if not equipment then
+				managers.player:switch_equipment()
+			end
 		end
 	else
 	end

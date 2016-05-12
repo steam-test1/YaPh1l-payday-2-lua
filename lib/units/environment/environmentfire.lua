@@ -1,9 +1,9 @@
 EnvironmentFire = EnvironmentFire or class(UnitBase)
 local unit_id = Idstring("units/payday2/environment/environment_fire_1/environment_fire_1")
-function EnvironmentFire.spawn(position, rotation, data, normal, user_unit)
+function EnvironmentFire.spawn(position, rotation, data, normal, user_unit, added_time, range_multiplier)
 	local unit = World:spawn_unit(unit_id, position, rotation)
 	if unit then
-		unit:base():on_spawn(data, normal)
+		unit:base():on_spawn(data, normal, user_unit, added_time, range_multiplier)
 	end
 	return unit
 end
@@ -13,7 +13,7 @@ function EnvironmentFire:init(unit)
 	self._burn_duration = 0
 	self._molotov_damage_effect_table = {}
 end
-function EnvironmentFire:on_spawn(data, normal, user_unit)
+function EnvironmentFire:on_spawn(data, normal, user_unit, added_time, range_multiplier)
 	local custom_params = {
 		effect = data.effect_name,
 		sound_event = data.sound_event,
@@ -24,10 +24,10 @@ function EnvironmentFire:on_spawn(data, normal, user_unit)
 		sound_event_impact_duration = data.sound_event_impact_duration
 	}
 	self._user_unit = user_unit
-	self._burn_duration = data.burn_duration
+	self._burn_duration = data.burn_duration + added_time
 	self._burn_tick_counter = 0
 	self._burn_tick_period = data.burn_tick_period
-	self._range = data.range
+	self._range = data.range * range_multiplier
 	self._curve_pow = data.curve_pow
 	self._damage = data.damage
 	self._player_damage = data.player_damage

@@ -7451,6 +7451,7 @@ function BlackMarketGui:populate_deployables(data)
 		new_data.slot = i
 		new_data.unlocked = table.contains(managers.player:availible_equipment(1), new_data.name)
 		new_data.level = 0
+		new_data.equipped = managers.blackmarket:equipped_deployable() == new_data.name
 		local slot = 0
 		local count = 1
 		if second_deployable then

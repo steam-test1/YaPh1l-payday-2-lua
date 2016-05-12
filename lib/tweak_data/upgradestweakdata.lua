@@ -268,13 +268,13 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.damage_shake_multiplier = {0.5}
 	self.values.player.bleed_out_health_multiplier = {1.5}
 	self.values.shotgun.recoil_multiplier = {0.75}
-	self.values.shotgun.damage_multiplier = {1.1, 1.35}
+	self.values.shotgun.damage_multiplier = {1.1, 1.15}
 	self.values.ammo_bag.quantity = {1}
 	self.values.ammo_bag.ammo_increase = {2}
 	self.values.shotgun.reload_speed_multiplier = {1.15, 1.5}
 	self.values.shotgun.enter_steelsight_speed_multiplier = {2.25}
 	self.values.saw.extra_ammo_multiplier = {1.5}
-	self.values.player.flashbang_multiplier = {0.75, 0.75}
+	self.values.player.flashbang_multiplier = {0.25, 0.25}
 	self.values.shotgun.hip_fire_spread_multiplier = {0.8}
 	self.values.pistol.hip_fire_spread_multiplier = {0.8}
 	self.values.assault_rifle.hip_fire_spread_multiplier = {0.8}
@@ -305,7 +305,6 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.assault_rifle.zoom_increase = {2}
 	self.values.player.crafting_weapon_multiplier = {0.9}
 	self.values.player.crafting_mask_multiplier = {0.9}
-	self.values.trip_mine.quantity_1 = {1}
 	self.values.trip_mine.can_switch_on_off = {true}
 	self.values.player.drill_speed_multiplier = {0.85, 0.7}
 	self.values.player.drill_melee_hit_restart_chance = {true}
@@ -313,8 +312,8 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.trip_mine_deploy_time_multiplier = {0.8, 0.6}
 	self.values.trip_mine.sensor_toggle = {true}
 	self.values.trip_mine.fire_trap = {
-		{3, 1},
-		{4.5, 1.5}
+		{0, 1},
+		{10, 1.5}
 	}
 	self.values.player.drill_fix_interaction_speed_multiplier = {0.75}
 	self.values.player.drill_autorepair = {0.1, 0.3}
@@ -334,7 +333,6 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.sentry_gun.shield = {true}
 	self.values.trip_mine.explosion_size_multiplier_1 = {1.3}
 	self.values.trip_mine.explosion_size_multiplier_2 = {1.7}
-	self.values.trip_mine.quantity_3 = {3}
 	self.values.player.trip_mine_shaped_charge = {true}
 	self.values.sentry_gun.quantity = {1, 4}
 	self.values.sentry_gun.damage_multiplier = {2.5}
@@ -404,7 +402,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.passive_dodge_chance = {
 		0.05,
 		0.15,
-		0.25
+		0.3
 	}
 	self.values.weapon.passive_swap_speed_multiplier = {1.8, 2}
 	self.values.player.passive_concealment_modifier = {1}
@@ -813,6 +811,34 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.movement_speed_damage_health_ratio_multiplier = {0.2}
 	self.values.player.armor_regen_damage_health_ratio_threshold_multiplier = {2}
 	self.values.player.movement_speed_damage_health_ratio_threshold_multiplier = {2}
+	self.values.player.armor_grinding = {
+		{
+			{1, 2},
+			{1.5, 3},
+			{2, 4},
+			{2.5, 5},
+			{3.5, 7},
+			{4.5, 9},
+			{8.5, 17}
+		}
+	}
+	self.values.player.health_decrease = {0.5}
+	self.values.player.armor_increase = {
+		1,
+		1.1,
+		1.2
+	}
+	self.values.player.damage_to_armor = {
+		{
+			{3, 1.5},
+			{3, 1.5},
+			{3, 1.5},
+			{3, 1.5},
+			{3, 1.5},
+			{3, 1.5},
+			{3, 1.5}
+		}
+	}
 	self.values.assault_rifle.move_spread_index_addend = {2}
 	self.values.snp.move_spread_index_addend = {2}
 	self.values.pistol.spread_index_addend = {2}
@@ -1164,7 +1190,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		shotgun_impact = {
 			{"4", "10%"},
-			{"35%"}
+			{"15%"}
 		},
 		show_of_force = {
 			{"50%"},
@@ -1239,8 +1265,8 @@ function UpgradesTweakData:_init_pd2_values()
 			{"50%", "150%"}
 		},
 		trip_mine_expert = {
-			{},
-			{}
+			{"30%"},
+			{"50%"}
 		},
 		trip_miner = {
 			{"1"},
@@ -1404,6 +1430,18 @@ function UpgradesTweakData:_init_pd2_values()
 			{"1"},
 			{"2"}
 		},
+		more_fire_power = {
+			{"1", "4"},
+			{"2", "7"}
+		},
+		fire_trap = {
+			{"20", "7.5"},
+			{"10", "50%"}
+		},
+		combat_engineering = {
+			{"30%"},
+			{"50%"}
+		},
 		hoxton = {
 			{"4"},
 			{}
@@ -1418,7 +1456,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		tea_time = {
 			{"50%"},
-			{"20%", "10"}
+			{"15%", "120"}
 		},
 		awareness = {
 			{"10%", "20%"},
@@ -1718,7 +1756,7 @@ function UpgradesTweakData:_init_pd2_values()
 			},
 			{"10%", "135%"},
 			{"135%"},
-			{"10%"},
+			{"15%"},
 			{"5%", "20%"},
 			{
 				"25%",
@@ -1970,6 +2008,34 @@ function UpgradesTweakData:_init_pd2_values()
 			{"1", "25"},
 			{"5%", "20%"},
 			{"50%", "10%"}
+		},
+		{
+			{
+				"40%",
+				"240",
+				"4",
+				"600",
+				"1",
+				"30",
+				"60% + 80",
+				"8"
+			},
+			{"25%"},
+			{"50%", "100%"},
+			{
+				"+1",
+				"15%",
+				"45%"
+			},
+			{"50%", "110%"},
+			{"135%"},
+			{"50%", "120%"},
+			{"5%", "20%"},
+			{
+				"10",
+				"1.5",
+				"10%"
+			}
 		}
 	}
 	self.specialization_descs = {}
@@ -2122,7 +2188,9 @@ function UpgradesTweakData:init()
 		upgrades = {
 			"body_armor4",
 			"kampfmesser",
-			"buck"
+			"buck",
+			"tecci",
+			"wing"
 		}
 	}
 	self.level_tree[22] = {
@@ -2244,7 +2312,8 @@ function UpgradesTweakData:init()
 		upgrades = {
 			"r93",
 			"judge",
-			"mining_pick"
+			"mining_pick",
+			"wing"
 		}
 	}
 	self.level_tree[36] = {
@@ -2450,15 +2519,10 @@ function UpgradesTweakData:init()
 		38
 	}
 	self.values.trip_mine = self.values.trip_mine or {}
-	self.values.trip_mine.quantity = {
-		1,
-		2,
-		3,
-		4,
-		5,
-		8
-	}
-	self.values.trip_mine.quantity_2 = {2}
+	self.values.trip_mine.quantity = {4, 11}
+	self.values.trip_mine.damage_multiplier = {1.5}
+	self.values.shape_charge = self.values.shape_charge or {}
+	self.values.shape_charge.quantity = {1, 3}
 	self.values.trip_mine.quantity_increase = {2}
 	self.values.trip_mine.explode_timer_delay = {2}
 	self.steps.trip_mine = {}
@@ -2629,6 +2693,7 @@ function UpgradesTweakData:init()
 	self:_pl14_weapon_definitions()
 	self:_x_mp5_weapon_definitions()
 	self:_x_akmsu_weapon_definitions()
+	self:_tecci_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -4025,6 +4090,60 @@ function UpgradesTweakData:_player_definitions()
 		upgrade = {
 			category = "player",
 			upgrade = "kill_change_regenerate_speed",
+			value = 1
+		}
+	}
+	self.definitions.player_armor_grinding_1 = {
+		category = "feature",
+		name_id = "menu_player_armor_grinding",
+		upgrade = {
+			category = "player",
+			upgrade = "armor_grinding",
+			value = 1
+		}
+	}
+	self.definitions.player_armor_increase_1 = {
+		category = "feature",
+		name_id = "menu_player_health_to_armor_conversion",
+		upgrade = {
+			category = "player",
+			upgrade = "armor_increase",
+			value = 1
+		}
+	}
+	self.definitions.player_armor_increase_2 = {
+		category = "feature",
+		name_id = "menu_player_health_to_armor_conversion",
+		upgrade = {
+			category = "player",
+			upgrade = "armor_increase",
+			value = 2
+		}
+	}
+	self.definitions.player_armor_increase_3 = {
+		category = "feature",
+		name_id = "menu_player_health_to_armor_conversion",
+		upgrade = {
+			category = "player",
+			upgrade = "armor_increase",
+			value = 3
+		}
+	}
+	self.definitions.player_health_decrease_1 = {
+		category = "feature",
+		name_id = "menu_player_health_decrease",
+		upgrade = {
+			category = "player",
+			upgrade = "health_decrease",
+			value = 1
+		}
+	}
+	self.definitions.player_damage_to_armor_1 = {
+		category = "feature",
+		name_id = "menu_player_damage_to_armor",
+		upgrade = {
+			category = "player",
+			upgrade = "damage_to_armor",
 			value = 1
 		}
 	}
@@ -6143,7 +6262,7 @@ function UpgradesTweakData:_trip_mine_definitions()
 		name_id = "menu_trip_mine_quantity_increase_1",
 		upgrade = {
 			category = "trip_mine",
-			upgrade = "quantity_1",
+			upgrade = "quantity",
 			value = 1
 		}
 	}
@@ -6152,17 +6271,8 @@ function UpgradesTweakData:_trip_mine_definitions()
 		name_id = "menu_trip_mine_quantity_increase_1",
 		upgrade = {
 			category = "trip_mine",
-			upgrade = "quantity_2",
-			value = 1
-		}
-	}
-	self.definitions.trip_mine_quantity_increase_3 = {
-		category = "feature",
-		name_id = "menu_trip_mine_quantity_increase_1",
-		upgrade = {
-			category = "trip_mine",
-			upgrade = "quantity_3",
-			value = 1
+			upgrade = "quantity",
+			value = 2
 		}
 	}
 	self.definitions.trip_mine_explosion_size_multiplier_1 = {
@@ -6220,6 +6330,33 @@ function UpgradesTweakData:_trip_mine_definitions()
 			category = "trip_mine",
 			upgrade = "fire_trap",
 			value = 2
+		}
+	}
+	self.definitions.shape_charge_quantity_increase_1 = {
+		category = "feature",
+		name_id = "menu_shape_charge_quantity_increase",
+		upgrade = {
+			category = "shape_charge",
+			upgrade = "quantity",
+			value = 1
+		}
+	}
+	self.definitions.shape_charge_quantity_increase_2 = {
+		category = "feature",
+		name_id = "menu_shape_charge_quantity_increase",
+		upgrade = {
+			category = "shape_charge",
+			upgrade = "quantity",
+			value = 2
+		}
+	}
+	self.definitions.trip_mine_damage_multiplier_1 = {
+		category = "feature",
+		name_id = "menu_trip_mine_damage_multiplier",
+		upgrade = {
+			category = "trip_mine",
+			upgrade = "damage_multiplier",
+			value = 1
 		}
 	}
 end
@@ -8011,6 +8148,10 @@ function UpgradesTweakData:_melee_weapon_definitions()
 	}
 	self.definitions.zeus = {
 		category = "melee_weapon"
+	}
+	self.definitions.wing = {
+		category = "melee_weapon",
+		dlc = "opera"
 	}
 end
 function UpgradesTweakData:_grenades_definitions()
@@ -10804,5 +10945,13 @@ function UpgradesTweakData:_x_akmsu_weapon_definitions()
 		category = "weapon",
 		weapon_id = "x_akmsu",
 		factory_id = "wpn_fps_smg_x_akmsu"
+	}
+end
+function UpgradesTweakData:_tecci_weapon_definitions()
+	self.definitions.tecci = {
+		category = "weapon",
+		weapon_id = "tecci",
+		factory_id = "wpn_fps_ass_tecci",
+		dlc = "opera"
 	}
 end

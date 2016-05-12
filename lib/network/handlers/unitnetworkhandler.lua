@@ -928,7 +928,7 @@ function UnitNetworkHandler:interaction_set_waypoint_paused(unit, paused, sender
 	end
 	unit:interaction():set_waypoint_paused(paused)
 end
-function UnitNetworkHandler:attach_device(pos, normal, sensor_upgrade, fire_trap_level, rpc)
+function UnitNetworkHandler:place_trip_mine(pos, normal, sensor_upgrade, rpc)
 	local peer = self._verify_sender(rpc)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
 		return
@@ -938,7 +938,7 @@ function UnitNetworkHandler:attach_device(pos, normal, sensor_upgrade, fire_trap
 	end
 	local rot = Rotation(normal, math.UP)
 	local peer = self._verify_sender(rpc)
-	local unit = TripMineBase.spawn(pos, rot, sensor_upgrade, fire_trap_level, peer:id())
+	local unit = TripMineBase.spawn(pos, rot, sensor_upgrade, peer:id())
 	unit:base():set_server_information(peer:id())
 	rpc:activate_trip_mine(unit)
 end
@@ -950,12 +950,12 @@ function UnitNetworkHandler:activate_trip_mine(unit)
 		unit:base():set_active(true, managers.player:player_unit())
 	end
 end
-function UnitNetworkHandler:sync_trip_mine_setup(unit, sensor_upgrade, fire_trap_level, peer_id)
+function UnitNetworkHandler:sync_trip_mine_setup(unit, sensor_upgrade, peer_id)
 	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 	managers.player:verify_equipment(peer_id, "trip_mine")
-	unit:base():sync_setup(sensor_upgrade, fire_trap_level)
+	unit:base():sync_setup(sensor_upgrade)
 end
 function UnitNetworkHandler:sync_trip_mine_explode(unit, user_unit, ray_from, ray_to, damage_size, damage, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
@@ -966,6 +966,17 @@ function UnitNetworkHandler:sync_trip_mine_explode(unit, user_unit, ray_from, ra
 	end
 	if alive(unit) then
 		unit:base():sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
+	end
+end
+function UnitNetworkHandler:sync_trip_mine_explode_spawn_fire(unit, user_unit, ray_from, ray_to, damage_size, damage, added_time, range_multiplier, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+	if not alive(user_unit) then
+		user_unit = nil
+	end
+	if alive(unit) then
+		unit:base():sync_trip_mine_explode_and_spawn_fire(user_unit, ray_from, ray_to, damage_size, damage, added_time, range_multiplier)
 	end
 end
 function UnitNetworkHandler:sync_trip_mine_explode_no_user(unit, ray_from, ray_to, damage_size, damage, sender)

@@ -121,6 +121,7 @@ function PlayerCarry:_update_check_actions(t, dt)
 	self:_check_action_duck(t, input)
 	self:_check_action_steelsight(t, input)
 	self:_check_use_item(t, input)
+	self:_check_action_change_equipment(input)
 	self:_find_pickups(t)
 end
 function PlayerCarry:_check_action_run(...)

@@ -449,7 +449,8 @@ function SkillTreeTweakData:init()
 		},
 		[2] = {
 			upgrades = {
-				"player_flashbang_multiplier_1"
+				"player_flashbang_multiplier_1",
+				"player_flashbang_multiplier_2"
 			},
 			cost = self.costs.pro
 		}
@@ -1027,7 +1028,7 @@ function SkillTreeTweakData:init()
 		["icon_xy"] = {0, 7},
 		[1] = {
 			upgrades = {
-				"trip_mine_quantity_increase_3"
+				"trip_mine_quantity_increase_2"
 			},
 			cost = self.costs.hightier
 		},
@@ -1809,13 +1810,13 @@ function SkillTreeTweakData:init()
 		["icon_xy"] = {0, 0},
 		[1] = {
 			upgrades = {
-				"player_double_drop_1"
+				"player_increased_pickup_area_1"
 			},
 			cost = self.costs.hightier
 		},
 		[2] = {
 			upgrades = {
-				"player_increased_pickup_area_1"
+				"player_double_drop_1"
 			},
 			cost = self.costs.hightierpro
 		}
@@ -1927,13 +1928,17 @@ function SkillTreeTweakData:init()
 	self.skills.fire_trap = {
 		["name_id"] = "menu_fire_trap_beta",
 		["desc_id"] = "menu_fire_trap_beta_desc",
-		["icon_xy"] = {8, 0},
+		["icon_xy"] = {0, 0},
 		[1] = {
-			upgrades = {},
+			upgrades = {
+				"trip_mine_fire_trap_1"
+			},
 			cost = self.costs.hightier
 		},
 		[2] = {
-			upgrades = {},
+			upgrades = {
+				"trip_mine_fire_trap_2"
+			},
 			cost = self.costs.hightierpro
 		}
 	}
@@ -2216,13 +2221,36 @@ function SkillTreeTweakData:init()
 	self.skills.more_fire_power = {
 		["name_id"] = "menu_more_fire_power",
 		["desc_id"] = "menu_more_fire_power_desc",
-		["icon_xy"] = {8, 0},
+		["icon_xy"] = {0, 0},
 		[1] = {
-			upgrades = {},
+			upgrades = {
+				"shape_charge_quantity_increase_1",
+				"trip_mine_quantity_increase_1"
+			},
 			cost = self.costs.hightier
 		},
 		[2] = {
-			upgrades = {},
+			upgrades = {
+				"shape_charge_quantity_increase_2",
+				"trip_mine_quantity_increase_2"
+			},
+			cost = self.costs.hightierpro
+		}
+	}
+	self.skills.combat_engineering = {
+		["name_id"] = "menu_combat_engineering",
+		["desc_id"] = "menu_combat_engineering_desc",
+		["icon_xy"] = {0, 0},
+		[1] = {
+			upgrades = {
+				"trip_mine_explosion_size_multiplier_1"
+			},
+			cost = self.costs.hightier
+		},
+		[2] = {
+			upgrades = {
+				"trip_mine_damage_multiplier_1"
+			},
 			cost = self.costs.hightierpro
 		}
 	}
@@ -2367,7 +2395,7 @@ function SkillTreeTweakData:init()
 					"hardware_expert"
 				},
 				{
-					"trip_mine_expert",
+					"combat_engineering",
 					"drill_expert"
 				},
 				{
@@ -3457,6 +3485,67 @@ function SkillTreeTweakData:init()
 				texture_bundle_folder = "coco",
 				name_id = "menu_deck14_9",
 				desc_id = "menu_deck14_9_desc"
+			}
+		},
+		{
+			name_id = "menu_st_spec_15",
+			desc_id = "menu_st_spec_15_desc",
+			dlc = "opera",
+			{
+				upgrades = {
+					"player_armor_grinding_1",
+					"temporary_armor_break_invulnerable_1"
+				},
+				cost = 200,
+				icon_xy = {0, 0},
+				texture_bundle_folder = "opera",
+				name_id = "menu_deck15_1",
+				desc_id = "menu_deck15_1_desc"
+			},
+			deck2,
+			{
+				upgrades = {
+					"player_health_decrease_1",
+					"player_armor_increase_1"
+				},
+				cost = 400,
+				icon_xy = {1, 0},
+				texture_bundle_folder = "opera",
+				name_id = "menu_deck15_3",
+				desc_id = "menu_deck15_3_desc"
+			},
+			deck4,
+			{
+				upgrades = {
+					"player_armor_increase_2"
+				},
+				cost = 1000,
+				icon_xy = {2, 0},
+				texture_bundle_folder = "opera",
+				name_id = "menu_deck15_5",
+				desc_id = "menu_deck15_5_desc"
+			},
+			deck6,
+			{
+				upgrades = {
+					"player_armor_increase_3"
+				},
+				cost = 2400,
+				icon_xy = {3, 0},
+				texture_bundle_folder = "opera",
+				name_id = "menu_deck15_7",
+				desc_id = "menu_deck15_7_desc"
+			},
+			deck8,
+			{
+				upgrades = {
+					"player_damage_to_armor_1"
+				},
+				cost = 4000,
+				icon_xy = {0, 1},
+				texture_bundle_folder = "opera",
+				name_id = "menu_deck15_9",
+				desc_id = "menu_deck15_9_desc"
 			}
 		}
 	}

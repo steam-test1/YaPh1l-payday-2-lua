@@ -43,8 +43,8 @@ function EnvEffectTweakData:trip_mine_fire()
 		sound_event = "molotov_impact",
 		sound_event_burning = "burn_loop_gen",
 		sound_event_impact_duration = 4,
-		alert_radius = 1500,
-		fire_alert_radius = 1500,
+		alert_radius = 15000,
+		fire_alert_radius = 15000,
 		effect_name = "effects/payday2/particles/explosions/molotov_grenade"
 	}
 	return params

@@ -32,12 +32,11 @@ function PlayerEquipment:use_trip_mine()
 	if ray then
 		managers.statistics:use_trip_mine()
 		local sensor_upgrade = managers.player:has_category_upgrade("trip_mine", "sensor_toggle")
-		local fire_trap_level = managers.player:upgrade_level("trip_mine", "fire_trap", 0)
 		if Network:is_client() then
-			managers.network:session():send_to_host("attach_device", ray.position, ray.normal, sensor_upgrade, fire_trap_level)
+			managers.network:session():send_to_host("place_trip_mine", ray.position, ray.normal, sensor_upgrade)
 		else
 			local rot = Rotation(ray.normal, math.UP)
-			local unit = TripMineBase.spawn(ray.position, rot, sensor_upgrade, fire_trap_level, managers.network:session():local_peer():id())
+			local unit = TripMineBase.spawn(ray.position, rot, sensor_upgrade, managers.network:session():local_peer():id())
 			unit:base():set_active(true, self._unit)
 		end
 		return true
