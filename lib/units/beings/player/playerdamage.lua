@@ -307,6 +307,7 @@ function PlayerDamage:_regenerate_armor()
 	if self._unit:sound() then
 		self._unit:sound():play("shield_full_indicator")
 	end
+	self._regenerate_speed = nil
 	self:set_armor(self:_max_armor())
 	self:_send_set_armor()
 	self._current_state = nil
@@ -687,6 +688,7 @@ function PlayerDamage:_calc_armor_damage(attack_data)
 			end
 		end
 	end
+	managers.hud:damage_taken()
 	return health_subtracted
 end
 function PlayerDamage:_chk_cheat_death()
@@ -1149,7 +1151,6 @@ function PlayerDamage:_damage_screen()
 	self._armor_value = math.clamp(self:get_real_armor() / self:_max_armor(), 0, 1)
 	managers.environment_controller:set_hurt_value(self._hurt_value)
 	self._listener_holder:call("on_damage")
-	managers.hud:damage_taken()
 end
 function PlayerDamage:set_revive_boost(revive_health_level)
 	self._revive_health_multiplier = tweak_data.upgrades.revive_health_multiplier[revive_health_level]
