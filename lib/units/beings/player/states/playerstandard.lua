@@ -3022,8 +3022,9 @@ end
 function PlayerStandard:_start_action_reload(t)
 	local weapon = self._equipped_unit:base()
 	if weapon and weapon:can_reload() then
+		managers.player:send_message(Message.OnPlayerReload, nil, self._equipped_unit)
 		weapon:tweak_data_anim_stop("fire")
-		local speed_multiplier = weapon:reload_speed_multiplier() * managers.player:temporary_upgrade_value("temporary", "single_shot_fast_reload", 1)
+		local speed_multiplier = weapon:reload_speed_multiplier(true)
 		local tweak_data = weapon:weapon_tweak_data()
 		local reload_anim = "reload"
 		local reload_name_id = tweak_data.animations.reload_name_id or weapon.name_id
@@ -3043,7 +3044,6 @@ function PlayerStandard:_start_action_reload(t)
 			Application:trace("PlayerStandard:_start_action_reload( t ): ", reload_anim)
 		end
 		self._ext_network:send("reload_weapon")
-		managers.player:send_message(Message.OnPlayerReload, nil, weapon)
 	end
 end
 function PlayerStandard:_interupt_action_reload(t)
@@ -3078,9 +3078,11 @@ function PlayerStandard:_is_using_bipod()
 end
 function PlayerStandard:_get_swap_speed_multiplier()
 	local multiplier = 1
+	local weapon_tweak_data = self._equipped_unit:base():weapon_tweak_data()
 	multiplier = multiplier * managers.player:upgrade_value("weapon", "swap_speed_multiplier", 1)
 	multiplier = multiplier * managers.player:upgrade_value("weapon", "passive_swap_speed_multiplier", 1)
-	multiplier = multiplier * managers.player:upgrade_value(self._equipped_unit:base():weapon_tweak_data().category, "swap_speed_multiplier", 1)
+	multiplier = multiplier * managers.player:upgrade_value(weapon_tweak_data.category, "swap_speed_multiplier", 1)
+	multiplier = multiplier * managers.player:upgrade_value(weapon_tweak_data.sub_category, "swap_speed_multiplier", 1)
 	if managers.player:has_activate_temporary_upgrade("temporary", "swap_weapon_faster") then
 		multiplier = multiplier * managers.player:temporary_upgrade_value("temporary", "swap_weapon_faster", 1)
 	end

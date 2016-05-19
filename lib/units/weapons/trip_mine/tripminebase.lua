@@ -295,7 +295,6 @@ function TripMineBase:_explode(col_ray)
 	local slotmask = managers.slot:get_mask("explosion_targets")
 	local bodies = World:find_bodies("intersect", "cylinder", self._ray_from_pos, self._ray_to_pos, damage_size, slotmask)
 	local damage = tweak_data.weapon.trip_mines.damage * managers.player:upgrade_value("trip_mine", "damage_multiplier", 1)
-	local amount = 0
 	local characters_hit = {}
 	for _, hit_body in ipairs(bodies) do
 		if alive(hit_body) then
@@ -337,7 +336,6 @@ function TripMineBase:_explode(col_ray)
 				end
 				if character then
 					self:_give_explosion_damage(col_ray, hit_body:unit(), damage)
-					amount = amount + 1
 				end
 			end
 		end
@@ -348,7 +346,7 @@ function TripMineBase:_explode(col_ray)
 				local fire_trap_data = managers.player:upgrade_value("trip_mine", "fire_trap", nil)
 				if fire_trap_data then
 					managers.network:session():send_to_peers_synched("sync_trip_mine_explode_spawn_fire", self._unit, player, self._ray_from_pos, self._ray_to_pos, damage_size, damage, fire_trap_data[1], fire_trap_data[2])
-					self:_spawn_environment_fire(fire_trap_data[1], fire_trap_data[2])
+					self:_spawn_environment_fire(player, fire_trap_data[1], fire_trap_data[2])
 				end
 			else
 				managers.network:session():send_to_peers_synched("sync_trip_mine_explode", self._unit, player, self._ray_from_pos, self._ray_to_pos, damage_size, damage)
@@ -370,7 +368,7 @@ function TripMineBase:_explode(col_ray)
 	self._unit:set_slot(0)
 end
 function TripMineBase:sync_trip_mine_explode_and_spawn_fire(user_unit, ray_from, ray_to, damage_size, damage, added_time, range_multiplier)
-	self:_spawn_environment_fire(added_time, range_multiplier)
+	self:_spawn_environment_fire(user_unit, added_time, range_multiplier)
 	self:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
 end
 function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
@@ -397,7 +395,7 @@ function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage
 		end
 	end
 end
-function TripMineBase:_spawn_environment_fire(added_time, range_multiplier)
+function TripMineBase:_spawn_environment_fire(user_unit, added_time, range_multiplier)
 	local position = self._unit:position()
 	local rotation = self._unit:rotation()
 	local data = tweak_data.env_effect:trip_mine_fire()
@@ -406,7 +404,7 @@ function TripMineBase:_spawn_environment_fire(added_time, range_multiplier)
 	mvector3.set(dir, normal)
 	mvector3.multiply(dir, 20)
 	mvector3.add(position, dir)
-	EnvironmentFire.spawn(position, rotation, data, normal, self.user_unit, added_time, range_multiplier)
+	EnvironmentFire.spawn(position, rotation, data, normal, user_unit, added_time, range_multiplier)
 end
 function TripMineBase:_play_sound_and_effects()
 	World:effect_manager():spawn({

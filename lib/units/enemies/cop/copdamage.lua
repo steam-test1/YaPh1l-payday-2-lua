@@ -404,7 +404,7 @@ function CopDamage:damage_bullet(attack_data)
 	end
 	self:_send_bullet_attack_result(attack_data, attacker, damage_percent, body_index, hit_offset_height)
 	local knock_down = false
-	if attack_data.knock_down and result.type ~= "death" then
+	if attack_data.knock_down and result.type ~= "death" and not self._char_tweak.immune_to_knock_down then
 		local rand = math.random()
 		if rand < attack_data.knock_down then
 			attack_data.type = "heavy_hurt"

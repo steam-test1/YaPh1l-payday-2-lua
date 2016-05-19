@@ -842,6 +842,20 @@ function SkillTreeManager:check_reset_message()
 		MenuCallbackHandler:save_progress()
 	end
 end
+function SkillTreeManager:get_tree_progress_2(tree_name)
+	local switch_data = self._global.skill_switches[self:get_selected_skill_switch()]
+	local num_skills = 0
+	local skill_points = 0
+	local tree = tweak_data.skilltree:get_tree(tree_name)
+	for i = 1, #tree do
+		for j = 1, #tree[i].tiers do
+			for k = 1, #tree[i].tiers[j] do
+				skill_points = skill_points + self:_points_spent_skill(j, tree[i].tiers[j][k])
+			end
+		end
+	end
+	return skill_points, skill_points
+end
 function SkillTreeManager:get_tree_progress_new(tree, switch_data)
 	if type(tree) ~= "number" then
 		local string_to_number = {

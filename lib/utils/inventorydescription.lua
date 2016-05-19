@@ -24,6 +24,23 @@ function InventoryDescription._find_item_in_content(entry, category, content)
 	end
 	return false
 end
+local is_weapon_category = function(weapon_tweak, ...)
+	local category = weapon_tweak.category
+	for i = 1, #arg do
+		if category == arg[i] then
+			return true
+		end
+	end
+	if weapon_tweak.sub_category then
+		local sub_category = weapon_tweak.sub_category
+		for i = 1, #arg do
+			if sub_category == arg[i] then
+				return true
+			end
+		end
+	end
+	return false
+end
 local color_ranges = {}
 function InventoryDescription._create_hex_color(color)
 	if not color or type(color) == "string" then
@@ -308,21 +325,21 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 		detection_risk = detection_risk * 100
 	end
 	local base_value, base_index, modifier, multiplier
+	local factory_id = managers.weapon_factory:get_factory_id_by_weapon_id(name)
 	local weapon_tweak = tweak_data.weapon[name]
 	for _, stat in ipairs(WeaponDescription._stats_shown) do
 		if weapon_tweak.stats[stat.stat_name or stat.name] or stat.name == "totalammo" or stat.name == "fire_rate" then
 			if stat.name == "magazine" then
 				skill_stats[stat.name].value = managers.player:upgrade_value(name, "clip_ammo_increase", 0)
 				local has_magazine = weapon_tweak.has_magazine
-				local is_single_shot = managers.blackmarket:is_single_shot(blueprint, weapon_tweak.category)
 				local add_modifier = false
 				if weapon_tweak.category == "shotgun" and has_magazine then
 					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("shotgun", "magazine_capacity_inc", 0)
 					add_modifier = managers.player:has_category_upgrade("shotgun", "magazine_capacity_inc")
-				elseif weapon_tweak.category == "pistol" and managers.player:has_category_upgrade("pistol", "magazine_capacity_inc") then
+				elseif is_weapon_category(weapon_tweak, "pistol") and managers.player:has_category_upgrade("pistol", "magazine_capacity_inc") then
 					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("pistol", "magazine_capacity_inc", 0)
 					add_modifier = true
-				elseif weapon_tweak.FIRE_MODE == "auto" and not is_single_shot then
+				elseif is_weapon_category(weapon_tweak, "smg", "assault_rifle", "lmg") then
 					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("player", "automatic_mag_increase", 0)
 					add_modifier = managers.player:has_category_upgrade("player", "automatic_mag_increase")
 				end
@@ -341,7 +358,7 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 				end
 				multiplier = 1
 				modifier = 0
-				local is_single_shot = managers.blackmarket:is_single_shot(blueprint, weapon_tweak.category)
+				local is_single_shot = managers.weapon_factory:has_perk("fire_mode_single", factory_id, blueprint)
 				if stat.name == "damage" then
 					multiplier = managers.blackmarket:damage_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, detection_risk, nil, blueprint)
 					modifier = math.floor(managers.blackmarket:damage_addend(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, detection_risk, nil, blueprint) * tweak_data.gui.stats_present_multiplier * multiplier)
@@ -359,7 +376,10 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 						modifier = managers.player:upgrade_value("player", "silencer_concealment_increase", 0)
 					end
 					if silencer and managers.player:has_category_upgrade("player", "silencer_concealment_penalty_decrease") then
-						modifier = modifier + math.min(managers.player:upgrade_value("player", "silencer_concealment_penalty_decrease", 0), math.abs(mods_stats[stat.name].index))
+						local stats = managers.weapon_factory:get_perk_stats("silencer", factory_id, blueprint)
+						if stats and stats.concealment then
+							modifier = modifier + math.min(managers.player:upgrade_value("player", "silencer_concealment_penalty_decrease", 0), math.abs(stats.concealment))
+						end
 					end
 				elseif stat.name == "fire_rate" then
 					multiplier = managers.blackmarket:fire_rate_multiplier(name, weapon_tweak.category, weapon_tweak.sub_category, silencer, detection_risk, nil, blueprint)

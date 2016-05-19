@@ -464,6 +464,7 @@ function InteractionTweakData:init()
 		upgrade = "drill_fix_interaction_speed_multiplier"
 	}
 	self.drill_jammed.action_text_id = "hud_action_fixing_drill"
+	self.drill_jammed.block_upgrade = true
 	self.lance = {}
 	self.lance.icon = "equipment_drill"
 	self.lance.contour = "interactable_icon"
@@ -487,6 +488,7 @@ function InteractionTweakData:init()
 		upgrade = "drill_fix_interaction_speed_multiplier"
 	}
 	self.lance_jammed.action_text_id = "hud_action_fixing_lance"
+	self.lance_jammed.block_upgrade = true
 	self.lance_upgrade = {}
 	self.lance_upgrade.icon = "equipment_drill"
 	self.lance_upgrade.contour = "upgradable"
@@ -513,6 +515,7 @@ function InteractionTweakData:init()
 	self.glass_cutter_jammed.sound_start = "bar_drill_fix"
 	self.glass_cutter_jammed.sound_interupt = "bar_drill_fix_cancel"
 	self.glass_cutter_jammed.sound_done = "bar_drill_fix_finished"
+	self.glass_cutter_jammed.block_upgrade = true
 	self.hack_ipad = {}
 	self.hack_ipad.icon = "equipment_hack_ipad"
 	self.hack_ipad.text_id = "debug_interact_hack_ipad"
@@ -631,6 +634,7 @@ function InteractionTweakData:init()
 	self.apartment_drill_jammed.sound_interupt = "bar_drill_fix_cancel"
 	self.apartment_drill_jammed.sound_done = "bar_drill_fix_finished"
 	self.apartment_drill_jammed.interact_distance = 200
+	self.apartment_drill_jammed.block_upgrade = true
 	self.suburbia_drill = {}
 	self.suburbia_drill.icon = "equipment_drill"
 	self.suburbia_drill.text_id = "debug_interact_drill"
@@ -649,6 +653,7 @@ function InteractionTweakData:init()
 	self.suburbia_drill_jammed.sound_interupt = "bar_drill_fix_cancel"
 	self.suburbia_drill_jammed.sound_done = "bar_drill_fix_finished"
 	self.suburbia_drill_jammed.interact_distance = 200
+	self.suburbia_drill_jammed.block_upgrade = true
 	self.goldheist_drill = {}
 	self.goldheist_drill.icon = "equipment_drill"
 	self.goldheist_drill.text_id = "debug_interact_drill"
@@ -667,6 +672,7 @@ function InteractionTweakData:init()
 	self.goldheist_drill_jammed.sound_interupt = "bar_drill_fix_cancel"
 	self.goldheist_drill_jammed.sound_done = "bar_drill_fix_finished"
 	self.goldheist_drill_jammed.interact_distance = 200
+	self.goldheist_drill_jammed.block_upgrade = true
 	self.hospital_saw_teddy = {}
 	self.hospital_saw_teddy.icon = "equipment_saw"
 	self.hospital_saw_teddy.text_id = "debug_interact_hospital_saw_teddy"
@@ -696,6 +702,7 @@ function InteractionTweakData:init()
 		category = "player",
 		upgrade = "drill_fix_interaction_speed_multiplier"
 	}
+	self.hospital_saw_jammed.block_upgrade = true
 	self.apartment_saw = {}
 	self.apartment_saw.icon = "equipment_saw"
 	self.apartment_saw.text_id = "debug_interact_saw"
@@ -718,6 +725,7 @@ function InteractionTweakData:init()
 		category = "player",
 		upgrade = "drill_fix_interaction_speed_multiplier"
 	}
+	self.apartment_saw_jammed.block_upgrade = true
 	self.secret_stash_saw = {}
 	self.secret_stash_saw.icon = "equipment_saw"
 	self.secret_stash_saw.text_id = "debug_interact_saw"
@@ -740,6 +748,7 @@ function InteractionTweakData:init()
 		category = "player",
 		upgrade = "drill_fix_interaction_speed_multiplier"
 	}
+	self.secret_stash_saw_jammed.block_upgrade = true
 	self.revive = {}
 	self.revive.icon = "interaction_help"
 	self.revive.text_id = "debug_interact_revive"

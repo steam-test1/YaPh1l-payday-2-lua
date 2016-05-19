@@ -370,7 +370,6 @@ function Drill:clbk_enemy_weapons_hot()
 	self:_set_alert_state(false)
 end
 function Drill:set_skill_upgrades(upgrades)
-	print(inspect(upgrades))
 	local background_icons = {}
 	local timer_gui_ext = self._unit:timer_gui()
 	local background_icon_template = {

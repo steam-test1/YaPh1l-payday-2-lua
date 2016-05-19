@@ -223,6 +223,7 @@ function CopActionTase:update(t)
 						attacker_unit = self._unit
 					}
 					self._attention.unit:character_damage():damage_tase(attack_data)
+					CopDamage._notify_listeners("on_criminal_tased", self._unit, self._attention.unit)
 					self._discharging = true
 					if not self._tasing_local_unit:base().is_local_player then
 						self._tasered_sound = self._unit:sound():play("tasered_3rd", nil)

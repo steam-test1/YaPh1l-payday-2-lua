@@ -861,6 +861,7 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank.use_animation_on_fire_damage = false
 	self.tank.flammable = true
 	self.tank.can_be_tased = false
+	self.tank.immune_to_knock_down = true
 	self.tank_hw = deep_clone(self.tank)
 	self.tank_hw.move_speed = {
 		stand = {
@@ -5343,25 +5344,25 @@ function CharacterTweakData:_presets(tweak_data)
 	end
 	presets.surrender = {}
 	presets.surrender.easy = {
-		base_chance = 0.9,
-		significant_chance = 0,
+		base_chance = 0.3,
+		significant_chance = 0.35,
 		violence_timeout = 2,
 		reasons = {
 			health = {
-				[1] = 0.7,
-				[0.9] = 0.8
+				[1] = 0.1,
+				[0.9] = 0.4
 			},
-			weapon_down = 1,
+			weapon_down = 0.5,
 			pants_down = 1,
-			isolated = 1
+			isolated = 0.08
 		},
 		factors = {
-			flanked = 0.07,
-			unaware_of_aggressor = 0.08,
-			enemy_weap_cold = 0.15,
+			flanked = 0.05,
+			unaware_of_aggressor = 0.1,
+			enemy_weap_cold = 0.11,
 			aggressor_dis = {
-				[1000] = 0.8,
-				[300] = 1
+				[1000] = 0,
+				[300] = 0.2
 			}
 		}
 	}

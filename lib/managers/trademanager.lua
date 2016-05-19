@@ -698,7 +698,7 @@ function TradeManager:criminal_respawn(pos, rotation, respawn_criminal)
 	local spawned_unit
 	if respawn_criminal.ai then
 		print("RC: respawn AI", respawn_criminal.id)
-		spawned_unit = managers.groupai:state():spawn_one_teamAI(false, respawn_criminal.id, managers.player:player_unit())
+		spawned_unit = managers.groupai:state():spawn_one_teamAI(false, respawn_criminal.id, pos, rotation)
 	else
 		print("RC: respawn human", respawn_criminal.id)
 		local sp_id = "clbk_respawn_criminal"

@@ -95,9 +95,9 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.sec_camera_highlight_mask_off = {true}
 	self.values.player.special_enemy_highlight_mask_off = {true}
 	self.values.player.super_syndrome = {true}
-	self.values.player.stability_increase_bonus = {4, 4}
+	self.values.player.stability_increase_bonus = {2, 4}
 	self.values.player.not_moving_accuracy_increase = {4}
-	self.values.player.hip_fire_accuracy_inc = {6}
+	self.values.player.hip_fire_accuracy_inc = {3}
 	self.values.player.melee_damage_stacking = {
 		{melee_multiplier = 1, max_multiplier = 3}
 	}
@@ -225,8 +225,8 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.values.assault_rifle.reload_speed_multiplier = {1.15}
 	self.values.assault_rifle.move_spread_multiplier = {0.5}
-	self.values.player.pistol_revive_from_bleed_out = {1}
-	self.values.player.recharge_pistol_messiah = {1}
+	self.values.player.messiah_revive_from_bleed_out = {1}
+	self.values.player.recharge_messiah = {1}
 	self.values.pistol.spread_multiplier = {0.9}
 	self.values.akimbo.spread_multiplier = self.values.pistol.spread_multiplier
 	self.values.pistol.swap_speed_multiplier = {1.5}
@@ -353,7 +353,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.weapon.passive_headshot_damage_multiplier = {1.25}
 	self.values.player.passive_armor_multiplier = {1.1, 1.25}
 	self.values.team.armor.passive_regen_time_multiplier = {0.9}
-	self.values.player.small_loot_multiplier = {1.1, 1.3}
+	self.values.player.small_loot_multiplier = {1.3}
 	self.values.player.stamina_regen_timer_multiplier = {0.75}
 	self.values.player.stamina_regen_multiplier = {1.25}
 	self.values.player.run_dodge_chance = {0.25}
@@ -3332,39 +3332,21 @@ function UpgradesTweakData:_player_definitions()
 			value = 1
 		}
 	}
-	self.definitions.player_pistol_revive_from_bleed_out_1 = {
+	self.definitions.player_messiah_revive_from_bleed_out_1 = {
 		category = "feature",
 		name_id = "menu_player_pistol_revive_from_bleed_out",
 		upgrade = {
 			category = "player",
-			upgrade = "pistol_revive_from_bleed_out",
+			upgrade = "messiah_revive_from_bleed_out",
 			value = 1
 		}
 	}
-	self.definitions.player_recharge_pistol_messiah_1 = {
+	self.definitions.player_recharge_messiah_1 = {
 		category = "feature",
 		name_id = "menu_player_recharge_pistol_messiah",
 		upgrade = {
 			category = "player",
-			upgrade = "recharge_pistol_messiah",
-			value = 1
-		}
-	}
-	self.definitions.player_pistol_revive_from_bleed_out_2 = {
-		category = "feature",
-		name_id = "menu_player_pistol_revive_from_bleed_out",
-		upgrade = {
-			category = "player",
-			upgrade = "pistol_revive_from_bleed_out",
-			value = 2
-		}
-	}
-	self.definitions.player_pistol_revive_from_bleed_out_timer = {
-		category = "temporary",
-		name_id = "menu_player_pistol_revive_from_bleed_out_timer",
-		upgrade = {
-			category = "temporary",
-			upgrade = "pistol_revive_from_bleed_out",
+			upgrade = "recharge_messiah",
 			value = 1
 		}
 	}
@@ -4013,7 +3995,6 @@ function UpgradesTweakData:_player_definitions()
 	}
 	self.definitions.temporary_single_shot_fast_reload_1 = {
 		category = "temporary",
-		incremental = true,
 		name_id = "menu_temporary_single_shot_fast_reload",
 		upgrade = {
 			category = "temporary",
@@ -5022,22 +5003,13 @@ function UpgradesTweakData:_player_definitions()
 			value = 1
 		}
 	}
-	self.definitions.player_small_loot_multiplier1 = {
+	self.definitions.player_small_loot_multiplier_1 = {
 		category = "feature",
 		name_id = "menu_player_small_loot_multiplier",
 		upgrade = {
 			category = "player",
 			upgrade = "small_loot_multiplier",
 			value = 1
-		}
-	}
-	self.definitions.player_small_loot_multiplier2 = {
-		category = "feature",
-		name_id = "menu_player_small_loot_multiplier",
-		upgrade = {
-			category = "player",
-			upgrade = "small_loot_multiplier",
-			value = 2
 		}
 	}
 	self.definitions.player_intimidate_enemies = {
@@ -6069,7 +6041,7 @@ function UpgradesTweakData:_player_definitions()
 		upgrade = {
 			category = "player",
 			upgrade = "stability_increase_bonus",
-			value = 2
+			value = 1
 		}
 	}
 	self.definitions.player_weapon_accuracy_increase_1 = {

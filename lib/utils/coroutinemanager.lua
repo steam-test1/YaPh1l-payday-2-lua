@@ -14,7 +14,7 @@ function CoroutineManager:update(t, dt)
 	for i = 1, size do
 		for key, value in pairs(self._coroutines[i]) do
 			if value then
-				local result = coroutine.resume(value.co, t, dt, unpack(value.arg))
+				local result = coroutine.resume(value.co, unpack(value.arg))
 				local status = coroutine.status(value.co)
 				if status == "dead" then
 					self._coroutines[i][key] = nil

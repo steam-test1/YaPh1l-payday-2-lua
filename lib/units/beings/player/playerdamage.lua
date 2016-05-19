@@ -573,10 +573,10 @@ function PlayerDamage:damage_melee(attack_data)
 end
 function PlayerDamage:is_friendly_fire(unit)
 	if not unit then
-		return
+		return false
 	end
 	if unit:movement():team() ~= self._unit:movement():team() and unit:movement():friendly_fire() then
-		return
+		return false
 	end
 	return not unit:movement():team().foes[self._unit:movement():team().id]
 end
@@ -1303,7 +1303,7 @@ function PlayerDamage:set_regenerate_timer_to_max()
 		local function clbk()
 			return self:is_regenerating_armor()
 		end
-		managers.player:add_coroutine(PlayerAction.DireNeed, PlayerAction.DireNeed, clbk, managers.player:upgrade_value("player", "armor_depleted_stagger_shot", 0))
+		managers.player:add_coroutine(PlayerAction.DireNeed, PlayerAction.DireNeed, clbk, Application:time() + managers.player:upgrade_value("player", "armor_depleted_stagger_shot", 0))
 	end
 end
 function PlayerDamage:_send_set_health()

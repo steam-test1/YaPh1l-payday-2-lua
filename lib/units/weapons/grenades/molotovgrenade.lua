@@ -35,7 +35,6 @@ function MolotovGrenade:bullet_hit()
 	if not Network:is_server() then
 		return
 	end
-	self._timer = nil
 	self:_detonate()
 end
 function MolotovGrenade:add_damage_result(unit, is_dead, damage_percent)

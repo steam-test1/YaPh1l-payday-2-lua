@@ -173,6 +173,7 @@ function PlayerCarry:_get_max_walk_speed(...)
 		for i = 1, base_max_armor do
 			multiplier = multiplier * mul
 		end
+		multiplier = math.clamp(multiplier, 0, 1)
 	end
 	return PlayerCarry.super._get_max_walk_speed(self, ...) * multiplier
 end

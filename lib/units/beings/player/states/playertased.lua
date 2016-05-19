@@ -6,6 +6,9 @@ function PlayerTased:init(unit)
 		self:give_shock_to_taser_no_damage()
 	end
 	managers.player:register_message(Message.EscapeTase, managers.player, clbk)
+	CopDamage.register_listener("on_criminal_tased", {
+		"on_criminal_tased"
+	}, callback(self, self, "_on_tased_event"))
 end
 function PlayerTased:enter(state_data, enter_data)
 	PlayerTased.super.enter(self, state_data, enter_data)
@@ -47,7 +50,7 @@ function PlayerTased:enter(state_data, enter_data)
 	local player_manager = managers.player
 	if player_manager:has_category_upgrade("player", "escape_taser") then
 		local target_time = player_manager:upgrade_value("player", "escape_taser", 2)
-		player_manager:add_coroutine("escape_tase", PlayerAction.EscapeTase, player_manager, target_time)
+		player_manager:add_coroutine("escape_tase", PlayerAction.EscapeTase, player_manager, Application:time() + target_time)
 	end
 end
 function PlayerTased:_enter(enter_data)
@@ -285,9 +288,6 @@ function PlayerTased:call_teammate(line, t, no_gesture, skip_alert)
 			if managers.player:has_category_upgrade("player", "special_enemy_highlight") then
 				prime_target.unit:contour():add(managers.player:has_category_upgrade("player", "marked_enemy_extra_damage") and "mark_enemy_damage_bonus" or "mark_enemy", true, managers.player:upgrade_value("player", "mark_enemy_time_multiplier", 1))
 			end
-			if not self._tase_ended and managers.player:has_category_upgrade("player", "taser_self_shock") and prime_target.unit:key() == self._unit:character_damage():tase_data().attacker_unit:key() then
-				self:_start_action_counter_tase(t, prime_target)
-			end
 		end
 	end
 	if interact_type then
@@ -356,6 +356,12 @@ function PlayerTased:on_tase_ended()
 		self._recover_delayed_clbk = "PlayerTased_recover_delayed_clbk"
 		managers.enemy:add_delayed_clbk(self._recover_delayed_clbk, callback(self, self, "clbk_exit_to_std"), TimerManager:game():time() + tweak_data.player.damage.TASED_RECOVER_TIME)
 	end
+	self._taser_unit = nil
+end
+function PlayerTased:_on_tased_event(taser_unit, tased_unit)
+	if self._unit == tased_unit then
+		self._taser_unit = taser_unit
+	end
 end
 function PlayerTased:give_shock_to_taser()
 	if not alive(self._counter_taser_unit) then
@@ -365,6 +371,7 @@ function PlayerTased:give_shock_to_taser()
 	self:_give_shock_to_taser(self._counter_taser_unit)
 end
 function PlayerTased:_give_shock_to_taser(taser_unit)
+	do return end
 	local action_data = {
 		variant = "counter_tased",
 		damage = taser_unit:character_damage()._HEALTH_INIT * (tweak_data.upgrades.counter_taser_damage or 0.2),
@@ -379,12 +386,10 @@ function PlayerTased:_give_shock_to_taser(taser_unit)
 	taser_unit:character_damage():damage_melee(action_data)
 end
 function PlayerTased:give_shock_to_taser_no_damage()
-	local voice_type, plural, prime_target = self:_get_unit_intimidation_action(true, false, false, true, false)
-	self._counter_taser_unit = prime_target.unit
-	if not alive(self._counter_taser_unit) then
+	if not alive(self._taser_unit) then
 		return
 	end
-	local taser_unit = self._counter_taser_unit
+	local taser_unit = self._taser_unit
 	local action_data = {
 		variant = "counter_tased",
 		damage = 0,

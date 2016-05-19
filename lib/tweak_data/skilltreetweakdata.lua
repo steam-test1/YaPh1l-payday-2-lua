@@ -390,19 +390,19 @@ function SkillTreeTweakData:init()
 			cost = self.costs.hightierpro
 		}
 	}
-	self.skills.pistol_messiah = {
+	self.skills.messiah = {
 		["name_id"] = "menu_pistol_beta_messiah",
 		["desc_id"] = "menu_pistol_beta_messiah_desc",
 		["icon_xy"] = {2, 9},
 		[1] = {
 			upgrades = {
-				"player_pistol_revive_from_bleed_out_1"
+				"player_messiah_revive_from_bleed_out_1"
 			},
 			cost = self.costs.hightier
 		},
 		[2] = {
 			upgrades = {
-				"player_recharge_pistol_messiah_1"
+				"player_recharge_messiah_1"
 			},
 			cost = self.costs.hightierpro
 		}
@@ -1641,7 +1641,7 @@ function SkillTreeTweakData:init()
 		[2] = {
 			upgrades = {
 				"player_mask_off_pickup",
-				"player_small_loot_multiplier2"
+				"player_small_loot_multiplier_1"
 			},
 			cost = self.costs.pro
 		}
@@ -1982,7 +1982,7 @@ function SkillTreeTweakData:init()
 		["icon_xy"] = {0, 0},
 		[1] = {
 			upgrades = {
-				"player_hip_fire_increase_1"
+				"player_hip_fire_accuracy_inc_1"
 			},
 			cost = self.costs.hightier
 		},
@@ -2510,9 +2510,7 @@ function SkillTreeTweakData:init()
 					"perseverance",
 					"feign_death"
 				},
-				{
-					"pistol_messiah"
-				}
+				{"messiah"}
 			}
 		},
 		{
@@ -3565,6 +3563,15 @@ function SkillTreeTweakData:get_tier_position_from_skill_name(skill_name)
 		end
 	end
 	return -1
+end
+function SkillTreeTweakData:get_tree(tree_name)
+	local list = {}
+	for i, tree in ipairs(self.trees) do
+		if tree.skill == tree_name then
+			table.insert(list, tree)
+		end
+	end
+	return list
 end
 function SkillTreeTweakData:get_tiers(tree_idx)
 	local tiers = deep_clone(self.trees[tree_idx].tiers)

@@ -66,7 +66,7 @@ function InfamyTweakData:init()
 		tier1 = digest(1)
 	}
 	self.items = {}
-	local skilltree_multiplier = 1
+	local skilltree_multiplier = 0.9
 	local skillcost_multiplier = 0.75
 	local skilltree_readable_multiplier = "10%"
 	local skillcost_readable_multiplier = "25%"

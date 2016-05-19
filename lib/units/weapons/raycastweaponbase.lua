@@ -14,9 +14,11 @@ local tmp_vec2 = Vector3()
 local tmp_rot1 = Rotation()
 RaycastWeaponBase = RaycastWeaponBase or class(UnitBase)
 RaycastWeaponBase.TRAIL_EFFECT = Idstring("effects/particles/weapons/weapon_trail")
-RaycastWeaponBase.MIN_KNOCK_BACK = 200
+local MIN_KNOCK_BACK = 200
+local KNOCK_BACK_CHANCE = 0.8
 function RaycastWeaponBase:init(unit)
 	UnitBase.init(self, unit, false)
+	self._player_manager = managers.player
 	self._unit = unit
 	self._name_id = self.name_id or "test_raycast_weapon"
 	self.name_id = nil
@@ -214,30 +216,30 @@ function RaycastWeaponBase:trigger_held(...)
 	return fired
 end
 function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit)
-	if managers.player:has_activate_temporary_upgrade("temporary", "no_ammo_cost_buff") then
-		managers.player:deactivate_temporary_upgrade("temporary", "no_ammo_cost_buff")
-		if managers.player:has_category_upgrade("temporary", "no_ammo_cost") then
-			managers.player:activate_temporary_upgrade("temporary", "no_ammo_cost")
+	if self._player_manager:has_activate_temporary_upgrade("temporary", "no_ammo_cost_buff") then
+		self._player_manager:deactivate_temporary_upgrade("temporary", "no_ammo_cost_buff")
+		if self._player_manager:has_category_upgrade("temporary", "no_ammo_cost") then
+			self._player_manager:activate_temporary_upgrade("temporary", "no_ammo_cost")
 		end
 	end
-	local consume_ammo = not managers.player:has_activate_temporary_upgrade("temporary", "no_ammo_cost") and (not managers.player:has_activate_temporary_upgrade("temporary", "berserker_damage_multiplier") or not managers.player:has_category_upgrade("player", "berserker_no_ammo_cost"))
+	local consume_ammo = not self._player_manager:has_activate_temporary_upgrade("temporary", "no_ammo_cost") and (not self._player_manager:has_activate_temporary_upgrade("temporary", "berserker_damage_multiplier") or not self._player_manager:has_category_upgrade("player", "berserker_no_ammo_cost"))
 	if consume_ammo then
 		local base = self.parent_weapon and self.parent_weapon:base() or self
 		if base:get_ammo_remaining_in_clip() == 0 then
 			return
 		end
 		local ammo_usage = 1
-		if managers.player:has_category_upgrade(self:weapon_tweak_data().category, "consume_no_ammo_chance") then
+		if self._player_manager:has_category_upgrade(self:weapon_tweak_data().category, "consume_no_ammo_chance") then
 			local roll = math.rand(1)
-			local chance = managers.player:upgrade_value(self:weapon_tweak_data().category, "consume_no_ammo_chance", 0)
+			local chance = self._player_manager:upgrade_value(self:weapon_tweak_data().category, "consume_no_ammo_chance", 0)
 			if roll < chance then
 				ammo_usage = 0
 				print("NO AMMO COST")
 			end
 		end
-		if managers.player:has_category_upgrade(self:weapon_tweak_data().sub_category, "consume_no_ammo_chance") then
+		if self._player_manager:has_category_upgrade(self:weapon_tweak_data().sub_category, "consume_no_ammo_chance") then
 			local roll = math.rand(1)
-			local chance = managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "consume_no_ammo_chance", 0)
+			local chance = self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "consume_no_ammo_chance", 0)
 			if roll < chance then
 				ammo_usage = 0
 				print("NO AMMO COST")
@@ -559,7 +561,7 @@ function RaycastWeaponBase:_check_alert(rays, fire_pos, direction, user_unit)
 	end
 end
 function RaycastWeaponBase:damage_player(col_ray, from_pos, direction)
-	local unit = managers.player:player_unit()
+	local unit = self._player_manager:player_unit()
 	if not unit then
 		return
 	end
@@ -737,14 +739,14 @@ function RaycastWeaponBase:get_ammo_remaining_in_clip()
 	return self._ammo_remaining_in_clip and self:digest_value(self._ammo_remaining_in_clip, false) or self:digest_value(self._ammo_remaining_in_clip2, false)
 end
 function RaycastWeaponBase:replenish()
-	local ammo_max_multiplier = managers.player:upgrade_value("player", "extra_ammo_multiplier", 1)
-	ammo_max_multiplier = ammo_max_multiplier * managers.player:upgrade_value(self:weapon_tweak_data().category, "extra_ammo_multiplier", 1)
+	local ammo_max_multiplier = self._player_manager:upgrade_value("player", "extra_ammo_multiplier", 1)
+	ammo_max_multiplier = ammo_max_multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().category, "extra_ammo_multiplier", 1)
 	if self:weapon_tweak_data().sub_category then
-		ammo_max_multiplier = ammo_max_multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "extra_ammo_multiplier", 1)
+		ammo_max_multiplier = ammo_max_multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "extra_ammo_multiplier", 1)
 	end
 	ammo_max_multiplier = ammo_max_multiplier + ammo_max_multiplier * (self._total_ammo_mod or 0)
 	local ammo_max_per_clip = self:calculate_ammo_max_per_clip()
-	local ammo_max = math.round((tweak_data.weapon[self._name_id].AMMO_MAX + managers.player:upgrade_value(self._name_id, "clip_amount_increase") * ammo_max_per_clip) * ammo_max_multiplier)
+	local ammo_max = math.round((tweak_data.weapon[self._name_id].AMMO_MAX + self._player_manager:upgrade_value(self._name_id, "clip_amount_increase") * ammo_max_per_clip) * ammo_max_multiplier)
 	ammo_max_per_clip = math.min(ammo_max_per_clip, ammo_max)
 	self:set_ammo_max_per_clip(ammo_max_per_clip)
 	self:set_ammo_max(ammo_max)
@@ -764,21 +766,21 @@ function RaycastWeaponBase:upgrade_blocked(category, upgrade)
 end
 function RaycastWeaponBase:calculate_ammo_max_per_clip()
 	local ammo = tweak_data.weapon[self._name_id].CLIP_AMMO_MAX
-	ammo = ammo + managers.player:upgrade_value(self._name_id, "clip_ammo_increase")
+	ammo = ammo + self._player_manager:upgrade_value(self._name_id, "clip_ammo_increase")
 	if not self:upgrade_blocked("weapon", "clip_ammo_increase") then
-		ammo = ammo + managers.player:upgrade_value("weapon", "clip_ammo_increase", 0)
+		ammo = ammo + self._player_manager:upgrade_value("weapon", "clip_ammo_increase", 0)
 	end
 	if not self:upgrade_blocked(tweak_data.weapon[self._name_id].category, "clip_ammo_increase") then
-		ammo = ammo + managers.player:upgrade_value(tweak_data.weapon[self._name_id].category, "clip_ammo_increase", 0)
+		ammo = ammo + self._player_manager:upgrade_value(tweak_data.weapon[self._name_id].category, "clip_ammo_increase", 0)
 	end
 	if not self:upgrade_blocked(tweak_data.weapon[self._name_id].sub_category, "clip_ammo_increase") then
-		ammo = ammo + managers.player:upgrade_value(tweak_data.weapon[self._name_id].sub_category, "clip_ammo_increase", 0)
+		ammo = ammo + self._player_manager:upgrade_value(tweak_data.weapon[self._name_id].sub_category, "clip_ammo_increase", 0)
 	end
 	return ammo
 end
 function RaycastWeaponBase:_get_current_damage(dmg_mul)
 	local damage = self._damage * (dmg_mul or 1)
-	damage = damage * managers.player:temporary_upgrade_value("temporary", "combat_medic_damage_multiplier", 1)
+	damage = damage * self._player_manager:temporary_upgrade_value("temporary", "combat_medic_damage_multiplier", 1)
 	return damage
 end
 function RaycastWeaponBase:update_damage()
@@ -791,40 +793,40 @@ function RaycastWeaponBase:spread_moving()
 	return self._spread_moving
 end
 function RaycastWeaponBase:reload_speed_multiplier()
-	local multiplier = managers.player:upgrade_value(self:weapon_tweak_data().category, "reload_speed_multiplier", 1)
+	local multiplier = self._player_manager:upgrade_value(self:weapon_tweak_data().category, "reload_speed_multiplier", 1)
 	if self:weapon_tweak_data().sub_category then
-		multiplier = multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "reload_speed_multiplier", 1)
+		multiplier = multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "reload_speed_multiplier", 1)
 	end
-	multiplier = multiplier * managers.player:upgrade_value("weapon", "passive_reload_speed_multiplier", 1)
-	multiplier = multiplier * managers.player:upgrade_value(self._name_id, "reload_speed_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value("weapon", "passive_reload_speed_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value(self._name_id, "reload_speed_multiplier", 1)
 	return multiplier
 end
 function RaycastWeaponBase:damage_multiplier()
-	local multiplier = managers.player:upgrade_value(self:weapon_tweak_data().category, "damage_multiplier", 1)
+	local multiplier = self._player_manager:upgrade_value(self:weapon_tweak_data().category, "damage_multiplier", 1)
 	if self:weapon_tweak_data().sub_category then
-		multiplier = multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "damage_multiplier", 1)
+		multiplier = multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "damage_multiplier", 1)
 	end
-	multiplier = multiplier * managers.player:upgrade_value(self._name_id, "damage_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value(self._name_id, "damage_multiplier", 1)
 	return multiplier
 end
 function RaycastWeaponBase:melee_damage_multiplier()
-	return managers.player:upgrade_value(self._name_id, "melee_multiplier", 1)
+	return self._player_manager:upgrade_value(self._name_id, "melee_multiplier", 1)
 end
 function RaycastWeaponBase:spread_multiplier()
-	local multiplier = managers.player:upgrade_value(self:weapon_tweak_data().category, "spread_multiplier", 1)
+	local multiplier = self._player_manager:upgrade_value(self:weapon_tweak_data().category, "spread_multiplier", 1)
 	if self:weapon_tweak_data().sub_category then
-		multiplier = multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "spread_multiplier", 1)
+		multiplier = multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "spread_multiplier", 1)
 	end
-	multiplier = multiplier * managers.player:upgrade_value("weapon", self:fire_mode() .. "_spread_multiplier", 1)
-	multiplier = multiplier * managers.player:upgrade_value(self._name_id, "spread_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value("weapon", self:fire_mode() .. "_spread_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value(self._name_id, "spread_multiplier", 1)
 	return multiplier
 end
 function RaycastWeaponBase:exit_run_speed_multiplier()
-	local multiplier = managers.player:upgrade_value(self:weapon_tweak_data().category, "exit_run_speed_multiplier", 1)
+	local multiplier = self._player_manager:upgrade_value(self:weapon_tweak_data().category, "exit_run_speed_multiplier", 1)
 	if self:weapon_tweak_data().sub_category then
-		multiplier = multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "exit_run_speed_multiplier", 1)
+		multiplier = multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "exit_run_speed_multiplier", 1)
 	end
-	multiplier = multiplier * managers.player:upgrade_value(self._name_id, "exit_run_speed_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value(self._name_id, "exit_run_speed_multiplier", 1)
 	return multiplier
 end
 function RaycastWeaponBase:recoil_addend()
@@ -832,37 +834,37 @@ function RaycastWeaponBase:recoil_addend()
 end
 function RaycastWeaponBase:recoil_multiplier()
 	local category = self:weapon_tweak_data().category
-	local multiplier = managers.player:upgrade_value(category, "recoil_multiplier", 1)
-	if managers.player:has_team_category_upgrade(category, "recoil_multiplier") then
-		multiplier = multiplier * managers.player:team_upgrade_value(category, "recoil_multiplier", 1)
-	elseif managers.player:player_unit() and managers.player:player_unit():character_damage():is_suppressed() then
-		multiplier = multiplier * managers.player:team_upgrade_value(category, "suppression_recoil_multiplier", 1)
+	local multiplier = self._player_manager:upgrade_value(category, "recoil_multiplier", 1)
+	if self._player_manager:has_team_category_upgrade(category, "recoil_multiplier") then
+		multiplier = multiplier * self._player_manager:team_upgrade_value(category, "recoil_multiplier", 1)
+	elseif self._player_manager:player_unit() and self._player_manager:player_unit():character_damage():is_suppressed() then
+		multiplier = multiplier * self._player_manager:team_upgrade_value(category, "suppression_recoil_multiplier", 1)
 	end
 	local sub_category = self:weapon_tweak_data().sub_category
 	if sub_category then
-		multiplier = multiplier * managers.player:upgrade_value(sub_category, "recoil_multiplier", 1)
-		if managers.player:has_team_category_upgrade(sub_category, "recoil_multiplier") then
-			multiplier = multiplier * managers.player:team_upgrade_value(sub_category, "recoil_multiplier", 1)
-		elseif managers.player:player_unit() and managers.player:player_unit():character_damage():is_suppressed() then
-			multiplier = multiplier * managers.player:team_upgrade_value(sub_category, "suppression_recoil_multiplier", 1)
+		multiplier = multiplier * self._player_manager:upgrade_value(sub_category, "recoil_multiplier", 1)
+		if self._player_manager:has_team_category_upgrade(sub_category, "recoil_multiplier") then
+			multiplier = multiplier * self._player_manager:team_upgrade_value(sub_category, "recoil_multiplier", 1)
+		elseif self._player_manager:player_unit() and self._player_manager:player_unit():character_damage():is_suppressed() then
+			multiplier = multiplier * self._player_manager:team_upgrade_value(sub_category, "suppression_recoil_multiplier", 1)
 		end
 	end
-	multiplier = multiplier * managers.player:upgrade_value(self._name_id, "recoil_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value(self._name_id, "recoil_multiplier", 1)
 	return multiplier
 end
 function RaycastWeaponBase:enter_steelsight_speed_multiplier()
-	local multiplier = managers.player:upgrade_value(self:weapon_tweak_data().category, "enter_steelsight_speed_multiplier", 1)
+	local multiplier = self._player_manager:upgrade_value(self:weapon_tweak_data().category, "enter_steelsight_speed_multiplier", 1)
 	if self:weapon_tweak_data().sub_category then
-		multiplier = multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "enter_steelsight_speed_multiplier", 1)
+		multiplier = multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "enter_steelsight_speed_multiplier", 1)
 	end
-	multiplier = multiplier * managers.player:temporary_upgrade_value("temporary", "combat_medic_enter_steelsight_speed_multiplier", 1)
-	multiplier = multiplier * managers.player:upgrade_value(self._name_id, "enter_steelsight_speed_multiplier", 1)
+	multiplier = multiplier * self._player_manager:temporary_upgrade_value("temporary", "combat_medic_enter_steelsight_speed_multiplier", 1)
+	multiplier = multiplier * self._player_manager:upgrade_value(self._name_id, "enter_steelsight_speed_multiplier", 1)
 	return multiplier
 end
 function RaycastWeaponBase:fire_rate_multiplier()
 end
 function RaycastWeaponBase:upgrade_value(value, default)
-	return managers.player:upgrade_value(self._name_id, value, default)
+	return self._player_manager:upgrade_value(self._name_id, value, default)
 end
 function RaycastWeaponBase:transition_duration()
 	return self:weapon_tweak_data().transition_duration
@@ -945,14 +947,14 @@ function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
 	if self._ammo_data and self._ammo_data.ammo_pickup_min_mul then
 		multiplier_min = self._ammo_data.ammo_pickup_min_mul
 	else
-		multiplier_min = managers.player:upgrade_value("player", "pick_up_ammo_multiplier", 1)
-		multiplier_min = multiplier_min + (managers.player:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1)
+		multiplier_min = self._player_manager:upgrade_value("player", "pick_up_ammo_multiplier", 1)
+		multiplier_min = multiplier_min + (self._player_manager:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1)
 	end
 	if self._ammo_data and self._ammo_data.ammo_pickup_max_mul then
 		multiplier_max = self._ammo_data.ammo_pickup_max_mul
 	else
-		multiplier_max = managers.player:upgrade_value("player", "pick_up_ammo_multiplier", 1)
-		multiplier_max = multiplier_max + (managers.player:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1)
+		multiplier_max = self._player_manager:upgrade_value("player", "pick_up_ammo_multiplier", 1)
+		multiplier_max = multiplier_max + (self._player_manager:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1)
 	end
 	local add_amount = add_amount_override
 	local picked_up = true
@@ -1023,17 +1025,17 @@ function RaycastWeaponBase:_get_spread(user_unit)
 	local spread_multiplier = self:spread_multiplier()
 	local current_state = user_unit:movement()._current_state
 	if current_state._moving then
-		spread_multiplier = spread_multiplier * managers.player:upgrade_value(self:weapon_tweak_data().category, "move_spread_multiplier", 1)
+		spread_multiplier = spread_multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().category, "move_spread_multiplier", 1)
 	end
 	if current_state:in_steelsight() then
 		return self._spread * tweak_data.weapon[self._name_id].spread[current_state._moving and "moving_steelsight" or "steelsight"] * spread_multiplier
 	end
-	spread_multiplier = spread_multiplier * managers.player:upgrade_value(self:weapon_tweak_data().category, "hip_fire_spread_multiplier", 1)
+	spread_multiplier = spread_multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().category, "hip_fire_spread_multiplier", 1)
 	if self:weapon_tweak_data().sub_category then
 		if current_state._moving then
-			spread_multiplier = spread_multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "move_spread_multiplier", 1)
+			spread_multiplier = spread_multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "move_spread_multiplier", 1)
 		end
-		spread_multiplier = spread_multiplier * managers.player:upgrade_value(self:weapon_tweak_data().sub_category, "hip_fire_spread_multiplier", 1)
+		spread_multiplier = spread_multiplier * self._player_manager:upgrade_value(self:weapon_tweak_data().sub_category, "hip_fire_spread_multiplier", 1)
 	end
 	if current_state._state_data.ducking then
 		return self._spread * tweak_data.weapon[self._name_id].spread[current_state._moving and "moving_crouching" or "crouching"] * spread_multiplier
@@ -1062,10 +1064,10 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 	local is_shield = hit_unit:in_slot(8) and alive(hit_unit:parent())
 	if is_shield and not hit_unit:parent():character_damage():is_immune_to_shield_knockback() then
 		shield_knock = weapon_unit:base()._shield_knock
-		local dmg_ratio = math.min(damage, RaycastWeaponBase.MIN_KNOCK_BACK)
-		dmg_ratio = dmg_ratio / RaycastWeaponBase.MIN_KNOCK_BACK
-		local rand = math.random()
-		if rand + dmg_ratio > 0.5 then
+		local dmg_ratio = math.min(damage, MIN_KNOCK_BACK)
+		dmg_ratio = dmg_ratio / MIN_KNOCK_BACK + 1
+		local rand = math.random() * dmg_ratio
+		if rand > KNOCK_BACK_CHANCE then
 			local enemy_unit = hit_unit:parent()
 			if shield_knock and enemy_unit:character_damage() then
 				local damage_info = {
@@ -1101,7 +1103,7 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 	local result
 	if hit_unit:character_damage() and hit_unit:character_damage().damage_bullet then
 		local is_alive = not hit_unit:character_damage():dead()
-		result = self:give_impact_damage(col_ray, weapon_unit, user_unit, damage, weapon_unit:base()._use_armor_piercing, false, weapon_unit:base()._knock_back, weapon_unit:base()._stagger)
+		result = self:give_impact_damage(col_ray, weapon_unit, user_unit, damage, weapon_unit:base()._use_armor_piercing, false, weapon_unit:base()._knock_down, weapon_unit:base()._stagger)
 		if result ~= "friendly_fire" then
 			local is_dead = hit_unit:character_damage():dead()
 			local push_multiplier = self:_get_character_push_multiplier(weapon_unit, is_alive and is_dead)

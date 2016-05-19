@@ -1,6 +1,6 @@
 PlayerAction.BloodthirstBase = {}
 PlayerAction.BloodthirstBase.Priority = 1
-function PlayerAction.BloodthirstBase.Function(t, dt, player_manager, melee_multiplier, max_multiplier)
+function PlayerAction.BloodthirstBase.Function(player_manager, melee_multiplier, max_multiplier)
 	local co = coroutine.running()
 	local multiplier = 1
 	local quit = false

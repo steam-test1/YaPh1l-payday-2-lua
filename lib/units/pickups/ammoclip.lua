@@ -2,6 +2,8 @@ AmmoClip = AmmoClip or class(Pickup)
 AmmoClip.EVENT_IDS = {}
 AmmoClip.EVENT_IDS.bonnie_share_ammo = 1
 AmmoClip.EVENT_IDS.register_grenade = 16
+local CABLE_TIE_GET_CHANCE = 0.2
+local CABLE_TIE_GET_AMOUNT = 1
 function AmmoClip:init(unit)
 	AmmoClip.super.init(self, unit)
 	self._ammo_type = ""
@@ -44,6 +46,10 @@ function AmmoClip:_pickup(unit)
 		end
 		if picked_up then
 			self._picked_up = true
+			local rand = math.random()
+			if rand <= CABLE_TIE_GET_CHANCE then
+				managers.player:add_cable_ties(CABLE_TIE_GET_AMOUNT)
+			end
 			if not self._projectile_id and not self._weapon_category then
 				local restored_health
 				if not unit:character_damage():is_downed() and player_manager:has_category_upgrade("temporary", "loose_ammo_restore_health") and not player_manager:has_activate_temporary_upgrade("temporary", "loose_ammo_restore_health") then

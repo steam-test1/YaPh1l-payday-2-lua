@@ -2109,7 +2109,8 @@ function GroupAIStateBase:spawn_one_teamAI(is_drop_in, char_name, pos, rotation)
 		local player = objective.follow_unit
 		local player_pos = pos or player:position()
 		local tracker = player:movement():nav_tracker()
-		local spawn_pos, spawn_rot
+		local spawn_pos = player_pos
+		local spawn_rot
 		if is_drop_in and not self:whisper_mode() then
 			local spawn_fwd = player:movement():m_head_rot():y()
 			mvector3.set_z(spawn_fwd, 0)
@@ -2133,8 +2134,8 @@ function GroupAIStateBase:spawn_one_teamAI(is_drop_in, char_name, pos, rotation)
 			end
 		else
 			local spawn_point = managers.network:session():get_next_spawn_point()
-			spawn_pos = spawn_point.pos_rot[1]
-			spawn_rot = spawn_point.pos_rot[2]
+			spawn_pos = player_pos
+			spawn_rot = rotation
 			objective.in_place = true
 		end
 		local character_name = char_name or managers.criminals:get_free_character_name()

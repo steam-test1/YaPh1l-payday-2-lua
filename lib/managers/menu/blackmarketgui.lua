@@ -2632,11 +2632,18 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 				name = "bm_menu_btn_equip_deployable",
 				callback = callback(self, self, "lo_equip_deployable_callback")
 			},
-			lo_d_equip_secondary = {
+			lo_d_equip_primary = {
 				prio = 1,
 				btn = "BTN_A",
 				pc_btn = nil,
-				name = "bm_menu_btn_equip_deployable",
+				name = "bm_menu_btn_equip_primary_deployable",
+				callback = callback(self, self, "lo_equip_deployable_callback")
+			},
+			lo_d_equip_secondary = {
+				prio = 1,
+				btn = "BTN_X",
+				pc_btn = nil,
+				name = "bm_menu_btn_equip_secondary_deployable",
 				callback = callback(self, self, "lo_equip_deployable_callback_secondary")
 			},
 			lo_mw_equip = {
@@ -7477,8 +7484,11 @@ function BlackMarketGui:populate_deployables(data)
 		new_data.skill_based = new_data.level == 0
 		new_data.skill_name = "bm_menu_skill_locked_" .. new_data.name
 		new_data.lock_texture = self:get_lock_icon(new_data)
-		if new_data.unlocked and not new_data.equipped then
+		if new_data.unlocked and not new_data.equipped and not second_deployable then
 			table.insert(new_data, "lo_d_equip")
+		end
+		if new_data.unlocked and not new_data.equipped and second_deployable then
+			table.insert(new_data, "lo_d_equip_primary")
 		end
 		if second_deployable and new_data.unlocked and not new_data.equipped then
 			table.insert(new_data, "lo_d_equip_secondary")

@@ -1,8 +1,8 @@
 PlayerAction.ExpertHandling = {}
 PlayerAction.ExpertHandling.Priority = 1
-function PlayerAction.ExpertHandling.Function(t, dt, player_manager, accuracy_bonus, max_stacks, max_time)
+function PlayerAction.ExpertHandling.Function(player_manager, accuracy_bonus, max_stacks, max_time)
 	local co = coroutine.running()
-	local current_time = 0
+	local current_time = Application:time()
 	local current_stacks = 0
 	local function on_hit()
 		current_stacks = current_stacks + 1
@@ -12,8 +12,8 @@ function PlayerAction.ExpertHandling.Function(t, dt, player_manager, accuracy_bo
 	end
 	on_hit()
 	player_manager:register_message(Message.OnEnemyShot, co, on_hit)
-	while max_time >= current_time do
-		current_time = current_time + dt
+	while max_time > current_time do
+		current_time = Application:time()
 		if player_manager:get_equipped_weapon_category() ~= "pistol" then
 			break
 		end

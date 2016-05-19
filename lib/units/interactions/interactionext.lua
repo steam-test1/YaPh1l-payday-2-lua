@@ -1670,7 +1670,7 @@ function MissionDoorDeviceInteractionExt:server_place_mission_door_device(player
 	self:remove_interact()
 	local is_saw = self._unit:base() and self._unit:base().is_saw
 	local is_drill = self._unit:base() and self._unit:base().is_drill
-	if is_drill or is_saw then
+	if (is_saw or is_drill) and not self._tweak_data.block_upgrade then
 		local user_unit
 		if player and player:base() and not player:base().is_local_player then
 			user_unit = player

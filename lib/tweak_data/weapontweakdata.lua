@@ -5552,6 +5552,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hk21.bipod_camera_spin_limit = 40
 	self.hk21.bipod_camera_pitch_limit = 15
 	self.hk21.bipod_weapon_translation = Vector3(-8.5, 10, 0)
+	self.hk21.bipod_deploy_multiplier = 1
 	self.hk21.name_id = "bm_w_hk21"
 	self.hk21.desc_id = "bm_w_hk21_desc"
 	self.hk21.description_id = "des_hk21"
@@ -5652,6 +5653,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m249.bipod_camera_spin_limit = 40
 	self.m249.bipod_camera_pitch_limit = 15
 	self.m249.bipod_weapon_translation = Vector3(-8.5, 20, -5)
+	self.m249.bipod_deploy_multiplier = 1
 	self.m249.name_id = "bm_w_m249"
 	self.m249.desc_id = "bm_w_m249_desc"
 	self.m249.description_id = "des_m249"
@@ -5752,6 +5754,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rpk.bipod_camera_spin_limit = 40
 	self.rpk.bipod_camera_pitch_limit = 15
 	self.rpk.bipod_weapon_translation = Vector3(-8.5, 12, 0)
+	self.rpk.bipod_deploy_multiplier = 1
 	self.rpk.name_id = "bm_w_rpk"
 	self.rpk.desc_id = "bm_w_rpk_desc"
 	self.rpk.description_id = "des_rpk"
@@ -7634,6 +7637,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mg42.bipod_camera_spin_limit = 40
 	self.mg42.bipod_camera_pitch_limit = 15
 	self.mg42.bipod_weapon_translation = Vector3(-8.5, 20, -7.5)
+	self.mg42.bipod_deploy_multiplier = 1
 	self.mg42.name_id = "bm_w_mg42"
 	self.mg42.desc_id = "bm_w_mg42_desc"
 	self.mg42.description_id = "des_mg42"
@@ -10497,6 +10501,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.par.bipod_camera_spin_limit = 40
 	self.par.bipod_camera_pitch_limit = 15
 	self.par.bipod_weapon_translation = Vector3(-8.5, 10, -5)
+	self.par.bipod_deploy_multiplier = 1
 	self.par.name_id = "bm_w_par"
 	self.par.desc_id = "bm_w_par_desc"
 	self.par.description_id = "des_par"
