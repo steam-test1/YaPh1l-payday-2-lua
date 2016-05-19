@@ -115,8 +115,12 @@ function CoreMaterialEditor:_on_new()
 	end
 end
 function CoreMaterialEditor:_on_open()
+	local current_path
+	if self._material_config_path then
+		current_path = string.match(self._material_config_path, ".*\\")
+	end
 	self:_save_current()
-	local node, path = managers.database:load_node_dialog(self._main_frame, "Material Configurations (*.material_config)|*.material_config")
+	local node, path = managers.database:load_node_dialog(self._main_frame, "Material Configurations (*.material_config)|*.material_config", current_path)
 	if path and not self:_load_node(path) then
 		EWS:MessageDialog(self._main_frame, "The material config file could not be opened.", "Error", "OK,ICON_ERROR"):show_modal()
 	end
@@ -126,7 +130,11 @@ function CoreMaterialEditor:_on_save()
 	EWS:message_box(self._main_frame, "All data in this material config was saved to disk!", "Save", "OK,ICON_INFORMATION", Vector3(-1, -1, -1))
 end
 function CoreMaterialEditor:_on_save_as()
-	local path = managers.database:save_file_dialog(self._main_frame, false, "Material Configurations (*.material_config)|*.material_config")
+	local current_path
+	if self._material_config_path then
+		current_path = string.match(self._material_config_path, ".*\\")
+	end
+	local path = managers.database:save_file_dialog(self._main_frame, false, "Material Configurations (*.material_config)|*.material_config", current_path)
 	if path then
 		if managers.database:has(path) and EWS:MessageDialog(self._main_frame, "A material config with that name already exists. Do you want to replace it?", "Duplicated!", "YES_NO,ICON_ERROR"):show_modal() == "ID_NO" then
 			return
