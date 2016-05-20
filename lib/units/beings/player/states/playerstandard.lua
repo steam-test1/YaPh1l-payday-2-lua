@@ -82,7 +82,6 @@ function PlayerStandard:init(unit)
 	self._sentry_btn_down = false
 	self._interaction = managers.interaction
 	self._on_melee_restart_drill = managers.player:has_category_upgrade("player", "drill_melee_hit_restart_chance")
-	self._player_manager = managers.player
 	self._input = {}
 	local controller = unit:base():controller()
 	if controller:get_type() ~= "pc" then
@@ -1904,7 +1903,7 @@ function PlayerStandard:_check_change_weapon(t, input)
 			self._change_weapon_pressed_expire_t = t + 0.33
 			self:_start_action_unequip_weapon(t, data)
 			new_action = true
-			self._player_manager:send_message(Message.OnSwitchWeapon)
+			managers.player:send_message(Message.OnSwitchWeapon)
 		end
 	end
 	return new_action
@@ -3127,10 +3126,10 @@ function PlayerStandard:_find_pickups(t)
 	for _, pickup in ipairs(pickups) do
 		if pickup:pickup() and pickup:pickup():pickup(self._unit) then
 			for id, weapon in pairs(self._unit:inventory():available_selections()) do
-				if self._player_manager:has_category_upgrade("player", "regain_throwable_from_ammo") then
-					local data = self._player_manager:upgrade_value("player", "regain_throwable_from_ammo", nil)
+				if managers.player:has_category_upgrade("player", "regain_throwable_from_ammo") then
+					local data = managers.player:upgrade_value("player", "regain_throwable_from_ammo", nil)
 					if data then
-						self._player_manager:add_coroutine("regain_throwable_from_ammo", PlayerAction.FullyLoaded, self._player_manager, data.chance, data.chance_inc)
+						managers.player:add_coroutine("regain_throwable_from_ammo", PlayerAction.FullyLoaded, managers.player, data.chance, data.chance_inc)
 					end
 				end
 				managers.hud:set_ammo_amount(id, weapon.unit:base():ammo_info())
