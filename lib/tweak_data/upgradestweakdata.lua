@@ -36,11 +36,11 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.values.player.body_armor.dodge = {
 		0.05,
+		-0.05,
+		-0.1,
+		-0.15,
+		-0.2,
 		-0.25,
-		-0.3,
-		-0.35,
-		-0.4,
-		-0.45,
 		-0.55
 	}
 	self.values.player.body_armor.damage_shake = {
@@ -288,7 +288,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.player_damage_health_ratio_threshold = 0.5
 	self.values.player.shield_knock = {true}
 	self.values.temporary.overkill_damage_multiplier = {
-		{1.75, 30}
+		{1.75, 20}
 	}
 	self.values.player.overkill_all_weapons = {true}
 	self.values.player.passive_suppression_multiplier = {1.1, 1.2}
@@ -337,7 +337,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.sentry_gun.quantity = {1, 4}
 	self.values.sentry_gun.damage_multiplier = {2.5}
 	self.values.weapon.clip_ammo_increase = {5, 15}
-	self.values.player.armor_multiplier = {1.4}
+	self.values.player.armor_multiplier = {1.3}
 	self.values.team.armor.regen_time_multiplier = {0.75}
 	self.values.player.passive_crafting_weapon_multiplier = {
 		0.99,
@@ -607,19 +607,19 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.level_3_armor_addend = {2}
 	self.values.player.level_4_armor_addend = {2}
 	self.values.player.level_2_dodge_addend = {
+		0.05,
 		0.1,
-		0.2,
-		0.35
+		0.15
 	}
 	self.values.player.level_3_dodge_addend = {
+		0.05,
 		0.1,
-		0.2,
-		0.35
+		0.15
 	}
 	self.values.player.level_4_dodge_addend = {
+		0.05,
 		0.1,
-		0.2,
-		0.35
+		0.15
 	}
 	self.values.player.damage_shake_addend = {1}
 	self.values.player.melee_concealment_modifier = {2}
@@ -651,7 +651,7 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.values.player.passive_health_regen = {0.03}
 	self.values.player.healing_reduction = {0.25, 0.5}
-	self.values.player.health_damage_reduction = {0.75, 0.5}
+	self.values.player.health_damage_reduction = {0.75, 0.4}
 	self.values.player.max_health_reduction = {0.3}
 	self.values.cable_tie.quantity_2 = {4}
 	self.ecm_feedback_retrigger_interval = 240
@@ -682,7 +682,7 @@ function UpgradesTweakData:_init_pd2_values()
 		0.85,
 		0.8
 	}
-	self.values.player.headshot_regen_armor_bonus = {1, 3.5}
+	self.values.player.headshot_regen_armor_bonus = {0.5, 2.5}
 	self.values.pistol.stacking_hit_damage_multiplier = {0.2}
 	self.values.bodybags_bag.quantity = {1}
 	self.values.first_aid_kit.quantity = {7, 10}
@@ -754,7 +754,7 @@ function UpgradesTweakData:_init_pd2_values()
 		{4, 6}
 	}
 	self.values.player.marked_inc_dmg_distance = {
-		{2500, 1.5}
+		{1000, 1.5}
 	}
 	self.loose_ammo_give_team_ratio = 0.5
 	self.loose_ammo_give_team_health_ratio = 1
@@ -1081,7 +1081,7 @@ function UpgradesTweakData:_init_pd2_values()
 			}
 		},
 		juggernaut = {
-			{"40%"},
+			{"30%"},
 			{}
 		},
 		kilmer = {
@@ -1125,7 +1125,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{"50%", "75%"}
 		},
 		overkill = {
-			{"75%", "5"},
+			{"75%", "20"},
 			{"80%"}
 		},
 		pack_mule = {
@@ -1294,7 +1294,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		spotter_teamwork = {
 			{"15%"},
-			{"50%", "25"}
+			{"50%", "10"}
 		},
 		speedy_reload = {
 			{"15%"},
@@ -1362,7 +1362,7 @@ function UpgradesTweakData:_init_pd2_values()
 				"30%",
 				"75%"
 			},
-			{"50%", "50%"}
+			{"60%", "50%"}
 		},
 		defense_up = {
 			{"56%"},
@@ -1435,7 +1435,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{"2", "7"}
 		},
 		fire_trap = {
-			{"20", "7.5"},
+			{"10", "7.5"},
 			{"10", "50%"}
 		},
 		combat_engineering = {
@@ -1560,12 +1560,12 @@ function UpgradesTweakData:_init_pd2_values()
 			{
 				"15",
 				"2",
-				"10"
+				"5"
 			},
 			{
 				"30",
 				"2",
-				"25"
+				"20"
 			}
 		},
 		mastermind_tier1 = {
@@ -1795,15 +1795,15 @@ function UpgradesTweakData:_init_pd2_values()
 		{
 			{"5%"},
 			{"25%"},
-			{"10%", "20%"},
+			{"5%", "20%"},
 			{
 				"+1",
 				"15%",
 				"45%"
 			},
-			{"10%", "20%"},
+			{"5%", "20%"},
 			{"135%"},
-			{"15%", "25%"},
+			{"5%", "25%"},
 			{"5%", "20%"},
 			{"10%", "10%"}
 		},

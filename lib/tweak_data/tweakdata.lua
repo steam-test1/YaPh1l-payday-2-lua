@@ -3875,9 +3875,9 @@ Play the full version soon to get your full PAYDAY!]],
 	self.casino.infamous_chance = 3
 	self.projectiles = {}
 	self.projectiles.frag = {}
-	self.projectiles.frag.damage = 30
+	self.projectiles.frag.damage = 40
 	self.projectiles.frag.player_damage = 10
-	self.projectiles.frag.range = 1000
+	self.projectiles.frag.range = 500
 	self.projectiles.frag.name_id = "bm_grenade_frag"
 	self.projectiles.launcher_frag = {}
 	self.projectiles.launcher_frag.damage = 34
@@ -3910,7 +3910,7 @@ Play the full version soon to get your full PAYDAY!]],
 		dot_tick_period = 0.5
 	}
 	self.projectiles.molotov.range = 75
-	self.projectiles.molotov.burn_duration = 20
+	self.projectiles.molotov.burn_duration = 10
 	self.projectiles.molotov.burn_tick_period = 0.5
 	self.projectiles.molotov.sound_event = "molotov_impact"
 	self.projectiles.molotov.sound_event_impact_duration = 4

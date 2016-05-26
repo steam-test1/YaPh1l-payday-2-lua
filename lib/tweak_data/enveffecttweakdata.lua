@@ -13,7 +13,7 @@ function EnvEffectTweakData:molotov_fire()
 			dot_tick_period = 0.5
 		},
 		range = 75,
-		burn_duration = 25,
+		burn_duration = 15,
 		burn_tick_period = 0.5,
 		curve_pow = 3,
 		sound_event = "molotov_impact",
@@ -37,7 +37,7 @@ function EnvEffectTweakData:trip_mine_fire()
 			dot_tick_period = 0.5
 		},
 		range = 75,
-		burn_duration = 20,
+		burn_duration = 10,
 		burn_tick_period = 0.5,
 		curve_pow = 3,
 		sound_event = "molotov_impact",
