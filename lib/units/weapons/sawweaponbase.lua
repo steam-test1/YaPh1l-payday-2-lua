@@ -20,6 +20,7 @@ function SawWeaponBase:init(unit)
 		parent = self._obj_fire,
 		force_synch = true
 	}
+	self._saw_through_shields = managers.player:has_category_upgrade("saw", "ignore_shields")
 end
 function SawWeaponBase:change_fire_object(new_obj)
 	SawWeaponBase.super.change_fire_object(self, new_obj)
@@ -98,6 +99,26 @@ function SawWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spread_m
 	end
 	return ray_res
 end
+local ray_table_contains = function(table, unit)
+	for i, hit in pairs(table) do
+		if hit.unit == unit then
+			return true
+		end
+	end
+	return false
+end
+local ray_copy = function(table, ray)
+	for i, hit in pairs(table) do
+		if hit.unit == ray.unit then
+			hit.body = ray.body
+			hit.distance = ray.distance
+			mvector3.set(hit.hit_position, ray.hit_position)
+			mvector3.set(hit.normal, ray.normal)
+			mvector3.set(hit.position, ray.position)
+			mvector3.set(hit.ray, ray.ray)
+		end
+	end
+end
 local mvec_to = Vector3()
 local mvec_spread_direction = Vector3()
 function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul)
@@ -112,9 +133,30 @@ function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, sh
 	mvector3.multiply(mvec_to, 100)
 	mvector3.add(mvec_to, from_pos)
 	local damage = self:_get_current_damage(dmg_mul)
-	local col_ray = World:raycast("ray", from_pos, mvec_to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "ray_type", "body bullet lock")
-	if col_ray then
-		hit_unit = SawHit:on_collision(col_ray, self._unit, user_unit, damage)
+	local valid_hit = false
+	local col_ray
+	if self._saw_through_shields then
+		local hits = {}
+		col_ray = World:raycast_all("ray", from_pos, mvec_to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "ray_type", "body bullet lock")
+		for i, hit in ipairs(col_ray) do
+			local is_shield = hit.unit:in_slot(8) and alive(hit.unit:parent())
+			local is_enemy = hit.unit:character_damage() ~= nil
+			if not ray_table_contains(hits, hit.unit) then
+				table.insert(hits, hit)
+			elseif hit.unit:character_damage() and hit.unit:character_damage().is_head and hit.unit:character_damage().is_head(hit.body) then
+				ray_copy(hits, hit)
+			end
+		end
+		for i, hit in pairs(hits) do
+			hit_unit = SawHit:on_collision(hit, self._unit, user_unit, damage, direction)
+		end
+		valid_hit = #col_ray > 0
+	else
+		col_ray = World:raycast("ray", from_pos, mvec_to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "ray_type", "body bullet lock")
+		if col_ray then
+			hit_unit = SawHit:on_collision(col_ray, self._unit, user_unit, damage, direction)
+			valid_hit = true
+		end
 	end
 	result.hit_enemy = hit_unit
 	if self._alert_events then
@@ -126,7 +168,7 @@ function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, sh
 			weapon_unit = self._unit
 		})
 	end
-	return result, col_ray and col_ray.unit
+	return result, valid_hit
 end
 function SawWeaponBase:ammo_info()
 	return self:get_ammo_max_per_clip(), self:get_ammo_remaining_in_clip(), self:remaining_full_clips(), self:get_ammo_max()

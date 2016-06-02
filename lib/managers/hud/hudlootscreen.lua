@@ -591,7 +591,7 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 					show_item = "lootdrop_safe_drop_show_item"
 				}
 			else
-				texture_path = "guis/textures/pd2/endscreen/what_is_this"
+				texture_path = "guis/dlcs/cash/safes/default/safes/default_01"
 			end
 		elseif category == "drills" then
 			local td = tweak_data.economy[category] and tweak_data.economy[category][item_id]
@@ -611,7 +611,7 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 					show_item = "lootdrop_drill_drop_show_item"
 				}
 			else
-				texture_path = "guis/textures/pd2/endscreen/what_is_this"
+				texture_path = "guis/dlcs/cash/safes/default/drills/default_01"
 			end
 		else
 			local guis_catalog = "guis/"

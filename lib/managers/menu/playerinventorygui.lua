@@ -973,8 +973,8 @@ PlayerInventoryGui.set_skilltree_stats = function(self, panel, data)
 	local panel = stats_panel:panel({layer = 1, w = stats_panel:w(), h = 20})
 	self._stats_shown = data
 	self._stats_titles = {}
-	self._stats_titles.points = stats_panel:text({x = 135, font_size = tweak_data.menu.pd2_small_font_size, font = tweak_data.menu.pd2_small_font, layer = 2, color = tweak_data.screen_colors.text, text = utf8.to_upper(managers.localization:text("st_menu_point_plural", {points = ""}))})
-	self._stats_titles.owned = stats_panel:text({x = 197, font_size = tweak_data.menu.pd2_small_font_size, font = tweak_data.menu.pd2_small_font, layer = 2, alpha = 0.95, color = tweak_data.screen_colors.text, text = utf8.to_upper(managers.localization:text("st_menu_skill_owned"))})
+	self._stats_titles.points = stats_panel:text({x = 130, font_size = tweak_data.menu.pd2_small_font_size, font = tweak_data.menu.pd2_small_font, layer = 2, color = tweak_data.screen_colors.text, text = utf8.to_upper(managers.localization:text("st_menu_point_plural", {points = ""}))})
+	self._stats_titles.owned = stats_panel:text({x = 195, font_size = tweak_data.menu.pd2_small_font_size, font = tweak_data.menu.pd2_small_font, layer = 2, alpha = 0.95, color = tweak_data.screen_colors.text, text = utf8.to_upper(managers.localization:text("st_menu_skill_owned"))})
 	self._stats_titles.aced = stats_panel:text({x = 259, font_size = tweak_data.menu.pd2_small_font_size, font = tweak_data.menu.pd2_small_font, alpha = 0.85, layer = 2, color = tweak_data.screen_colors.resource, text = utf8.to_upper(managers.localization:text("st_menu_skill_maxed"))})
 	local x = 0
 	local y = 20
@@ -982,9 +982,9 @@ PlayerInventoryGui.set_skilltree_stats = function(self, panel, data)
 	do
 		local text_columns = {
 {name = "name", size = 100}, 
-{name = "points", size = 65, align = "right"}, 
-{name = "owned", size = 65, align = "right", alpha = 0.95, blend = "add"}, 
-{name = "aced", size = 50, align = "right", alpha = 0.85, blend = "add", color = tweak_data.screen_colors.resource}}
+{name = "points", size = 60, align = "right"}, 
+{name = "owned", size = 60, align = "right", alpha = 0.95, blend = "add"}, 
+{name = "aced", size = 55, align = "right", alpha = 0.85, blend = "add", color = tweak_data.screen_colors.resource}}
 		self._stats_texts = {}
 		self._stats_panel = stats_panel:panel()
 		for i,stat in ipairs(data) do
@@ -1075,6 +1075,11 @@ PlayerInventoryGui._update_stats = function(self, name)
 {name = "concealment", index = true}})
 		self:_update_info_melee(name)
 	elseif name == "skilltree" then
+		local skilltrees = {}
+		for _,tree in ipairs(tweak_data.skilltree.skill_pages_order) do
+			table.insert(skilltrees, {name = tree, name_s = managers.localization:to_upper_text(tweak_data.skilltree.skilltree[tree].name_id)})
+		end
+		self:set_skilltree_stats(self._info_panel, skilltrees)
 		self:_update_info_skilltree(name)
 	elseif name == "specialization" then
 		self:_update_info_specialization(name)
@@ -1126,17 +1131,25 @@ PlayerInventoryGui._update_stats = function(self, name)
 	end
 end
 
-PlayerInventoryGui._update_info_skilltree = function(self, name)
+PlayerInventoryGui._update_info_skilltree = function(self, name, skilltrees)
 	local text_string = ""
 	text_string = text_string .. managers.localization:text("menu_st_skill_switch_set", {skill_switch = managers.skilltree:get_skill_switch_name(managers.skilltree:get_selected_skill_switch(), true)}) .. "\n "
-	local tree_to_string_id = {mastermind = "st_menu_mastermind", enforcer = "st_menu_enforcer", technician = "st_menu_technician", ghost = "st_menu_ghost", hoxton = "st_menu_hoxton_pack"}
-	text_string = text_string .. "\n"
-	for i,tree in ipairs({"mastermind", "enforcer", "technician", "ghost", "hoxton"}) do
-		local points, progress, num_skills = managers.skilltree:get_tree_progress_new(tree)
-		points = string.format("%02d", points)
-		text_string = text_string .. managers.localization:to_upper_text("menu_profession_progress", {profession = managers.localization:to_upper_text(tree_to_string_id[tree]), progress = points, num_skills = num_skills}) .. "\n"
-	end
 	self:set_info_text(text_string)
+	local page_data = nil
+	for _,stat in ipairs(self._stats_shown) do
+		page_data = managers.skilltree:analyze_page(stat.name)
+		for stat_name,stat_text in pairs(self._stats_texts[stat.name]) do
+			if stat_name ~= "name" then
+				stat_text:set_text("")
+			end
+		end
+		self._stats_texts[stat.name].points:set_alpha(page_data.points > 0 and 1 or 0.5)
+		self._stats_texts[stat.name].owned:set_alpha(page_data.owned > 0 and 1 or 0.5)
+		self._stats_texts[stat.name].aced:set_alpha(page_data.aced > 0 and 1 or 0.5)
+		self._stats_texts[stat.name].points:set_text(string.format("%02i", page_data.points))
+		self._stats_texts[stat.name].owned:set_text(string.format("%02i", page_data.owned))
+		self._stats_texts[stat.name].aced:set_text(string.format("%02i", page_data.aced))
+	end
 end
 
 PlayerInventoryGui._update_info_specialization = function(self, name)
@@ -1224,7 +1237,7 @@ PlayerInventoryGui._update_info_deployable = function(self, name)
 		local deployable_data = tweak_data.blackmarket.deployables[deployable_id]
 	end
 	local text_string = ""
-	if not equipment_data.quantity then
+	if not equipment_data.quantity[1] then
 		local amount = not deployable_data or not equipment_data or 1
 	end
 	amount = amount + (managers.player:equiptment_upgrade_value(deployable_id, "quantity") or 0)
@@ -1730,16 +1743,16 @@ mod_data = {selected_tab = icon.type, name = managers.blackmarket:equipped_secon
 	end
 	local skilltree_box = self._boxes_by_name.skilltree.panel
 	local icon_box = nil
-	local w = (skilltree_box:w() - 2 * (#tweak_data.skilltree.trees - 1) - 8) / #tweak_data.skilltree.trees
+	local w = (skilltree_box:w() - 2 * (#tweak_data.skilltree.skill_pages_order - 1) - 8) / #tweak_data.skilltree.skill_pages_order
 	local h = w
 	local x = skilltree_box:left() + 4
 	local y = skilltree_box:center_y() - 2 - h / 2
 	local mod_links = {up = "skilltree", down = "skilltree", left = "skilltree", right = "skilltree"}
 	do
 		local box_name, points, progress, num_skills = nil, nil, nil, nil
-		for tree,data in ipairs(tweak_data.skilltree.trees) do
-			box_name = "icon_skilltree_" .. data.skill
-			points = managers.skilltree:get_tree_progress_new(tree)
+		for tree,page in ipairs(tweak_data.skilltree.skill_pages_order) do
+			box_name = "icon_skilltree_" .. tostring(tree)
+			points = managers.skilltree:get_page_progress_new(page)
 			if points ~= 0 or not Color(0.5, 0.5, 0.5) then
 				icon_box = self:create_box({name = box_name, w = w, h = h + 20, padding = 0, can_select = false, use_borders = false, text = tostring(points), text_color = tweak_data.screen_colors.text, text_vertical = "bottom", text_align = "center", image = "guis/textures/pd2/inv_skillcards_icons", 
 texture_rect = {(tree - 1) * 24, 0, 22, 31}, alpha = 1, select_anim = select_anim, unselect_anim = select_anim, bg_blend_mode = "normal", layer = 3, clbks = false, links = mod_links})
@@ -1749,7 +1762,7 @@ texture_rect = {(tree - 1) * 24, 0, 22, 31}, alpha = 1, select_anim = select_ani
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 376 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 378 
 end
 
 PlayerInventoryGui.create_box = function(self, params, index)
@@ -2386,7 +2399,7 @@ end
 PlayerInventoryGui.open_deployable_menu = function(self)
 	local new_node_data = {}
 	table.insert(new_node_data, {name = "bm_menu_deployables", category = "deployables", on_create_func_name = "populate_deployables", 
-override_slots = {4, 2}, identifier = BlackMarketGui.identifiers.deployable})
+override_slots = {3, 3}, identifier = BlackMarketGui.identifiers.deployable})
 	new_node_data.scroll_tab_anywhere = true
 	new_node_data.topic_id = "bm_menu_deployables"
 	managers.menu:open_node("blackmarket_node", {new_node_data})
@@ -2478,7 +2491,7 @@ end
 PlayerInventoryGui.open_character_menu = function(self)
 	local new_node_data = {}
 	table.insert(new_node_data, {name = "bm_menu_characters", category = "characters", on_create_func_name = "populate_characters", 
-override_slots = {5, 3}, identifier = BlackMarketGui.identifiers.character})
+override_slots = {4, 4}, identifier = BlackMarketGui.identifiers.character})
 	new_node_data.scroll_tab_anywhere = true
 	new_node_data.extra_options_panel = {h = 100, on_create_func_name = "populate_preferred_character_options"}
 	new_node_data.topic_id = "bm_menu_characters"
@@ -2521,8 +2534,7 @@ PlayerInventoryGui.next_character = function(self)
 end
 
 PlayerInventoryGui.open_skilltree_menu = function(self)
-	managers.menu:open_node("skilltree", {
-{hide_specialization = true}})
+	managers.menu:open_node("skilltree_new", {})
 end
 
 PlayerInventoryGui.preview_skilltree = function(self)
@@ -2532,28 +2544,10 @@ PlayerInventoryGui.previous_skilltree = function(self)
 	local box = self._boxes_by_name.skilltree
 	if box and managers.skilltree:switch_skills_to_previous() then
 		self:update_box(box, {text = managers.localization:text("menu_st_skill_switch_set", {skill_switch = managers.skilltree:get_skill_switch_name(managers.skilltree:get_selected_skill_switch(), true)})})
-		local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
-		local specialization_data = tweak_data.skilltree.specializations[current_specialization]
 		if alive(self._skill_switch_text) then
 			self._skill_switch_text:set_text(managers.localization:text("menu_st_skill_switch_set", {skill_switch = managers.skilltree:get_skill_switch_name(managers.skilltree:get_selected_skill_switch(), true)}))
 		end
-		local box = self._boxes_by_name.specialization
-	if box then
-		end
-		local texture_rect_x = 0
-		local texture_rect_y = 0
-		if specialization_data then
-			local max_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "max_tier")
-			do
-				local tier_data = specialization_data[max_tier]
-			if tier_data then
-				end
-				texture_rect_x = tier_data.icon_xy and tier_data.icon_xy[1] or 0
-			end
-			texture_rect_y = tier_data.icon_xy and tier_data.icon_xy[2] or 0
-		end
-		self:update_box(box, {text = specialization_data and managers.localization:text(specialization_data.name_id) or " ", 
-image_rect = {(texture_rect_x) * 64, (texture_rect_y) * 64, 64, 64}})
+		self:_update_specialization_box()
 		self:_update_loadout_boxes()
 		self:_update_info_skilltree("skilltree")
 	end
@@ -2563,28 +2557,10 @@ PlayerInventoryGui.next_skilltree = function(self)
 	local box = self._boxes_by_name.skilltree
 	if box and managers.skilltree:switch_skills_to_next() then
 		self:update_box(box, {text = managers.localization:text("menu_st_skill_switch_set", {skill_switch = managers.skilltree:get_skill_switch_name(managers.skilltree:get_selected_skill_switch(), true)})})
-		local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
-		local specialization_data = tweak_data.skilltree.specializations[current_specialization]
 		if alive(self._skill_switch_text) then
 			self._skill_switch_text:set_text(managers.localization:text("menu_st_skill_switch_set", {skill_switch = managers.skilltree:get_skill_switch_name(managers.skilltree:get_selected_skill_switch(), true)}))
 		end
-		local box = self._boxes_by_name.specialization
-	if box then
-		end
-		local texture_rect_x = 0
-		local texture_rect_y = 0
-		if specialization_data then
-			local max_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "max_tier")
-			do
-				local tier_data = specialization_data[max_tier]
-			if tier_data then
-				end
-				texture_rect_x = tier_data.icon_xy and tier_data.icon_xy[1] or 0
-			end
-			texture_rect_y = tier_data.icon_xy and tier_data.icon_xy[2] or 0
-		end
-		self:update_box(box, {text = specialization_data and managers.localization:text(specialization_data.name_id) or " ", 
-image_rect = {(texture_rect_x) * 64, (texture_rect_y) * 64, 64, 64}})
+		self:_update_specialization_box()
 		self:_update_loadout_boxes()
 		self:_update_info_skilltree("skilltree")
 	end
@@ -2598,14 +2574,11 @@ end
 PlayerInventoryGui.preview_specialization = function(self)
 end
 
-PlayerInventoryGui.previous_specialization = function(self)
+PlayerInventoryGui._update_specialization_box = function(self)
 	local box = self._boxes_by_name.specialization
-	if box and managers.skilltree:previous_specialization() then
+	if box then
 		local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
 		local specialization_data = tweak_data.skilltree.specializations[current_specialization]
-		local box = self._boxes_by_name.specialization
-	if box then
-		end
 		local texture_rect_x = 0
 		local texture_rect_y = 0
 		local specialization_text = specialization_data and managers.localization:text(specialization_data.name_id) or " "
@@ -2626,6 +2599,13 @@ PlayerInventoryGui.previous_specialization = function(self)
 		local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/icons_atlas"
 		self:update_box(box, {text = specialization_text, image = icon_atlas_texture, 
 image_rect = {(texture_rect_x) * 64, (texture_rect_y) * 64, 64, 64}}, true)
+	end
+end
+
+PlayerInventoryGui.previous_specialization = function(self)
+	local box = self._boxes_by_name.specialization
+	if box and managers.skilltree:previous_specialization() then
+		self:_update_specialization_box()
 		self:_update_loadout_boxes()
 		self:_update_info_specialization("specialization")
 	end
@@ -2634,31 +2614,7 @@ end
 PlayerInventoryGui.next_specialization = function(self)
 	local box = self._boxes_by_name.specialization
 	if box and managers.skilltree:next_specialization() then
-		local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
-		local specialization_data = tweak_data.skilltree.specializations[current_specialization]
-		local box = self._boxes_by_name.specialization
-	if box then
-		end
-		local texture_rect_x = 0
-		local texture_rect_y = 0
-		local specialization_text = specialization_data and managers.localization:text(specialization_data.name_id) or " "
-		local guis_catalog = "guis/"
-		if specialization_data then
-			local current_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "current_tier")
-			local max_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "max_tier")
-			local tier_data = specialization_data[max_tier]
-		if tier_data then
-			end
-			texture_rect_x = tier_data.icon_xy and tier_data.icon_xy[1] or 0
-			texture_rect_y = tier_data.icon_xy and tier_data.icon_xy[2] or 0
-			if tier_data.texture_bundle_folder then
-				guis_catalog = guis_catalog .. "dlcs/" .. tostring(tier_data.texture_bundle_folder) .. "/"
-			end
-			specialization_text = specialization_text .. " (" .. tostring(current_tier) .. "/" .. tostring(max_tier) .. ")"
-		end
-		local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/icons_atlas"
-		self:update_box(box, {text = specialization_text, image = icon_atlas_texture, 
-image_rect = {(texture_rect_x) * 64, (texture_rect_y) * 64, 64, 64}}, true)
+		self:_update_specialization_box()
 		self:_update_loadout_boxes()
 		self:_update_info_specialization("specialization")
 	end
@@ -3322,7 +3278,7 @@ PlayerInventoryGui._get_armor_stats = function(self, name)
 			skill_stats[stat.name] = {value = base_stats[stat.name].value * managers.player:health_skill_multiplier() - base_stats[stat.name].value}
 		elseif stat.name == "concealment" then
 			base_stats[stat.name] = {value = managers.player:body_armor_value("concealment", upgrade_level)}
-			skill_stats[stat.name] = {value = managers.blackmarket:concealment_modifier("armors")}
+			skill_stats[stat.name] = {value = managers.blackmarket:concealment_modifier("armors", upgrade_level)}
 		elseif stat.name == "movement" then
 			local base = tweak_data.player.movement_state.standard.movement.speed.STANDARD_MAX / 100 * tweak_data.gui.stats_present_multiplier
 			local movement_penalty = managers.player:body_armor_value("movement", upgrade_level)

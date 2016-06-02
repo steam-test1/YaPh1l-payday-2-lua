@@ -1512,4 +1512,5 @@ function MenuNodeMainGui:_setup_item_rows(node)
 			alpha = 0.5
 		})
 	end
+	managers.features:announce_feature("short_heists_available")
 end

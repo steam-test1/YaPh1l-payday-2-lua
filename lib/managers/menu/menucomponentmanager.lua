@@ -16,6 +16,7 @@ require("lib/managers/menu/PrePlanningMapGui")
 require("lib/managers/menu/GameInstallingGui")
 require("lib/managers/menu/PlayerInventoryGui")
 require("lib/managers/hud/HUDLootScreen")
+require("lib/managers/menu/SkillTreeGuiNew")
 if not MenuComponentManager then
 	MenuComponentManager = class()
 end
@@ -67,6 +68,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.preplanning_map = {create = callback(self, self, "create_preplanning_map_gui"), close = callback(self, self, "close_preplanning_map_gui")}
 	self._active_components.game_installing = {create = callback(self, self, "create_game_installing_gui"), close = callback(self, self, "close_game_installing_gui")}
 	self._active_components.inventory = {create = callback(self, self, "create_inventory_gui"), close = callback(self, self, "close_inventory_gui")}
+	self._active_components.skilltree_new = {create = callback(self, self, "_create_skilltree_new_gui"), close = callback(self, self, "close_skilltree_new_gui")}
 end
 
 MenuComponentManager.save = function(self, data)
@@ -1691,6 +1693,25 @@ MenuComponentManager.close_contract_gui = function(self)
 	end
 end
 
+MenuComponentManager._create_skilltree_new_gui = function(self, node)
+	self:create_skilltree_new_gui(node)
+end
+
+MenuComponentManager.create_skilltree_new_gui = function(self, node)
+	self:close_skilltree_new_gui()
+	self._skilltree_gui = NewSkillTreeGui:new(self._ws, self._fullscreen_ws, node)
+	self._new_skilltree_gui_active = true
+	self:enable_skilltree_gui()
+end
+
+MenuComponentManager.close_skilltree_new_gui = function(self)
+	if self._skilltree_gui and not self._old_skilltree_gui_active then
+		self._skilltree_gui:close()
+		self._skilltree_gui = nil
+		self._new_skilltree_gui_active = nil
+	end
+end
+
 MenuComponentManager._create_skilltree_gui = function(self, node)
 	self:create_skilltree_gui(node)
 end
@@ -1698,13 +1719,15 @@ end
 MenuComponentManager.create_skilltree_gui = function(self, node)
 	self:close_skilltree_gui()
 	self._skilltree_gui = SkillTreeGui:new(self._ws, self._fullscreen_ws, node)
+	self._old_skilltree_gui_active = true
 	self:enable_skilltree_gui()
 end
 
 MenuComponentManager.close_skilltree_gui = function(self)
-	if self._skilltree_gui then
+	if self._skilltree_gui and not self._new_skilltree_gui_active then
 		self._skilltree_gui:close()
 		self._skilltree_gui = nil
+		self._old_skilltree_gui_active = nil
 	end
 end
 
@@ -1723,12 +1746,6 @@ end
 MenuComponentManager.on_tier_unlocked = function(self, ...)
 	if self._skilltree_gui then
 		self._skilltree_gui:on_tier_unlocked(...)
-	end
-end
-
-MenuComponentManager.on_skill_unlocked = function(self, ...)
-	if self._skilltree_gui then
-		self._skilltree_gui:on_skill_unlocked(...)
 	end
 end
 

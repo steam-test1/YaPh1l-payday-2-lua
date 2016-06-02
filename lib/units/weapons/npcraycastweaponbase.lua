@@ -7,6 +7,7 @@ NPCRaycastWeaponBase._VOICES = {
 NPCRaycastWeaponBase._next_i_voice = {}
 function NPCRaycastWeaponBase:init(unit)
 	RaycastWeaponBase.super.init(self, unit, false)
+	self._player_manager = managers.player
 	self._unit = unit
 	self._name_id = self.name_id or "m4_npc"
 	self.name_id = nil

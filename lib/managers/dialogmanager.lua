@@ -38,9 +38,7 @@ function DialogManager:queue_dialog(id, params)
 end
 function DialogManager:finished()
 	self:_stop_dialog()
-	if self._current_dialog.params and self._current_dialog.params.done_cbk then
-		self:_call_done_callback(self._current_dialog.params.done_cbk, "done")
-	end
+	local done_cbk = self._current_dialog.params and self._current_dialog.params.done_cbk
 	if self._next_dialog then
 		self._current_dialog = self._next_dialog
 		self._next_dialog = nil
@@ -55,6 +53,9 @@ function DialogManager:finished()
 		end
 	else
 		self._current_dialog = nil
+	end
+	if done_cbk then
+		self:_call_done_callback(done_cbk, "done")
 	end
 end
 function DialogManager:quit_dialog(no_done_cbk)
