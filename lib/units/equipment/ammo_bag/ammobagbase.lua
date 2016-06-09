@@ -100,7 +100,7 @@ function AmmoBagBase:_set_dynamic()
 end
 function AmmoBagBase:take_ammo(unit)
 	if self._empty then
-		return
+		return false, false
 	end
 	local taken = self:_take_ammo(unit)
 	if taken > 0 then

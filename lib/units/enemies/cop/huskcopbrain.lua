@@ -81,6 +81,9 @@ function HuskCopBrain:on_long_dis_interacted(amount, aggressor_unit)
 	amount = math.clamp(math.ceil(amount * 10), 0, 10)
 	self._unit:network():send_to_host("long_dis_interaction", amount, aggressor_unit)
 end
+function HuskCopBrain:player_ignore()
+	return false
+end
 function HuskCopBrain:on_team_set(team_data)
 end
 function HuskCopBrain:sync_net_event(event_id)

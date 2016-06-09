@@ -97,6 +97,12 @@ function TeamAIBrain:set_active(state)
 	end
 	self._unit:character_damage():disable()
 end
+function TeamAIBrain:set_player_ignore(state)
+	self._ignore_player = state or nil
+end
+function TeamAIBrain:player_ignore()
+	return self._ignore_player
+end
 function TeamAIBrain:_setup_attention_handler()
 	TeamAIBrain.super._setup_attention_handler(self)
 	self:on_cool_state_changed(self._unit:movement():cool())

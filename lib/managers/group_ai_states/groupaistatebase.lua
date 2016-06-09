@@ -711,6 +711,9 @@ function GroupAIStateBase:on_hostage_state(state, key, police, skip_announcement
 	end
 	self._hostage_headcount = self._hostage_headcount + d
 	self:sync_hostage_headcount()
+	if Network:is_server() and state then
+		managers.player:captured_hostage()
+	end
 	if state and not skip_announcement and self._hostage_headcount == 1 and self._task_data.assault.disabled then
 		managers.dialog:queue_dialog("ban_h01a", {})
 	end
@@ -2772,6 +2775,9 @@ function GroupAIStateBase:remove_listener(key)
 	self._listener_holder:remove(key)
 end
 function GroupAIStateBase:sync_hostage_headcount(nr_hostages)
+	if nr_hostages and nr_hostages > self._hostage_headcount then
+		managers.player:captured_hostage()
+	end
 	if nr_hostages then
 		self._hostage_headcount = nr_hostages
 	elseif Network:is_server() then
@@ -3873,6 +3879,7 @@ GroupAIStateBase.blame_triggers = {
 	patrol = "cop",
 	security = "cop",
 	cop = "cop",
+	cop_female = "cop",
 	fbi = "cop",
 	swat = "cop",
 	heavy_swat = "cop",
@@ -4575,6 +4582,9 @@ function GroupAIStateBase:unregister_phalanx_minion(unit_key)
 end
 function GroupAIStateBase:unregister_phalanx_vip()
 	self._phalanx_data.vip = nil
+	if self.set_assault_endless then
+		self:set_assault_endless(false)
+	end
 end
 function GroupAIStateBase:is_unit_in_phalanx_minion_data(unit_key)
 	return self._phalanx_data and self._phalanx_data.minions and self._phalanx_data.minions[unit_key] and true
