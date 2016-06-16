@@ -2,7 +2,6 @@ SentryGunBase = SentryGunBase or class(UnitBase)
 function SentryGunBase:init(unit)
 	SentryGunBase.super.init(self, unit, false)
 	self._unit = unit
-	self._current_contour_id = self:standard_contour_id()
 	if self._place_snd_event then
 		self._unit:sound_source():post_event(self._place_snd_event)
 	end
@@ -25,38 +24,15 @@ function SentryGunBase:sync_setup(upgrade_lvl, peer_id)
 		self._validate_clbk_id = nil
 	end
 	managers.player:verify_equipment(peer_id, "sentry_gun")
-	self:_setup_contour()
 end
 function SentryGunBase:set_owner_id(owner_id)
 	self._owner_id = owner_id
 	if self._unit:interaction() then
 		self._unit:interaction():set_owner_id(owner_id)
 	end
-	self:_setup_contour()
 end
 function SentryGunBase:is_owner()
 	return self._owner_id and self._owner_id == managers.network:session():local_peer():id()
-end
-function SentryGunBase:_setup_contour()
-	local turret_units = managers.groupai:state():turrets()
-	if turret_units and table.contains(turret_units, self._unit) then
-		return
-	end
-	if self:is_owner() then
-		self:set_contour(self:standard_contour_id())
-	end
-end
-function SentryGunBase:standard_contour_id()
-	return self._standard_contour_id or "deployable_active"
-end
-function SentryGunBase:ap_contour_id()
-	return self._ap_contour_id or "deployable_interactable"
-end
-function SentryGunBase:set_contour(contour_id)
-	local contour = self._unit:contour()
-	contour:remove(self._current_contour_id)
-	contour:add(contour_id)
-	self._current_contour_id = contour_id
 end
 function SentryGunBase:post_init()
 	if self._difficulty_sequences then
@@ -222,7 +198,6 @@ function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, damage_mu
 	}
 	self._unit:weapon():setup(setup_data, damage_multiplier)
 	self._unit:set_extension_update_enabled(Idstring("base"), true)
-	self:_setup_contour()
 	return true
 end
 function SentryGunBase:get_owner()
@@ -296,12 +271,6 @@ function SentryGunBase:set_visibility_state(stage)
 		self._visibility_state = state
 	end
 	self._lod_stage = stage
-end
-function SentryGunBase:contour_selected()
-	self._unit:contour():add("deployable_selected")
-end
-function SentryGunBase:contour_unselected()
-	self._unit:contour():remove("deployable_selected")
 end
 function SentryGunBase:weapon_tweak_data()
 	return tweak_data.weapon[self._unit:weapon()._name_id]
@@ -444,8 +413,6 @@ function SentryGunBase:refill(ammo_ratio)
 	end
 	self._unit:brain():switch_on()
 	self._unit:interaction():set_dirty(true)
-	self:_setup_contour()
-	self._unit:contour():remove("deployable_disabled")
 end
 function SentryGunBase:set_waiting_for_refill(state)
 	self._waiting_for_refill = state and true or nil
@@ -454,10 +421,6 @@ function SentryGunBase:waiting_for_refill()
 	return self._waiting_for_refill
 end
 function SentryGunBase:on_death()
-	if self._unit:contour() then
-		self._unit:contour():remove("deployable_active")
-		self._unit:contour():remove("deployable_interactable")
-	end
 	self._unit:set_extension_update_enabled(Idstring("base"), false)
 	self:unregister()
 end

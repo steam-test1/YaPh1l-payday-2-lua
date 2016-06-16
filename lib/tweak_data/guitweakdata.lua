@@ -505,6 +505,22 @@ function GuiTweakData:init()
 		webpage = "http://steamcommunity.com/app/218620/allnews/",
 		image = "guis/textures/pd2/content_updates/tutorial"
 	}
+	local wild = {
+		id = "wild",
+		name_id = "menu_content_wild",
+		desc_id = "menu_content_wild_desc",
+		date_id = "menu_content_wild_date",
+		store = 450660,
+		image = "guis/dlcs/wild/textures/pd2/content_updates/wild"
+	}
+	local born = {
+		id = "born",
+		name_id = "menu_content_born",
+		desc_id = "menu_content_born_desc",
+		date_id = "menu_content_born_date",
+		store = 487210,
+		image = "guis/dlcs/born/textures/pd2/content_updates/born"
+	}
 	self.content_updates = {
 		title_id = "menu_content_updates",
 		choice_id = "menu_content_updates_previous",
@@ -572,7 +588,9 @@ function GuiTweakData:init()
 			mad,
 			opera,
 			update100,
-			tutorial
+			tutorial,
+			wild,
+			born
 		}
 	elseif SystemInfo:platform() == Idstring("PS3") then
 		self.content_updates.item_list = {
@@ -1970,6 +1988,15 @@ function GuiTweakData:init()
 					desc_id = "menu_sydney_desc_codex",
 					videos = {"sydney1"},
 					post_event = "pln_contact_sydney"
+				}
+			},
+			{
+				id = "wild",
+				name_id = "menu_wild",
+				{
+					desc_id = "menu_wild_desc_codex",
+					videos = {"wild1"},
+					post_event = "pln_contact_wild"
 				}
 			}
 		}

@@ -13,7 +13,6 @@ function SentryGunEquipment:init(unit)
 	}, callback(self, self, "_on_destroy_unit"))
 end
 function SentryGunEquipment:_on_damage_received_event(health_ratio)
-	print("[SentryGunEquipment:_on_damage_received_event] health_ratio ", health_ratio)
 	if health_ratio < self._DAMAGE_EFFECTS_2 then
 		self:_check_sound()
 		if not self._second_pass_active then

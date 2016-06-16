@@ -15,7 +15,7 @@ function StatisticsTweakData:init()
 	}
 end
 function StatisticsTweakData:statistics_specializations()
-	return 15
+	return 16
 end
 function StatisticsTweakData:statistics_table()
 	local level_list = {
@@ -92,7 +92,9 @@ function StatisticsTweakData:statistics_table()
 		"pal",
 		"man",
 		"dark",
-		"mad"
+		"mad",
+		"born",
+		"chew"
 	}
 	local job_list = {
 		"jewelry_store",
@@ -157,7 +159,9 @@ function StatisticsTweakData:statistics_table()
 		"pal",
 		"man",
 		"dark",
-		"mad"
+		"mad",
+		"born",
+		"born_pro"
 	}
 	local mask_list = {
 		"character_locked",
@@ -441,7 +445,21 @@ function StatisticsTweakData:statistics_table()
 		"visor",
 		"dbd_slasher",
 		"sydney",
-		"sydney_begins"
+		"sydney_begins",
+		"born_biker_01",
+		"born_biker_02",
+		"born_biker_03",
+		"brutal",
+		"rust",
+		"rust_begins",
+		"solus",
+		"dbd_01",
+		"dbd_02",
+		"dbd_03",
+		"dbd_04",
+		"jig_01",
+		"jig_02",
+		"damned"
 	}
 	local weapon_list = {
 		"ak5",
@@ -545,7 +563,9 @@ function StatisticsTweakData:statistics_table()
 		"pl14",
 		"x_mp5",
 		"x_akmsu",
-		"tecci"
+		"tecci",
+		"hajk",
+		"boot"
 	}
 	local melee_list = {
 		"weapon",
@@ -622,7 +642,8 @@ function StatisticsTweakData:statistics_table()
 		"nin",
 		"ballistic",
 		"zeus",
-		"wing"
+		"wing",
+		"road"
 	}
 	local grenade_list = {
 		"frag",
@@ -630,7 +651,9 @@ function StatisticsTweakData:statistics_table()
 		"dynamite",
 		"wpn_prj_four",
 		"wpn_prj_ace",
-		"wpn_prj_jav"
+		"wpn_prj_jav",
+		"frag_com",
+		"wpn_prj_hur"
 	}
 	local enemy_list = {
 		"civilian",
@@ -665,7 +688,11 @@ function StatisticsTweakData:statistics_table()
 		"phalanx_minion",
 		"biker",
 		"inside_man",
-		"bank_manager"
+		"bank_manager",
+		"cop_scared",
+		"biker_boss",
+		"cop_female",
+		"security_undominatable"
 	}
 	local armor_list = {
 		"level_1",
@@ -691,7 +718,8 @@ function StatisticsTweakData:statistics_table()
 		"dragon",
 		"bodhi",
 		"jimmy",
-		"sydney"
+		"sydney",
+		"wild"
 	}
 	local deployable_list = {
 		"ammo_bag",
@@ -701,7 +729,8 @@ function StatisticsTweakData:statistics_table()
 		"ecm_jammer",
 		"first_aid_kit",
 		"bodybags_bag",
-		"armor_kit"
+		"armor_kit",
+		"sentry_gun_silent"
 	}
 	return level_list, job_list, mask_list, weapon_list, melee_list, grenade_list, enemy_list, armor_list, character_list, deployable_list
 end

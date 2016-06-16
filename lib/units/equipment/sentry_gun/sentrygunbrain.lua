@@ -143,6 +143,7 @@ function SentryGunBrain:_upd_detection(t)
 					local vis_ray = World:raycast("ray", my_pos, attention_pos, "ignore_unit", ignore_units, "slot_mask", self._visibility_slotmask, "ray_type", "ai_vision")
 					if not vis_ray or vis_ray.unit:key() == u_key then
 						detected_objects[u_key] = CopLogicBase._create_detected_attention_object_data(t, self._unit, u_key, attention_info, settings)
+						print("ADDED TARGET")
 					end
 				end
 			end
@@ -235,7 +236,7 @@ function SentryGunBrain:_upd_detection(t)
 					attention_info.verified_dis = dis
 				elseif attention_info.has_team and my_team.foes[attention_info.unit:movement():team().id] then
 					if attention_info.criminal_record and attention_info.settings.reaction >= AIAttentionObject.REACT_COMBAT then
-						if dis > 1000 and mvector3.distance(attention_pos, attention_info.criminal_record.pos) > 700 then
+						if dis > 1000 and mvector3.distance(attention_pos, attention_info.criminal_record.pos) > 700 or max_detection_range < dis then
 							self:_destroy_detected_attention_object_data(attention_info)
 						else
 							update_delay = math.min(0.2, update_delay)
@@ -331,6 +332,8 @@ function SentryGunBrain:_destroy_detected_attention_object_data(attention_info)
 	if attention_info.uncover_progress then
 		attention_info.unit:movement():on_suspicion(self._unit, false)
 	end
+	print("REMOVING TARGET")
+	Application:stack_dump()
 	self._detected_attention_objects[attention_info.u_key] = nil
 end
 function SentryGunBrain:_upd_fire(t)
@@ -512,9 +515,6 @@ function SentryGunBrain:get_repair_counter()
 	return self._auto_repair_counter
 end
 function SentryGunBrain:switch_off()
-	if self._unit:damage():has_sequence("laser_off") then
-		self._unit:damage():run_sequence_simple("laser_off")
-	end
 	local is_server = Network:is_server()
 	if is_server then
 		self._ext_movement:set_attention()

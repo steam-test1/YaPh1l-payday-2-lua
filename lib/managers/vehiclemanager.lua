@@ -36,10 +36,16 @@ function VehicleManager:remove_listener(key)
 end
 function VehicleManager:add_vehicle(vehicle)
 	table.insert(self._vehicles, vehicle)
+	if Application:editor() then
+		self._listener_holder:call("on_add")
+	end
 end
 function VehicleManager:remove_vehicle(vehicle)
 	table.delete(vehicle)
 	managers.hud:_remove_name_label(vehicle:unit_data().name_label_id)
+	if Application:editor() then
+		self._listener_holder:call("on_remove")
+	end
 end
 function VehicleManager:get_all_vehicles()
 	return self._vehicles

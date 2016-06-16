@@ -10,6 +10,9 @@ function InstigatorRuleUnitElement:init(unit)
 	table.insert(self._save_values, "rules")
 	table.insert(self._save_values, "invert")
 end
+function InstigatorRuleUnitElement:destroy(unit)
+	managers.vehicle:remove_listener(unit:name():s())
+end
 function InstigatorRuleUnitElement:_rule_updated(category, value)
 	self._hed.rules[self._hed.instigator] = self._hed.rules[self._hed.instigator] or {}
 	self._hed.rules[self._hed.instigator][category] = #value > 0 and value or nil
@@ -42,6 +45,7 @@ function InstigatorRuleUnitElement:_build_panel(panel, panel_sizer)
 	self._rules_panel:destroy_children()
 	panel_sizer:add(self._rules_panel, 1, 1, "EXPAND")
 	self:_update_rules_panel()
+	managers.vehicle:add_listener(unit:name():s(), {"on_add", "on_remove"}, callback(self, self, "_update_rules_panel"))
 end
 function InstigatorRuleUnitElement:_update_rules_panel(panel, panel_sizer)
 	panel = self._rules_panel
