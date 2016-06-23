@@ -198,9 +198,6 @@ function RaycastWeaponBase:trigger_pressed(...)
 	end
 	return fired
 end
-function RaycastWeaponBase:is_single_shot()
-	return self:fire_mode() == "single" and self:weapon_tweak_data().category ~= "shotgun" and self:weapon_tweak_data().category ~= "pistol"
-end
 function RaycastWeaponBase:category()
 	return self:weapon_tweak_data().category
 end

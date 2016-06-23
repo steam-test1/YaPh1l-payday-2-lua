@@ -1685,15 +1685,6 @@ function GuiTweakData:init()
 			pulse_color = Color(204, 255, 209, 32) / 255
 		},
 		{
-			id = "challenge",
-			name_id = "menu_cn_challenge",
-			desc_id = "menu_cn_challenge_desc",
-			menu_node = "crimenet_contract_challenge",
-			x = 347,
-			y = 716,
-			icon = "guis/textures/pd2/crimenet_challenge"
-		},
-		{
 			id = "short",
 			name_id = "menu_cn_short",
 			desc_id = "menu_cn_short_desc",
@@ -1706,6 +1697,17 @@ function GuiTweakData:init()
 			pulse_color = Color(204, 255, 209, 32) / 255
 		}
 	}
+	if SystemInfo:platform() == Idstring("WIN32") then
+		table.insert(self.crime_net.special_contracts, {
+			id = "challenge",
+			name_id = "menu_cn_challenge",
+			desc_id = "menu_cn_challenge_desc",
+			menu_node = "crimenet_contract_challenge",
+			x = 347,
+			y = 716,
+			icon = "guis/textures/pd2/crimenet_challenge"
+		})
+	end
 	self.crime_net.codex = {
 		{
 			id = "contacts",
