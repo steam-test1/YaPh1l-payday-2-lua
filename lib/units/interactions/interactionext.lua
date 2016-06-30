@@ -377,7 +377,7 @@ function BaseInteractionExt:can_interact(player)
 	end
 	return managers.player:has_special_equipment(self._tweak_data.special_equipment)
 end
-function BaseInteractionExt:_interact_blocked(player, data)
+function BaseInteractionExt:_interact_blocked(player)
 	return false
 end
 function BaseInteractionExt:active()
@@ -905,6 +905,7 @@ SentryGunInteractionExt = SentryGunInteractionExt or class(UseInteractionExt)
 function SentryGunInteractionExt:init(unit)
 	SentryGunInteractionExt.super.init(self, unit)
 	unit:event_listener():add("interaction_on_fire", {"on_fire"}, callback(self, self, "_on_weapon_fire_event"))
+	unit:event_listener():add("interaction_on_death", {"on_death"}, callback(self, self, "_on_death_event"))
 end
 function SentryGunInteractionExt:destroy()
 	SentryGunInteractionExt.super.destroy(self)
@@ -927,6 +928,9 @@ function SentryGunInteractionExt:interact(player)
 		end
 	end
 	return true
+end
+function SentryGunInteractionExt:_on_death_event()
+	self:set_active(false, false)
 end
 local sentry_gun_interaction_add_string_macros = function(macros, ammo_ratio)
 	macros.BTN_INTERACT = managers.localization:btn_macro("interact", true)
