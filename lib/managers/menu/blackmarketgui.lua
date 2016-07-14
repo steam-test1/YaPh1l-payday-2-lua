@@ -2274,6 +2274,13 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 				name = "bm_menu_btn_sell",
 				callback = callback(self, self, "sell_item_callback")
 			},
+			w_skin = {
+				prio = 5,
+				btn = "BTN_STICK_L",
+				pc_btn = "menu_edit_skin",
+				name = "bm_menu_btn_skin",
+				callback = callback(self, self, "edit_weapon_skin_callback")
+			},
 			ew_unlock = {
 				prio = 1,
 				btn = "BTN_A",
@@ -6857,6 +6864,9 @@ function BlackMarketGui:populate_weapon_category(category, data)
 			if has_mods and new_data.unlocked then
 				table.insert(new_data, "w_mod")
 			end
+			if has_mods and new_data.unlocked and managers.workshop and managers.workshop:enabled() and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), new_data.name) then
+				table.insert(new_data, "w_skin")
+			end
 			if not new_data.last_weapon then
 				table.insert(new_data, "w_sell")
 			end
@@ -8384,6 +8394,9 @@ function BlackMarketGui:populate_weapon_category_new(data)
 					if has_mods and active then
 						table.insert(new_data, "w_mod")
 					end
+					if has_mods and active and managers.workshop and managers.workshop:enabled() and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), new_data.name) then
+						table.insert(new_data, "w_skin")
+					end
 					if not new_data.last_weapon then
 						table.insert(new_data, "w_sell")
 					end
@@ -8896,6 +8909,9 @@ function BlackMarketGui:populate_mods(data)
 			else
 				table.insert(new_data, "wm_preview")
 			end
+			if managers.workshop and managers.workshop:enabled() and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), weapon_id) then
+				table.insert(new_data, "w_skin")
+			end
 		end
 		data[index] = new_data
 	end
@@ -8938,6 +8954,9 @@ function BlackMarketGui:populate_mods(data)
 				table.insert(data[equipped], "wm_remove_preview")
 			else
 				table.insert(data[equipped], "wm_preview")
+			end
+			if managers.workshop and managers.workshop:enabled() and data.prev_node_data and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), data.prev_node_data.name) then
+				table.insert(data[equipped], "w_skin")
 			end
 		end
 		local factory = tweak_data.weapon.factory.parts[data[equipped].name]
@@ -9794,6 +9813,14 @@ function BlackMarketGui:choose_weapon_mods_callback(data)
 	local open_node = data.open_node or self._inception_node_name or "blackmarket_node"
 	self:_start_crafting_weapon(data, new_node_data)
 end
+function BlackMarketGui:edit_weapon_skin_callback(data)
+	local function cb()
+		managers.menu:open_node("skin_editor", {data})
+	end
+	managers.workshop:_init_items()
+	managers.blackmarket:skin_editor():init_items()
+	managers.blackmarket:view_weapon(data.category, data.slot, cb, true, BlackMarketGui.get_crafting_custom_data())
+end
 function BlackMarketGui:choose_mod_type_callback(data)
 	local mods = managers.blackmarket:get_dropable_mods_by_weapon_id(data.name)
 	local new_node_data = {}
@@ -9905,6 +9932,9 @@ function BlackMarketGui:clear_preferred_characters_callback(data)
 end
 function BlackMarketGui.get_crafting_custom_data()
 	return managers.menu_scene:get_crafting_custom_data()
+end
+function BlackMarketGui.get_screenshot_custom_data()
+	return managers.menu_scene:get_screenshot_custom_data()
 end
 function BlackMarketGui:pickup_crafted_item_callback(data)
 	managers.blackmarket:pickup_crafted_item(data.category, data.slot)

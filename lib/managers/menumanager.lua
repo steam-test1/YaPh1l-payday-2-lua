@@ -17,6 +17,7 @@ require("lib/managers/menu/items/MenuItemChat")
 require("lib/managers/menu/items/MenuItemFriend")
 require("lib/managers/menu/items/MenuItemCustomizeController")
 require("lib/managers/menu/items/MenuItemInput")
+require("lib/managers/menu/items/MenuItemTextBox")
 require("lib/managers/menu/nodes/MenuNodeTable")
 require("lib/managers/menu/nodes/MenuNodeServerList")
 core:import("CoreEvent")
@@ -134,6 +135,8 @@ function MenuManager:init(is_start_menu)
 	self:parallax_mapping_changed(nil, nil, managers.user:get_setting("parallax_mapping"))
 	managers.user:add_setting_changed_callback("video_aa", callback(self, self, "video_aa_changed"), true)
 	self:video_aa_changed(nil, nil, managers.user:get_setting("video_aa"))
+	managers.user:add_setting_changed_callback("workshop", callback(self, self, "workshop_changed"), true)
+	self:workshop_changed(nil, nil, managers.user:get_setting("workshop"))
 end
 function MenuManager:post_event(event)
 	local event = self._sound_source:post_event(event)
@@ -397,6 +400,11 @@ end
 function MenuManager:video_aa_changed(name, old_value, new_value)
 	if managers.environment_controller then
 		managers.environment_controller:set_aa_setting(new_value)
+	end
+end
+function MenuManager:workshop_changed(name, old_value, new_value)
+	if managers.workshop then
+		managers.workshop:set_enabled(new_value)
 	end
 end
 function MenuManager:brightness_changed(name, old_value, new_value)
@@ -2318,6 +2326,9 @@ function MenuCallbackHandler:toggle_parallax(item)
 end
 function MenuCallbackHandler:choice_choose_aa(item)
 	managers.user:set_setting("video_aa", item:value())
+end
+function MenuCallbackHandler:toggle_workshop(item)
+	managers.user:set_setting("workshop", item:value() == "on")
 end
 function MenuCallbackHandler:choice_choose_anti_alias(item)
 	managers.user:set_setting("video_anti_alias", item:value())
@@ -6896,6 +6907,9 @@ function MenuOptionInitiator:modify_debug_options(node)
 	return node
 end
 function MenuOptionInitiator:modify_options(node)
+	if node:item("toggle_workshop") then
+		node:item("toggle_workshop"):set_value(managers.user:get_setting("workshop") and "on" or "off")
+	end
 	return node
 end
 function MenuOptionInitiator:modify_network_options(node)
