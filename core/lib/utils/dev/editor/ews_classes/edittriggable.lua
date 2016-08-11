@@ -47,7 +47,7 @@ function EditUnitTriggable:build_element_gui(data)
 	local trigger_name = data.trigger_name or "none"
 	local name = Idstring("none")
 	local unit_name = Idstring("none")
-	if data.notify_unit then
+	if alive(data.notify_unit) then
 		unit_name = data.notify_unit:name()
 		name = data.notify_unit:unit_data().name_id
 	end
@@ -126,7 +126,7 @@ function EditUnitTriggable:update_element_gui()
 			local trigger_data = self._ctrls.unit:damage():get_trigger_data_list(trigger_name)
 			if trigger_data and #trigger_data > 0 then
 				for _, data in ipairs(trigger_data) do
-					if data.trigger_name == self._triggers_params.ctrlr:get_value() then
+					if data.trigger_name == self._triggers_params.ctrlr:get_value() and alive(data.notify_unit) then
 						self:build_element_gui(data)
 					end
 				end

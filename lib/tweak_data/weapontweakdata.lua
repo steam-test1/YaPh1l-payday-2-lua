@@ -8,6 +8,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_m14_npc()
 	self:_init_data_m14_sniper_npc()
 	self:_init_data_c45_npc()
+	self:_init_data_x_c45_npc()
 	self:_init_data_beretta92_npc()
 	self:_init_data_raging_bull_npc()
 	self:_init_data_r870_npc()
@@ -202,6 +203,19 @@ function WeaponTweakData:_init_data_c45_npc()
 	self.c45_npc.suppression = 1
 	self.colt_1911_primary_npc = deep_clone(self.c45_npc)
 	self.colt_1911_primary_npc.use_data.selection_index = 2
+end
+function WeaponTweakData:_init_data_x_c45_npc()
+	self.x_c45_npc.sounds.prefix = "c45_npc"
+	self.x_c45_npc.use_data.selection_index = 1
+	self.x_c45_npc.DAMAGE = 1
+	self.x_c45_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.x_c45_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.x_c45_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.x_c45_npc.CLIP_AMMO_MAX = 10
+	self.x_c45_npc.NR_CLIPS_MAX = 5
+	self.x_c45_npc.hold = "akimbo_pistol"
+	self.x_c45_npc.alert_size = 2500
+	self.x_c45_npc.suppression = 1
 end
 function WeaponTweakData:_init_data_beretta92_npc()
 	self.beretta92_npc.sounds.prefix = "beretta_npc"
@@ -1396,7 +1410,7 @@ function WeaponTweakData:_init_data_m134_npc()
 	self.m134_secondary_npc.armor_piercing = true
 end
 function WeaponTweakData:_init_data_rpg7_npc()
-	self.rpg7_npc.sounds.prefix = "barrett_npc"
+	self.rpg7_npc.sounds.prefix = "rpg_npc"
 	self.rpg7_npc.use_data.selection_index = 2
 	self.rpg7_npc.DAMAGE = 2
 	self.rpg7_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -1507,7 +1521,7 @@ function WeaponTweakData:_init_data_flamethrower_mk2_npc()
 	self.flamethrower_mk2_npc.suppression = 0.45
 end
 function WeaponTweakData:_init_data_m32_npc()
-	self.m32_npc.sounds.prefix = "gl40_npc"
+	self.m32_npc.sounds.prefix = "mgl_npc"
 	self.m32_npc.use_data.selection_index = 2
 	self.m32_npc.DAMAGE = 2
 	self.m32_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -1581,7 +1595,7 @@ function WeaponTweakData:_init_data_plainsrider_npc()
 	self.plainsrider_npc.suppression = 1
 end
 function WeaponTweakData:_init_data_mateba_npc()
-	self.mateba_npc.sounds.prefix = "rbull_npc"
+	self.mateba_npc.sounds.prefix = "mateba_npc"
 	self.mateba_npc.use_data.selection_index = 1
 	self.mateba_npc.DAMAGE = 4
 	self.mateba_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -2050,8 +2064,17 @@ function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	self.factory = WeaponFactoryTweakData:new()
 	tweak_data._init_wip_weapon_factory(self.factory, tweak_data)
 	self:_init_new_weapons(autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, damage_melee_default, damage_melee_effect_multiplier_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default)
-	self:give_free_dlcs(self, true)
-	self:give_free_dlcs(self.factory.parts)
+	local free_dlcs = tweak_data:free_dlc_list()
+	for _, data in pairs(self) do
+		if free_dlcs[data.global_value] then
+			data.global_value = nil
+		end
+	end
+	for _, data in pairs(self.factory.parts) do
+		if free_dlcs[data.dlc] then
+			data.dlc = nil
+		end
+	end
 end
 function WeaponTweakData:_init_stats()
 	self.stats = {}
@@ -2474,25 +2497,10 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 		max_ammo * high
 	}
 end
-function WeaponTweakData:give_free_dlcs(data_list, global_value)
-	local free_dlcs = {}
-	if global_value then
-		for _, data in pairs(data_list) do
-			if free_dlcs[data.global_value] then
-				data.global_value = nil
-			end
-		end
-	else
-		for _, data in pairs(data_list) do
-			if free_dlcs[data.dlc] then
-				data.dlc = nil
-			end
-		end
-	end
-end
 function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, damage_melee_default, damage_melee_effect_multiplier_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default)
 	local total_damage_primary = 300
 	local total_damage_secondary = 150
+	local default_bipod_spread = 1.6
 	self.new_m4 = {}
 	self.new_m4.category = "assault_rifle"
 	self.new_m4.damage_melee = damage_melee_default
@@ -2779,12 +2787,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.r870.single = {}
 	self.r870.single.fire_rate = 0.575
 	self.r870.spread = {}
-	self.r870.spread.standing = self.new_m4.spread.standing * 2
-	self.r870.spread.crouching = self.new_m4.spread.crouching * 2
-	self.r870.spread.steelsight = self.new_m4.spread.steelsight * 2
-	self.r870.spread.moving_standing = self.new_m4.spread.moving_standing * 2
-	self.r870.spread.moving_crouching = self.new_m4.spread.moving_crouching * 2
-	self.r870.spread.moving_steelsight = self.new_m4.spread.moving_steelsight * 2
+	self.r870.spread.standing = self.new_m4.spread.standing
+	self.r870.spread.crouching = self.new_m4.spread.crouching
+	self.r870.spread.steelsight = self.new_m4.spread.steelsight
+	self.r870.spread.moving_standing = self.new_m4.spread.moving_standing
+	self.r870.spread.moving_crouching = self.new_m4.spread.moving_crouching
+	self.r870.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
 	self.r870.kick = {}
 	self.r870.kick.standing = {
 		1.9,
@@ -5628,6 +5636,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hk21.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.hk21.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.hk21.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
+	self.hk21.spread.bipod = default_bipod_spread
 	self.hk21.kick = {}
 	self.hk21.kick.standing = {
 		-0.2,
@@ -5729,6 +5738,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m249.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.m249.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.m249.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
+	self.m249.spread.bipod = default_bipod_spread
 	self.m249.kick = {}
 	self.m249.kick.standing = {
 		-0.2,
@@ -5830,6 +5840,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rpk.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.rpk.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.rpk.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
+	self.rpk.spread.bipod = default_bipod_spread
 	self.rpk.kick = {}
 	self.rpk.kick.standing = {
 		-0.2,
@@ -7713,6 +7724,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mg42.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.mg42.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.mg42.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
+	self.mg42.spread.bipod = default_bipod_spread
 	self.mg42.kick = {}
 	self.mg42.kick.standing = {
 		-0.2,
@@ -10579,6 +10591,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.par.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.par.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.par.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
+	self.par.spread.bipod = default_bipod_spread
 	self.par.kick = {}
 	self.par.kick.standing = {
 		-0.2,
@@ -11824,6 +11837,11 @@ function WeaponTweakData:_create_table_structure()
 		sounds = {},
 		use_data = {}
 	}
+	self.x_c45_npc = {
+		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {}
+	}
 	self.colt_1911_primary_npc = deep_clone(self.c45_npc)
 	self.beretta92_npc = {
 		usage = "beretta92",
@@ -12494,6 +12512,7 @@ function WeaponTweakData:_precalculate_values()
 	self.m14_npc.AMMO_MAX = self.m14_npc.CLIP_AMMO_MAX * self.m14_npc.NR_CLIPS_MAX
 	self.m14_sniper_npc.AMMO_MAX = self.m14_sniper_npc.CLIP_AMMO_MAX * self.m14_sniper_npc.NR_CLIPS_MAX
 	self.c45_npc.AMMO_MAX = self.c45_npc.CLIP_AMMO_MAX * self.c45_npc.NR_CLIPS_MAX
+	self.x_c45_npc.AMMO_MAX = self.x_c45_npc.CLIP_AMMO_MAX * self.x_c45_npc.NR_CLIPS_MAX
 	self.beretta92_npc.AMMO_MAX = self.beretta92_npc.CLIP_AMMO_MAX * self.beretta92_npc.NR_CLIPS_MAX
 	self.raging_bull_npc.AMMO_MAX = self.raging_bull_npc.CLIP_AMMO_MAX * self.raging_bull_npc.NR_CLIPS_MAX
 	self.r870_npc.AMMO_MAX = self.r870_npc.CLIP_AMMO_MAX * self.r870_npc.NR_CLIPS_MAX

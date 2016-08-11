@@ -1,3 +1,4 @@
+require("lib/managers/menu/MenuGuiComponent")
 require("lib/managers/menu/SkillTreeGui")
 require("lib/managers/menu/InfamyTreeGui")
 require("lib/managers/menu/BlackMarketGui")
@@ -69,6 +70,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.game_installing = {create = callback(self, self, "create_game_installing_gui"), close = callback(self, self, "close_game_installing_gui")}
 	self._active_components.inventory = {create = callback(self, self, "create_inventory_gui"), close = callback(self, self, "close_inventory_gui")}
 	self._active_components.skilltree_new = {create = callback(self, self, "_create_skilltree_new_gui"), close = callback(self, self, "close_skilltree_new_gui")}
+	self._alive_components = {}
 end
 
 MenuComponentManager.save = function(self, data)
@@ -76,6 +78,43 @@ end
 
 MenuComponentManager.load = function(self, data)
 	self:on_whisper_mode_changed()
+end
+
+MenuComponentManager.register_component = function(self, id, component, priority)
+	table.insert(self._alive_components, {id = id, component = component, priority = priority or 0})
+	table.sort(self._alive_components, function(a, b)
+		return a.priority < b.priority
+  end)
+end
+
+MenuComponentManager.unregister_component = function(self, id)
+	for i,comp_data in ipairs(self._alive_components) do
+		if comp_data.id == id then
+			table.remove(self._alive_components, i)
+			return true
+		end
+	end
+	return false
+end
+
+MenuComponentManager.run_on_all_live_components = function(self, func, ...)
+	for idx,comp_data in ipairs(self._alive_components) do
+		if comp_data.component[func] then
+			comp_data.component[func](comp_data.component, ...)
+		end
+	end
+end
+
+MenuComponentManager.run_return_on_all_live_components = function(self, func, ...)
+	for idx,comp_data in ipairs(self._alive_components) do
+		if comp_data.component[func] then
+			local data = {comp_data.component[func](comp_data.component, ...)}
+		if data[1] ~= nil then
+			end
+			return true, data
+		end
+	end
+	return nil
 end
 
 MenuComponentManager.get_controller_input_bool = function(self, button)
@@ -294,6 +333,7 @@ MenuComponentManager.update = function(self, t, dt)
 	if self._blackmarket_gui then
 		self._blackmarket_gui:update(t, dt)
 	end
+	self:run_on_all_live_components("update", t, dt)
 end
 
 MenuComponentManager.get_left_controller_axis = function(self)
@@ -321,6 +361,7 @@ MenuComponentManager.accept_input = function(self, accept)
 	if not accept then
 		self._weapon_text_box:release_scroll_bar()
 	end
+	self:run_on_all_live_components("accept_input", accept)
 end
 
 MenuComponentManager.input_focus = function(self)
@@ -374,6 +415,10 @@ MenuComponentManager.input_focus = function(self)
 	if self._player_inventory_gui then
 		return self._player_inventory_gui:input_focus()
 	end
+	local used, values = self:run_return_on_all_live_components("input_focus")
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.scroll_up = function(self)
@@ -396,6 +441,10 @@ MenuComponentManager.scroll_up = function(self)
 	if self._lootdrop_casino_gui and self._lootdrop_casino_gui:scroll_up() then
 		return true
 	end
+	local used, values = self:run_return_on_all_live_components("scroll_up")
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.scroll_down = function(self)
@@ -417,6 +466,10 @@ MenuComponentManager.scroll_down = function(self)
 	end
 	if self._lootdrop_casino_gui and self._lootdrop_casino_gui:scroll_down() then
 		return true
+	end
+	local used, values = self:run_return_on_all_live_components("scroll_down")
+	if used then
+		return unpack(values)
 	end
 end
 
@@ -448,6 +501,10 @@ MenuComponentManager.move_up = function(self)
 	if self._player_inventory_gui and self._player_inventory_gui:move_up() then
 		return true
 	end
+	local used, values = self:run_return_on_all_live_components("move_up")
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.move_down = function(self)
@@ -477,6 +534,10 @@ MenuComponentManager.move_down = function(self)
 	end
 	if self._player_inventory_gui and self._player_inventory_gui:move_down() then
 		return true
+	end
+	local used, values = self:run_return_on_all_live_components("move_down")
+	if used then
+		return unpack(values)
 	end
 end
 
@@ -508,6 +569,10 @@ MenuComponentManager.move_left = function(self)
 	if self._player_inventory_gui and self._player_inventory_gui:move_left() then
 		return true
 	end
+	local used, values = self:run_return_on_all_live_components("move_left")
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.move_right = function(self)
@@ -537,6 +602,10 @@ MenuComponentManager.move_right = function(self)
 	end
 	if self._player_inventory_gui and self._player_inventory_gui:move_right() then
 		return true
+	end
+	local used, values = self:run_return_on_all_live_components("move_right")
+	if used then
+		return unpack(values)
 	end
 end
 
@@ -574,6 +643,10 @@ MenuComponentManager.next_page = function(self)
 	if self._player_inventory_gui and self._player_inventory_gui:next_page() then
 		return true
 	end
+	local used, values = self:run_return_on_all_live_components("next_page")
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.previous_page = function(self)
@@ -609,6 +682,10 @@ MenuComponentManager.previous_page = function(self)
 	end
 	if self._player_inventory_gui and self._player_inventory_gui:previous_page() then
 		return true
+	end
+	local used, values = self:run_return_on_all_live_components("previous_page")
+	if used then
+		return unpack(values)
 	end
 end
 
@@ -646,6 +723,10 @@ MenuComponentManager.confirm_pressed = function(self)
 	if self._player_inventory_gui and self._player_inventory_gui:confirm_pressed() then
 		return true
 	end
+	local used, values = self:run_return_on_all_live_components("confirm_pressed")
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.back_pressed = function(self)
@@ -663,6 +744,10 @@ MenuComponentManager.back_pressed = function(self)
 	end
 	if self._lootdrop_casino_gui and self._lootdrop_casino_gui:back_pressed() then
 		return true
+	end
+	local used, values = self:run_return_on_all_live_components("back_pressed")
+	if used then
+		return unpack(values)
 	end
 end
 
@@ -705,6 +790,10 @@ MenuComponentManager.special_btn_pressed = function(self, ...)
 	end
 	if self._player_inventory_gui and self._player_inventory_gui:special_btn_pressed(...) then
 		return true
+	end
+	local used, values = self:run_return_on_all_live_components("special_btn_pressed", ...)
+	if used then
+		return unpack(values)
 	end
 end
 
@@ -940,6 +1029,23 @@ MenuComponentManager.mouse_pressed = function(self, o, button, x, y)
 	if self._player_inventory_gui and self._player_inventory_gui:mouse_pressed(button, x, y) then
 		return true
 	end
+	local used, values = nil, nil
+	if button == Idstring("mouse wheel down") then
+		used = self:run_return_on_all_live_components("mouse_wheel_down", x, y)
+	 -- DECOMPILER ERROR: Overwrote pending register. Missing locals? Creating them
+
+	else
+		if button == Idstring("mouse wheel up") then
+			used = self:run_return_on_all_live_components("mouse_wheel_up", x, y)
+		end
+	 -- DECOMPILER ERROR: Overwrote pending register. Missing locals? Creating them
+
+	else
+		used = self:run_return_on_all_live_components("mouse_pressed", button, x, y)
+	end
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.mouse_clicked = function(self, o, button, x, y)
@@ -949,6 +1055,10 @@ MenuComponentManager.mouse_clicked = function(self, o, button, x, y)
 	if self._skilltree_gui then
 		return self._skilltree_gui:mouse_clicked(o, button, x, y)
 	end
+	local used, values = self:run_return_on_all_live_components("mouse_clicked", o, button, x, y)
+	if used then
+		return unpack(values)
+	end
 end
 
 MenuComponentManager.mouse_double_click = function(self, o, button, x, y)
@@ -957,6 +1067,10 @@ MenuComponentManager.mouse_double_click = function(self, o, button, x, y)
 	end
 	if self._skilltree_gui then
 		return self._skilltree_gui:mouse_double_click(o, button, x, y)
+	end
+	local used, values = self:run_return_on_all_live_components("mouse_double_click", o, button, x, y)
+	if used then
+		return unpack(values)
 	end
 end
 
@@ -1020,7 +1134,12 @@ MenuComponentManager.mouse_released = function(self, o, button, x, y)
 	if self._weapon_text_box and self._weapon_text_box:release_scroll_bar() then
 		return true
 	end
-	return false
+	local used, values = self:run_return_on_all_live_components("mouse_released", o, button, x, y)
+	if used then
+		return unpack(values)
+	else
+		return false
+	end
 end
 
 MenuComponentManager.mouse_moved = function(self, o, x, y)
@@ -1222,7 +1341,13 @@ MenuComponentManager.mouse_moved = function(self, o, x, y)
 		end
 		return true, wanted_pointer
 	end
-	return false, wanted_pointer
+	local used, values = self:run_return_on_all_live_components("mouse_moved", o, x, y)
+	if used then
+		local _, pointer = unpack(values)
+		return true, pointer or wanted_pointer
+	else
+		return false, wanted_pointer
+	end
 end
 
 MenuComponentManager.peer_outfit_updated = function(self, peer_id)

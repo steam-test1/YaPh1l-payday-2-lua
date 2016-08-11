@@ -298,7 +298,7 @@ end
 function ExperienceManager:_set_total(value)
 	self._global.total = Application:digest_value(value, true)
 end
-function ExperienceManager:cash_string(cash)
+function ExperienceManager:cash_string(cash, cash_sign)
 	local sign = ""
 	if cash < 0 then
 		sign = "-"
@@ -309,7 +309,8 @@ function ExperienceManager:cash_string(cash)
 	for i = 1, string.len(reverse) do
 		s = s .. string.sub(reverse, i, i) .. (math.mod(i, 3) == 0 and i ~= string.len(reverse) and self._cash_tousand_separator or "")
 	end
-	return sign .. self._cash_sign .. string.reverse(s)
+	local final_cash_sign = type(cash_sign) == "string" and (cash_sign or self._cash_sign) or self._cash_sign
+	return sign .. final_cash_sign .. string.reverse(s)
 end
 function ExperienceManager:experience_string(xp)
 	local total = tostring(math.round(math.abs(xp)))

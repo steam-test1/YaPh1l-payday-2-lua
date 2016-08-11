@@ -51,7 +51,11 @@ function UGCItem:save()
 	return true
 end
 function UGCItem:submit(changenotes, callback)
-	if not self:_valid_for_submission() then
+	local valid, err = self:_valid_for_submission()
+	if not valid then
+		if callback then
+			callback(err, self)
+		end
 		return false
 	end
 	if not self._ugc_item then
@@ -63,7 +67,11 @@ function UGCItem:submit(changenotes, callback)
 	return self:_submit_item(changenotes, callback)
 end
 function UGCItem:prepare_for_submit(callback)
-	if not self:_valid_for_submission() then
+	local valid, err = self:_valid_for_submission()
+	if not valid then
+		if callback then
+			callback(err, self)
+		end
 		return false
 	end
 	if not self._ugc_item then

@@ -143,6 +143,7 @@ function CoreTimerUnitElement:_build_panel(panel, panel_sizer)
 end
 CoreTimerOperatorUnitElement = CoreTimerOperatorUnitElement or class(MissionElement)
 CoreTimerOperatorUnitElement.RANDOMS = {"time"}
+CoreTimerOperatorUnitElement.LINK_ELEMENTS = {"elements"}
 TimerOperatorUnitElement = TimerOperatorUnitElement or class(CoreTimerOperatorUnitElement)
 function TimerOperatorUnitElement:init(...)
 	TimerOperatorUnitElement.super.init(self, ...)
@@ -189,13 +190,6 @@ function CoreTimerOperatorUnitElement:add_element()
 		end
 	end
 end
-function CoreTimerOperatorUnitElement:remove_links(unit)
-	for _, id in ipairs(self._hed.elements) do
-		if id == unit:unit_data().unit_id then
-			table.delete(self._hed.elements, id)
-		end
-	end
-end
 function CoreTimerOperatorUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "add_element"))
 end
@@ -220,6 +214,7 @@ function CoreTimerOperatorUnitElement:_build_panel(panel, panel_sizer)
 	self:_add_help_text("This element can modify logic_timer element. Select timers to modify using insert and clicking on the elements.")
 end
 CoreTimerTriggerUnitElement = CoreTimerTriggerUnitElement or class(MissionElement)
+CoreTimerTriggerUnitElement.LINK_ELEMENTS = {"elements"}
 TimerTriggerUnitElement = TimerTriggerUnitElement or class(CoreTimerTriggerUnitElement)
 function TimerTriggerUnitElement:init(...)
 	TimerTriggerUnitElement.super.init(self, ...)
@@ -261,13 +256,6 @@ function CoreTimerTriggerUnitElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
-		end
-	end
-end
-function CoreTimerTriggerUnitElement:remove_links(unit)
-	for _, id in ipairs(self._hed.elements) do
-		if id == unit:unit_data().unit_id then
-			table.delete(self._hed.elements, id)
 		end
 	end
 end

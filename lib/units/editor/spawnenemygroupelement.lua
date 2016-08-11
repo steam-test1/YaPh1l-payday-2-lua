@@ -2,6 +2,7 @@ SpawnEnemyGroupUnitElement = SpawnEnemyGroupUnitElement or class(MissionElement)
 SpawnEnemyGroupUnitElement.SAVE_UNIT_POSITION = false
 SpawnEnemyGroupUnitElement.SAVE_UNIT_ROTATION = false
 SpawnEnemyGroupUnitElement.RANDOMS = {"amount"}
+SpawnEnemyGroupUnitElement.LINK_ELEMENTS = {"elements"}
 function SpawnEnemyGroupUnitElement:init(unit)
 	MissionElement.init(self, unit)
 	self._hed.spawn_type = "ordered"
@@ -66,13 +67,6 @@ function SpawnEnemyGroupUnitElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
-		end
-	end
-end
-function SpawnEnemyGroupUnitElement:remove_links(unit)
-	for _, id in ipairs(self._hed.elements) do
-		if id == unit:unit_data().unit_id then
-			table.delete(self._hed.elements, id)
 		end
 	end
 end

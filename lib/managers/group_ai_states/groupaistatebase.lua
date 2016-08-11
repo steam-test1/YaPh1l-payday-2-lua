@@ -1308,9 +1308,11 @@ function GroupAIStateBase:check_gameover_conditions()
 	if Global.load_start_menu or Application:editor() then
 		return false
 	end
-	if self._super_syndrome_peers then
+	if not self:whisper_mode() and self._super_syndrome_peers and self:hostage_count() > 0 then
 		for _, active in pairs(self._super_syndrome_peers) do
-			return false
+			if active then
+				return false
+			end
 		end
 	end
 	local plrs_alive = false
@@ -2232,10 +2234,14 @@ function GroupAIStateBase:sync_remove_one_teamAI(name, replace_with_player)
 	end
 end
 function GroupAIStateBase:fill_criminal_team_with_AI(is_drop_in)
-	while true do
-		if managers.navigation:is_data_ready() and self._ai_enabled and managers.groupai:state():team_ai_enabled() then
-		elseif not (managers.criminals:nr_taken_criminals() < CriminalsManager.MAX_NR_CRIMINALS) or not (managers.criminals:nr_AI_criminals() < managers.criminals.MAX_NR_TEAM_AI) or not self:spawn_one_teamAI(is_drop_in, nil, nil, nil, true) then
-			break
+	if managers.navigation:is_data_ready() and self._ai_enabled and managers.groupai:state():team_ai_enabled() then
+		local index = 1
+		while managers.criminals:nr_taken_criminals() < CriminalsManager.MAX_NR_CRIMINALS and managers.criminals:nr_AI_criminals() < managers.criminals.MAX_NR_TEAM_AI do
+			local char_name = managers.criminals:get_team_ai_character(index)
+			index = index + 1
+			if not self:spawn_one_teamAI(is_drop_in or not not char_name, char_name, nil, nil, true) then
+				break
+			end
 		end
 	end
 end
@@ -2628,6 +2634,9 @@ function GroupAIStateBase:all_char_criminals()
 end
 function GroupAIStateBase:amount_of_ai_criminals()
 	return table.size(self._ai_criminals)
+end
+function GroupAIStateBase:num_alive_criminals()
+	return table.size(self._criminals)
 end
 function GroupAIStateBase:amount_of_winning_ai_criminals()
 	local amount = 0

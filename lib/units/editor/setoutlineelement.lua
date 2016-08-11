@@ -1,4 +1,5 @@
 SetOutlineElement = SetOutlineElement or class(MissionElement)
+SetOutlineElement.LINK_ELEMENTS = {"elements"}
 function SetOutlineElement:init(unit)
 	SetOutlineElement.super.init(self, unit)
 	self._hed.elements = {}
@@ -51,13 +52,6 @@ function SetOutlineElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
-		end
-	end
-end
-function SetOutlineElement:remove_links(unit)
-	for _, id in ipairs(self._hed.elements) do
-		if id == unit:unit_data().unit_id then
-			table.delete(self._hed.elements, id)
 		end
 	end
 end

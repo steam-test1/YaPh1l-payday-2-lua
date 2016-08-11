@@ -355,6 +355,7 @@ function CoreEditor:build_menubar()
 	self._debug_menu:append_item("SHOW_WORKVIEW", "Show workviews", "Shows the workviews dialog")
 	self._debug_menu:append_separator()
 	self._debug_menu:append_item("CHECK DUALITY", "Check Unit Duality", "Goes through all units and checks if any of the same share position and rotation")
+	self._debug_menu:append_item("SHOW_UNIT_COUNT", "Unit Breakdown", "Get a breakdown of the number of units in the world")
 	self._debug_menu:append_separator()
 	self._debug_menu:append_item("TB_MAKE_SCREENSHOT", "Capture Screenshot\t" .. self:ctrl_menu_binding("capture_screenshot"), "Choose this to create a screenshot")
 	self._debug_menu:append_check_item("TB_DRAW_OCCLUDERS", "Draw Occluders", "Toggle debug draw of occluder objects")
@@ -367,6 +368,7 @@ function CoreEditor:build_menubar()
 		menu = "_debug_menu",
 		toolbar = "_left_upper_toolbar"
 	})
+	Global.frame:connect("SHOW_UNIT_COUNT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_show_unit_breakdown"), "")
 	menu_bar:append(self._debug_menu, "Debug")
 	if managers and managers.toolhub then
 		menu_bar:append(managers.toolhub:get_tool_menu(Global.frame), "Toolhub")
@@ -785,6 +787,9 @@ function CoreEditor:on_make_screenshot()
 end
 function CoreEditor:toggle_draw_occluders(data)
 	self._draw_occluders = data[1]:is_checked(data[2])
+end
+function CoreEditor:on_show_unit_breakdown()
+	self:show_dialog("unit_breakdown", "UnitBreakdownView")
 end
 local leveltools_ids = Idstring("leveltools")
 function CoreEditor:on_hide_helper_units(data)

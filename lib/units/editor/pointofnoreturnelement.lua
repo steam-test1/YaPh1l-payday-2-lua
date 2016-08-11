@@ -1,4 +1,5 @@
 PointOfNoReturnElement = PointOfNoReturnElement or class(MissionElement)
+PointOfNoReturnElement.LINK_ELEMENTS = {"elements"}
 function PointOfNoReturnElement:init(unit)
 	PointOfNoReturnElement.super.init(self, unit)
 	self._hed.elements = {}
@@ -161,13 +162,6 @@ function PointOfNoReturnElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
-		end
-	end
-end
-function PointOfNoReturnElement:remove_links(unit)
-	for _, id in ipairs(self._hed.elements) do
-		if id == unit:unit_data().unit_id then
-			table.delete(self._hed.elements, id)
 		end
 	end
 end

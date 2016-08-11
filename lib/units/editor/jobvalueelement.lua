@@ -66,6 +66,7 @@ end
 ApplyJobValueUnitElement = ApplyJobValueUnitElement or class(MissionElement)
 ApplyJobValueUnitElement.SAVE_UNIT_POSITION = false
 ApplyJobValueUnitElement.SAVE_UNIT_ROTATION = false
+ApplyJobValueUnitElement.LINK_ELEMENTS = {"elements"}
 function ApplyJobValueUnitElement:init(unit)
 	ApplyJobValueUnitElement.super.init(self, unit)
 	self._hed.key = "none"
@@ -101,13 +102,6 @@ function ApplyJobValueUnitElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
-		end
-	end
-end
-function ApplyJobValueUnitElement:remove_links(unit)
-	for _, id in ipairs(self._hed.elements) do
-		if id == unit:unit_data().unit_id then
-			table.delete(self._hed.elements, id)
 		end
 	end
 end

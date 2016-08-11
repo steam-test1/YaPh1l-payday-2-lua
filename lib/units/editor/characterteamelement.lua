@@ -1,6 +1,7 @@
 CharacterTeamElement = CharacterTeamElement or class(MissionElement)
 CharacterTeamElement.SAVE_UNIT_POSITION = false
 CharacterTeamElement.SAVE_UNIT_ROTATION = false
+CharacterTeamElement.LINK_ELEMENTS = {"elements"}
 function CharacterTeamElement:init(unit)
 	MissionElement.init(self, unit)
 	self._hed.elements = {}
@@ -40,13 +41,6 @@ function CharacterTeamElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
-		end
-	end
-end
-function CharacterTeamElement:remove_links(unit)
-	for _, id in ipairs(self._hed.elements) do
-		if id == unit:unit_data().unit_id then
-			table.delete(self._hed.elements, id)
 		end
 	end
 end
