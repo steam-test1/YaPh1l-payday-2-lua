@@ -153,6 +153,9 @@ function CrimeNetCasinoGui:_crimenet_casino_additional_cost()
 	return secure_cards, increase_infamous, preferred_card
 end
 function CrimeNetCasinoGui:_place_bet()
+	if self._betting then
+		return
+	end
 	local secure_cards, increase_infamous, preferred_card = self:_crimenet_casino_additional_cost()
 	if not managers.money:can_afford_casino_fee(secure_cards, increase_infamous, preferred_card) then
 		return
@@ -167,6 +170,7 @@ function CrimeNetCasinoGui:_exit()
 	managers.menu:active_menu().logic:navigate_back(true)
 end
 function CrimeNetCasinoGui:_crimenet_casino_pay_fee()
+	self._betting = true
 	local secure_cards, increase_infamous, preferred_card = self:_crimenet_casino_additional_cost()
 	if not managers.money:can_afford_casino_fee(secure_cards, increase_infamous, preferred_card) then
 		return
@@ -184,5 +188,8 @@ function CrimeNetCasinoGui:_crimenet_casino_pay_fee()
 end
 function CrimeNetCasinoGui:_crimenet_casino_lootdrop_back()
 	local done = managers.menu_component:check_lootdrop_casino_done()
+	if done then
+		self._betting = nil
+	end
 	return not done
 end

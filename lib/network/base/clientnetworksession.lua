@@ -137,6 +137,9 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	elseif reply == 8 then
 		self:remove_peer(self._server_peer, 1)
 		cb("AUTH_FAILED")
+	elseif reply == 9 then
+		self:remove_peer(self._server_peer, 1)
+		cb("BANNED")
 	end
 end
 function ClientNetworkSession:on_join_request_timed_out()

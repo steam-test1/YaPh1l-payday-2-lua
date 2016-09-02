@@ -5,6 +5,7 @@ core:import("CoreInput")
 core:import("CoreEws")
 core:import("CoreTable")
 core:import("CoreEditorCommand")
+core:import("CoreUnit")
 StaticLayer = StaticLayer or class(CoreLayer.Layer)
 function StaticLayer:init(owner, save_name, units_vector, slot_mask)
 	StaticLayer.super.init(self, owner, save_name)
@@ -94,19 +95,21 @@ end
 function StaticLayer:use_grab_info()
 	StaticLayer.super.use_grab_info(self)
 	if self._grab then
-		self._grab = false
-		self:set_unit_positions(self._grab_info:position())
-		self:set_unit_rotations(self._grab_info:rotation() * self._selected_unit:rotation():inverse())
+		self:reset_grab_info()
+		self._grab_cancelled = true
 	end
 end
 function StaticLayer:set_unit_positions(pos)
 	if not self._grab then
 		managers.editor:set_grid_altitude(pos.z)
 	end
+	if not self:verify_selected_units() then
+		return
+	end
 	self._move_command = CoreEditorCommand.MoveUnitCommand:new(self, self._move_command)
 	self._move_command:execute(pos)
-	if not self._grab then
-		self:register_undo_command(self._move_command)
+	if not self._grab and not self._grab_cancelled then
+		managers.editor:register_undo_command(self._move_command)
 		self._move_command = nil
 	end
 end
@@ -118,22 +121,14 @@ function StaticLayer:set_unit_position(unit, pos, rot)
 	unit:set_moving()
 end
 function StaticLayer:set_unit_rotations(rot)
+	if not self:verify_selected_units() then
+		return
+	end
 	self._rotate_command = CoreEditorCommand.RotateUnitCommand:new(self, self._rotate_command)
 	self._rotate_command:execute(rot)
-	if not self._grab then
-		self:register_undo_command(self._rotate_command)
+	if not self._grab and not self._grab_cancelled then
+		managers.editor:register_undo_command(self._rotate_command)
 		self._rotate_command = nil
-		do break end
-		local reference = self._selected_unit
-		local rot = rot * reference:rotation()
-		reference:set_rotation(rot)
-		self:_on_unit_rotated(reference, rot)
-		for _, unit in ipairs(self._selected_units) do
-			if unit ~= reference then
-				self:set_unit_position(unit, reference:position(), rot)
-				self:set_unit_rotation(unit, rot)
-			end
-		end
 	end
 end
 function StaticLayer:set_unit_rotation(unit, rot)
@@ -164,6 +159,22 @@ function StaticLayer:move_unit(btn, pressed)
 			self._offset_move_vec = self._selected_unit:position() - self._current_pos
 		end
 	end
+end
+function StaticLayer:release_unit()
+	if self._grab then
+		self._grab = false
+		self:set_unit_positions(self._current_pos)
+		self:reset_grab_info()
+		if self._selected_unit then
+			managers.editor:set_grid_altitude(self._selected_unit:position().z)
+		end
+	end
+end
+function StaticLayer:reset_grab_info()
+	self._grab = false
+	self._grab_info = nil
+	self._grab_cancelled = nil
+	self._offset_move_vec = Vector3(0, 0, 0)
 end
 function StaticLayer:rotate_unit(btn, pressed)
 	if self._selected_unit and not self:condition() then
@@ -215,17 +226,13 @@ function StaticLayer:set_select_unit(unit)
 		managers.editor:set_grid_altitude(self._selected_unit:position().z)
 	end
 end
-function StaticLayer:release_unit()
-	self._grab = false
-	self._offset_move_vec = Vector3(0, 0, 0)
-	if self._selected_unit then
-		managers.editor:set_grid_altitude(self._selected_unit:position().z)
-	end
-end
 function StaticLayer:delete_selected_unit(btn, pressed)
 	managers.editor:freeze_gui_lists()
 	if self._selected_unit and not self:condition() then
 		local to_delete = CoreTable.clone(self._selected_units)
+		table.sort(to_delete, function(a, b)
+			return a:unit_data().unit_id > b:unit_data().unit_id
+		end)
 		for _, unit in ipairs(to_delete) do
 			if table.contains(self._created_units, unit) then
 				self:delete_unit(unit)
@@ -291,6 +298,11 @@ function StaticLayer:update(t, dt)
 	end
 	self:update_move_triggers(t, dt)
 	self:update_rotate_triggers(t, dt)
+	if self._grab_cancelled and self._move_command then
+		self._move_command:undo()
+		self._move_command = nil
+		self:reset_grab_info()
+	end
 end
 function StaticLayer:draw_marker(t, dt)
 	if not managers.editor:layer_draw_marker() then

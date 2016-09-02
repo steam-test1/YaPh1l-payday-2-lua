@@ -22,6 +22,7 @@ function HuskCivilianBase:post_init()
 	end
 	self._ext_movement:post_init()
 	managers.enemy:register_civilian(self._unit)
+	self:enable_leg_arm_hitbox()
 end
 function HuskCivilianBase:default_weapon_name()
 end

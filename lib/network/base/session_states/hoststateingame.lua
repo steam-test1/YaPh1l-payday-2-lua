@@ -1,6 +1,7 @@
 HostStateInGame = HostStateInGame or class(HostStateBase)
 function HostStateInGame:enter(data, enter_params)
 	print("[HostStateInGame:enter]", data, inspect(enter_params))
+	self._new_peers = {}
 end
 function HostStateInGame:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, peer_rank, gameversion, join_attempt_identifier, auth_ticket, sender)
 	print("[HostStateInGame:on_join_request_received]", data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, sender:ip_at_index(0))
@@ -23,6 +24,9 @@ function HostStateInGame:on_join_request_received(data, peer_name, client_prefer
 	elseif self:_is_kicked(data, peer_name, sender) then
 		print("YOU ARE IN MY KICKED LIST", peer_name)
 		self:_send_request_denied(sender, 2, my_user_id)
+		return
+	elseif self:_is_banned(peer_name, sender) then
+		self:_send_request_denied(sender, 9, my_user_id)
 		return
 	elseif peer_level < Global.game_settings.reputation_permission then
 		self:_send_request_denied(sender, 6, my_user_id)
@@ -103,12 +107,21 @@ function HostStateInGame:on_join_request_received(data, peer_name, client_prefer
 	data.session:send_ok_to_load_level()
 	self:on_handshake_confirmation(data, new_peer, 1)
 	new_peer:set_rank(peer_rank)
+	self._new_peers[new_peer_id] = true
 end
 function HostStateInGame:on_peer_finished_loading(data, peer)
 	self:_introduce_new_peer_to_old_peers(data, peer, false, peer:name(), peer:character(), "remove", peer:xuid(), peer:xnaddr())
 	self:_introduce_old_peers_to_new_peer(data, peer)
 	if data.game_started then
 		peer:send("set_dropin")
+	end
+	if self._new_peers[peer:id()] then
+		if peer:rank() > 0 then
+			managers.menu:post_event("infamous_player_join_stinger")
+		else
+			managers.menu:post_event("player_join")
+		end
+		managers.network:session():send_to_peers_except(peer:id(), "peer_joined_sound", peer:rank() > 0)
 	end
 end
 function HostStateInGame:is_joinable(data)

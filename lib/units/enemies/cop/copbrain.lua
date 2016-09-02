@@ -167,7 +167,7 @@ function CopBrain:set_tactic(new_tactic_info)
 		self._current_logic.on_new_tactic(self._logic_data, old_tactic)
 	end
 end
-function CopBrain:set_objective(new_objective)
+function CopBrain:set_objective(new_objective, params)
 	local old_objective = self._logic_data.objective
 	self._logic_data.objective = new_objective
 	if new_objective and new_objective.followup_objective and new_objective.followup_objective.interaction_voice then
@@ -175,7 +175,7 @@ function CopBrain:set_objective(new_objective)
 	elseif old_objective and old_objective.followup_objective and old_objective.followup_objective.interaction_voice then
 		self._unit:network():send("set_interaction_voice", "")
 	end
-	self._current_logic.on_new_objective(self._logic_data, old_objective)
+	self._current_logic.on_new_objective(self._logic_data, old_objective, params)
 end
 function CopBrain:set_followup_objective(followup_objective)
 	local old_followup = self._logic_data.objective.followup_objective
@@ -260,6 +260,9 @@ function CopBrain:set_logic(name, enter_params)
 end
 function CopBrain:get_logic_by_name(name)
 	return self._logics[name]
+end
+function CopBrain:is_current_logic(logic_name)
+	return logic_name == self._current_logic_name
 end
 function CopBrain:search_for_path_to_unit(search_id, other_unit, access_neg)
 	local enemy_tracker = other_unit:movement():nav_tracker()

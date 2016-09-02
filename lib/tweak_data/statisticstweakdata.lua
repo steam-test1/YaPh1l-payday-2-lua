@@ -667,6 +667,7 @@ function StatisticsTweakData:statistics_table()
 	local enemy_list = {
 		"civilian",
 		"civilian_female",
+		"robbers_safehouse",
 		"cop",
 		"fbi",
 		"fbi_swat",

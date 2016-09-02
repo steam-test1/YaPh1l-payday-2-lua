@@ -191,6 +191,10 @@ function TimerGui:setup()
 end
 function TimerGui:reset()
 	self._started = false
+	if self._unit:interaction() and self._start_tweak_data then
+		self._unit:interaction():set_tweak_data(self._start_tweak_data)
+		self._unit:interaction():set_active(true)
+	end
 end
 function TimerGui:_start(timer, current_timer)
 	self._started = true
@@ -265,12 +269,11 @@ function TimerGui:start(timer)
 		self:_set_powered(true)
 		return
 	end
-	if self._started then
-		return
-	end
-	self:_start(timer)
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("start_timer_gui", self._unit, timer)
+	if not self._started then
+		self:_start(timer)
+		if managers.network:session() then
+			managers.network:session():send_to_peers_synched("start_timer_gui", self._unit, timer)
+		end
 	end
 end
 function TimerGui:sync_start(timer)
@@ -383,6 +386,9 @@ function TimerGui:_set_jammed(jammed)
 		local theme = TimerGui.themes[self.THEME]
 		if theme and theme.bg_rect_blend_mode then
 			self._gui_script.bg_rect:set_blend_mode(theme.bg_rect_blend_mode)
+		end
+		if self._unit:interaction() then
+			self._unit:interaction():set_active(false)
 		end
 	end
 	self._unit:base():set_jammed(jammed)

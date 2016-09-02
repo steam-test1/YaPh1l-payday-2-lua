@@ -196,7 +196,9 @@ function MissionManager:get_saved_job_value(key)
 	return Global.mission_manager.saved_job_values[key]
 end
 function MissionManager:on_reset_profile()
-	Global.mission_manager.saved_job_values.playedSafeHouseBefore = nil
+	for key, value in pairs(Global.mission_manager.saved_job_values) do
+		Global.mission_manager.saved_job_values[key] = nil
+	end
 end
 function MissionManager:set_job_value(key, value)
 	Global.mission_manager.stage_job_values[key] = value

@@ -347,7 +347,7 @@ texture_rect = {35, 1, 17, 23}, w = 17, h = 23, blend_mode = "add"})
 						panel:set_w(text:right())
 						self._legends.hide_all = panel
 					else
-						self._legends_panel:set_rightbottom(self._panel:w(), self._panel:h())
+						self._legends_panel:set_righttop(self._panel:w(), 0)
 						self._legends_panel:text({name = "text", text = "", font = tweak_data.menu.pd2_small_font, font_size = tweak_data.menu.pd2_small_font_size, color = tweak_data.screen_colors.text, blend_mode = "add", align = "right", halign = "right", valign = "bottom", vertical = "bottom"})
 					end
 					self._text_buttons = {}
@@ -585,6 +585,7 @@ sides = {1, 1, 2, 1}})
 {panel = column_two_big_panel, button = column_two_show_button}, 
 {panel = column_three_big_panel, button = column_three_show_button}}
 					end
+					self._multi_profile_item = MultiProfileItemGui:new(self._ws, self._panel)
 					self:_round_everything()
 					do
 						local box = self:_get_selected_box()
@@ -665,6 +666,7 @@ PlayerInventoryGui._update_legends = function(self, name)
 							if show_preview then
 								legends[#legends + 1] = {string_id = "menu_legend_preview"}
 							end
+							legends[#legends + 1] = {string_id = "menu_ctrl_change_profile"}
 							if show_switch then
 								legends[#legends + 1] = {string_id = "menu_legend_switch"}
 							end
@@ -2128,7 +2130,7 @@ PlayerInventoryGui._update_loadout_boxes = function(self)
 	for box_name,entry in pairs(loadout_boxes) do
 		box = self._boxes_by_name[box_name]
 		self:update_box(box, {text = player_loadout_data[entry].info_text, image = player_loadout_data[entry].item_texture, 
-dual_image = {player_loadout_data[entry].dual_texture_1, player_loadout_data[entry].dual_texture_2}}, true)
+dual_image = {player_loadout_data[entry].dual_texture_1, player_loadout_data[entry].dual_texture_2}, bg_image = player_loadout_data[entry].item_bg_texture or false, use_background = player_loadout_data[entry].item_bg_texture or false}, true)
 	end
 	self:update_detection()
 	self:_update_player_stats()
@@ -2687,7 +2689,7 @@ PlayerInventoryGui._update_box_status = function(self, box, selected)
 	for i,object_name in ipairs(list) do
 		if box[object_name] then
 			local object = box[object_name]
-			if object.selected_color and object.unselected_color then
+			if object.selected_color and object.unselected_color and alive(object.gui) then
 				if object.gui.children then
 					for _,child in ipairs(object.gui:children()) do
 						if child.children then
@@ -2702,7 +2704,7 @@ PlayerInventoryGui._update_box_status = function(self, box, selected)
 					end
 				end
 			else
-				if not selected or not object.selected_color then
+				if object.gui.set_color and (not selected or not object.selected_color) then
 					object.gui:set_color(object.unselected_color)
 				end
 			end
@@ -2724,7 +2726,7 @@ PlayerInventoryGui._update_box_status = function(self, box, selected)
 		end
 	end
 	local text_object = box.text_object
-	if text_object and text_object.selected_text and text_object.unselected_text then
+	if text_object and text_object.selected_text and text_object.unselected_text and alive(text_object.gui) then
 		local panel = box.panel
 		local align = box.params and box.params.text_align or "left"
 		local vertical = box.params and box.params.text_vertical or "top"
@@ -2861,11 +2863,19 @@ PlayerInventoryGui.special_btn_pressed = function(self, button)
 			self._show_all_panels = false
 			self._panel:show()
 			self._fullscreen_panel:show()
+		else
+			self._show_all_panels = true
+			self._panel:hide()
+			self._fullscreen_panel:hide()
 		end
 	else
-		self._show_all_panels = true
-		self._panel:hide()
-		self._fullscreen_panel:hide()
+		if button == Idstring("menu_change_profile_right") and managers.multi_profile:has_next() then
+			managers.multi_profile:next_profile()
+		end
+	else
+		if button == Idstring("menu_change_profile_left") and managers.multi_profile:has_previous() then
+			managers.multi_profile:previous_profile()
+		end
 	end
 end
 
@@ -2904,72 +2914,77 @@ PlayerInventoryGui.mouse_moved = function(self, o, x, y)
 		self._back_button_highlighted = false
 		self._panel:child("back_button"):set_color(tweak_data.screen_colors.button_stage_3)
 	end
-	do
-		local mouse_over_selected_box = nil
-		for i = self._max_layer, 1, -1 do
-			if self._boxes_by_layer[i] then
-				for _,box in ipairs(self._boxes_by_layer[i]) do
-					if alive(box.panel) and box.panel:tree_visible() and box.can_select and box.panel:inside(x, y) then
-						self._data.selected_box = box.name
-						mouse_over_selected_box = box.name
-						used = true
-						pointer = "link"
-					end
-			else
-				end
-			end
-			if used then
-				do break end
-			end
-		end
-		for _,button in ipairs(self._text_buttons) do
-			if alive(button.panel) and button.panel:visible() then
-				if button.panel:inside(x, y) then
-					if not button.highlighted then
-						button.highlighted = true
-						managers.menu_component:post_event("highlight")
-					if alive(button.text) then
-						end
-						button.text:set_color(tweak_data.screen_colors.button_stage_2)
-					end
+	local mouse_over_selected_box = nil
+	for i = self._max_layer, 1, -1 do
+		if self._boxes_by_layer[i] then
+			for _,box in ipairs(self._boxes_by_layer[i]) do
+				if alive(box.panel) and box.panel:tree_visible() and box.can_select and box.panel:inside(x, y) then
+					self._data.selected_box = box.name
+					mouse_over_selected_box = box.name
 					used = true
+					pointer = "link"
 				end
-			elseif button.highlighted then
-				button.highlighted = false
-				button.text:set_color(tweak_data.screen_colors.button_stage_3)
+		else
 			end
 		end
-		if self._change_alpha_table then
-			for _,data in ipairs(self._change_alpha_table) do
-				data.button:set_alpha(not alive(data.panel) or not alive(data.button) or (data.panel:inside(x, y) and 1) or 0.1)
-			end
+		if used then
+			do break end
 		end
-		for _,box in ipairs(self._boxes) do
-			if self._data.selected_box == box.name and not box.selected then
-				box.selected = true
-				self:_update_stats(box.name)
-				self:_update_box_status(box, true)
-				managers.menu_component:post_event("highlight")
-			if box.select_anim then
+	end
+	for _,button in ipairs(self._text_buttons) do
+		if alive(button.panel) and button.panel:visible() then
+			if button.panel:inside(x, y) then
+				if not button.highlighted then
+					button.highlighted = true
+					managers.menu_component:post_event("highlight")
+				if alive(button.text) then
+					end
+					button.text:set_color(tweak_data.screen_colors.button_stage_2)
+				end
+				used = true
+			end
+		elseif button.highlighted then
+			button.highlighted = false
+			button.text:set_color(tweak_data.screen_colors.button_stage_3)
+		end
+	end
+	if self._change_alpha_table then
+		for _,data in ipairs(self._change_alpha_table) do
+			data.button:set_alpha(not alive(data.panel) or not alive(data.button) or (data.panel:inside(x, y) and 1) or 0.1)
+		end
+	end
+	for _,box in ipairs(self._boxes) do
+		if self._data.selected_box == box.name and not box.selected then
+			box.selected = true
+			self:_update_stats(box.name)
+			self:_update_box_status(box, true)
+			managers.menu_component:post_event("highlight")
+		if alive(box.panel) then
+			end
+		if box.select_anim then
+			end
+			box.panel:stop()
+			box.panel:animate(box.select_anim, box)
+		end
+		for _,box in (for generator) do
+			if box.selected then
+				box.selected = false
+				self:_update_box_status(box, false)
+			if alive(box.panel) then
+				end
+			if box.unselect_anim then
 				end
 				box.panel:stop()
-				box.panel:animate(box.select_anim, box)
+				box.panel:animate(box.unselect_anim, box)
 			end
-			for _,box in (for generator) do
-				if box.selected then
-					box.selected = false
-					self:_update_box_status(box, false)
-				if box.unselect_anim then
-					end
-					box.panel:stop()
-					box.panel:animate(box.unselect_anim, box)
-				end
-			end
-			if self._mouse_over_selected_box ~= mouse_over_selected_box then
-				self._mouse_over_selected_box = mouse_over_selected_box
-				self:_update_legends(mouse_over_selected_box)
-			end
-			self._input_focus = pointer == "arrow" and 2 or 1
+		end
+		if self._mouse_over_selected_box ~= mouse_over_selected_box then
+			self._mouse_over_selected_box = mouse_over_selected_box
+			self:_update_legends(mouse_over_selected_box)
+		end
+		do
+			local u, p = self._multi_profile_item:mouse_moved(x, y)
+			self._input_focus = ((not u and p) or pointer == "arrow") and 2 or 1
 			return used, pointer
 		end
 		 -- WARNING: missing end command somewhere! Added here
@@ -3014,6 +3029,7 @@ PlayerInventoryGui.mouse_pressed = function(self, button, x, y)
 	elseif scroll_down and box.clbks.down then
 		box.clbks.down(box)
 	end
+	self._multi_profile_item:mouse_pressed(button, x, y)
 end
 
 PlayerInventoryGui.unretrieve_box_textures = function(self, box)
