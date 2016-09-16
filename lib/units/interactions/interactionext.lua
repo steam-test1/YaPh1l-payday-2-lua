@@ -71,10 +71,8 @@ function BaseInteractionExt:set_tweak_data(id)
 		self._unit:contour():remove_by_id(selected_contour_id)
 		self._selected_contour_id = nil
 	end
-	if id then
-		self.tweak_data = id
-		self._tweak_data = tweak_data.interaction[id]
-	end
+	self.tweak_data = id
+	self._tweak_data = tweak_data.interaction[id]
 	if self._active and self._tweak_data.contour_preset then
 		self._contour_id = self._unit:contour():add(self._tweak_data.contour_preset)
 	end
@@ -503,9 +501,6 @@ function BaseInteractionExt:destroy()
 		self._interacting_units = nil
 	end
 end
-function BaseInteractionExt:can_remove_item()
-	return true
-end
 UseInteractionExt = UseInteractionExt or class(BaseInteractionExt)
 function UseInteractionExt:unselect()
 	UseInteractionExt.super.unselect(self)
@@ -921,7 +916,20 @@ function SentryGunInteractionExt:destroy()
 end
 function SentryGunInteractionExt:interact(player)
 	SentryGunInteractionExt.super.super.interact(self, player)
-	self._unit:base():on_interaction()
+	local equipped_wpn = managers.player:get_current_state():get_equipped_weapon()
+	if equipped_wpn then
+		local ammo_ratio = self._unit:base():ammo_ratio()
+		local ammo = equipped_wpn:get_max_ammo_excluding_clip() * 0.2 * ammo_ratio
+		ammo = math.floor(ammo)
+		local index = managers.player:equipped_weapon_index()
+		equipped_wpn:add_ammo_to_pool(ammo, index)
+		managers.player:add_sentry_gun(1, self._unit:base():get_type())
+		if Network:is_client() then
+			managers.network:session():send_to_peers_synched("remove_sentry_gun", self._unit)
+		else
+			World:delete_unit(self._unit)
+		end
+	end
 	return true
 end
 function SentryGunInteractionExt:_on_death_event()
@@ -940,8 +948,7 @@ local sentry_gun_interaction_add_string_macros = function(macros, ammo_ratio)
 	end
 end
 function SentryGunInteractionExt:_add_string_macros(macros)
-	local ammo_ratio = Network:is_server() and self._unit:weapon():ammo_ratio() or self._unit:weapon():get_virtual_ammo_ratio()
-	sentry_gun_interaction_add_string_macros(macros, ammo_ratio)
+	sentry_gun_interaction_add_string_macros(macros, self._unit:base():ammo_ratio())
 end
 function SentryGunInteractionExt:_on_weapon_fire_event()
 	self:set_dirty(true)
@@ -970,7 +977,7 @@ function SentryGunFireModeInteractionExt:interact(player)
 	self._sentry_gun_weapon:switch_fire_mode()
 end
 function SentryGunFireModeInteractionExt:_add_string_macros(macros)
-	local ammo_ratio = Network:is_server() and self._sentry_gun_weapon:ammo_ratio() or self._sentry_gun_weapon:get_virtual_ammo_ratio()
+	local ammo_ratio = self._sentry_gun_weapon and self._sentry_gun_weapon:ammo_ratio() or 1
 	sentry_gun_interaction_add_string_macros(macros, ammo_ratio)
 end
 function SentryGunFireModeInteractionExt:_on_weapon_fire_event()
@@ -994,8 +1001,9 @@ function BodyBagsBagInteractionExt:interact(player)
 end
 DoctorBagBaseInteractionExt = DoctorBagBaseInteractionExt or class(UseInteractionExt)
 function DoctorBagBaseInteractionExt:_interact_blocked(player)
+	local full_health = player:character_damage():full_health()
 	local is_berserker = player:character_damage():is_berserker()
-	return is_berserker, false, is_berserker and "hint_health_berserking" or false
+	return full_health and is_berserker, false, is_berserker and "hint_health_berserking" or false
 end
 function DoctorBagBaseInteractionExt:interact(player)
 	DoctorBagBaseInteractionExt.super.super.interact(self, player)
@@ -1488,7 +1496,7 @@ function CarryInteractionExt:can_select(player)
 end
 function CarryInteractionExt:interact(player)
 	CarryInteractionExt.super.super.interact(self, player)
-	local peer_id = managers.network:session():local_peer():id()
+	local peer_id = managers.network:session():local_peer()
 	if self._has_modified_timer then
 		managers.achievment:award("murphys_laws")
 		if self._unit:carry_data():latest_peer_id() == peer_id then
@@ -1724,7 +1732,7 @@ function MissionDoorDeviceInteractionExt:server_place_mission_door_device(player
 		end
 		local upgrades = Drill.get_upgrades(self._unit, user_unit)
 		self._unit:base():set_skill_upgrades(upgrades)
-		network_session:send_to_peers_synched("sync_drill_upgrades", self._unit, upgrades.auto_repair_level_1, upgrades.auto_repair_level_2, upgrades.speed_upgrade_level, upgrades.silent_drill, upgrades.reduced_alert)
+		network_session:send_to_peers_synched("sync_drill_upgrades", self._unit, upgrades.auto_repair_level, upgrades.speed_upgrade_level, upgrades.silent_drill, upgrades.reduced_alert)
 	end
 	if self._unit:damage() then
 		self._unit:damage():run_sequence_simple("interact", {unit = player})
@@ -1777,10 +1785,10 @@ function SpecialEquipmentInteractionExt:_interact_blocked(player)
 	return not can_pickup, false, has_max_quantity and "max_special_equipment" or nil
 end
 function SpecialEquipmentInteractionExt:interact(player)
-	if not alive(self._unit) then
-		return
-	end
 	SpecialEquipmentInteractionExt.super.super.interact(self, player)
+	managers.player:add_special({
+		name = self._special_equipment
+	})
 	if self._remove_on_interact then
 		self:remove_interact()
 		self:set_active(false)
@@ -1789,7 +1797,6 @@ function SpecialEquipmentInteractionExt:interact(player)
 		managers.network:session():send_to_host("sync_interacted", self._unit, -2, self.tweak_data, 1)
 	else
 		self:sync_interacted(nil, player)
-		self:apply_item_pickup()
 	end
 	return true
 end
@@ -1804,14 +1811,6 @@ function SpecialEquipmentInteractionExt:sync_interacted(peer, player, status, sk
 	if self._remove_on_interact then
 		self._unit:set_slot(0)
 	end
-end
-function SpecialEquipmentInteractionExt:apply_item_pickup()
-	managers.player:add_special({
-		name = self._special_equipment
-	})
-end
-function SpecialEquipmentInteractionExt:can_remove_item()
-	return self._remove_on_interact
 end
 AccessCameraInteractionExt = AccessCameraInteractionExt or class(UseInteractionExt)
 function AccessCameraInteractionExt:_interact_blocked(player)

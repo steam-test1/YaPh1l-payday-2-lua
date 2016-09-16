@@ -1045,6 +1045,22 @@ function LevelsTweakData:init()
 	self.dinner.cube = "cube_apply_heist_bank"
 	self.dinner.max_bags = 20
 	self.dinner.ai_group_type = america
+	self.dream = {}
+	self.dream.name_id = "heist_dream_hl"
+	self.dream.briefing_id = "heist_dinner_briefing"
+	self.dream.briefing_dialog = "Play_pln_dn1_brf_01"
+	self.dream.world_name = "narratives/competitive/dream"
+	self.dream.intro_event = "Play_pln_dn1_intro_01"
+	self.dream.outro_event = {
+		"Play_pln_dn1_31"
+	}
+	self.dream.music = "heist"
+	self.dream.package = {
+		"packages/narr_dinner"
+	}
+	self.dream.cube = "cube_apply_heist_bank"
+	self.dream.max_bags = 20
+	self.dream.ai_group_type = america
 	self.pbr = {}
 	self.pbr.name_id = "heist_pbr_hl"
 	self.pbr.briefing_id = "heist_pbr_briefing"
@@ -1301,6 +1317,20 @@ function LevelsTweakData:init()
 		throwable = "none",
 		melee = "none"
 	}
+	self.lucid = {}
+	self.lucid.name_id = "heist_lucid_hl"
+	self.lucid.briefing_id = "heist_hox_2_briefing"
+	self.lucid.briefing_dialog = "Play_rb5_hb2_brf_01"
+	self.lucid.world_name = "narratives/competitive/lucid"
+	self.lucid.intro_event = "Play_rb5_hb2_intro_01"
+	self.lucid.outro_event = {
+		"Play_rb5_hb2_end_01"
+	}
+	self.lucid.music = "heist"
+	self.lucid.package = "packages/narr_hox_2"
+	self.lucid.cube = "cube_apply_heist_bank"
+	self.lucid.block_AIs = {old_hoxton = true}
+	self.lucid.ai_group_type = america
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -1370,6 +1400,7 @@ function LevelsTweakData:init()
 		"cane",
 		"red2",
 		"dinner",
+		"dream",
 		"pbr",
 		"pbr2",
 		"peta",
@@ -1384,7 +1415,8 @@ function LevelsTweakData:init()
 		"short2_stage1",
 		"short2_stage2b",
 		"born",
-		"chew"
+		"chew",
+		"lucid"
 	}
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		table.insert(self._level_index, "roberts")

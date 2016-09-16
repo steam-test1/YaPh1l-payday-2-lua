@@ -836,7 +836,7 @@ function NetworkPeer:on_lost()
 	self._msg_queue = nil
 end
 function NetworkPeer:_ping_timedout()
-	managers.network:session():on_peer_kicked(self, self._id, 1)
+	managers.network:session():on_peer_lost(self, self._id)
 end
 function NetworkPeer:set_ip(my_ip)
 	self._ip = my_ip

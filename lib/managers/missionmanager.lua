@@ -98,10 +98,6 @@ require("lib/managers/mission/ElementVariableSet")
 require("lib/managers/mission/ElementVariableGet")
 require("lib/managers/mission/ElementTeamAICommands")
 require("lib/managers/mission/ElementEnableSoundEnvironment")
-require("lib/managers/mission/ElementCheckDLC")
-require("lib/managers/mission/ElementUnitDamage")
-require("lib/managers/mission/ElementStopwatch")
-require("lib/managers/mission/ElementPlayerCharacter")
 require("lib/managers/mission/ElementPlayerSpawner")
 require("lib/managers/mission/ElementAreaTrigger")
 require("lib/managers/mission/ElementSpawnEnemyDummy")
@@ -196,9 +192,7 @@ function MissionManager:get_saved_job_value(key)
 	return Global.mission_manager.saved_job_values[key]
 end
 function MissionManager:on_reset_profile()
-	for key, value in pairs(Global.mission_manager.saved_job_values) do
-		Global.mission_manager.saved_job_values[key] = nil
-	end
+	Global.mission_manager.saved_job_values.playedSafeHouseBefore = nil
 end
 function MissionManager:set_job_value(key, value)
 	Global.mission_manager.stage_job_values[key] = value

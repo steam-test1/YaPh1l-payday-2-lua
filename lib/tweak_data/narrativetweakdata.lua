@@ -1,5 +1,5 @@
 NarrativeTweakData = NarrativeTweakData or class()
-function NarrativeTweakData:init(tweak_data)
+function NarrativeTweakData:init()
 	self.STARS = {}
 	self.STARS[1] = {
 		jcs = {
@@ -2411,6 +2411,70 @@ function NarrativeTweakData:init(tweak_data)
 		70000,
 		140000
 	}
+	self.jobs.lucid = {}
+	self.jobs.lucid.name_id = "heist_lucid"
+	self.jobs.lucid.briefing_id = "heist_hox_crimenet"
+	self.jobs.lucid.contact = "the_dentist"
+	self.jobs.lucid.region = "street"
+	self.jobs.lucid.competitive = true
+	self.jobs.lucid.jc = 60
+	self.jobs.lucid.chain = {
+		{
+			level_id = "lucid",
+			type_id = "heist_type_assault",
+			type = "d"
+		}
+	}
+	self.jobs.lucid.briefing_event = "dentist_hb1_cbf_01"
+	self.jobs.lucid.debrief_event = nil
+	self.jobs.lucid.crimenet_callouts = {
+		"dentist_hb1_cnc_01"
+	}
+	self.jobs.lucid.crimenet_videos = {
+		"cn_hox1",
+		"cn_hox2",
+		"cn_hox3",
+		"cn_hox4",
+		"cn_big1",
+		"cn_big2",
+		"cn_big3"
+	}
+	self.jobs.lucid.payout = {
+		250000,
+		500000,
+		1250000,
+		2500000,
+		3200000
+	}
+	self.jobs.lucid.experience_mul = {
+		2.14,
+		2.14,
+		2.14,
+		2.14,
+		2.14
+	}
+	self.jobs.lucid.contract_cost = {
+		62000,
+		124000,
+		310000,
+		620000,
+		800000
+	}
+	self.jobs.lucid.contract_visuals = {}
+	self.jobs.lucid.contract_visuals.min_mission_xp = {
+		48800,
+		48800,
+		48800,
+		48800,
+		48800
+	}
+	self.jobs.lucid.contract_visuals.max_mission_xp = {
+		53400,
+		53400,
+		53400,
+		53400,
+		53400
+	}
 	self.jobs.hox = {}
 	self.jobs.hox.name_id = "heist_hox"
 	self.jobs.hox.briefing_id = "heist_hox_crimenet"
@@ -3356,6 +3420,45 @@ function NarrativeTweakData:init(tweak_data)
 		40000,
 		40000
 	}
+	self.jobs.dream = {}
+	self.jobs.dream.name_id = "heist_dream"
+	self.jobs.dream.briefing_id = "heist_dinner_crimenet"
+	self.jobs.dream.package = "packages/narr_dinner"
+	self.jobs.dream.contact = "classic"
+	self.jobs.dream.region = "street"
+	self.jobs.dream.jc = 30
+	self.jobs.dream.competitive = true
+	self.jobs.dream.chain = {
+		{
+			level_id = "dream",
+			type_id = "heist_type_assault",
+			type = "d"
+		}
+	}
+	self.jobs.dream.briefing_event = "pln_dn1_cbf_01"
+	self.jobs.dream.debrief_event = "pln_dn1_31"
+	self.jobs.dream.crimenet_callouts = {
+		"pln_dn1_cnc_01"
+	}
+	self.jobs.dream.crimenet_videos = {
+		"cn_branchbank1",
+		"cn_branchbank2",
+		"cn_branchbank3"
+	}
+	self.jobs.dream.payout = {
+		120000,
+		240000,
+		600000,
+		1100000,
+		1500000
+	}
+	self.jobs.dream.contract_cost = {
+		80000,
+		150000,
+		400000,
+		850000,
+		1000000
+	}
 	self.jobs.pbr = {}
 	self.jobs.pbr.name_id = "heist_pbr"
 	self.jobs.pbr.briefing_id = "heist_pbr_crimenet"
@@ -4119,6 +4222,7 @@ function NarrativeTweakData:init(tweak_data)
 		"jolly",
 		"red2",
 		"dinner",
+		"dream",
 		"nail",
 		"cane",
 		"pbr",
@@ -4130,18 +4234,14 @@ function NarrativeTweakData:init(tweak_data)
 		"mad",
 		"dark",
 		"born",
-		"born_pro"
+		"born_pro",
+		"lucid"
 	}
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		table.insert(self._jobs_index, "roberts")
 	end
+	self._jobs_index = {"dream", "lucid"}
 	self:set_job_wrappers()
-	local free_dlcs = tweak_data:free_dlc_list()
-	for _, data in pairs(self.jobs) do
-		if free_dlcs[data.dlc] then
-			data.dlc = nil
-		end
-	end
 end
 function NarrativeTweakData:set_job_wrappers()
 	for _, job_id in ipairs(self._jobs_index) do

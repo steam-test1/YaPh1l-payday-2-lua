@@ -164,16 +164,13 @@ function MenuManager:show_searching_match_dialog(params)
 	dialog_data.indicator = true
 	managers.system_menu:show(dialog_data)
 end
-function MenuManager:show_fetching_status_dialog(params)
+function MenuManager:show_fetching_status_dialog()
 	local dialog_data = {}
 	dialog_data.title = managers.localization:text("dialog_fetching_status_title")
 	dialog_data.text = managers.localization:text("dialog_wait")
 	dialog_data.id = "fetching_status"
+	dialog_data.no_buttons = true
 	dialog_data.indicator = true
-	local cancel_button = {}
-	cancel_button.text = managers.localization:text("dialog_cancel")
-	cancel_button.callback_func = params.cancel_func
-	dialog_data.button_list = {cancel_button}
 	managers.system_menu:show(dialog_data)
 end
 function MenuManager:show_no_connection_to_game_servers_dialog()
@@ -220,18 +217,6 @@ function MenuManager:show_peer_kicked_dialog(params)
 	local dialog_data = {}
 	dialog_data.title = managers.localization:text(title)
 	dialog_data.text = managers.localization:text(Global.on_remove_peer_message or "dialog_mp_kicked_out_message")
-	local ok_button = {}
-	ok_button.text = managers.localization:text("dialog_ok")
-	ok_button.callback_func = params and params.ok_func
-	dialog_data.button_list = {ok_button}
-	managers.system_menu:show(dialog_data)
-	Global.on_remove_peer_message = nil
-end
-function MenuManager:show_peer_banned_dialog(params)
-	local title = "dialog_mp_banned_title"
-	local dialog_data = {}
-	dialog_data.title = managers.localization:text(title)
-	dialog_data.text = managers.localization:text("dialog_mp_banned_body")
 	local ok_button = {}
 	ok_button.text = managers.localization:text("dialog_ok")
 	ok_button.callback_func = params and params.ok_func

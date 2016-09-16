@@ -1,5 +1,5 @@
 HostStateInLobby = HostStateInLobby or class(HostStateBase)
-function HostStateInLobby:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, peer_rank, gameversion, join_attempt_identifier, auth_ticket, sender)
+function HostStateInLobby:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, auth_ticket, sender)
 	print("HostStateInLobby:on_join_request_received peer_level", peer_level, join_attempt_identifier, gameversion)
 	if SystemInfo:platform() == Idstring("WIN32") then
 		peer_name = managers.network.account:username_by_id(sender:ip_at_index(0))
@@ -12,10 +12,6 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 	if self:_is_kicked(data, peer_name, sender) then
 		print("YOU ARE IN MY KICKED LIST", peer_name)
 		self:_send_request_denied(sender, 2, my_user_id)
-		return
-	end
-	if self:_is_banned(peer_name, sender) then
-		self:_send_request_denied(sender, 9, my_user_id)
 		return
 	end
 	if peer_level < Global.game_settings.reputation_permission then
@@ -103,12 +99,6 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 	self:_introduce_old_peers_to_new_peer(data, new_peer)
 	self:on_handshake_confirmation(data, new_peer, 1)
 	managers.network:session():local_peer():sync_lobby_data(new_peer)
-	if peer_rank > 0 then
-		managers.menu:post_event("infamous_player_join_stinger")
-	else
-		managers.menu:post_event("player_join")
-	end
-	managers.network:session():send_to_peers_except(new_peer_id, "peer_joined_sound", peer_rank > 0)
 end
 function HostStateInLobby:is_joinable(data)
 	return not data.wants_to_load_level

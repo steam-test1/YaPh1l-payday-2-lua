@@ -27,7 +27,6 @@ function DigitalGui:init(unit)
 	self.HEIGHT = self.HEIGHT or 360
 	self.TYPE = self.TYPE or "timer"
 	self.NUMBER_DIGITS = self.NUMBER_DIGITS or 3
-	self.TIMER_PRECISION = self.TIMER_PRECISION or 0
 	self.FONT = self.FONT or "fonts/font_digital"
 	self.FONT_SIZE = self.FONT_SIZE or 180
 	self.COLOR_TYPE = self.COLOR_TYPE or "light_yellow"
@@ -36,7 +35,6 @@ function DigitalGui:init(unit)
 	if self.BG_COLOR_TYPE then
 		self.BG_COLOR = DigitalGui.COLORS[self.BG_COLOR_TYPE]
 	end
-	self.display_format = self.display_format or "{minutes}:{seconds}"
 	self._number = self._number or 0
 	self._timer = self._timer or 0
 	self._floored_last_timer = self._timer + 1
@@ -88,12 +86,6 @@ function DigitalGui:is_timer()
 end
 function DigitalGui:is_number()
 	return self.TYPE == "number"
-end
-function DigitalGui:is_precision_timer()
-	return self:is_timer() and self:timer_precision() > 0
-end
-function DigitalGui:timer_precision()
-	return self.TIMER_PRECISION
 end
 function DigitalGui:update(unit, t, dt)
 	if self.TYPE == "timer" and not self._timer_paused then
@@ -211,44 +203,22 @@ function DigitalGui:_sequence_trigger(sequence_name)
 		self._unit:damage():run_sequence_simple(sequence_name)
 	end
 end
-function DigitalGui:_round(num, idp)
-	local mult = 10 ^ (idp or 0)
-	return math.floor(num * mult + 0.5) / mult
-end
 function DigitalGui:_update_timer_text()
-	if self:timer_precision() <= 0 and math.floor(self._timer) == self._floored_last_timer then
+	if math.floor(self._timer) == self._floored_last_timer then
 		return
 	end
-	if self._timer_count_down and 0 >= self._timer then
+	if self._timer_count_down and self._timer <= 0 then
 		self:_sequence_trigger("timer_reach_zero")
 		self:_timer_stop()
 	end
 	self._floored_last_timer = math.floor(self._timer)
-	self._timer = 0 > self._timer and 0 or self._timer
-	local precision = self:timer_precision()
-	local is_precision = precision > 0
+	self._timer = self._timer < 0 and 0 or self._timer
 	local time = math.floor(self._timer)
 	local minutes = math.floor(time / 60)
 	time = time - minutes * 60
 	local seconds = math.round(time)
-	local milliseconds = 0
-	if is_precision then
-		seconds = math.floor(time)
-		local ms_time = self._timer - math.floor(self._timer)
-		local idp = 10 ^ precision
-		milliseconds = math.floor(self:_round(ms_time, (precision or 1) + 1) * idp)
-		milliseconds = milliseconds % idp
-	end
-	local minutes_str = minutes < 10 and string.format("0%i", minutes) or tostring(minutes)
-	local seconds_str = seconds < 10 and string.format("0%i", seconds) or tostring(seconds)
-	local text = self.display_format
-	text = string.gsub(text, "{minutes}", minutes_str)
-	text = string.gsub(text, "{seconds}", seconds_str)
-	if is_precision then
-		local format_str = "%0" .. precision .. "i"
-		local ms_str = string.format(format_str, milliseconds)
-		text = string.gsub(text, "{milliseconds}", ms_str)
-	end
+	local text = ""
+	local text = text .. (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
 	self._title_text:set_text(text)
 end
 function DigitalGui:set_visible(visible)

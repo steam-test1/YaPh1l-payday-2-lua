@@ -361,7 +361,7 @@ end
 function PlayerInventory:hide_equipped_unit()
 	local unit = self._equipped_selection and self._available_selections[self._equipped_selection].unit
 	if unit then
-		self._was_gadget_on = unit:base().is_gadget_on and unit:base()._gadget_on or false
+		self._was_gadget_on = unit:base().is_gadget_on and unit:base():is_gadget_on() or false
 		unit:set_visible(false)
 		unit:base():on_disabled()
 	end

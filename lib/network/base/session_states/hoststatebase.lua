@@ -3,7 +3,7 @@ function HostStateBase:enter(data, enter_params)
 end
 function HostStateBase:exit(data, name, enter_params)
 end
-function HostStateBase:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, peer_rank, gameversion, join_attempt_identifier, auth_ticket, sender)
+function HostStateBase:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, auth_ticket, sender)
 	print("[HostStateBase:on_join_request_received]", data, peer_name, client_preferred_character, dlcs, xuid, peer_level, gameversion, join_attempt_identifier, sender:ip_at_index(0))
 	local my_user_id = data.local_peer:user_id() or ""
 	if not managers.network.matchmake:is_server_joinable() then
@@ -84,13 +84,6 @@ end
 function HostStateBase:_is_kicked(data, peer_name, peer_rpc)
 	local ident = SystemInfo:platform() == Idstring("WIN32") and peer_rpc:ip_at_index(0) or peer_name
 	if data.kicked_list[ident] then
-		return true
-	end
-end
-function HostStateBase:_is_banned(peer_name, peer_rpc)
-	local ident = SystemInfo:platform() == Idstring("WIN32") and peer_rpc:ip_at_index(0) or peer_name
-	Application:error("CHECKING USER:", ident)
-	if managers.ban_list and managers.ban_list:banned(ident) then
 		return true
 	end
 end

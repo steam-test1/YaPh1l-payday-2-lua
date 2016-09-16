@@ -120,18 +120,9 @@ function CopDamage:init(unit)
 		self._has_been_staggered = false
 	end
 	managers.player:register_message(Message.ResetStagger, self, clbk)
-	self._accuracy_multiplier = 1
 end
 function CopDamage:is_immune_to_shield_knockback()
 	return self._immune_to_knockback
-end
-function CopDamage:accuracy_multiplier()
-	return self._accuracy_multiplier or 1
-end
-function CopDamage:set_accuracy_multiplier(mul)
-	if mul then
-		self._accuracy_multiplier = mul
-	end
 end
 function CopDamage:get_last_time_unit_got_fire_damage()
 	return self._last_time_unit_got_fire_damage
@@ -346,15 +337,12 @@ function CopDamage:damage_bullet(attack_data)
 	damage = damage_percent * self._HEALTH_INIT_PRECENT
 	damage, damage_percent = self:_apply_min_health_limit(damage, damage_percent)
 	if damage >= self._health then
-		if head then
-			managers.player:on_lethal_headshot_dealt()
-			if damage > math.random(10) then
-				self:_spawn_head_gadget({
-					position = attack_data.col_ray.body:position(),
-					rotation = attack_data.col_ray.body:rotation(),
-					dir = attack_data.col_ray.ray
-				})
-			end
+		if head and damage > math.random(10) then
+			self:_spawn_head_gadget({
+				position = attack_data.col_ray.body:position(),
+				rotation = attack_data.col_ray.body:rotation(),
+				dir = attack_data.col_ray.ray
+			})
 		end
 		attack_data.damage = self._health
 		result = {
@@ -483,16 +471,6 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 			count_no_reload_pass = not achievement_data.count_no_reload or kill_count_no_reload >= achievement_data.count_no_reload
 			count_pass = not achievement_data.kill_count or achievement_data.weapon and managers.statistics:session_killed_by_weapon(achievement_data.weapon) == achievement_data.kill_count
 			cop_pass = not achievement_data.is_cop or is_cop
-			local enemy_type = self._unit:base()._tweak_table
-			if achievement_data.enemies then
-				enemy_pass = false
-				for _, enemy in pairs(achievement_data.enemies) do
-					if enemy == enemy_type then
-						enemy_pass = true
-					else
-					end
-				end
-			end
 			part_pass = not achievement_data.part_id or attack_weapon:base():has_part(achievement_data.part_id)
 			parts_pass = not achievement_data.parts
 			if achievement_data.parts then
@@ -563,7 +541,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	end
 end
 function CopDamage.is_civilian(type)
-	return type == "civilian" or type == "civilian_female" or type == "bank_manager" or type == "robbers_safehouse"
+	return type == "civilian" or type == "civilian_female" or type == "bank_manager"
 end
 function CopDamage.is_gangster(type)
 	return type == "gangster" or type == "biker_escape" or type == "mobster" or type == "mobster_boss" or type == "biker" or type == "biker_boss"
@@ -743,7 +721,7 @@ function CopDamage:damage_fire(attack_data)
 		local start_dot_damage_roll = math.random(1, 100)
 		local start_dot_dance_antimation = false
 		if flammable and not attack_data.is_fire_dot_damage and distance < fire_dot_max_distance and fire_dot_trigger_chance >= start_dot_damage_roll then
-			managers.fire:add_doted_enemy(self._unit, TimerManager:game():time(), attack_data.weapon_unit, fire_dot_data.dot_length, fire_dot_data.dot_damage, attack_data.attacker_unit)
+			managers.fire:add_doted_enemy(self._unit, TimerManager:game():time(), attack_data.weapon_unit, fire_dot_data.dot_length, fire_dot_data.dot_damage)
 			start_dot_dance_antimation = true
 		end
 		if fire_dot_data then
@@ -857,7 +835,6 @@ function CopDamage:damage_explosion(attack_data)
 	else
 		attack_data.damage = damage
 		local result_type = attack_data.variant == "stun" and "hurt_sick" or self:get_damage_type(damage_percent, "explosion")
-		print("result_type ", result_type)
 		result = {
 			type = result_type,
 			variant = attack_data.variant
@@ -921,7 +898,6 @@ function CopDamage:damage_explosion(attack_data)
 	if not self._no_blood then
 		managers.game_play_central:sync_play_impact_flesh(attack_data.pos, attack_data.col_ray.ray)
 	end
-	print("attack_data ", inspect(attack_data))
 	self:_send_explosion_attack_result(attack_data, attacker, damage_percent, self:_get_attack_variant_index(attack_data.result.variant), attack_data.col_ray.ray)
 	self:_on_damage_received(attack_data)
 	return result
@@ -1863,7 +1839,6 @@ function CopDamage:_send_fire_attack_result(attack_data, attacker, damage_percen
 		end
 	end
 	local start_dot_dance_antimation = attack_data.fire_dot_data and attack_data.fire_dot_data.start_dot_dance_antimation
-	damage_percent = math.clamp(damage_percent, 0, 512)
 	self._unit:network():send("damage_fire", attacker, damage_percent, start_dot_dance_antimation, self._dead and true or false, direction, weapon_type, weapon_unit)
 end
 function CopDamage:_send_dot_attack_result(attack_data, attacker, damage_percent, variant, direction)
@@ -1929,9 +1904,6 @@ end
 function CopDamage:add_listener(key, events, clbk)
 	events = events or self._all_event_types
 	self._listener_holder:add(key, events, clbk)
-end
-function CopDamage:call_listener(key, ...)
-	self._listener_holder:call(key, ...)
 end
 function CopDamage:remove_listener(key)
 	self._listener_holder:remove(key)
@@ -2067,13 +2039,12 @@ function CopDamage:on_marked_state(state)
 	end
 end
 function CopDamage:_get_attack_variant_index(variant)
-	local attack_variants = CopDamage._ATTACK_VARIANTS
-	for i, test_variant in ipairs(attack_variants) do
+	for i, test_variant in ipairs(self._ATTACK_VARIANTS) do
 		if variant == test_variant then
 			return i
 		end
 	end
-	debug_pause("variant not found!", variant, inspect(attack_variants))
+	debug_pause("variant not found!", variant, inspect(self._ATTACK_VARIANTS))
 	return 1
 end
 function CopDamage:_create_debug_ws()
@@ -2248,9 +2219,6 @@ function CopDamage:_apply_min_health_limit(damage, damage_percent)
 		end
 	end
 	return damage, damage_percent
-end
-function CopDamage:melee_hit_sfx()
-	return "hit_body"
 end
 function CopDamage:_apply_damage_reduction(damage)
 	local damage_reduction = self._unit:movement():team().damage_reduction or 0

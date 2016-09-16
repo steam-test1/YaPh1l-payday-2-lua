@@ -19,7 +19,6 @@ function save_data_table(unit)
 	t.material_variation = ud.material
 	t.cutscene_actor = ud.cutscene_actor
 	t.disable_shadows = ud.disable_shadows
-	t.disable_collision = ud.disable_collision
 	t.hide_on_projection_light = ud.hide_on_projection_light
 	t.disable_on_ai_graph = ud.disable_on_ai_graph
 	t.lights = _light_data_table(unit)
@@ -68,15 +67,13 @@ function _triggers_data_table(unit)
 				local trigger_data = unit:damage():get_trigger_data_list(trigger_name)
 				if trigger_data and #trigger_data > 0 then
 					for _, data in ipairs(trigger_data) do
-						if alive(data.notify_unit) then
-							table.insert(t, {
-								name = data.trigger_name,
-								id = data.id,
-								notify_unit_id = data.notify_unit:unit_data().unit_id,
-								time = data.time,
-								notify_unit_sequence = data.notify_unit_sequence
-							})
-						end
+						table.insert(t, {
+							name = data.trigger_name,
+							id = data.id,
+							notify_unit_id = data.notify_unit:unit_data().unit_id,
+							time = data.time,
+							notify_unit_sequence = data.notify_unit_sequence
+						})
 					end
 				end
 			end

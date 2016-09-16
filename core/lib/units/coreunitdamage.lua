@@ -802,11 +802,10 @@ function CoreUnitDamage:get_trigger_data_list(trigger_name)
 		if trigger_data_list then
 			for index = #trigger_data_list, 1, -1 do
 				local trigger_data = trigger_data_list[index]
-				if trigger_data.is_corrupt or not alive(trigger_data.notify_unit) and not trigger_data.notify_unit_restore_id then
+				if trigger_data.is_corrupt or not alive(trigger_data.notify_unit) then
 					if trigger_data.is_corrupt then
 						Application:stack_dump_error("Failed to load a timed trigger callback. Id: " .. tostring(trigger_data.id) .. ", Unit: " .. tostring(self._unit))
 					end
-					print("removing dead unit!", index)
 					table.remove(trigger_data_list, index)
 				end
 			end

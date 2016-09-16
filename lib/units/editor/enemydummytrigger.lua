@@ -1,5 +1,4 @@
 EnemyDummyTriggerUnitElement = EnemyDummyTriggerUnitElement or class(MissionElement)
-EnemyDummyTriggerUnitElement.LINK_ELEMENTS = {"elements"}
 function EnemyDummyTriggerUnitElement:init(unit)
 	MissionElement.init(self, unit)
 	self._hed.event = "death"
@@ -53,6 +52,13 @@ function EnemyDummyTriggerUnitElement:_correct_unit(u_name)
 		end
 	end
 	return false
+end
+function EnemyDummyTriggerUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
+		end
+	end
 end
 function EnemyDummyTriggerUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "add_element"))

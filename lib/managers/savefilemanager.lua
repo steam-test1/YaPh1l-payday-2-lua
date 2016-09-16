@@ -10,6 +10,10 @@ SavefileManager.MAX_PROFILE_SAVE_INTERVAL = 300
 if SystemInfo:platform() == Idstring("X360") then
 	SavefileManager.TASK_MIN_DURATION = 3
 end
+SavefileManager.SETTING_SLOT = 10
+SavefileManager.AUTO_SAVE_SLOT = 11
+SavefileManager.PROGRESS_SLOT = 95
+SavefileManager.BACKUP_SLOT = 95
 SavefileManager.IDLE_TASK_TYPE = 1
 SavefileManager.LOAD_TASK_TYPE = 2
 SavefileManager.SAVE_TASK_TYPE = 3
@@ -382,9 +386,6 @@ function SavefileManager:_save_cache(slot)
 		managers.gage_assignment:save(cache)
 		managers.music:save_profile(cache)
 		managers.challenge:save(cache)
-		managers.multi_profile:save(cache)
-		managers.ban_list:save(cache)
-		managers.crimenet:save(cache)
 	end
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		cache.user_id = self._USER_ID_OVERRRIDE or Steam:userid()
@@ -653,9 +654,6 @@ function SavefileManager:_load_cache(slot)
 			managers.gage_assignment:load(cache, version)
 			managers.music:load_profile(cache, version)
 			managers.challenge:load(cache, version)
-			managers.multi_profile:load(cache, version)
-			managers.ban_list:load(cache, version)
-			managers.crimenet:load(cache, version)
 		end
 	else
 		Application:error("[SavefileManager] Unable to load savefile from slot \"" .. tostring(slot) .. "\".")

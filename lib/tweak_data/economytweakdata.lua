@@ -445,61 +445,6 @@ function EconomyTweakData:init()
 		weapon_skins = {"boot_buck"}
 	}
 	self.contents.buck_01_legendary.rarity = "legendary"
-	self.contents.same_01 = {}
-	self.contents.same_01.def_id = 10024
-	self.contents.same_01.contains = {
-		weapon_skins = {
-			"amcar_same",
-			"usp_same",
-			"gre_m79_same",
-			"deagle_same",
-			"colt_1911_same",
-			"b92fs_same",
-			"judge_same",
-			"p90_same",
-			"akm_same",
-			"ak5_same",
-			"baka_same",
-			"model70_same",
-			"new_raging_bull_same",
-			"new_m14_same",
-			"par_same"
-		},
-		contents = {
-			"same_01_legendary"
-		}
-	}
-	self.contents.same_01_legendary = {}
-	self.contents.same_01_legendary.def_id = 10025
-	self.contents.same_01_legendary.contains = {
-		weapon_skins = {"ksg_same"}
-	}
-	self.contents.same_01_legendary.rarity = "legendary"
-	self.bundles.same_01 = {}
-	self.bundles.same_01.def_id = 30000
-	self.bundles.same_01.dlc_id = "518760"
-	self.bundles.same_01.quality = "mint"
-	self.bundles.same_01.bonus = false
-	self.bundles.same_01.contains = {
-		weapon_skins = {
-			"amcar_same",
-			"usp_same",
-			"gre_m79_same",
-			"deagle_same",
-			"colt_1911_same",
-			"b92fs_same",
-			"judge_same",
-			"p90_same",
-			"akm_same",
-			"ak5_same",
-			"baka_same",
-			"model70_same",
-			"new_raging_bull_same",
-			"new_m14_same",
-			"par_same",
-			"ksg_same"
-		}
-	}
 	self.safes.overkill_01 = {}
 	self.safes.overkill_01.def_id = 50000
 	self.safes.overkill_01.promo = true
@@ -525,7 +470,7 @@ function EconomyTweakData:init()
 	self.safes.weapon_01.market_link = "https://steamcommunity.com/market/listings/218620/Sputnik%20Safe"
 	self.safes.event_red = {}
 	self.safes.event_red.def_id = 50003
-	self.safes.event_red.free = true
+	self.safes.event_red.promo = true
 	self.safes.event_red.drill = "event_red"
 	self.safes.event_red.content = "event_red"
 	self.safes.event_red.unit_name = "units/payday2_cash/safes/red/safe/eco_safe_event_red"
@@ -534,7 +479,7 @@ function EconomyTweakData:init()
 	self.safes.event_red.achievement = "green_7"
 	self.safes.event_dinner = {}
 	self.safes.event_dinner.def_id = 50004
-	self.safes.event_dinner.free = true
+	self.safes.event_dinner.promo = true
 	self.safes.event_dinner.drill = "event_dinner"
 	self.safes.event_dinner.content = "event_dinner"
 	self.safes.event_dinner.unit_name = "units/payday2_cash/safes/dinner/safe/eco_safe_event_dinner"
@@ -557,7 +502,7 @@ function EconomyTweakData:init()
 	self.safes.surf_01.market_link = "https://steamcommunity.com/market/listings/218620/Bodhi%20Safe"
 	self.safes.event_flake = {}
 	self.safes.event_flake.def_id = 50007
-	self.safes.event_flake.free = true
+	self.safes.event_flake.promo = true
 	self.safes.event_flake.drill = "event_flake"
 	self.safes.event_flake.content = "event_flake"
 	self.safes.event_flake.name_id = "bm_menu_safe_event_flake"
@@ -566,7 +511,7 @@ function EconomyTweakData:init()
 	self.safes.event_flake.achievement = "flake_1"
 	self.safes.event_bah = {}
 	self.safes.event_bah.def_id = 50008
-	self.safes.event_bah.free = true
+	self.safes.event_bah.promo = true
 	self.safes.event_bah.drill = "event_bah"
 	self.safes.event_bah.content = "event_bah"
 	self.safes.event_bah.unit_name = "units/payday2_cash/safes/bah/safe/eco_safe_bah"
@@ -602,15 +547,6 @@ function EconomyTweakData:init()
 	self.safes.buck_01.unit_name = "units/payday2_cash/safes/buck/safe/eco_safe_buck"
 	self.safes.buck_01.texture_bundle_folder = "cash/safes/buck"
 	self.safes.buck_01.market_link = "https://steamcommunity.com/market/listings/218620/Biker%20Safe"
-	self.safes.same_01 = {}
-	self.safes.same_01.free = true
-	self.safes.same_01.drill = "same_01"
-	self.safes.same_01.content = "same_01"
-	self.safes.same_01.bundle = "same_01"
-	self.safes.same_01.name_id = "bm_menu_safe_same_01"
-	self.safes.same_01.unit_name = "units/payday2_cash/safes/same/safe/eco_safe_same"
-	self.safes.same_01.texture_bundle_folder = "cash/safes/same"
-	self.safes.same_01.market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe"
 	self.drills.overkill_01 = {}
 	self.drills.overkill_01.safe = "overkill_01"
 	self.drills.overkill_01.def_id = 70000
@@ -639,7 +575,7 @@ function EconomyTweakData:init()
 	self.drills.event_red = {}
 	self.drills.event_red.safe = "event_red"
 	self.drills.event_red.def_id = 70003
-	self.drills.event_red.force_include = true
+	self.drills.event_red.promo = true
 	self.drills.event_red.unit_name = "units/payday2_cash/safes/red/drill/eco_drill_event_red"
 	self.drills.event_red.name_id = "bm_menu_drill_event_red"
 	self.drills.event_red.desc_id = "bm_menu_drill_event_red_desc"
@@ -648,7 +584,7 @@ function EconomyTweakData:init()
 	self.drills.event_dinner = {}
 	self.drills.event_dinner.def_id = 70004
 	self.drills.event_dinner.safe = "event_dinner"
-	self.drills.event_dinner.force_include = true
+	self.drills.event_dinner.promo = true
 	self.drills.event_dinner.unit_name = "units/payday2_cash/safes/dinner/drill/eco_drill_event_dinner"
 	self.drills.event_dinner.name_id = "bm_menu_drill_event_dinner"
 	self.drills.event_dinner.desc_id = "bm_menu_drill_event_dinner_desc"
@@ -673,7 +609,7 @@ function EconomyTweakData:init()
 	self.drills.event_flake = {}
 	self.drills.event_flake.def_id = 70007
 	self.drills.event_flake.safe = "event_flake"
-	self.drills.event_flake.force_include = true
+	self.drills.event_flake.promo = true
 	self.drills.event_flake.unit_name = "units/payday2_cash/safes/flake/drill/eco_drill_flake"
 	self.drills.event_flake.name_id = "bm_menu_drill_event_flake"
 	self.drills.event_flake.desc_id = "bm_menu_drill_event_flake_desc"
@@ -682,7 +618,7 @@ function EconomyTweakData:init()
 	self.drills.event_bah = {}
 	self.drills.event_bah.def_id = 70008
 	self.drills.event_bah.safe = "event_bah"
-	self.drills.event_bah.force_include = true
+	self.drills.event_bah.promo = true
 	self.drills.event_bah.unit_name = "units/payday2_cash/safes/bah/drill/eco_drill_bah"
 	self.drills.event_bah.name_id = "bm_menu_drill_event_bah"
 	self.drills.event_bah.desc_id = "bm_menu_drill_event_bah_desc"
@@ -714,10 +650,9 @@ function EconomyTweakData:init()
 	self.drills.burn_01.texture_bundle_folder = "cash/safes/burn"
 	self.drills.buck_01 = {}
 	self.drills.buck_01.safe = "buck_01"
+	self.drills.buck_01.name_id = "bm_menu_drill_buck_01"
+	self.drills.buck_01.desc_id = "bm_menu_drill_buck_01_desc"
 	self.drills.buck_01.unit_name = "units/payday2_cash/safes/buck/drill/eco_drill_buck"
-	self.drills.same_01 = {}
-	self.drills.same_01.safe = "same_01"
-	self.drills.same_01.unit_name = "units/payday2_cash/safes/same/drill/eco_drill_same"
 	self.bonuses = {}
 	self.bonuses.concealment_p1 = {}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"

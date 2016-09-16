@@ -45,19 +45,17 @@ PlayerStandard.IDS_BASE = Idstring("base")
 PlayerStandard.IDS_CASH_INSPECT = Idstring("cash_inspect")
 PlayerStandard.IDS_FALLING = Idstring("falling")
 PlayerStandard.debug_bipod = nil
+PlayerStandard.SENTRY_PICKUP_T = 0.5
 function PlayerStandard:init(unit)
 	PlayerMovementState.init(self, unit)
 	self._tweak_data = tweak_data.player.movement_state.standard
 	self._obj_com = self._unit:get_object(Idstring("rp_mover"))
-	do
-		local slot_manager = managers.slot
-		self._slotmask_gnd_ray = slot_manager:get_mask("player_ground_check")
-		self._slotmask_fwd_ray = slot_manager:get_mask("bullet_impact_targets")
-		self._slotmask_bullet_impact_targets = slot_manager:get_mask("bullet_impact_targets")
-		self._slotmask_pickups = slot_manager:get_mask("pickups")
-		self._slotmask_AI_visibility = slot_manager:get_mask("AI_visibility")
-		self._slotmask_long_distance_interaction = slot_manager:get_mask("long_distance_interaction")
-	end
+	self._slotmask_gnd_ray = managers.slot:get_mask("player_ground_check")
+	self._slotmask_fwd_ray = managers.slot:get_mask("bullet_impact_targets")
+	self._slotmask_bullet_impact_targets = managers.slot:get_mask("bullet_impact_targets")
+	self._slotmask_pickups = managers.slot:get_mask("pickups")
+	self._slotmask_AI_visibility = managers.slot:get_mask("AI_visibility")
+	self._slotmask_long_distance_interaction = managers.slot:get_mask("long_distance_interaction")
 	self._ext_camera = unit:camera()
 	self._ext_movement = unit:movement()
 	self._ext_damage = unit:character_damage()
@@ -77,16 +75,19 @@ function PlayerStandard:init(unit)
 	self._last_sent_pos = unit:position()
 	self._last_sent_pos_t = 0
 	self._state_data = unit:movement()._state_data
-	local pm = managers.player
-	self.RUN_AND_RELOAD = pm:has_category_upgrade("player", "run_and_reload")
-	self._pickup_area = 200 * pm:upgrade_value("player", "increased_pickup_area", 1)
+	self.RUN_AND_SHOOT = managers.player:has_category_upgrade("player", "run_and_shoot")
+	self.RUN_AND_RELOAD = managers.player:has_category_upgrade("player", "run_and_reload")
+	self._pickup_area = 200 * managers.player:upgrade_value("player", "increased_pickup_area", 1)
+	self._second_deployable = managers.player:has_category_upgrade("player", "second_deployable")
+	self._sentry_current_t = 0
+	self._sentry_btn_down = false
 	self._interaction = managers.interaction
-	self._on_melee_restart_drill = pm:has_category_upgrade("player", "drill_melee_hit_restart_chance")
+	self._on_melee_restart_drill = managers.player:has_category_upgrade("player", "drill_melee_hit_restart_chance")
+	self._input = {}
 	local controller = unit:base():controller()
 	if controller:get_type() ~= "pc" then
-		self._input = {}
 		table.insert(self._input, BipodDeployControllerInput:new())
-		if pm:has_category_upgrade("player", "second_deployable") then
+		if self._second_deployable then
 			table.insert(self._input, SecondDeployableControllerInput:new())
 		end
 	end
@@ -440,9 +441,25 @@ function PlayerStandard:_get_input(t, dt)
 		btn_weapon_firemode_press = pressed and self._controller:get_input_pressed("weapon_firemode"),
 		btn_cash_inspect_press = pressed and self._controller:get_input_pressed("cash_inspect"),
 		btn_deploy_bipod = pressed and self._controller:get_input_pressed("deploy_bipod"),
-		btn_change_equipment = pressed and self._controller:get_input_pressed("change_equipment"),
-		btn_interact_secondary_press = pressed and self._controller:get_input_pressed("interact_secondary")
+		btn_change_equipment = pressed and self._controller:get_input_pressed("change_equipment")
 	}
+	if input.btn_interact_press then
+		self._sentry_btn_down = true
+	elseif input.btn_interact_release and self._sentry_btn_down then
+		if self._sentry_current_t <= PlayerStandard.SENTRY_PICKUP_T then
+			input.data.switch_bullet_type = true
+		end
+		self._sentry_btn_down = false
+		self._sentry_current_t = 0
+	end
+	if self._sentry_btn_down and dt ~= nil then
+		self._sentry_current_t = self._sentry_current_t + dt
+		if self._sentry_current_t >= PlayerStandard.SENTRY_PICKUP_T then
+			self._sentry_btn_down = false
+			self._sentry_current_t = 0
+			input.data.pickup_sentry = true
+		end
+	end
 	if win32 then
 		local i = 1
 		while i < 3 do
@@ -452,10 +469,8 @@ function PlayerStandard:_get_input(t, dt)
 			end
 			i = i + 1
 		end
-		if self._input then
-			for i = 1, #self._input do
-				self._input[i]:update(t, dt, self._controller, input)
-			end
+		for i = 1, #self._input do
+			self._input[i]:update(t, dt, self._controller, input)
 		end
 	end
 	return input
@@ -528,12 +543,7 @@ function PlayerStandard:_update_check_actions(t, dt)
 	new_action = new_action or self:_check_action_melee(t, input)
 	new_action = new_action or self:_check_action_reload(t, input)
 	new_action = new_action or self:_check_change_weapon(t, input)
-	if not new_action then
-		new_action = self:_check_action_primary_attack(t, input)
-		if not new_action then
-			self:_check_stop_shooting()
-		end
-	end
+	new_action = new_action or self:_check_action_primary_attack(t, input)
 	new_action = new_action or self:_check_action_equip(t, input)
 	new_action = new_action or self:_check_use_item(t, input)
 	new_action = new_action or self:_check_action_throw_projectile(t, input)
@@ -659,7 +669,7 @@ function PlayerStandard:_get_walk_headbob()
 	elseif self._state_data.ducking then
 		return 0.0125
 	elseif self._running then
-		return 0.1 * (managers.player.RUN_AND_SHOOT and 0.5 or 1)
+		return 0.1 * (self.RUN_AND_SHOOT and 0.5 or 1)
 	end
 	return 0.025
 end
@@ -887,7 +897,7 @@ function PlayerStandard:_start_action_running(t)
 	if self:on_ladder() or self:_on_zipline() then
 		return
 	end
-	if self._shooting and not managers.player.RUN_AND_SHOOT or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self._state_data.in_air or self:_is_throwing_projectile() or self:_is_charging_weapon() then
+	if self._shooting and not self.RUN_AND_SHOOT or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self._state_data.in_air or self:_is_throwing_projectile() or self:_is_charging_weapon() then
 		self._running_wanted = true
 		return
 	end
@@ -912,7 +922,7 @@ function PlayerStandard:_start_action_running(t)
 	self._end_running_expire_t = nil
 	self._start_running_t = t
 	if not self:_is_reloading() or not self.RUN_AND_RELOAD then
-		if not managers.player.RUN_AND_SHOOT then
+		if not self.RUN_AND_SHOOT then
 			self._ext_camera:play_redirect(self.IDS_START_RUNNING)
 		else
 			self._ext_camera:play_redirect(self.IDS_IDLE)
@@ -928,7 +938,7 @@ function PlayerStandard:_end_action_running(t)
 	if not self._end_running_expire_t then
 		local speed_multiplier = self._equipped_unit:base():exit_run_speed_multiplier()
 		self._end_running_expire_t = t + 0.4 / speed_multiplier
-		if not managers.player.RUN_AND_SHOOT and (not managers.player.RUN_AND_RELOAD or not self:_is_reloading()) then
+		if not self.RUN_AND_SHOOT and (not self.RUN_AND_RELOAD or not self:_is_reloading()) then
 			self._ext_camera:play_redirect(self.IDS_STOP_RUNNING, speed_multiplier)
 		end
 	end
@@ -1224,7 +1234,6 @@ function PlayerStandard:_is_throwing_grenade()
 	return self._camera_unit_anim_data.throwing or self._state_data.throw_grenade_expire_t and true or false
 end
 function PlayerStandard:_check_action_interact(t, input)
-	local keyboard = self._controller.TYPE == "pc" or managers.controller:get_default_wrapper_type() == "pc"
 	local new_action, timer, interact_object
 	if input.btn_interact_press and not self:_action_interact_forbidden() then
 		new_action, timer, interact_object = self._interaction:interact(self._unit, input.data)
@@ -1236,35 +1245,22 @@ function PlayerStandard:_check_action_interact(t, input)
 			self._ext_camera:camera_unit():base():set_limits(80, 50)
 			self:_start_action_interact(t, input, timer, interact_object)
 		end
-		if not new_action then
-			self._start_intimidate = true
-			self._start_intimidate_t = t
-		end
-	end
-	local secondary_delay = tweak_data.team_ai.stop_action.delay
-	local force_secondary_intimidate = false
-	if not new_action and keyboard and input.btn_interact_secondary_press then
-		force_secondary_intimidate = true
+		new_action = new_action or self:_start_action_intimidate(t)
 	end
 	if input.btn_interact_release then
-		if self._start_intimidate then
-			if t < self._start_intimidate_t + secondary_delay then
-				self:_start_action_intimidate(t)
-				self._start_intimidate = false
-			end
-		else
-			self:_interupt_action_interact()
-		end
-	end
-	if (self._start_intimidate or force_secondary_intimidate) and (not keyboard and t > self._start_intimidate_t + secondary_delay or force_secondary_intimidate) then
-		self:_start_action_intimidate(t, true)
-		self._start_intimidate = false
+		self:_interupt_action_interact()
 	end
 	return new_action
 end
 function PlayerStandard:_action_interact_forbidden()
 	local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_changing_weapon() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline()
 	return action_forbidden
+end
+function PlayerStandard:_action_interact_forbidden_sentry()
+	local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self:is_deploying() or self:_changing_weapon() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline()
+	return action_forbidden
+end
+function PlayerStandard:_check_action_pickup_sentry(t, input)
 end
 function PlayerStandard:_check_action_change_equipment(input)
 	if input.btn_change_equipment and managers.player:has_category_upgrade("player", "second_deployable") then
@@ -1345,7 +1341,10 @@ function PlayerStandard:_check_action_weapon_firemode(t, input)
 	end
 end
 function PlayerStandard:_check_action_weapon_gadget(t, input)
-	if input.btn_weapon_gadget_press and self._equipped_unit:base().toggle_gadget and self._equipped_unit:base():has_gadget() and self._equipped_unit:base():toggle_gadget(self) then
+	if input.btn_weapon_gadget_press and self._equipped_unit:base().toggle_gadget and self._equipped_unit:base():has_gadget() and self._equipped_unit:base():toggle_gadget() then
+		if self._equipped_unit:base():gadget_toggle_requires_stance_update() then
+			self:_stance_entered()
+		end
 		self._unit:network():send("set_weapon_gadget_state", self._equipped_unit:base()._gadget_on)
 	end
 end
@@ -1537,11 +1536,7 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray)
 			if bayonet_melee then
 				self._unit:sound():play("fairbairn_hit_body", nil, false)
 			else
-				local hit_sfx = "hit_body"
-				if hit_unit:character_damage() and hit_unit:character_damage().melee_hit_sfx then
-					hit_sfx = hit_unit:character_damage():melee_hit_sfx()
-				end
-				self:_play_melee_sound(melee_entry, hit_sfx, self._melee_attack_var)
+				self:_play_melee_sound(melee_entry, "hit_body", self._melee_attack_var)
 			end
 			if not hit_unit:character_damage()._no_blood then
 				managers.game_play_central:play_impact_flesh({col_ray = col_ray})
@@ -1794,7 +1789,7 @@ function PlayerStandard:_update_reload_timers(t, dt, input)
 				managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
 				if input.btn_steelsight_state then
 					self._steelsight_wanted = true
-				elseif managers.player.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not managers.player.RUN_AND_SHOOT then
+				elseif self.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not self.RUN_AND_SHOOT then
 					self._ext_camera:play_redirect(self.IDS_START_RUNNING)
 				end
 			end
@@ -1807,7 +1802,7 @@ function PlayerStandard:_update_reload_timers(t, dt, input)
 			managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
 			if input.btn_steelsight_state then
 				self._steelsight_wanted = true
-			elseif managers.player.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not managers.player.RUN_AND_SHOOT then
+			elseif self.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not self.RUN_AND_SHOOT then
 				self._ext_camera:play_redirect(self.IDS_START_RUNNING)
 			end
 			if self._equipped_unit:base().on_reload_stop then
@@ -1989,7 +1984,7 @@ function PlayerStandard:_get_interaction_target(char_table, my_head_pos, cam_fwd
 	end
 	return prime_target
 end
-function PlayerStandard:_get_intimidation_action(prime_target, char_table, amount, primary_only, detect_only, secondary)
+function PlayerStandard:_get_intimidation_action(prime_target, char_table, amount, primary_only, detect_only)
 	local voice_type, new_action, plural
 	local unit_type_enemy = 0
 	local unit_type_civilian = 1
@@ -2005,7 +2000,7 @@ function PlayerStandard:_get_intimidation_action(prime_target, char_table, amoun
 				if record.ai then
 					if not prime_target.unit:brain():player_ignore() then
 						prime_target.unit:movement():set_cool(false)
-						prime_target.unit:brain():on_long_dis_interacted(0, self._unit, secondary)
+						prime_target.unit:brain():on_long_dis_interacted(0, self._unit)
 					end
 				else
 					is_human_player = true
@@ -2014,22 +2009,20 @@ function PlayerStandard:_get_intimidation_action(prime_target, char_table, amoun
 			local amount = 0
 			local rally_skill_data = self._ext_movement:rally_skill_data()
 			if rally_skill_data and rally_skill_data.range_sq > mvector3.distance_sq(self._pos, record.m_pos) then
-				local needs_revive, is_arrested, action_stop
-				if not secondary then
-					if prime_target.unit:base().is_husk_player then
-						is_arrested = prime_target.unit:movement():current_state_name() == "arrested"
-						needs_revive = prime_target.unit:interaction():active() and prime_target.unit:movement():need_revive() and not is_arrested
-					else
-						is_arrested = prime_target.unit:character_damage():arrested()
-						needs_revive = prime_target.unit:character_damage():need_revive()
-					end
-					if needs_revive and managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive") then
-						voice_type = "revive"
-						managers.player:disable_cooldown_upgrade("cooldown", "long_dis_revive")
-					elseif not is_arrested and not needs_revive and rally_skill_data.morale_boost_delay_t and managers.player:player_timer():time() > rally_skill_data.morale_boost_delay_t then
-						voice_type = "boost"
-						amount = 1
-					end
+				local needs_revive, is_arrested
+				if prime_target.unit:base().is_husk_player then
+					is_arrested = prime_target.unit:movement():current_state_name() == "arrested"
+					needs_revive = prime_target.unit:interaction():active() and prime_target.unit:movement():need_revive() and not is_arrested
+				else
+					is_arrested = prime_target.unit:character_damage():arrested()
+					needs_revive = prime_target.unit:character_damage():need_revive()
+				end
+				if needs_revive and managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive") then
+					voice_type = "revive"
+					managers.player:disable_cooldown_upgrade("cooldown", "long_dis_revive")
+				elseif not is_arrested and not needs_revive and rally_skill_data.morale_boost_delay_t and managers.player:player_timer():time() > rally_skill_data.morale_boost_delay_t then
+					voice_type = "boost"
+					amount = 1
 				end
 			end
 			if is_human_player then
@@ -2037,16 +2030,10 @@ function PlayerStandard:_get_intimidation_action(prime_target, char_table, amoun
 					"long_dis_interaction",
 					prime_target.unit,
 					amount,
-					self._unit,
-					secondary or false
+					self._unit
 				})
 			end
-			if not voice_type then
-				if secondary then
-				else
-					voice_type = "ai_stay" and "come"
-				end
-			end
+			voice_type = voice_type or "come"
 			plural = false
 		else
 			local prime_target_key = prime_target.unit:key()
@@ -2132,7 +2119,7 @@ function PlayerStandard:_get_intimidation_action(prime_target, char_table, amoun
 	end
 	return voice_type, plural, prime_target
 end
-function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimidate_civilians, intimidate_teammates, only_special_enemies, intimidate_escorts, intimidation_amount, primary_only, detect_only, secondary)
+function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimidate_civilians, intimidate_teammates, only_special_enemies, intimidate_escorts, intimidation_amount, primary_only, detect_only)
 	local char_table = {}
 	local unit_type_enemy = 0
 	local unit_type_civilian = 1
@@ -2145,7 +2132,6 @@ function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimi
 	local intimidate_range_civ = tweak_data.player.long_dis_interaction.intimidate_range_civilians * range_mul
 	local intimidate_range_ene = tweak_data.player.long_dis_interaction.intimidate_range_enemies * range_mul
 	local highlight_range = tweak_data.player.long_dis_interaction.highlight_range * range_mul
-	local intimidate_range_teammates = tweak_data.player.long_dis_interaction.intimidate_range_teammates
 	if intimidate_enemies then
 		local enemies = managers.enemy:all_enemies()
 		for u_key, u_data in pairs(enemies) do
@@ -2192,12 +2178,12 @@ function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimi
 					end
 					if needs_revive then
 						added = true
-						self:_add_unit_to_char_table(char_table, u_data.unit, unit_type_teammate, intimidate_range_teammates, true, true, 5000, my_head_pos, cam_fwd)
+						self:_add_unit_to_char_table(char_table, u_data.unit, unit_type_teammate, 100000, true, true, 5000, my_head_pos, cam_fwd)
 					end
 				end
 			end
 			if not added and not u_data.is_deployable and not u_data.unit:movement():downed() and not u_data.unit:base().is_local_player and not u_data.unit:anim_data().long_dis_interact_disabled then
-				self:_add_unit_to_char_table(char_table, u_data.unit, unit_type_teammate, intimidate_range_teammates, true, not secondary, 0.01, my_head_pos, cam_fwd)
+				self:_add_unit_to_char_table(char_table, u_data.unit, unit_type_teammate, 100000, true, true, 0.01, my_head_pos, cam_fwd)
 			end
 		end
 	end
@@ -2221,12 +2207,12 @@ function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimi
 		end
 	end
 	local prime_target = self:_get_interaction_target(char_table, my_head_pos, cam_fwd)
-	return self:_get_intimidation_action(prime_target, char_table, intimidation_amount, primary_only, detect_only, secondary)
+	return self:_get_intimidation_action(prime_target, char_table, intimidation_amount, primary_only, detect_only)
 end
-function PlayerStandard:_start_action_intimidate(t, secondary)
+function PlayerStandard:_start_action_intimidate(t)
 	if not self._intimidate_t or t - self._intimidate_t > tweak_data.player.movement_state.interaction_delay then
 		local skip_alert = managers.groupai:state():whisper_mode()
-		local voice_type, plural, prime_target = self:_get_unit_intimidation_action(not secondary, not secondary, true, false, true, nil, nil, nil, secondary)
+		local voice_type, plural, prime_target = self:_get_unit_intimidation_action(true, true, true, false, true, nil, nil, nil)
 		local interact_type, sound_name
 		local sound_suffix = plural and "plu" or "sin"
 		if voice_type == "stop" then
@@ -2319,9 +2305,6 @@ function PlayerStandard:_start_action_intimidate(t, secondary)
 			sound_name = "f44x_any"
 			interact_type = "cmd_point"
 			prime_target.unit:contour():add(managers.player:has_category_upgrade("player", "marked_enemy_extra_damage") and "mark_unit_dangerous_damage_bonus" or "mark_unit_dangerous", true, managers.player:upgrade_value("player", "mark_enemy_time_multiplier", 1))
-		elseif voice_type == "ai_stay" then
-			sound_name = "f03a_" .. sound_suffix
-			interact_type = "cmd_stop"
 		end
 		self:_do_action_intimidate(t, interact_type, sound_name, skip_alert)
 	end
@@ -2437,9 +2420,6 @@ function PlayerStandard:_check_action_jump(t, input)
 	return new_action
 end
 function PlayerStandard:_start_action_jump(t, action_start_data)
-	if self._running then
-		self:_interupt_action_reload(t)
-	end
 	self:_interupt_action_running(t)
 	self._jump_t = t
 	local jump_vec = action_start_data.jump_vel_z * math.UP
@@ -2823,7 +2803,6 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 		local action_forbidden = self:_is_reloading() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self:_interacting() or self:_is_throwing_projectile() or self:_is_deploying_bipod()
 		if not action_forbidden then
 			self._queue_reload_interupt = nil
-			local start_shooting = false
 			self._ext_inventory:equip_selected_primary(false)
 			if self._equipped_unit then
 				local weap_base = self._equipped_unit:base()
@@ -2847,7 +2826,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 						new_action = true
 						self:_start_action_reload_enter(t)
 					end
-				elseif self._running and not managers.player.RUN_AND_SHOOT then
+				elseif self._running and not self.RUN_AND_SHOOT then
 					self:_interupt_action_running(t)
 				else
 					if not self._shooting then
@@ -2861,7 +2840,6 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 								self._camera_unit:base():start_shooting()
 								self._shooting = true
 								self._shooting_t = t
-								start_shooting = true
 								if fire_mode == "auto" then
 									self._unit:camera():play_redirect(self.IDS_RECOIL_ENTER)
 								end
@@ -2890,7 +2868,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 					dmg_mul = dmg_mul * managers.player:get_property("trigger_happy", 1)
 					local fired
 					if fire_mode == "single" then
-						if input.btn_primary_attack_press and start_shooting then
+						if input.btn_primary_attack_press then
 							fired = weap_base:trigger_pressed(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 						elseif fire_on_release then
 							if input.btn_primary_attack_release then
@@ -2929,7 +2907,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 						end
 						if fire_mode == "single" and weap_base:get_name_id() ~= "saw" then
 							if not self._state_data.in_steelsight then
-								self._ext_camera:play_redirect(self.IDS_RECOIL, weap_base:fire_rate_multiplier())
+								self._ext_camera:play_redirect(self.IDS_RECOIL, 1)
 							elseif weap_tweak_data.animations.recoil_steelsight then
 								self._ext_camera:play_redirect(weap_base:is_second_sight_on() and self.IDS_RECOIL or self.IDS_RECOIL_STEELSIGHT, 1)
 							end
@@ -3222,13 +3200,6 @@ function PlayerStandard:_get_dir_str_from_vec(fwd, dir_vec)
 		return "right"
 	else
 		return "left"
-	end
-end
-function PlayerStandard:get_movement_modifier(weapon_spread)
-	if self._state_data.ducking then
-		return 1 - weapon_spread[self._moving and "moving_crouching" or "crouching"]
-	else
-		return 1 - weapon_spread[self._moving and "moving_standing" or "standing"]
 	end
 end
 function PlayerStandard:inventory_clbk_listener(unit, event)

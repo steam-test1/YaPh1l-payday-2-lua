@@ -9,8 +9,8 @@ function WeaponSimpleAnim:init(unit)
 		self._anim = Idstring(self.anim)
 	end
 end
-function WeaponSimpleAnim:_check_state(current_state)
-	WeaponSimpleAnim.super._check_state(self, current_state)
+function WeaponSimpleAnim:_check_state(...)
+	WeaponSimpleAnim.super._check_state(self, ...)
 	if self._anim_state ~= self._on then
 		self._anim_state = self._on
 		self:play_anim()

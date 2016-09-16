@@ -506,12 +506,6 @@ function UnitNetworkHandler:sync_interacted(unit, unit_id, tweak_setting, status
 		end
 	end
 	if alive(unit) then
-		if unit:interaction()._special_equipment and unit:interaction().apply_item_pickup then
-			managers.network:session():send_to_peer(peer, "special_eq_response", unit)
-			if unit:interaction():can_remove_item() then
-				unit:set_slot(0)
-			end
-		end
 		unit:interaction():sync_interacted(peer, nil, status)
 	end
 end
@@ -651,7 +645,7 @@ function UnitNetworkHandler:set_pose(unit, pose_code, sender)
 	end
 	unit:movement():sync_pose(pose_code)
 end
-function UnitNetworkHandler:long_dis_interaction(target_unit, amount, aggressor_unit, secondary)
+function UnitNetworkHandler:long_dis_interaction(target_unit, amount, aggressor_unit)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(target_unit) or not self._verify_character(aggressor_unit) then
 		return
 	end
@@ -663,7 +657,7 @@ function UnitNetworkHandler:long_dis_interaction(target_unit, amount, aggressor_
 			if target_unit:brain() then
 				if target_unit:brain().on_long_dis_interacted then
 					target_unit:movement():set_cool(false)
-					target_unit:brain():on_long_dis_interacted(amount, aggressor_unit, secondary)
+					target_unit:brain():on_long_dis_interacted(amount, aggressor_unit)
 				end
 			elseif amount == 1 then
 				target_unit:movement():on_morale_boost(aggressor_unit)
@@ -720,11 +714,11 @@ function UnitNetworkHandler:unit_traded(unit, position, rotation)
 	end
 	unit:brain():on_trade(position, rotation, true)
 end
-function UnitNetworkHandler:hostage_trade(unit, enable, trade_success, skip_hint)
+function UnitNetworkHandler:hostage_trade(unit, enable, trade_success)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
 		return
 	end
-	CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
+	CopLogicTrade.hostage_trade(unit, enable, trade_success)
 end
 function UnitNetworkHandler:set_unit_invulnerable(unit, enable)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
@@ -864,16 +858,6 @@ function UnitNetworkHandler:start_revive_player(timer, sender)
 	local player = managers.player:player_unit()
 	if alive(player) then
 		player:character_damage():pause_downed_timer(timer, peer:id())
-	end
-end
-function UnitNetworkHandler:pause_downed_timer(unit, sender)
-	if unit.interaction then
-		unit:interaction():set_waypoint_paused(true)
-	end
-end
-function UnitNetworkHandler:unpause_downed_timer(unit, sender)
-	if unit.interaction then
-		unit:interaction():set_waypoint_paused(false)
 	end
 end
 function UnitNetworkHandler:interupt_revive_player(sender)
@@ -1079,69 +1063,50 @@ function UnitNetworkHandler:element_explode_on_client(position, normal, damage, 
 	end
 	managers.explosion:client_damage_and_push(position, normal, nil, damage, range, curve_pow)
 end
-function UnitNetworkHandler:picked_up_sentry_gun(unit, rpc)
+function UnitNetworkHandler:place_sentry_gun(pos, rot, equipment_selection_index, user_unit, unit_idstring_index, rpc)
 	local peer = self._verify_sender(rpc)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
 		return
 	end
-	if alive(unit) then
-		local sentry_type = unit:base():get_type()
-		local sentry_type_index = sentry_type == "sentry_gun" and 1 or sentry_type == "sentry_gun_silent" and 2
-		managers.network:session():send_to_peer(peer, "picked_up_sentry_gun_response", unit:id(), unit:weapon():ammo_total(), unit:weapon():ammo_max(), sentry_type_index)
-		unit:base():remove()
-	end
-end
-function UnitNetworkHandler:picked_up_sentry_gun_response(sentry_uid, ammo, max_ammo, sentry_type_index, rpc)
-	local peer = self._verify_sender(rpc)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
-		return
-	end
-	local sentry_type_list = {
-		"sentry_gun",
-		"sentry_gun_silent"
-	}
-	local sentry_type = sentry_type_list[sentry_type_index]
-	local ammo_ratio = ammo / max_ammo
-	SentryGunBase.on_picked_up(sentry_type, ammo_ratio, sentry_uid)
-end
-function UnitNetworkHandler:place_sentry_gun(pos, rot, equipment_selection_index, user_unit, unit_idstring_index, ammo_level, rpc)
-	local peer = self._verify_sender(rpc)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
-		return
-	end
-	local unit, spread_level, rot_level = SentryGunBase.spawn(user_unit, pos, rot, peer:id(), true, unit_idstring_index)
+	local unit = SentryGunBase.spawn(user_unit, pos, rot, peer:id(), true, unit_idstring_index)
 	if unit then
 		unit:base():set_server_information(peer:id())
+		local damage_multiplier = unit:weapon():get_damage_multiplier()
 		local has_shield = unit:base():has_shield()
-		managers.network:session():send_to_peers_synched("from_server_sentry_gun_place_result", peer:id(), equipment_selection_index or 0, unit, rot_level, spread_level, has_shield, ammo_level)
+		managers.network:session():send_to_peers_synched("from_server_sentry_gun_place_result", peer:id(), equipment_selection_index or 0, unit, unit:movement()._rot_speed_mul, unit:weapon()._setup.spread_mul, has_shield, damage_multiplier)
 	end
 end
-function UnitNetworkHandler:from_server_sentry_gun_place_result(owner_peer_id, equipment_selection_index, sentry_gun_unit, rot_level, spread_level, shield, ammo_level, rpc)
+function UnitNetworkHandler:remove_sentry_gun(sentry_gun_unit, rpc)
+	local peer = self._verify_sender(rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
+		return
+	end
+	if alive(sentry_gun_unit) then
+		World:delete_unit(sentry_gun_unit)
+	end
+end
+function UnitNetworkHandler:from_server_sentry_gun_place_result(owner_peer_id, equipment_selection_index, sentry_gun_unit, rot_speed_mul, spread_mul, shield, damage_mul, rpc)
 	local local_peer = managers.network:session():local_peer()
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(rpc) or not alive(sentry_gun_unit) or not managers.network:session():peer(owner_peer_id) then
 		if alive(local_peer:unit()) then
-			local_peer:unit():equipment():from_server_sentry_gun_place_result(sentry_gun_unit:id())
+			local_peer:unit():equipment():from_server_sentry_gun_place_result()
 		end
 		return
 	end
 	sentry_gun_unit:base():set_owner_id(owner_peer_id)
 	if owner_peer_id == local_peer:id() and alive(local_peer:unit()) then
-		managers.player:from_server_equipment_place_result(equipment_selection_index, local_peer:unit(), sentry_gun_unit)
+		managers.player:from_server_equipment_place_result(equipment_selection_index, local_peer:unit())
 	end
 	if shield then
 		sentry_gun_unit:base():enable_shield()
 	end
-	local rot_speed_mul = SentryGunBase.ROTATION_SPEED_MUL[rot_level]
 	sentry_gun_unit:movement():setup(rot_speed_mul)
 	sentry_gun_unit:brain():setup(1 / rot_speed_mul)
-	local spread_mul = SentryGunBase.SPREAD_MUL[spread_level]
 	local setup_data = {
 		spread_mul = spread_mul,
 		ignore_units = {sentry_gun_unit}
 	}
-	sentry_gun_unit:weapon():setup(setup_data)
-	local ammo_mul = SentryGunBase.AMMO_MUL[ammo_level]
-	sentry_gun_unit:weapon():setup_virtual_ammo(ammo_mul)
+	sentry_gun_unit:weapon():setup(setup_data, damage_mul)
 	sentry_gun_unit:event_listener():call("on_setup", sentry_gun_unit:base():is_owner())
 	sentry_gun_unit:base():post_setup()
 end
@@ -1656,11 +1621,9 @@ function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_typ
 	end
 	local member = managers.network:session():peer(peer_id)
 	local thrower_unit = member and member:unit()
-	if alive(thrower_unit) then
-		unit:base():set_thrower_unit(thrower_unit)
-		if not tweak_entry.throwable and thrower_unit:movement() and thrower_unit:movement():current_state() then
-			unit:base():set_weapon_unit(thrower_unit:movement():current_state()._equipped_unit)
-		end
+	unit:base():set_thrower_unit(thrower_unit)
+	if not tweak_entry.throwable and thrower_unit:movement() and thrower_unit:movement():current_state() then
+		unit:base():set_weapon_unit(thrower_unit:movement():current_state()._equipped_unit)
 	end
 	unit:base():sync_throw_projectile(dir, projectile_type)
 end
@@ -1715,9 +1678,9 @@ function UnitNetworkHandler:sync_detonate_molotov_grenade(unit, ext_name, event_
 	end
 	extension:sync_detonate_molotov_grenade(event_id, normal, peer)
 end
-function UnitNetworkHandler:sync_add_doted_enemy(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, rpc)
+function UnitNetworkHandler:sync_add_doted_enemy(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, rpc)
 	local peer = self._verify_sender(rpc)
-	managers.fire:sync_add_fire_dot(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, peer)
+	managers.fire:sync_add_fire_dot(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, peer)
 end
 function UnitNetworkHandler:server_secure_loot(carry_id, multiplier_level, sender)
 	local peer = self._verify_sender(sender)
@@ -2274,8 +2237,8 @@ function UnitNetworkHandler:sync_char_team(unit, team_index, sender)
 	local team_data = managers.groupai:state():team_data(team_id)
 	unit:movement():set_team(team_data)
 end
-function UnitNetworkHandler:sync_drill_upgrades(unit, autorepair_level_1, autorepair_level_2, drill_speed_level, silent, reduced_alert)
-	unit:base():set_skill_upgrades(Drill.create_upgrades(autorepair_level_1, autorepair_level_2, drill_speed_level, silent, reduced_alert))
+function UnitNetworkHandler:sync_drill_upgrades(unit, autorepair_level, drill_speed_level, silent, reduced_alert)
+	unit:base():set_skill_upgrades(Drill.create_upgrades(autorepair_level, drill_speed_level, silent, reduced_alert))
 end
 function UnitNetworkHandler:sync_vehicle_driving(action, unit, player)
 	Application:debug("[DRIVING_NET] sync_vehicle_driving " .. action)
@@ -2432,60 +2395,6 @@ function UnitNetworkHandler:action_land(unit, pos, sender)
 	end
 	unit:movement():sync_action_land(pos)
 end
-function UnitNetworkHandler:sync_player_swansong(unit, active, sender)
-	local peer = self._verify_sender(sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
-		return
-	end
-	if alive(unit) and unit:character_damage() then
-		unit:character_damage().swansong = active
-		managers.network:session():send_to_peers_except(peer:id(), "sync_swansong_hud", unit, peer:id())
-		self:sync_swansong_hud(unit, peer:id())
-	end
-end
-function UnitNetworkHandler:special_eq_response(unit, sender)
-	if unit:interaction().apply_item_pickup then
-		unit:interaction():apply_item_pickup()
-	end
-end
-function UnitNetworkHandler:sync_swansong_hud(unit, peer_id)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-	local panel_id
-	for i, panel in ipairs(managers.hud._teammate_panels) do
-		if panel._peer_id == peer_id then
-			panel_id = i
-		else
-		end
-	end
-	if panel_id then
-		managers.hud:set_teammate_condition(panel_id, "mugshot_swansong", managers.localization:text("debug_mugshot_downed"))
-	else
-		Application:error(string.format("Panel not found for peer: %d", peer_id))
-	end
-end
-function UnitNetworkHandler:sync_swansong_timer(unit, current, total, revives, peer_id)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-	local panel_id
-	for i, panel in ipairs(managers.hud._teammate_panels) do
-		if panel._peer_id == peer_id then
-			panel_id = i
-		else
-		end
-	end
-	if panel_id then
-		managers.hud:set_teammate_custom_radial(panel_id, {
-			current = current,
-			total = total,
-			revives = revives
-		})
-	else
-		Application:error(string.format("Panel not found for peer: %d", peer_id))
-	end
-end
 function UnitNetworkHandler:sync_fall_position(unit, pos, rot)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
@@ -2503,13 +2412,5 @@ function UnitNetworkHandler:sync_stored_pos(unit, sync, pos, rot)
 	end
 	if alive(unit) then
 		unit:base():sync_stored_pos(sync, pos, rot)
-	end
-end
-function UnitNetworkHandler:sync_team_ai_stopped(unit, stopped)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-	if alive(unit) then
-		unit:movement():set_should_stay(stopped)
 	end
 end

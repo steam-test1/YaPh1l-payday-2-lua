@@ -76,9 +76,9 @@ end
 function TeamAIBrain:on_cop_neutralized(cop_key)
 	return self._current_logic.on_cop_neutralized(self._logic_data, cop_key)
 end
-function TeamAIBrain:on_long_dis_interacted(amount, other_unit, secondary)
+function TeamAIBrain:on_long_dis_interacted(amount, other_unit)
 	self._unit:movement():set_cool(false)
-	return self._current_logic.on_long_dis_interacted(self._logic_data, other_unit, secondary)
+	return self._current_logic.on_long_dis_interacted(self._logic_data, other_unit)
 end
 function TeamAIBrain:on_recovered(reviving_unit)
 	self._current_logic.on_recovered(self._logic_data, reviving_unit)

@@ -2,7 +2,6 @@ core:import("CoreShapeManager")
 if not CoreAreaTriggerUnitElement then
 	CoreAreaTriggerUnitElement = class(MissionElement)
 end
-CoreAreaTriggerUnitElement.LINK_ELEMENTS = {"spawn_unit_elements"}
 if not AreaTriggerUnitElement then
 	AreaTriggerUnitElement = class(CoreAreaTriggerUnitElement)
 end
@@ -176,6 +175,14 @@ CoreAreaTriggerUnitElement._remove_unit_id = function(self, id)
 	end
 end
 
+CoreAreaTriggerUnitElement.remove_links = function(self, unit)
+	for _,id in ipairs(self._hed.spawn_unit_elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.spawn_unit_elements, id)
+		end
+	end
+end
+
 CoreAreaTriggerUnitElement.update_selected = function(self, t, dt, selected_unit, all_units)
 	if not self._hed.use_shape_element_ids then
 		local shape = self:get_shape()
@@ -344,7 +351,6 @@ if not CoreAreaOperatorUnitElement then
 end
 CoreAreaOperatorUnitElement.SAVE_UNIT_POSITION = false
 CoreAreaOperatorUnitElement.SAVE_UNIT_ROTATION = false
-CoreAreaOperatorUnitElement.LINK_ELEMENTS = {"elements"}
 if not AreaOperatorUnitElement then
 	AreaOperatorUnitElement = class(CoreAreaOperatorUnitElement)
 end
@@ -395,6 +401,14 @@ CoreAreaOperatorUnitElement.add_element = function(self)
 		end
 	else
 		table.insert(self._hed.elements, id)
+	end
+end
+
+CoreAreaOperatorUnitElement.remove_links = function(self, unit)
+	for _,id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
+		end
 	end
 end
 

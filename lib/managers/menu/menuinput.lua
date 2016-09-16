@@ -19,9 +19,7 @@ function MenuInput:init(logic, ...)
 	self._item_input_action_map[MenuItemWeaponExpand.TYPE] = callback(self, self, "input_expand")
 	self._item_input_action_map[MenuItemWeaponUpgradeExpand.TYPE] = callback(self, self, "input_expand")
 	self._item_input_action_map[MenuItemDivider.TYPE] = callback(self, self, "input_item")
-	self._item_input_action_map[MenuItemColoredDivider.TYPE] = callback(self, self, "input_item")
 	self._item_input_action_map[MenuItemInput.TYPE] = callback(self, self, "input_item")
-	self._item_input_action_map[MenuItemTextBox.TYPE] = callback(self, self, "input_item")
 	self._callback_map = {}
 	self._callback_map.mouse_moved = {}
 	self._callback_map.mouse_pressed = {}
@@ -31,9 +29,6 @@ function MenuInput:init(logic, ...)
 end
 function MenuInput:back(...)
 	self._slider_marker = nil
-	if self._back_disabled then
-		return
-	end
 	local node_gui = managers.menu:active_menu().renderer:active_node_gui()
 	if node_gui and node_gui._listening_to_input then
 		return
@@ -42,9 +37,6 @@ function MenuInput:back(...)
 		return
 	end
 	MenuInput.super.back(self, ...)
-end
-function MenuInput:set_back_enabled(enabled)
-	self._back_disabled = not enabled
 end
 function MenuInput:activate_mouse(position, controller_activated)
 	if not controller_activated and managers.controller:get_default_wrapper_type() ~= "pc" and managers.controller:get_default_wrapper_type() ~= "steam" then
@@ -138,10 +130,8 @@ function MenuInput:mouse_moved(o, x, y, mouse_ws)
 		if alive(row_item.gui_slider) then
 			local where = (x - row_item.gui_slider:world_left()) / (row_item.gui_slider:world_right() - row_item.gui_slider:world_left())
 			local item = self._slider_marker.item
-			if item:enabled() then
-				item:set_value_by_percentage(where * 100)
-				self._logic:trigger_item(true, item)
-			end
+			item:set_value_by_percentage(where * 100)
+			self._logic:trigger_item(true, item)
 			managers.mouse_pointer:set_pointer_image("grab")
 		end
 		return
@@ -337,15 +327,13 @@ function MenuInput:mouse_pressed(o, button, x, y)
 					elseif row_item.gui_slider:inside(x, y) then
 						local where = (x - row_item.gui_slider:world_left()) / (row_item.gui_slider:world_right() - row_item.gui_slider:world_left())
 						local item = row_item.item
-						if item:enabled() then
-							item:set_value_by_percentage(where * 100)
-							self._logic:trigger_item(true, item)
-							self._slider_marker = {
-								button = button,
-								item = row_item.item,
-								row_item = row_item
-							}
-						end
+						item:set_value_by_percentage(where * 100)
+						self._logic:trigger_item(true, item)
+						self._slider_marker = {
+							button = button,
+							item = row_item.item,
+							row_item = row_item
+						}
 					end
 				elseif row_item.type == "kitslot" then
 					local item = self._logic:selected_item()
@@ -558,13 +546,10 @@ function MenuInput:update(t, dt)
 					"menu_toggle_pp_breakdown",
 					"trigger_left",
 					"trigger_right",
-					"menu_challenge_claim",
-					"menu_edit_skin",
-					"menu_change_profile_right",
-					"menu_change_profile_left"
+					"menu_challenge_claim"
 				}
 				for _, button in ipairs(special_btns) do
-					if self._accept_input and self._controller and self._controller:get_input_pressed(button) and managers.menu:active_menu().renderer:special_btn_pressed(Idstring(button)) then
+					if self._accept_input and self._controller:get_input_pressed(button) and managers.menu:active_menu().renderer:special_btn_pressed(Idstring(button)) then
 						managers.menu:active_menu().renderer:disable_input(0.2)
 					else
 					end

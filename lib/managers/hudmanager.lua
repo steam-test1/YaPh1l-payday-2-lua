@@ -59,7 +59,6 @@ function HUDManager:init()
 		self:debug_hide_coordinates()
 	end
 	self._visible_huds_states = {}
-	self._disabled = Global.hud_disabled
 end
 function HUDManager:saferect_w()
 	return self._saferect:width()
@@ -199,7 +198,6 @@ function HUDManager:delete(name)
 end
 function HUDManager:set_disabled()
 	self._disabled = true
-	Global.hud_disabled = true
 	for name, _ in pairs(HUDManager.HIDEABLE_HUDS) do
 		if self._visible_huds_states[name] then
 			local component = self._component_map[name]
@@ -211,7 +209,6 @@ function HUDManager:set_disabled()
 end
 function HUDManager:set_enabled()
 	self._disabled = false
-	Global.hud_disabled = nil
 	for name, _ in pairs(HUDManager.HIDEABLE_HUDS) do
 		if self._visible_huds_states[name] then
 			local component = self._component_map[name]

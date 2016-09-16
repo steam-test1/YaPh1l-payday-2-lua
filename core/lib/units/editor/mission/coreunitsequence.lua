@@ -12,20 +12,10 @@ function CoreUnitSequenceUnitElement:init(unit)
 end
 function CoreUnitSequenceUnitElement:update_unselected(...)
 	MissionElement.update_unselected(self, ...)
-	self:verify_trigger_units()
 end
 function CoreUnitSequenceUnitElement:update_selected(...)
 	MissionElement.update_selected(self, ...)
-	self:verify_trigger_units()
 	self:_draw_trigger_units(0, 1, 1)
-end
-function CoreUnitSequenceUnitElement:verify_trigger_units()
-	for i = #self._hed.trigger_list, 1, -1 do
-		local unit = managers.editor:unit_with_id(self._hed.trigger_list[i].notify_unit)
-		if not alive(unit) then
-			table.remove(self._hed.trigger_list, i)
-		end
-	end
 end
 function CoreUnitSequenceUnitElement:get_links_to_unit(to_unit, links, all_units)
 	CoreUnitSequenceUnitElement.super.get_links_to_unit(self, to_unit, links, all_units)
@@ -87,15 +77,13 @@ function CoreUnitSequenceUnitElement:_set_trigger_list()
 				local trigger_data = self._unit:damage():get_trigger_data_list(trigger_name)
 				if trigger_data and #trigger_data > 0 then
 					for _, data in ipairs(trigger_data) do
-						if alive(data.notify_unit) then
-							table.insert(self._hed.trigger_list, {
-								name = data.trigger_name,
-								id = data.id,
-								notify_unit_id = data.notify_unit:unit_data().unit_id,
-								time = data.time,
-								notify_unit_sequence = data.notify_unit_sequence
-							})
-						end
+						table.insert(self._hed.trigger_list, {
+							name = data.trigger_name,
+							id = data.id,
+							notify_unit_id = data.notify_unit:unit_data().unit_id,
+							time = data.time,
+							notify_unit_sequence = data.notify_unit_sequence
+						})
 					end
 				end
 			end

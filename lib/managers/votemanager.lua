@@ -51,10 +51,8 @@ function VoteManager:restart()
 	self:_request_vote("restart", self.VOTE_EVENT.request_restart)
 end
 function VoteManager:restart_auto()
-	if managers.network:session() then
-		managers.network:session():send_to_peers_except(self._peer_to_exclude, "voting_data", self.VOTE_EVENT.instant_restart, 0, 0)
-		self:_restart_counter()
-	end
+	managers.network:session():send_to_peers_except(self._peer_to_exclude, "voting_data", self.VOTE_EVENT.instant_restart, 0, 0)
+	self:_restart_counter()
 end
 function VoteManager:response(state)
 	if self._voted or not managers.network:session() then
@@ -108,7 +106,7 @@ function VoteManager:_request_vote(vote_type, vote_network, peer_id)
 		if self:_host_start(vote_type, managers.network:session():local_peer():id(), peer_id) then
 			self:_host_register(managers.network:session():local_peer():id(), self.VOTES.yes)
 		end
-	elseif managers.network:session() then
+	else
 		managers.network:session():send_to_host("voting_data", vote_network, peer_id or 0, 0)
 	end
 	self:_refresh_menu()

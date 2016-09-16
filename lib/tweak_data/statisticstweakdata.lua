@@ -459,16 +459,7 @@ function StatisticsTweakData:statistics_table()
 		"dbd_04",
 		"jig_01",
 		"jig_02",
-		"damned",
-		"mig_war",
-		"cop_mega_gage_blade",
-		"mig_famine",
-		"mig_conquest",
-		"mig_death",
-		"fab_mega_mark",
-		"fab_mega_alien",
-		"fab_mega_doctor",
-		"fab_mega_grin"
+		"damned"
 	}
 	local weapon_list = {
 		"ak5",
@@ -667,7 +658,6 @@ function StatisticsTweakData:statistics_table()
 	local enemy_list = {
 		"civilian",
 		"civilian_female",
-		"robbers_safehouse",
 		"cop",
 		"fbi",
 		"fbi_swat",

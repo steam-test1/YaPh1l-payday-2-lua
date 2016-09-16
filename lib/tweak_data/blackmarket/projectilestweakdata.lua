@@ -1,4 +1,4 @@
-function BlackMarketTweakData:_init_projectiles(tweak_data)
+function BlackMarketTweakData:_init_projectiles()
 	self.projectiles = {}
 	self.projectiles.frag = {}
 	self.projectiles.frag.name_id = "bm_grenade_frag"
@@ -310,12 +310,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"wpn_prj_hur",
 		"frag_com"
 	}
-	local free_dlcs = tweak_data:free_dlc_list()
-	for _, data in pairs(self.projectiles) do
-		if free_dlcs[data.dlc] then
-			data.dlc = nil
-		end
-	end
+	self:give_free_dlcs(self.projectiles)
 	self:_add_desc_from_name_macro(self.projectiles)
 end
 function BlackMarketTweakData:get_projectiles_index()

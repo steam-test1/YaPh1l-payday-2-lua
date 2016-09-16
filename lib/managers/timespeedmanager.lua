@@ -73,6 +73,7 @@ function TimeSpeedManager:_update_playing_effects()
 	end
 end
 function TimeSpeedManager:play_effect(id, effect_desc)
+	do return end
 	local effect = {desc = effect_desc}
 	effect.timer = effect_desc.timer == "pausable" and self._pausable_timer or self._game_timer
 	effect.start_t = effect.timer:time()

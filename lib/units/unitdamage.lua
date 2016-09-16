@@ -1,35 +1,12 @@
 UnitDamage = UnitDamage or class(CoreUnitDamage)
 UnitDamage.COLLISION_SFX_QUITE_TIME = 0.3
 UnitDamage.SFX_COLLISION_TAG = Idstring("sfx_only")
-UnitDamage.EVENTS = {
-	"on_take_damage"
-}
 function UnitDamage:init(unit, ...)
 	CoreUnitDamage.init(self, unit, ...)
 	if self:can_play_collision_sfx() then
 		self._collision_sfx_quite_time = self._collision_sfx_quite_time or UnitDamage.COLLISION_SFX_QUITE_TIME
 		self:setup_sfx_collision_body_tags()
 	end
-	self._listener_holder = EventListenerHolder:new()
-	if self.report_damage_type then
-		self._damage_report = {}
-		for i, dmg_type in ipairs(string.split(self.report_damage_type, " ")) do
-			table.insert(self._damage_report, dmg_type)
-		end
-	end
-end
-function UnitDamage:add_listener(key, events, clbk)
-	self._listener_holder:add(key, events, clbk)
-end
-function UnitDamage:remove_listener(key)
-	self._listener_holder:remove(key)
-end
-function UnitDamage:add_damage(endurance_type, attack_unit, dest_body, normal, position, direction, damage, velocity)
-	local result, damage = UnitDamage.super.add_damage(self, endurance_type, attack_unit, dest_body, normal, position, direction, damage, velocity)
-	if not self._damage_report or table.contains(self._damage_report, endurance_type) then
-		self._listener_holder:call("on_take_damage", self._unit, attack_unit, endurance_type, damage)
-	end
-	return result, damage
 end
 function UnitDamage:setup_sfx_collision_body_tags()
 	for i = 0, self._unit:num_bodies() - 1 do

@@ -10,14 +10,13 @@ function CopLogicTrade.enter(data, new_logic_name, enter_params)
 	data.internal_data = my_data
 	data.unit:movement():set_allow_fire(false)
 	CopLogicBase._reset_attention(data)
-	local skip_hint = enter_params and enter_params.skip_hint or false
 	my_data._trade_enabled = true
-	data.unit:network():send("hostage_trade", true, false, skip_hint)
-	CopLogicTrade.hostage_trade(data.unit, true, false, skip_hint)
+	data.unit:network():send("hostage_trade", true, false)
+	CopLogicTrade.hostage_trade(data.unit, true, false)
 	data.unit:brain():set_update_enabled_state(true)
 	data.unit:brain():set_attention_settings({peaceful = true})
 end
-function CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
+function CopLogicTrade.hostage_trade(unit, enable, trade_success)
 	local wp_id = "wp_hostage_trade"
 	print("[CopLogicTrade.hostage_trade]", unit, enable, trade_success)
 	if enable then
@@ -28,7 +27,7 @@ function CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
 			position = unit:movement():m_pos(),
 			distance = SystemInfo:platform() == Idstring("WIN32")
 		})
-		if managers.network:session() and not managers.trade:is_peer_in_custody(managers.network:session():local_peer():id()) and not skip_hint then
+		if managers.network:session() and not managers.trade:is_peer_in_custody(managers.network:session():local_peer():id()) then
 			managers.hint:show_hint("trade_offered")
 		end
 		if Network:is_server() and managers.enemy:all_civilians()[unit:key()] and unit:anim_data().stand and unit:brain():is_tied() then
@@ -94,7 +93,7 @@ function CopLogicTrade.exit(data, new_logic_name, enter_params)
 	local my_data = data.internal_data
 	if my_data._trade_enabled then
 		my_data._trade_enabled = false
-		data.unit:network():send("hostage_trade", false, false, false)
+		data.unit:network():send("hostage_trade", false, false)
 		CopLogicTrade.hostage_trade(data.unit, false, false)
 	end
 	data.unit:character_damage():set_invulnerable(false)
@@ -108,7 +107,7 @@ function CopLogicTrade.on_trade(data, pos, rotation, free_criminal)
 		managers.trade:on_hostage_traded(pos, rotation)
 	end
 	data.internal_data._trade_enabled = false
-	data.unit:network():send("hostage_trade", false, true, false)
+	data.unit:network():send("hostage_trade", false, true)
 	CopLogicTrade.hostage_trade(data.unit, false, true)
 	managers.groupai:state():on_hostage_state(false, data.key, managers.enemy:all_enemies()[data.key] and true or false)
 	if data.is_converted then
@@ -189,7 +188,6 @@ function CopLogicTrade.action_complete_clbk(data, action)
 	if action_type == "walk" and my_data.walking_to_flee_pos then
 		my_data.walking_to_flee_pos = nil
 		data.unit:set_slot(0)
-		managers.trade:trade_complete()
 	end
 end
 function CopLogicTrade.can_activate()

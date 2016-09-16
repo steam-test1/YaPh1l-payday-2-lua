@@ -147,6 +147,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			spooc = 4,
 			shield = 5
 		}
+		self.special_unit_spawn_limits.spooc = 0
 	end
 	self.unit_categories = {}
 	self.unit_categories.spooc = {
@@ -1320,6 +1321,16 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		1.3
 	}
 	self.besiege.assault.fade_duration = 5
+	self.besiege.assault.sustain_duration_min = {
+		0,
+		800,
+		1200
+	}
+	self.besiege.assault.sustain_duration_max = {
+		0,
+		800,
+		1200
+	}
 	if difficulty_index <= 2 then
 		self.besiege.assault.delay = {
 			80,
@@ -1508,16 +1519,16 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	else
 		self.besiege.assault.force_balance_mul = {
-			4,
-			4.2,
-			4.5,
-			4.9
+			8,
+			8.4,
+			9,
+			9.8
 		}
 		self.besiege.assault.force_pool_balance_mul = {
-			3,
-			5,
-			7,
-			9
+			6,
+			10,
+			14,
+			18
 		}
 	end
 	if difficulty_index <= 2 then
@@ -1621,6 +1632,16 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.25,
 				0.25
 			}
+		}
+		self.besiege.assault.groups.FBI_shields = {
+			0.1,
+			0.3,
+			0.6
+		}
+		self.besiege.assault.groups.FBI_tanks = {
+			0,
+			0.25,
+			0.35
 		}
 	else
 		self.besiege.assault.groups = {

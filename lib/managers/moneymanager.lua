@@ -100,7 +100,9 @@ function MoneyManager:get_civilian_deduction()
 	local has_active_job = managers.job:has_active_job()
 	local job_and_difficulty_stars = has_active_job and managers.job:current_job_and_difficulty_stars() or 1
 	local multiplier = 1
-	multiplier = multiplier * managers.player:upgrade_value("player", "cleaner_cost_multiplier", 1)
+	if managers.groupai and managers.groupai:state():whisper_mode() then
+		multiplier = multiplier * managers.player:upgrade_value("player", "cleaner_cost_multiplier", 1)
+	end
 	return math.round(self:get_tweak_value("money_manager", "killing_civilian_deduction", job_and_difficulty_stars) * multiplier)
 end
 function MoneyManager:civilian_killed()
@@ -995,12 +997,6 @@ function MoneyManager:_deduct_from_total(amount)
 	self:_set_total(math.max(0, self:total() - amount))
 	self:_set_total_spent(self:total_spent() + amount)
 	self:_on_total_changed(-amount, -amount, 0)
-end
-function MoneyManager:add_to_offshore(amount)
-	amount = math.round(amount)
-	print("MoneyManager:add_to_offshore", amount)
-	self:_set_offshore(math.max(0, self:offshore() + amount))
-	self:_on_total_changed(0, 0, amount)
 end
 function MoneyManager:deduct_from_offshore(amount)
 	amount = math.round(amount)

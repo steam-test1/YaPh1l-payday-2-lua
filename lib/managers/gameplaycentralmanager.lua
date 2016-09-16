@@ -295,7 +295,7 @@ end
 local zero_vector = Vector3()
 function GamePlayCentralManager:_play_bullet_hit(params)
 	local hit_pos = params.col_ray.position
-	local need_sound = not params.no_sound and World:in_view_with_options(hit_pos, 4000, 0, 0)
+	local need_sound = not params.no_sound and World:in_view_with_options(hit_pos, 2000, 0, 0)
 	local need_effect = World:in_view_with_options(hit_pos, 20, 100, 5000)
 	local need_decal = not self._block_bullet_decals and not params.no_decal and need_effect and World:in_view_with_options(hit_pos, 3000, 0, 0)
 	if not need_sound and not need_effect and not need_decal then

@@ -105,6 +105,20 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_old_hoxton_mission(presets)
 	self._prefix_data = nil
 	self._prefix_data_p1 = nil
+	self.tank.headshot_dmg_mul = 10
+	self.tank.damage.explosion_damage_mul = 1.5
+	self.tank.move_speed = presets.move_speed.fast
+	self.tank.ecm_hurts = {
+		ears = {min_duration = 1, max_duration = 2}
+	}
+	self.tank.DAMAGE_CLAMP_BULLET = 800
+	self.tank.DAMAGE_CLAMP_EXPLOSION = 800
+	self.tank.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.shield.HEALTH_INIT = 20
+	self.shield.headshot_dmg_mul = 3
+	self.taser.HEALTH_INIT = 50
+	self.civilian.hostage_move_speed = 1.5
+	self.city_swat.headshot_dmg_mul = 3
 end
 function CharacterTweakData:_init_security(presets)
 	self.security = deep_clone(presets.base)
@@ -1317,11 +1331,8 @@ function CharacterTweakData:_init_phalanx_minion(presets)
 	self.phalanx_minion.damage.hurt_severity = presets.hurt_severities.no_hurts_no_tase
 	self.phalanx_minion.damage.shield_knocked = false
 	self.phalanx_minion.damage.immune_to_knockback = true
-	self.phalanx_minion.immune_to_knock_down = true
-	self.phalanx_minion.ecm_vulnerability = 1
-	self.phalanx_minion.ecm_hurts = {
-		ears = {min_duration = 2, max_duration = 3}
-	}
+	self.phalanx_minion.ecm_vulnerability = nil
+	self.phalanx_minion.ecm_hurts = {}
 	self.phalanx_minion.priority_shout = "f45"
 end
 function CharacterTweakData:_init_phalanx_vip(presets)
@@ -1332,7 +1343,6 @@ function CharacterTweakData:_init_phalanx_vip(presets)
 	self.phalanx_vip.DAMAGE_CLAMP_BULLET = 100
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.phalanx_vip.can_be_tased = false
-	self.phalanx_vip.immune_to_knock_down = true
 end
 function CharacterTweakData:_init_taser(presets)
 	self.taser = deep_clone(presets.base)
@@ -1473,10 +1483,6 @@ function CharacterTweakData:_init_inside_man(presets)
 	self.inside_man.surrender_break_time = {10, 15}
 	self.inside_man.suppression = presets.suppression.no_supress
 	self.inside_man.surrender = nil
-	self.inside_man.ecm_vulnerability = 1
-	self.inside_man.ecm_hurts = {
-		ears = {min_duration = 8, max_duration = 10}
-	}
 	self.inside_man.weapon_voice = "1"
 	self.inside_man.experience.cable_tie = "tie_swat"
 	self.inside_man.speech_prefix_p1 = "l"
@@ -1504,10 +1510,7 @@ function CharacterTweakData:_init_civilian(presets)
 	self.civilian.submission_intimidate = 120
 	self.civilian.run_away_delay = {5, 20}
 	self.civilian.damage = presets.hurt_severities.no_hurts
-	self.civilian.ecm_vulnerability = 1
-	self.civilian.ecm_hurts = {
-		ears = {min_duration = 8, max_duration = 10}
-	}
+	self.civilian.ecm_hurts = {}
 	self.civilian.experience.cable_tie = "tie_civ"
 	self.civilian.speech_prefix_p1 = "cm"
 	self.civilian.speech_prefix_count = 2
@@ -1521,11 +1524,6 @@ function CharacterTweakData:_init_civilian(presets)
 	self.civilian_female.speech_prefix_count = 5
 	self.civilian_female.female = true
 	self.civilian_female.access = "civ_female"
-	self.robbers_safehouse = deep_clone(self.civilian)
-	self.robbers_safehouse.scare_shot = 0
-	self.robbers_safehouse.scare_intimidate = 0
-	self.robbers_safehouse.intimidateable = false
-	self.robbers_safehouse.ignores_aggression = true
 end
 function CharacterTweakData:_init_bank_manager(presets)
 	self.bank_manager = {
@@ -1543,10 +1541,6 @@ function CharacterTweakData:_init_bank_manager(presets)
 	self.bank_manager.submission_max = {60, 120}
 	self.bank_manager.submission_intimidate = 120
 	self.bank_manager.damage = presets.hurt_severities.no_hurts
-	self.bank_manager.ecm_vulnerability = 1
-	self.bank_manager.ecm_hurts = {
-		ears = {min_duration = 8, max_duration = 10}
-	}
 	self.bank_manager.experience.cable_tie = "tie_civ"
 	self.bank_manager.speech_prefix_p1 = "cm"
 	self.bank_manager.speech_prefix_count = 2
@@ -6865,6 +6859,8 @@ function CharacterTweakData:_set_overkill_290()
 	self.phalanx_vip.DAMAGE_CLAMP_BULLET = 80
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.flashbang_multiplier = 2
+	self:_multiply_all_hp(2.5, 0.75)
+	self:_multiply_all_speeds(2, 2.1)
 end
 function CharacterTweakData:_multiply_weapon_delay(weap_usage_table, mul)
 	for _, weap_id in ipairs(self.weap_ids) do

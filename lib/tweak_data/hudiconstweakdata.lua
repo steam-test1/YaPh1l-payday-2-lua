@@ -1914,15 +1914,6 @@ function HudIconsTweakData:init()
 			16
 		}
 	}
-	self.ai_stopped = {
-		texture = "guis/textures/pd2/stophand_symbol",
-		texture_rect = {
-			0,
-			0,
-			16,
-			32
-		}
-	}
 end
 function HudIconsTweakData:get_icon_data(icon_id, default_rect)
 	local icon = tweak_data.hud_icons[icon_id] and tweak_data.hud_icons[icon_id].texture or icon_id

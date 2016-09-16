@@ -149,7 +149,6 @@ CoreCounterOperatorUnitElement.SAVE_UNIT_ROTATION = false
 CoreCounterOperatorUnitElement.INSTANCE_VAR_NAMES = {
 	{type = "number", value = "amount"}
 }
-CoreCounterOperatorUnitElement.LINK_ELEMENTS = {"elements"}
 CounterOperatorUnitElement = CounterOperatorUnitElement or class(CoreCounterOperatorUnitElement)
 function CounterOperatorUnitElement:init(...)
 	CounterOperatorUnitElement.super.init(self, ...)
@@ -196,6 +195,13 @@ function CoreCounterOperatorUnitElement:add_element()
 		end
 	end
 end
+function CoreCounterOperatorUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
+		end
+	end
+end
 function CoreCounterOperatorUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "add_element"))
 end
@@ -220,7 +226,6 @@ end
 CoreCounterTriggerUnitElement = CoreCounterTriggerUnitElement or class(MissionElement)
 CoreCounterTriggerUnitElement.SAVE_UNIT_POSITION = false
 CoreCounterTriggerUnitElement.SAVE_UNIT_ROTATION = false
-CoreCounterTriggerUnitElement.LINK_ELEMENTS = {"elements"}
 CounterTriggerUnitElement = CounterTriggerUnitElement or class(CoreCounterTriggerUnitElement)
 function CounterTriggerUnitElement:init(...)
 	CounterTriggerUnitElement.super.init(self, ...)
@@ -267,6 +272,13 @@ function CoreCounterTriggerUnitElement:add_element()
 		end
 	end
 end
+function CoreCounterTriggerUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
+		end
+	end
+end
 function CoreCounterTriggerUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "add_element"))
 end
@@ -292,7 +304,6 @@ end
 CoreCounterFilterUnitElement = CoreCounterFilterUnitElement or class(MissionElement)
 CoreCounterFilterUnitElement.SAVE_UNIT_POSITION = false
 CoreCounterFilterUnitElement.SAVE_UNIT_ROTATION = false
-CoreCounterFilterUnitElement.LINK_ELEMENTS = {"elements"}
 CounterFilterUnitElement = CounterFilterUnitElement or class(CoreCounterFilterUnitElement)
 function CounterFilterUnitElement:init(...)
 	CounterFilterUnitElement.super.init(self, ...)
@@ -338,6 +349,13 @@ function CoreCounterFilterUnitElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
+		end
+	end
+end
+function CoreCounterFilterUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
 		end
 	end
 end

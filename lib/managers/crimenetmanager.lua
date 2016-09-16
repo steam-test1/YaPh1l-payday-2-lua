@@ -5,13 +5,6 @@ function CrimeNetManager:init()
 	self._active = false
 	self._active_jobs = {}
 	self:_setup_vars()
-	if not Global.crimenet then
-		Global.crimenet = {}
-	end
-	if not Global.crimenet.quickplay then
-		Global.crimenet.quickplay = {}
-	end
-	self._global = Global.crimenet
 end
 function CrimeNetManager:_setup_vars()
 	self._active_job_time = self._tweak_data.job_vars.active_job_time
@@ -775,84 +768,7 @@ function CrimeNetManager:save(data)
 	data.crimenet = self._global
 end
 function CrimeNetManager:load(data)
-	Global.crimenet = data.crimenet or {
-		quickplay = {}
-	}
-	self._global = Global.crimenet
-end
-function CrimeNetManager:join_quick_play_game()
-	if SystemInfo:platform() ~= Idstring("WIN32") then
-		return
-	end
-	local player_level = managers.experience:current_level()
-	local function f(info)
-		managers.network.matchmake:search_lobby_done()
-		local room_list = info.room_list
-		local attribute_list = info.attribute_list
-		if not self._global.quickplay then
-			self._global.quickplay = {}
-		end
-		local game_list = {}
-		local player_level = managers.experience:current_level()
-		local level_diff_min = self._global.quickplay.level_diff_min or tweak_data.quickplay.default_level_diff[1]
-		local level_diff_max = self._global.quickplay.level_diff_max or tweak_data.quickplay.default_level_diff[2]
-		local min_level, max_level = math.max(player_level - level_diff_min, 0), math.min(player_level + level_diff_max, 100)
-		local stealth_enabled = managers.user:get_setting("quickplay_stealth")
-		local loud_enabled = managers.user:get_setting("quickplay_loud")
-		local difficulty = self._global.quickplay.difficulty
-		for i, room in ipairs(room_list) do
-			local name_str = tostring(room.owner_name)
-			local attributes_numbers = attribute_list[i].numbers
-			local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
-			local skip_level = false
-			if not stealth_enabled or not loud_enabled then
-				local is_stealth = tweak_data.quickplay.stealth_levels[level_id] or attributes_numbers[10] == 2 or false
-				skip_level = is_stealth ~= stealth_enabled
-			end
-			if not skip_level and difficulty and difficulty ~= tweak_data:index_to_difficulty(attributes_numbers[2]) then
-				skip_level = true
-			end
-			if not skip_level and managers.network.matchmake:is_server_ok(false, room.owner_id, attributes_numbers) then
-				local owner_level = room.owner_level and tonumber(room.owner_level)
-				if owner_level and min_level <= owner_level and max_level >= owner_level then
-					game_list[room.room_id] = name_str
-				end
-			end
-		end
-		self._previous_quick_play_games = self._global.quickplay
-		local selected_game
-		for room_id, _ in pairs(game_list) do
-			if not table.contains(self._previous_quick_play_games, room_id) then
-				selected_game = room_id
-				table.insert(self._previous_quick_play_games, room_id)
-			else
-			end
-		end
-		if not selected_game then
-			for _, room_id in ipairs(self._previous_quick_play_games) do
-				if game_list[room_id] then
-					selected_game = room_id
-					table.insert(self._previous_quick_play_games, table.remove(self._previous_quick_play_games, 1))
-					break
-				else
-					self._previous_quick_play_games[room_id] = nil
-				end
-			end
-		end
-		if selected_game then
-			managers.network.matchmake:join_server(selected_game, true)
-		else
-			local dialog_data = {}
-			dialog_data.title = managers.localization:text("menu_cn_quickplay_not_found_title")
-			dialog_data.text = managers.localization:text("menu_cn_quickplay_not_found_body")
-			local ok_button = {}
-			ok_button.text = managers.localization:text("dialog_ok")
-			dialog_data.button_list = {ok_button}
-			managers.system_menu:show(dialog_data)
-		end
-	end
-	managers.network.matchmake:register_callback("search_lobby", f)
-	managers.network.matchmake:search_lobby()
+	self._global = data.crimenet
 end
 CrimeNetGui = CrimeNetGui or class()
 function CrimeNetGui:init(ws, fullscreeen_ws, node)
@@ -1464,7 +1380,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 			}),
 			font_size = tweak_data.menu.pd2_large_font_size,
 			font = tweak_data.menu.pd2_large_font,
-			color = tweak_data.screen_colors.button_stage_3,
+			color = Color(0.9764706, 0.92941177, 0.105882354),
 			layer = 40,
 			blend_mode = "add"
 		})
@@ -1626,7 +1542,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 		self:_goto_map_position(start_position.x, start_position.y)
 	end
 	self._special_contracts_id = {}
-	self:add_special_contracts(node:parameters().no_casino, no_servers)
+	self:add_special_contracts(node:parameters().no_casino)
 	do break end
 	if managers.features:can_announce("crimenet_hacked") then
 	else
@@ -1996,10 +1912,10 @@ function CrimeNetGui:set_getting_hacked(hacked)
 	self._start_hacked_t = hacked
 	self._hacked_t = self._start_hacked_t
 end
-function CrimeNetGui:add_special_contracts(no_casino, no_quickplay)
+function CrimeNetGui:add_special_contracts(no_casino)
 	for index, special_contract in ipairs(tweak_data.gui.crime_net.special_contracts) do
 		local id = special_contract.id
-		if id and not self._jobs[id] and (not special_contract.unlock or special_contract.unlock and managers.experience:current_level() >= tweak_data:get_value(special_contract.id, special_contract.unlock)) and (special_contract.id ~= "casino" or not no_casino) and (special_contract.id ~= "quickplay" or not no_quickplay) then
+		if id and not self._jobs[id] and (not special_contract.unlock or special_contract.unlock and managers.experience:current_level() >= tweak_data:get_value(special_contract.id, special_contract.unlock)) and (special_contract.id ~= "casino" or not no_casino) then
 			local gui_data = self:_create_job_gui(special_contract, "special")
 			gui_data.server = true
 			gui_data.special_node = special_contract.menu_node

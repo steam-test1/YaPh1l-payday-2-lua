@@ -1503,6 +1503,7 @@ function MenuNodeMainGui:_setup_item_rows(node)
 	end
 	if Application:debug_enabled() or SystemInfo:platform() == Idstring("WIN32") then
 		local version = Application:version()
+		version = "Tournament Version"
 		self._version_string = self.ws:panel():text({
 			name = "version_string",
 			text = version,

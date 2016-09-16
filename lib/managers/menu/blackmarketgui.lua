@@ -509,7 +509,7 @@ function BlackMarketGuiTabItem:mouse_pressed(button, x, y)
 			end
 		end
 	end
-	if button ~= Idstring("0") or button == Idstring("1") then
+	if button ~= Idstring("0") then
 		return
 	end
 	if not self._slots[self._slot_highlighted] then
@@ -2274,13 +2274,6 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 				name = "bm_menu_btn_sell",
 				callback = callback(self, self, "sell_item_callback")
 			},
-			w_skin = {
-				prio = 5,
-				btn = "BTN_STICK_L",
-				pc_btn = "menu_edit_skin",
-				name = "bm_menu_btn_skin",
-				callback = callback(self, self, "edit_weapon_skin_callback")
-			},
 			ew_unlock = {
 				prio = 1,
 				btn = "BTN_A",
@@ -2319,7 +2312,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			bw_buy_dlc = {
 				prio = 4,
 				btn = "BTN_X",
-				pc_btn = "menu_remove_item",
+				pc_btn = "menu_modify_item",
 				name = "bm_menu_buy_dlc",
 				callback = callback(self, self, "show_buy_dlc_callback")
 			},
@@ -6022,9 +6015,6 @@ function BlackMarketGui:mouse_moved(o, x, y)
 	return used, pointer
 end
 function BlackMarketGui:mouse_pressed(button, x, y)
-	if button == Idstring("1") and managers.player:has_category_upgrade("player", "second_deployable") and self._data[1].category == "deployables" then
-		self:mouse_pressed(Idstring("0"), x, y)
-	end
 	if managers.menu_scene and managers.menu_scene:input_focus() then
 		return false
 	end
@@ -6044,7 +6034,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 			selected_slot = math.min(self._extra_options_data.selected + 1, self._extra_options_data.num_panels)
 		elseif button == Idstring("mouse wheel up") then
 			selected_slot = math.max(self._extra_options_data.selected - 1, 1)
-		elseif button == Idstring("0") or button == Idstring("1") then
+		elseif button == Idstring("0") then
 			self._extra_options_data.selected = self._extra_options_data.selected or 1
 			for i = 1, self._extra_options_data.num_panels do
 				local option = self._extra_options_data[i]
@@ -6119,7 +6109,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 			return
 		end
 	end
-	if button ~= Idstring("0") or button == Idstring("1") then
+	if button ~= Idstring("0") then
 		return
 	end
 	if self._panel:child("back_button"):inside(x, y) then
@@ -6258,23 +6248,13 @@ function BlackMarketGui:mouse_double_click(o, button, x, y)
 	if not self._slot_data or self._mouse_click[0].selected_slot ~= self._mouse_click[1].selected_slot then
 		return
 	end
-	if button == Idstring("0") then
-		if not self._selected_slot._panel:inside(x, y) then
-			return
-		end
-		if managers.system_menu and managers.system_menu:is_active() and not managers.system_menu:is_closing() then
-			return
-		end
-		self:press_first_btn(button)
-	elseif button == Idstring("1") then
-		if not self._selected_slot._panel:inside(x, y) then
-			return
-		end
-		if managers.system_menu and managers.system_menu:is_active() and not managers.system_menu:is_closing() then
-			return
-		end
-		self:press_second_btn(Idstring("0"))
+	if not self._selected_slot._panel:inside(x, y) then
+		return
 	end
+	if managers.system_menu and managers.system_menu:is_active() and not managers.system_menu:is_closing() then
+		return
+	end
+	self:press_first_btn(button)
 end
 function BlackMarketGui:update(t, dt)
 	if self._input_wait_t then
@@ -6320,48 +6300,6 @@ function BlackMarketGui:press_first_btn(button)
 		if first_btn_visible and first_btn_callback then
 			managers.menu_component:post_event("menu_enter")
 			first_btn_callback(self._slot_data, self._data.topic_params)
-			return true
-		else
-			self:flash()
-		end
-	elseif button == Idstring("1") then
-	end
-	return false
-end
-function BlackMarketGui:press_second_btn(button)
-	local second_btn_callback
-	local second_btn_prio = 999
-	local second_btn_visible = false
-	local first_btn_callback
-	local first_btn_prio = 999
-	local first_btn_visible = false
-	if button == Idstring("0") then
-		if self._slot_data.double_click_btn then
-			local btn = self._btns[self._slot_data.double_click_btn]
-			if btn then
-				second_btn_prio = btn._data.prio
-				second_btn_callback = btn._data.callback
-				second_btn_visible = btn:visible()
-			end
-		else
-			for _, btn in pairs(self._btns) do
-				if btn:visible() and first_btn_prio >= btn._data.prio then
-					second_btn_prio = first_btn_prio
-					second_btn_callback = first_btn_callback
-					second_btn_visible = first_btn_visible
-					first_btn_prio = btn._data.prio
-					first_btn_callback = btn._data.callback
-					first_btn_visible = btn:visible()
-				elseif btn:visible() and second_btn_prio >= btn._data.prio and first_btn_prio < btn._data.prio then
-					second_btn_prio = btn._data.prio
-					second_btn_callback = btn._data.callback
-					second_btn_visible = btn:visible()
-				end
-			end
-		end
-		if second_btn_visible and second_btn_callback then
-			managers.menu_component:post_event("menu_enter")
-			second_btn_callback(self._slot_data, self._data.topic_params)
 			return true
 		else
 			self:flash()
@@ -6919,9 +6857,6 @@ function BlackMarketGui:populate_weapon_category(category, data)
 			if has_mods and new_data.unlocked then
 				table.insert(new_data, "w_mod")
 			end
-			if has_mods and new_data.unlocked and managers.workshop and managers.workshop:enabled() and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), new_data.name) then
-				table.insert(new_data, "w_skin")
-			end
 			if not new_data.last_weapon then
 				table.insert(new_data, "w_sell")
 			end
@@ -7277,7 +7212,6 @@ function BlackMarketGui:populate_grenades(data)
 	local index = 0
 	local guis_catalog, m_tweak_data, grenade_id
 	for i, grenades_data in ipairs(sort_data) do
-		print(inspect(grenades_data))
 		grenade_id = grenades_data[1]
 		m_tweak_data = tweak_data.blackmarket.projectiles[grenades_data[1]] or {}
 		guis_catalog = "guis/"
@@ -7562,10 +7496,10 @@ function BlackMarketGui:populate_deployables(data)
 		new_data.equipped = slot ~= 0
 		if new_data.equipped and second_deployable and new_data.unlocked then
 			if slot == 1 then
-				new_data.equipped_text = managers.localization:to_upper_text("bm_menu_primaries")
+				new_data.equipped_text = "PRIMARY"
 			end
 			if slot == 2 then
-				new_data.equipped_text = managers.localization:to_upper_text("bm_menu_secondaries")
+				new_data.equipped_text = "SECONDARY"
 			end
 		end
 		if not new_data.unlocked then
@@ -8450,9 +8384,6 @@ function BlackMarketGui:populate_weapon_category_new(data)
 					if has_mods and active then
 						table.insert(new_data, "w_mod")
 					end
-					if has_mods and active and managers.workshop and managers.workshop:enabled() and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), new_data.name) then
-						table.insert(new_data, "w_skin")
-					end
 					if not new_data.last_weapon then
 						table.insert(new_data, "w_sell")
 					end
@@ -8965,9 +8896,6 @@ function BlackMarketGui:populate_mods(data)
 			else
 				table.insert(new_data, "wm_preview")
 			end
-			if managers.workshop and managers.workshop:enabled() and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), weapon_id) then
-				table.insert(new_data, "w_skin")
-			end
 		end
 		data[index] = new_data
 	end
@@ -9010,9 +8938,6 @@ function BlackMarketGui:populate_mods(data)
 				table.insert(data[equipped], "wm_remove_preview")
 			else
 				table.insert(data[equipped], "wm_preview")
-			end
-			if managers.workshop and managers.workshop:enabled() and data.prev_node_data and not table.contains(managers.blackmarket:skin_editor():get_excluded_weapons(), data.prev_node_data.name) then
-				table.insert(data[equipped], "w_skin")
 			end
 		end
 		local factory = tweak_data.weapon.factory.parts[data[equipped].name]
@@ -9869,14 +9794,6 @@ function BlackMarketGui:choose_weapon_mods_callback(data)
 	local open_node = data.open_node or self._inception_node_name or "blackmarket_node"
 	self:_start_crafting_weapon(data, new_node_data)
 end
-function BlackMarketGui:edit_weapon_skin_callback(data)
-	local function cb()
-		managers.menu:open_node("skin_editor", {data})
-	end
-	managers.workshop:_init_items()
-	managers.blackmarket:skin_editor():init_items()
-	managers.blackmarket:view_weapon(data.category, data.slot, cb, true, BlackMarketGui.get_crafting_custom_data())
-end
 function BlackMarketGui:choose_mod_type_callback(data)
 	local mods = managers.blackmarket:get_dropable_mods_by_weapon_id(data.name)
 	local new_node_data = {}
@@ -9988,9 +9905,6 @@ function BlackMarketGui:clear_preferred_characters_callback(data)
 end
 function BlackMarketGui.get_crafting_custom_data()
 	return managers.menu_scene:get_crafting_custom_data()
-end
-function BlackMarketGui.get_screenshot_custom_data()
-	return managers.menu_scene:get_screenshot_custom_data()
 end
 function BlackMarketGui:pickup_crafted_item_callback(data)
 	managers.blackmarket:pickup_crafted_item(data.category, data.slot)

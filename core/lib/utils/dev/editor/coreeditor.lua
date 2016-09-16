@@ -15,9 +15,6 @@ core:import("CoreInput")
 core:import("CoreEditorUtils")
 core:import("CoreEditorSave")
 core:import("CoreUnit")
-core:import("CoreStack")
-core:import("CoreEditorCommand")
-core:import("CoreEditorCommandBlock")
 require("core/lib/utils/dev/editor/ews_classes/CoreEditorEwsClasses")
 require("core/lib/utils/dev/editor/ews_classes/UnitByName")
 require("core/lib/utils/dev/editor/ews_classes/SelectByName")
@@ -38,7 +35,6 @@ require("core/lib/utils/dev/editor/ews_classes/UnhideByName")
 require("core/lib/utils/dev/editor/ews_classes/CreateWorldSettingFile")
 require("core/lib/utils/dev/editor/ews_classes/SelectNameModal")
 require("core/lib/utils/dev/editor/ews_classes/MissionElementListFlow")
-require("core/lib/utils/dev/editor/ews_classes/UnitBreakdownView")
 require("core/lib/utils/dev/SettingsHandling")
 require("core/lib/units/editor/CoreMissionElement")
 require("core/lib/units/data/CoreMissionElementData")
@@ -82,8 +78,6 @@ require("core/lib/utils/dev/editor/CoreEditorGroups")
 require("core/lib/utils/dev/editor/CoreEditorCubeMap")
 require("core/lib/utils/dev/editor/CoreEditorDomeOcclusion")
 require("core/lib/utils/dev/editor/utils/CoreFCCEditorController")
-require("core/lib/utils/dev/editor/utils/CoreEditorMessages")
-require("core/lib/utils/dev/editor/utils/CoreEditorMessageSystem")
 function CoreEditor:init(game_state_machine, session_state)
 	assert(game_state_machine)
 	self._gsm = game_state_machine
@@ -134,8 +128,6 @@ function CoreEditor:init(game_state_machine, session_state)
 	self._markers = {}
 	self._recent_files_limit = 10
 	self._recent_files = {}
-	self._undo_stack = CoreStack.Stack:new()
-	self._redo_stack = CoreStack.Stack:new()
 	self:_init_slot_masks()
 	self:_init_layer_values()
 	self:_init_edit_setting_values()
@@ -148,7 +140,6 @@ function CoreEditor:init(game_state_machine, session_state)
 	self:_init_mission_players()
 	self:_init_mission_platforms()
 	self:_init_title_messages()
-	self._message_system = EditorMessageSystem:new()
 end
 function CoreEditor:_load_packages()
 	if not PackageManager:loaded("core/packages/editor") then
@@ -229,24 +220,6 @@ function CoreEditor:_init_layer_classes()
 	self:add_layer("Instances", CoreInstancesLayer.InstancesLayer)
 	self:_project_init_layer_classes()
 end
-function CoreEditor:layer_load_order()
-	self._layer_load_order = self._layer_load_order or {
-		"Ai",
-		"Heatmap",
-		"WorldCamera",
-		"Dynamics",
-		"Wires",
-		"Level Settings",
-		"Portals",
-		"Brush",
-		"Environment",
-		"Instances",
-		"Statics",
-		"Sound",
-		"Mission"
-	}
-	return self._layer_load_order
-end
 function CoreEditor:_project_init_layer_classes()
 end
 function CoreEditor:_clear_values()
@@ -262,13 +235,11 @@ function CoreEditor:_init_configuration_values()
 	self._always_global_select_unit = false
 	self._use_timestamp = false
 	self._reset_camera_on_new = false
+	self._use_beta_undo = false
 	self._dialogs_stay_on_top = false
 	self._save_edit_setting_values = false
 	self._save_dialog_states = false
 	self._use_edit_light_dialog = false
-	self._use_beta_undo = false
-	self._undo_history = 100
-	self._undo_debug = false
 end
 function CoreEditor:_init_slot_masks()
 	self._surface_move_mask = managers.slot:get_mask("surface_move")
@@ -606,9 +577,6 @@ function CoreEditor:close()
 		self:_set_vp_active(false)
 	end
 end
-function CoreEditor:is_simulating()
-	return self._current
-end
 function CoreEditor:pickup_tool()
 	cat_print("editor", "CoreEditor:pickup_tool")
 	Global.render_debug.draw_enabled = true
@@ -737,7 +705,6 @@ function CoreEditor:run_simulation(with_mission)
 		self:toggle()
 		managers.editor:output("Simulation ended successfully.", nil, Vector3(0, 0, 255))
 	end
-	self._undo_block = nil
 end
 function CoreEditor:_simulation_disable_continents()
 	local t = {}
@@ -786,17 +753,6 @@ function CoreEditor:go_through_all_units(mask)
 			if unit:unit_data().helper_type and unit:unit_data().helper_type ~= "none" then
 				managers.helper_unit:add_unit(unit, unit:unit_data().helper_type)
 			end
-			if unit:unit_data().disable_collision then
-				local disable_collision = unit:unit_data().disable_collision
-				for index = 0, unit:num_bodies() - 1 do
-					local body = unit:body(index)
-					if body then
-						body:set_collisions_enabled(not disable_collision)
-						body:set_collides_with_mover(not disable_collision)
-						body:set_enabled(not disable_collision)
-					end
-				end
-			end
 			self:_project_check_unit(unit)
 		end
 	end
@@ -836,7 +792,6 @@ function CoreEditor:stop_simulation()
 		self._dialogs.select_by_name:reset()
 	end
 	self:on_enable_all_layers()
-	self._undo_block = nil
 	self:_show_error_log()
 end
 function CoreEditor:clear_layers_and_units()
@@ -1349,11 +1304,6 @@ function CoreEditor:hide_dialog(name)
 		self._dialogs[name]:set_visible(false)
 	end
 end
-function CoreEditor:dialog_visible(name)
-	if self._dialogs[name] then
-		return self._dialogs[name]:visible()
-	end
-end
 function CoreEditor:save_configuration()
 	local f = SystemFS:open(managers.database:base_path() .. self._configuration_path .. ".xml", "w")
 	f:puts("<editor_configuration>")
@@ -1791,6 +1741,11 @@ function CoreEditor:get_world_holder_path()
 	Application:error("FIXME: Either unused or broken.")
 	return self._world_holder:get_world_file()
 end
+function CoreEditor:undo()
+	if self._current_layer and ctrl() then
+		self._current_layer:undo()
+	end
+end
 function CoreEditor:list_terminated()
 	local units = {}
 	for _, unit in ipairs(World:find_units_quick("all")) do
@@ -1805,11 +1760,11 @@ end
 function CoreEditor:step_id()
 	return self._STEP_ID
 end
-function CoreEditor:get_unit_id(unit, start_id)
+function CoreEditor:get_unit_id(unit)
 	if unit:unit_data().continent then
-		return unit:unit_data().continent:get_unit_id(unit, start_id)
+		return unit:unit_data().continent:get_unit_id(unit)
 	end
-	local i = start_id or self._max_id
+	local i = self._max_id
 	while self._unit_ids[i] do
 		i = i + 1
 	end
@@ -1948,9 +1903,7 @@ function CoreEditor:_draw_bodies(t, dt)
 end
 function CoreEditor:update(time, rel_time)
 	if self._enabled then
-		if self._message_system then
-			self._message_system:update()
-		end
+		self:update_title_bar(time, rel_time)
 		if self._in_window then
 			entering_window()
 		end
@@ -2065,13 +2018,6 @@ function CoreEditor:update(time, rel_time)
 			self._dialogs.edit_unit:update(time, rel_time)
 		end
 		self:_tick_generate_dome_occlusion(time, rel_time)
-	end
-	if self._undo_block then
-		self:_register_undo_command_block(self._undo_block)
-		if managers.editor:undo_debug() then
-			print("[Undo] Saved undo command block: ", self._undo_block)
-		end
-		self._undo_block = nil
 	end
 	self:_update_mute_state(time, rel_time)
 end
@@ -2972,8 +2918,7 @@ function CoreEditor:do_load()
 	self:load_values(self._world_holder, offset)
 	local progress_i = 50
 	local layers_amount = table.size(self._layers)
-	for _, name in ipairs(self:layer_load_order()) do
-		local layer = self._layers[name]
+	for name, layer in pairs(self._layers) do
 		progress_i = progress_i + 50 / layers_amount
 		self:update_load_progress(progress_i, "Create Layer: " .. name)
 		layer:load(self._world_holder, offset)
@@ -2990,7 +2935,6 @@ function CoreEditor:do_load()
 	for name, dialog in pairs(self._layer_replace_dialogs) do
 		dialog:reset()
 	end
-	self:clear_undo_stack()
 	self._loading = false
 end
 function CoreEditor:loading()
@@ -3001,7 +2945,6 @@ function CoreEditor:clear_all()
 		self._camera_controller:set_camera_pos(Vector3(0, 0, 0))
 		self._camera_controller:set_camera_rot(Rotation())
 	end
-	self._unit_ids = {}
 	self._continents = {}
 	self._continents_panel:destroy_all_continents()
 	self:create_continent("world", {})
@@ -3013,7 +2956,6 @@ function CoreEditor:clear_all()
 	self:has_editables()
 	self:_clear_values()
 	self:_recreate_dialogs()
-	self._message_system = EditorMessageSystem:new()
 end
 function CoreEditor:load_markers(world_holder, offset)
 	local markers = world_holder:create_world("world", "markers", offset)
@@ -3401,12 +3343,6 @@ end
 function CoreEditor:use_beta_undo()
 	return self._use_beta_undo
 end
-function CoreEditor:undo_history_size()
-	return self._undo_history
-end
-function CoreEditor:undo_debug()
-	return self._undo_debug
-end
 CoreEditorContinent = CoreEditorContinent or class()
 function CoreEditorContinent:init(name, values)
 	self._unit_ids = {}
@@ -3431,8 +3367,8 @@ end
 function CoreEditorContinent:base_id()
 	return self._values.base_id
 end
-function CoreEditorContinent:get_unit_id(unit, start_id)
-	local i = start_id or self._values.base_id
+function CoreEditorContinent:get_unit_id(unit)
+	local i = self._values.base_id
 	while self._unit_ids[i] do
 		i = i + 1
 	end
@@ -3579,85 +3515,4 @@ function CoreEditor:update_post_effects()
 			self._post_processor_effects_menu:set_checked(id, pe.enable)
 		end
 	end
-end
-function CoreEditor:register_message(message, uid, func)
-	return self._message_system:register(message, uid, func)
-end
-function CoreEditor:unregister_message(message, uid)
-	self._message_system:unregister(message, uid)
-end
-function CoreEditor:send_message(message, uid, ...)
-	self._message_system:notify(message, uid, ...)
-end
-function CoreEditor:send_message_now(message, uid, ...)
-	self._message_system:notify_now(message, uid, ...)
-end
-function CoreEditor:undo()
-	if not ctrl() or not managers.editor:use_beta_undo() then
-		return false
-	end
-	if alt() then
-		if shift() then
-			if managers.editor:undo_debug() and not Input:keyboard():down(Idstring("right shift")) then
-				self:_print_undo_stacks()
-			else
-				self:clear_undo_stack()
-			end
-		end
-		return
-	end
-	if shift() then
-		self:_redo()
-	else
-		self:_undo()
-	end
-end
-function CoreEditor:_undo()
-	if not self._undo_stack:is_empty() then
-		local command = self._undo_stack:pop()
-		command:undo()
-		self._redo_stack:push(command)
-	end
-end
-function CoreEditor:_redo()
-	if not self._redo_stack:is_empty() then
-		local command = self._redo_stack:pop()
-		command:execute()
-		self._undo_stack:push(command)
-	end
-end
-function CoreEditor:register_undo_command(command)
-	if managers.editor:undo_debug() then
-		print("[Undo] Register undo command ", command)
-	end
-	self._undo_block = self._undo_block or CoreEditorCommandBlock.CoreEditorCommandBlock:new()
-	self._undo_block:add_command(command)
-end
-function CoreEditor:_register_undo_command_block(block)
-	self._undo_stack:push(block)
-	if self._undo_stack:size() > managers.editor:undo_history_size() then
-		local dif = self._undo_stack:size() - managers.editor:undo_history_size()
-		table.remove(self._undo_stack:stack_table(), 1, dif)
-		self._undo_stack._last = self._undo_stack._last - dif
-	end
-	if not self._redo_stack:is_empty() then
-		self._redo_stack:clear()
-	end
-end
-function CoreEditor:clear_undo_stack()
-	self._undo_block = nil
-	self._undo_stack:clear()
-	self._redo_stack:clear()
-	print("[Undo] Undo/Redo stack cleared!")
-end
-function CoreEditor:_print_undo_stacks()
-	print("[Undo] undo stack: ")
-	for i, command in pairs(self._undo_stack:stack_table()) do
-		print(string.format("[Undo] %i: %s", i, tostring(command)))
-	end
-	print("[Undo] redo stack: ")
-	for i, command in pairs(self._redo_stack:stack_table()) do
-		print(string.format("[Undo] %i: %s", #self._undo_stack:stack_table() + i, tostring(command)))
-	end
-	print("[Undo] ------")
 end

@@ -183,6 +183,7 @@ function AchievmentManager:total_unlocked()
 	return i
 end
 function AchievmentManager:award(id)
+	do return end
 	if not self:exists(id) then
 		Application:debug("[AchievmentManager:award] Awarding non-existing achievement", "id", id)
 		return
@@ -210,6 +211,7 @@ function AchievmentManager:award_progress(stat, value)
 	if Application:editor() then
 		return
 	end
+	do return end
 	print("[AchievmentManager:award_progress]: ", stat .. " increased by " .. tostring(value or 1))
 	managers.challenge:on_achievement_progressed(stat)
 	if SystemInfo:platform() == Idstring("WIN32") then

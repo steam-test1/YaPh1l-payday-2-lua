@@ -75,8 +75,8 @@ function EquipmentsTweakData:init()
 			upgrade = "sentry_gun_deploy_time_multiplier"
 		},
 		visual_object = "g_sentrybag",
-		ammo_cost = 0.7,
-		min_ammo_cost = 0.8
+		ammo_cost = 0.2,
+		min_ammo_cost = 0.33
 	}
 	self.sentry_gun_silent = {
 		icon = "equipment_sentry_silent",
@@ -92,7 +92,7 @@ function EquipmentsTweakData:init()
 			upgrade = "sentry_gun_deploy_time_multiplier"
 		},
 		visual_object = "g_sentrybag",
-		ammo_cost = 0.46,
+		ammo_cost = 0.2,
 		min_ammo_cost = 0.33,
 		upgrade_name = {"sentry_gun"}
 	}

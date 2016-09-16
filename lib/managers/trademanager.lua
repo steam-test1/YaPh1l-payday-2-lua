@@ -1,6 +1,5 @@
 TradeManager = TradeManager or class()
 TradeManager.TRADE_DELAY = 5
-TradeManager._STOCKHOLM_SYNDROME_DELAY = 15
 function TradeManager:init()
 	self._criminals_to_respawn = {}
 	self._criminals_to_add = {}
@@ -9,7 +8,6 @@ function TradeManager:init()
 	self._hostage_trade_index = 0
 	self._pause_t = 0
 	self:set_trade_countdown(true)
-	self._trade_complete = true
 end
 function TradeManager:pause_trade(time)
 	self._pause_t = time
@@ -158,7 +156,6 @@ function TradeManager:update(t, dt)
 	end
 	self._pause_t = math.max(0, self._pause_t - dt)
 	if (self._trade_countdown or is_auto_assault_ai_trade) and is_trade_allowed and 0 >= self._pause_t and not managers.player:_is_all_in_custody() then
-		print("so ")
 		local trade = self:get_criminal_to_trade(true)
 		local is_ai_trade_possible = managers.groupai:state():is_ai_trade_possible()
 		if trade and Global.game_settings.single_player and not trade.ai and not is_ai_trade_possible then
@@ -169,7 +166,6 @@ function TradeManager:update(t, dt)
 			if is_ai_trade_possible then
 				self:clbk_begin_hostage_trade_dialog(1)
 			else
-				print("so far so good")
 				local respawn_t = self._t + math.random(2, 5)
 				self._hostage_trade_clbk = "TradeManager"
 				managers.enemy:add_delayed_clbk(self._hostage_trade_clbk, callback(self, self, "clbk_begin_hostage_trade_dialog", 1), respawn_t)
@@ -177,23 +173,8 @@ function TradeManager:update(t, dt)
 		end
 	end
 end
-function TradeManager:start_stockholm_syndrome()
-	self._stockholm_syndrome = true
-end
-function TradeManager:end_stockholm_syndrome()
-	self._stockholm_syndrome = false
-end
 function TradeManager:is_trade_allowed()
 	return Network:is_server() and not self._trading_hostage and not self._hostage_trade_clbk and #self._criminals_to_respawn > 0 and not managers.groupai:state():whisper_mode() and not self._speaker_snd_event and (0 < managers.groupai:state():hostage_count() or next(managers.groupai:state():all_converted_enemies()))
-end
-function TradeManager:is_stockholm_syndrome_allowed()
-	local trade_in_progress = self._stockholm_syndrome or not self._trade_complete
-	local is_in_stealth = managers.groupai:state():whisper_mode()
-	local no_hostages = managers.groupai:state():hostage_count() <= 0
-	if Network:is_server() and not trade_in_progress and not is_in_stealth and 0 < #self._criminals_to_respawn and not no_hostages then
-		return true, false, false, false
-	end
-	return false, trade_in_progress, is_in_stealth, no_hostages
 end
 function TradeManager:_increment_trade_index()
 	if self._hostage_trade_index > 10000 then
@@ -623,25 +604,19 @@ function TradeManager:clbk_begin_hostage_trade()
 	local best_hostage = self:get_best_hostage(rescuing_criminal_pos)
 	self:begin_hostage_trade(rescuing_criminal_pos, rot, best_hostage, is_instant_trade)
 end
-function TradeManager:begin_hostage_trade(position, rotation, hostage, is_instant_trade, skip_free_criminal, skip_hint, skip_init)
+function TradeManager:begin_hostage_trade(position, rotation, hostage, is_instant_trade, skip_free_criminal)
 	if hostage then
-		local clbk_key = "TradeManager"
 		self._trading_hostage = true
 		self._hostage_to_trade = hostage
-		hostage.unit:brain():set_logic("trade", {
-			skip_hint = skip_hint or false
-		})
-		if not hostage.initialized then
-			self._hostage_to_trade.death_clbk_key = clbk_key
-			self._hostage_to_trade.destroyed_clbk_key = clbk_key
-			hostage.unit:character_damage():add_listener(clbk_key, {"death"}, callback(self, self, "clbk_hostage_died"))
-			hostage.unit:base():add_destroy_listener(clbk_key, callback(self, self, "clbk_hostage_destroyed"))
-			hostage.initialized = true
-		end
+		hostage.unit:brain():set_logic("trade")
+		local clbk_key = "TradeManager"
+		self._hostage_to_trade.death_clbk_key = clbk_key
+		self._hostage_to_trade.destroyed_clbk_key = clbk_key
+		hostage.unit:character_damage():add_listener(clbk_key, {"death"}, callback(self, self, "clbk_hostage_died"))
+		hostage.unit:base():add_destroy_listener(clbk_key, callback(self, self, "clbk_hostage_destroyed"))
 		if is_instant_trade then
 			self._auto_assault_ai_trade_t = nil
 			hostage.unit:brain():on_trade(position, rotation, not skip_free_criminal)
-			self._trade_complete = false
 		end
 	else
 		self:cancel_trade()
@@ -679,9 +654,6 @@ function TradeManager:get_best_hostage(pos, use_existing)
 		for u_key, unit in pairs(managers.groupai:state():all_converted_enemies()) do
 			best_hostage = all_enemies[u_key]
 		end
-	end
-	if best_hostage then
-		best_hostage.initialized = false
 	end
 	return best_hostage
 end
@@ -781,12 +753,6 @@ function TradeManager:_remove_criminal_respawn(respawn_criminal)
 		else
 		end
 	end
-end
-function TradeManager:trade_complete()
-	self._trade_complete = true
-	self._hostage_to_trade = nil
-	self._trading_hostage = nil
-	self:end_stockholm_syndrome()
 end
 function TradeManager:update_auto_assault_ai_trade(dt, is_trade_allowed)
 	if self._auto_assault_ai_trade_t then

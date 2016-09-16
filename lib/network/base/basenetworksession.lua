@@ -421,10 +421,6 @@ function BaseNetworkSession:on_peer_kicked(peer, peer_id, message_id)
 		local reason = "kicked"
 		if message_id == 1 then
 			reason = "removed_dead"
-			if peer:is_host() and game_state_machine:current_state().on_server_left then
-				Global.on_server_left_message = "dialog_connection_to_host_lost"
-				game_state_machine:current_state():on_server_left()
-			end
 		elseif message_id == 2 or message_id == 3 then
 			reason = "auth_fail"
 		end
@@ -1243,6 +1239,10 @@ function BaseNetworkSession:on_drop_in_pause_request_received(peer_id, nickname,
 					print("DROP-IN PAUSE")
 					Application:set_pause(true)
 					SoundDevice:set_rtpc("ingame_sound", 0)
+					local peer = self:peer(peer_id)
+					if is_playing and peer and 0 < peer:rank() then
+						managers.hud:post_event("infamous_player_join_stinger")
+					end
 				end
 				if Network:is_client() then
 					self:send_to_host("drop_in_pause_confirmation", peer_id)

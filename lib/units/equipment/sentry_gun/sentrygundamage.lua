@@ -446,9 +446,6 @@ function SentryGunDamage:load(save_data)
 		self:_make_shield_smoke()
 	end
 end
-function SentryGunDamage:melee_hit_sfx()
-	return "hit_gen"
-end
 function SentryGunDamage:destroy(unit)
 	unit:brain():pre_destroy()
 	unit:movement():pre_destroy()

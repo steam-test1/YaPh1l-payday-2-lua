@@ -132,7 +132,7 @@ function PlayerManager:init()
 		local function start_bloodthirst_base(weapon_unit, variant)
 			if variant ~= "melee" and not self._coroutine_mgr:is_running(PlayerAction.BloodthirstBase) then
 				local data = self:upgrade_value("player", "melee_damage_stacking", nil)
-				if data and type(data) ~= "number" then
+				if data then
 					self._coroutine_mgr:add_coroutine(PlayerAction.BloodthirstBase, PlayerAction.BloodthirstBase, self, data.melee_multiplier, data.max_multiplier)
 				end
 			end
@@ -152,7 +152,7 @@ function PlayerManager:init()
 		self._message_system:register(Message.OnEnemyKilled, "double_ammo_drop", callback(self, self, "_on_spawn_extra_ammo_event"))
 	end
 	if self:has_category_upgrade("temporary", "single_shot_fast_reload") then
-		self._message_system:register(Message.OnLethalHeadShot, "activate_aggressive_reload", callback(self, self, "_on_activate_aggressive_reload_event"))
+		self._message_system:register(Message.OnHeadShot, "activate_aggressive_reload", callback(self, self, "_on_activate_aggressive_reload_event"))
 	end
 	if self:has_category_upgrade("player", "head_shot_ammo_return") then
 		self._ammo_efficiency = self:upgrade_value("player", "head_shot_ammo_return", nil)
@@ -163,9 +163,6 @@ function PlayerManager:init()
 	end
 	if self:has_category_upgrade("player", "super_syndrome") then
 		self._super_syndrome_count = self:upgrade_value("player", "super_syndrome")
-	end
-	if self:has_category_upgrade("player", "run_and_shoot") then
-		self.RUN_AND_SHOOT = true
 	end
 end
 function PlayerManager:damage_absorption()
@@ -211,8 +208,7 @@ function PlayerManager:_on_enter_shock_and_awe_event()
 	if not self._coroutine_mgr:is_running("automatic_faster_reload") then
 		local equipped_unit = self:get_current_state()._equipped_unit
 		local data = self:upgrade_value("player", "automatic_faster_reload", nil)
-		local is_grenade_launcher = equipped_unit:base():is_category("grenade_launcher")
-		if data and equipped_unit and not is_grenade_launcher and (equipped_unit:base():fire_mode() == "auto" or equipped_unit:base():is_category("bow", "flamethrower")) then
+		if data and equipped_unit and (equipped_unit:base():fire_mode() == "auto" or equipped_unit:base():is_category("grenade_launcher", "bow", "flamethrower")) then
 			self._coroutine_mgr:add_and_run_coroutine("automatic_faster_reload", PlayerAction.ShockAndAwe, self, data.target_enemies, data.max_reload_increase, data.min_reload_increase, data.penalty, data.min_bullets, equipped_unit)
 		end
 	end
@@ -517,9 +513,6 @@ function PlayerManager:_internal_load()
 	local equipment = self:selected_equipment()
 	if equipment then
 		add_hud_item(get_as_digested(equipment.amount), equipment.icon)
-	end
-	if self:has_equipment("armor_kit") then
-		managers.mission:call_global_event("player_regenerate_armor", true)
 	end
 end
 function PlayerManager:_add_level_equipment(player)
@@ -1008,12 +1001,6 @@ function PlayerManager:on_headshot_dealt()
 	if damage_ext and regen_armor_bonus > 0 then
 		damage_ext:restore_armor(regen_armor_bonus)
 	end
-end
-function PlayerManager:on_lethal_headshot_dealt()
-	if not self:player_unit() then
-		return
-	end
-	self._message_system:notify(Message.OnLethalHeadShot, nil, nil)
 end
 function PlayerManager:_check_damage_to_hot(t, unit, damage_info)
 	local player_unit = self:player_unit()
@@ -2537,9 +2524,9 @@ function PlayerManager:clear_equipment()
 		self:update_deployable_equipment_amount_to_peers(equipment.equipment, 0)
 	end
 end
-function PlayerManager:from_server_equipment_place_result(selected_index, unit, sentry_gun_unit)
+function PlayerManager:from_server_equipment_place_result(selected_index, unit)
 	if alive(unit) then
-		unit:equipment():from_server_sentry_gun_place_result(sentry_gun_unit:id())
+		unit:equipment():from_server_sentry_gun_place_result(selected_index ~= 0)
 	end
 	local equipment = self._equipment.selections[selected_index]
 	if not equipment then
@@ -3043,7 +3030,7 @@ end
 function PlayerManager:on_throw_grenade()
 	self:add_grenade_amount(-1)
 	local peer_id = managers.network:session():local_peer():id()
-	if table.contains(tweak_data.achievement.fire_in_the_hole.grenade, self:get_synced_grenades(peer_id).grenade) then
+	if tweak_data.achievement.fire_in_the_hole.grenade == self:get_synced_grenades(peer_id).grenade then
 		managers.achievment:award_progress(tweak_data.achievement.fire_in_the_hole.stat)
 	end
 end
@@ -3582,7 +3569,7 @@ function PlayerManager:_is_all_in_custody(ignored_peer_id)
 	end
 	return true
 end
-function PlayerManager:on_enter_custody(_player, already_dead)
+function PlayerManager:on_enter_custody(_player)
 	local player = _player or self:player_unit()
 	if not player then
 		Application:error("[PlayerManager:on_enter_custody] Unable to get player")
@@ -3590,15 +3577,13 @@ function PlayerManager:on_enter_custody(_player, already_dead)
 	end
 	managers.mission:call_global_event("player_in_custody")
 	local peer_id = managers.network:session():local_peer():id()
-	if self._super_syndrome_count and self._super_syndrome_count > 0 and not self._action_mgr:is_running("stockholm_syndrome_trade") then
+	if not managers.groupai:state():whisper_mode() and self._super_syndrome_count and self._super_syndrome_count > 0 and 0 < managers.groupai:state():hostage_count() and not self._action_mgr:is_running("stockholm_syndrome_trade") then
 		self._action_mgr:add_action("stockholm_syndrome_trade", StockholmSyndromeTradeAction:new(player:position(), peer_id))
 	end
 	self:force_drop_carry()
 	managers.statistics:downed({death = true})
-	if not already_dead then
-		player:network():send("sync_player_movement_state", "dead", player:character_damage():down_time(), player:id())
-		managers.groupai:state():on_player_criminal_death(peer_id)
-	end
+	player:network():send("sync_player_movement_state", "dead", player:character_damage():down_time(), player:id())
+	managers.groupai:state():on_player_criminal_death(peer_id)
 	game_state_machine:change_state_by_name("ingame_waiting_for_respawn")
 	player:character_damage():set_invulnerable(true)
 	player:character_damage():set_health(0)
@@ -3610,9 +3595,8 @@ end
 function PlayerManager:init_auto_respawn_callback(position, peer_id, force)
 	self._clbk_super_syndrome_respawn = "PlayerManager"
 	local game_time = TimerManager:game():time()
-	local clbk_delay = game_time + 1
+	local clbk_delay = game_time + (force and 1 or 5)
 	local pause_trade = 10
-	managers.trade:start_stockholm_syndrome()
 	managers.enemy:add_delayed_clbk(self._clbk_super_syndrome_respawn, callback(self, self, "clbk_super_syndrome_respawn", {pos = position, peer_id = peer_id}), clbk_delay)
 	managers.trade:pause_trade(pause_trade)
 end
@@ -3625,7 +3609,7 @@ function PlayerManager:clbk_super_syndrome_respawn(data)
 		local pos = best_hostage.unit:position()
 		local rot = best_hostage.unit:rotation()
 		trade_manager:criminal_respawn(pos, rot, criminal)
-		trade_manager:begin_hostage_trade(pos, rot, best_hostage, true, true, true)
+		trade_manager:begin_hostage_trade(pos, rot, best_hostage, true, true)
 	end
 end
 function PlayerManager:on_hallowSPOOCed()

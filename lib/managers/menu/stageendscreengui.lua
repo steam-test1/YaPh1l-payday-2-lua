@@ -255,8 +255,7 @@ function StatsTabItem:set_stats(stats_data)
 				wrap = true,
 				word_wrap = true
 			})
-			local use_medium_font = stat == "stage_cash_summary"
-			if use_medium_font then
+			if stat == "stage_cash_summary" then
 				desc_text:hide()
 				stat_text:set_w(new_stat_panel:w() - 20)
 				desc_text:set_font(tweak_data.menu.pd2_medium_font_id)
@@ -299,8 +298,7 @@ function StatsTabItem:feed_statistics(stats_data)
 		desc:set_h(max_h)
 		stat:set_h(max_h)
 		child:set_h(max_h)
-		local format_color = child:name() == "stage_cash_summary"
-		if format_color then
+		if child:name() == "stage_cash_summary" then
 			desc:hide()
 			stat:set_w(child:w() - 20)
 			child:set_h(self._panel:h() - child:y())

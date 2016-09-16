@@ -17,7 +17,6 @@ require("lib/managers/menu/items/MenuItemChat")
 require("lib/managers/menu/items/MenuItemFriend")
 require("lib/managers/menu/items/MenuItemCustomizeController")
 require("lib/managers/menu/items/MenuItemInput")
-require("lib/managers/menu/items/MenuItemTextBox")
 require("lib/managers/menu/nodes/MenuNodeTable")
 require("lib/managers/menu/nodes/MenuNodeServerList")
 core:import("CoreEvent")
@@ -135,8 +134,6 @@ function MenuManager:init(is_start_menu)
 	self:parallax_mapping_changed(nil, nil, managers.user:get_setting("parallax_mapping"))
 	managers.user:add_setting_changed_callback("video_aa", callback(self, self, "video_aa_changed"), true)
 	self:video_aa_changed(nil, nil, managers.user:get_setting("video_aa"))
-	managers.user:add_setting_changed_callback("workshop", callback(self, self, "workshop_changed"), true)
-	self:workshop_changed(nil, nil, managers.user:get_setting("workshop"))
 end
 function MenuManager:post_event(event)
 	local event = self._sound_source:post_event(event)
@@ -402,11 +399,6 @@ function MenuManager:video_aa_changed(name, old_value, new_value)
 		managers.environment_controller:set_aa_setting(new_value)
 	end
 end
-function MenuManager:workshop_changed(name, old_value, new_value)
-	if managers.workshop then
-		managers.workshop:set_enabled(new_value)
-	end
-end
 function MenuManager:brightness_changed(name, old_value, new_value)
 	local brightness = math.clamp(new_value, _G.tweak_data.menu.MIN_BRIGHTNESS, _G.tweak_data.menu.MAX_BRIGHTNESS)
 	Application:set_brightness(brightness)
@@ -419,13 +411,6 @@ function MenuManager:set_mouse_sensitivity(zoomed)
 		return
 	end
 	local sens = zoomed and managers.user:get_setting("enable_camera_zoom_sensitivity") and managers.user:get_setting("camera_zoom_sensitivity") or managers.user:get_setting("camera_sensitivity")
-	if zoomed and managers.user:get_setting("enable_fov_based_sensitivity") and alive(managers.player:player_unit()) then
-		local state = managers.player:player_unit():movement():current_state()
-		if alive(state._equipped_unit) then
-			local fov = managers.user:get_setting("fov_multiplier")
-			sens = sens * (state._equipped_unit:base():zoom() or 65) * (fov + 1) / 2 / (65 * fov)
-		end
-	end
 	self._controller:get_setup():get_connection("look"):set_multiplier(sens * self._look_multiplier)
 	managers.controller:rebind_connections()
 end
@@ -644,11 +629,7 @@ function MenuManager:open_sign_in_menu(cb)
 		managers.network.matchmake:register_callback("found_game", callback(self, self, "_cb_matchmake_found_game"))
 		managers.network.matchmake:register_callback("player_joined", callback(self, self, "_cb_matchmake_player_joined"))
 		if PSN:is_fetching_status() then
-			self:show_fetching_status_dialog({
-				cancel_func = function()
-					PSN:fetch_cancel()
-				end
-			})
+			self:show_fetching_status_dialog()
 			local function f()
 				self:open_ps4_sign_in_menu(cb)
 			end
@@ -668,11 +649,7 @@ function MenuManager:open_sign_in_menu(cb)
 		managers.system_menu:close("fetching_status")
 		if managers.network.account:signin_state() == "signed in" then
 			if managers.user:check_privilege(nil, "multiplayer_sessions", callback(self, self, "_check_privilege_callback")) then
-				self:show_fetching_status_dialog({
-					cancel_func = function()
-						self._queued_privilege_check_cb = nil
-					end
-				})
+				self:show_fetching_status_dialog()
 				self._queued_privilege_check_cb = cb
 			else
 				self:show_err_not_signed_in_dialog()
@@ -1210,9 +1187,6 @@ function MenuCallbackHandler:has_all_dlcs()
 	return true
 end
 function MenuCallbackHandler:is_overlay_enabled()
-	if SystemInfo:platform() ~= Idstring("WIN32") then
-		return false
-	end
 	return true
 end
 function MenuCallbackHandler:is_installed()
@@ -1627,12 +1601,7 @@ function MenuCallbackHandler:_dialog_save_progress_backup_no()
 	setup:quit()
 end
 function MenuCallbackHandler:chk_dlc_content_updated()
-	if SystemInfo:platform() ~= Idstring("XB1") and managers.dlc then
-		managers.dlc:chk_content_updated()
-	end
-end
-function MenuCallbackHandler:chk_dlc_content_updated_xb1()
-	if SystemInfo:platform() == Idstring("XB1") and managers.dlc then
+	if managers.dlc then
 		managers.dlc:chk_content_updated()
 	end
 end
@@ -2165,11 +2134,11 @@ function MenuCallbackHandler:get_matchmake_attributes()
 	}
 	if self:is_win32() then
 		local kick_option = Global.game_settings.kick_option
-		attributes.numbers[8] = kick_option
+		table.insert(attributes.numbers, kick_option)
 		local job_class = managers.job:calculate_job_class(managers.job:current_real_job_id(), difficulty_id)
-		attributes.numbers[9] = job_class
+		table.insert(attributes.numbers, job_class)
 		local job_plan = Global.game_settings.job_plan
-		attributes.numbers[10] = job_plan
+		table.insert(attributes.numbers, job_plan)
 	end
 	return attributes
 end
@@ -2347,9 +2316,6 @@ end
 function MenuCallbackHandler:choice_choose_aa(item)
 	managers.user:set_setting("video_aa", item:value())
 end
-function MenuCallbackHandler:toggle_workshop(item)
-	managers.user:set_setting("workshop", item:value() == "on")
-end
 function MenuCallbackHandler:choice_choose_anti_alias(item)
 	managers.user:set_setting("video_anti_alias", item:value())
 	if managers.environment_controller then
@@ -2467,8 +2433,6 @@ function MenuCallbackHandler:connect_to_host_rpc(item)
 			managers.network:session():load_level(item:parameters().level_name, nil, nil, nil, level_id, nil)
 		elseif res == "KICKED" then
 			managers.menu:show_peer_kicked_dialog()
-		elseif res == "BANNED" then
-			managers.menu:show_peer_banned_dialog()
 		else
 			Application:error("[MenuCallbackHandler:connect_to_host_rpc] FAILED TO START MULTIPLAYER!")
 		end
@@ -2576,10 +2540,8 @@ function MenuCallbackHandler:invite_friends_X360()
 	XboxLive:show_friends_ui(platform_id)
 end
 function MenuCallbackHandler:invite_friends_XB1()
-	if managers.network.matchmake._session then
-		local platform_id = managers.user:get_platform_id()
-		XboxLive:invite_friends_ui(platform_id, managers.network.matchmake._session)
-	end
+	local platform_id = managers.user:get_platform_id()
+	XboxLive:invite_friends_ui(platform_id, managers.network.matchmake._session)
 end
 function MenuCallbackHandler:invite_xbox_live_party()
 	local platform_id = managers.user:get_platform_id()
@@ -2767,10 +2729,6 @@ function MenuCallbackHandler:toggle_zoom_sensitivity(item)
 		item_sens_zoom:trigger()
 	end
 end
-function MenuCallbackHandler:toggle_fov_based_zoom(item)
-	local value = item:value() == "on"
-	managers.user:set_setting("enable_fov_based_sensitivity", value)
-end
 function MenuCallbackHandler:is_current_resolution(item)
 	return item:name() == string.format("%d x %d", RenderSettings.resolution.x, RenderSettings.resolution.y)
 end
@@ -2812,15 +2770,6 @@ function MenuCallbackHandler:leave_safehouse()
 		self:_dialog_end_game_yes()
 	end
 	managers.menu:show_leave_safehouse_dialog({yes_func = yes_func})
-end
-function MenuCallbackHandler:leave_mission()
-	if game_state_machine:current_state_name() ~= "disconnected" then
-		if self:is_singleplayer() then
-			setup:load_start_menu()
-		else
-			self:load_start_menu_lobby()
-		end
-	end
 end
 function MenuCallbackHandler:abort_mission()
 	if game_state_machine:current_state_name() == "disconnected" then
@@ -2961,6 +2910,7 @@ function MenuCallbackHandler:clear_progress()
 end
 function MenuCallbackHandler:_dialog_clear_progress_yes()
 	managers.menu:do_clear_progress()
+	managers.blackmarket:max_progress()
 	if managers.menu_component then
 		managers.menu_component:refresh_player_profile_gui()
 	end
@@ -4048,13 +3998,11 @@ MenuCustomizeControllerCreator.CONTROLS = {
 	"duck",
 	"melee",
 	"interact",
-	"interact_secondary",
 	"use_item",
 	"toggle_chat",
 	"push_to_talk",
 	"cash_inspect",
 	"deploy_bipod",
-	"change_equipment",
 	"drive",
 	"hand_brake",
 	"vehicle_change_camera",
@@ -4142,10 +4090,6 @@ MenuCustomizeControllerCreator.CONTROLS_INFO.interact = {
 	text_id = "menu_button_shout",
 	category = "normal"
 }
-MenuCustomizeControllerCreator.CONTROLS_INFO.interact_secondary = {
-	text_id = "menu_button_shout_secondary",
-	category = "normal"
-}
 MenuCustomizeControllerCreator.CONTROLS_INFO.use_item = {
 	text_id = "menu_button_deploy",
 	category = "normal"
@@ -4176,10 +4120,6 @@ MenuCustomizeControllerCreator.CONTROLS_INFO.cash_inspect = {
 }
 MenuCustomizeControllerCreator.CONTROLS_INFO.deploy_bipod = {
 	text_id = "menu_button_deploy_bipod",
-	category = "normal"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.change_equipment = {
-	text_id = "menu_button_change_equipment",
 	category = "normal"
 }
 MenuCustomizeControllerCreator.CONTROLS_INFO.drive = {hidden = true, category = "vehicle"}
@@ -6785,10 +6725,6 @@ function MenuOptionInitiator:modify_adv_video(node)
 	if node:item("toggle_use_thq_weapon_parts") then
 		node:item("toggle_use_thq_weapon_parts"):set_value(managers.user:get_setting("use_thq_weapon_parts") and "on" or "off")
 	end
-	local toggle_hide_huds = node:item("toggle_hide_huds") or node:item("toggle_hide_huds_xb1") or node:item("toggle_hide_huds_ps4")
-	if toggle_hide_huds then
-		toggle_hide_huds:set_value(Global.hud_disabled and "on" or "off")
-	end
 	local option_value = "off"
 	local dof_setting_item = node:item("toggle_dof")
 	if dof_setting_item then
@@ -6869,10 +6805,6 @@ function MenuOptionInitiator:modify_video(node)
 	if effect_quality_item then
 		option_value = managers.user:get_setting("effect_quality")
 		effect_quality_item:set_value(option_value)
-	end
-	local toggle_hide_huds = node:item("toggle_hide_huds") or node:item("toggle_hide_huds_xb1") or node:item("toggle_hide_huds_ps4")
-	if toggle_hide_huds then
-		toggle_hide_huds:set_value(Global.hud_disabled and "on" or "off")
 	end
 	return node
 end
@@ -6956,16 +6888,12 @@ function MenuOptionInitiator:modify_controls(node)
 		czs_item:set_value(managers.user:get_setting("camera_zoom_sensitivity"))
 	end
 	node:item("toggle_zoom_sensitivity"):set_value(managers.user:get_setting("enable_camera_zoom_sensitivity") and "on" or "off")
-	node:item("toggle_fov_based_zoom"):set_value(managers.user:get_setting("enable_fov_based_sensitivity") and "on" or "off")
 	return node
 end
 function MenuOptionInitiator:modify_debug_options(node)
 	return node
 end
 function MenuOptionInitiator:modify_options(node)
-	if node:item("toggle_workshop") then
-		node:item("toggle_workshop"):set_value(managers.user:get_setting("workshop") and "on" or "off")
-	end
 	return node
 end
 function MenuOptionInitiator:modify_network_options(node)

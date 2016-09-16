@@ -1,63 +1,59 @@
 DLCTweakData = DLCTweakData or class()
 function DLCTweakData:init(tweak_data)
-	if managers.dlc:is_installing() then
-		tweak_data.BUNDLED_DLC_PACKAGES = {}
-	else
-		tweak_data.BUNDLED_DLC_PACKAGES = {
-			infamous = 1,
-			twitch_pack = 1,
-			pd2_million = true,
-			washington_reveal = true,
-			pines = true,
-			character_pack_bonnie = true,
-			butcher_pack_mods = true,
-			hoxton_revenge = 1,
-			favorite = true,
-			dlc1 = true,
-			gage_pack = true,
-			gage_pack_lmg = true,
-			gage_pack_jobs = false,
-			gage_pack_snp = true,
-			big_bank = true,
-			gage_pack_shotgun = true,
-			gage_pack_assault = true,
-			hl_miami = true,
-			gage_pack_historical = true,
-			character_pack_clover = true,
-			the_bomb = true,
-			character_pack_dragan = true,
-			dlc_akm4 = 1,
-			dlc_pack_overkill = true,
-			bbq = true,
-			west = true,
-			dlc_arena = true,
-			character_pack_sokol = true,
-			kenaz = true,
-			turtles = true,
-			dragon = true,
-			steel = true,
-			peta = true,
-			pal = true,
-			coco = true,
-			super = 1,
-			mad = true,
-			opera = true,
-			dos = true,
-			jigg = 1,
-			born = true,
-			wild = true,
-			rip = true,
-			pd2_goty = 1,
-			pd2_hw_boxing = true,
-			hlm2 = true,
-			speedrunners = 1,
-			alienware_alpha = true,
-			humble_summer_2015 = 1,
-			season_pass = true,
-			animal = true,
-			cash = true
-		}
-	end
+	tweak_data.BUNDLED_DLC_PACKAGES = {
+		infamous = 1,
+		twitch_pack = 1,
+		pd2_million = true,
+		washington_reveal = true,
+		pines = true,
+		character_pack_bonnie = true,
+		butcher_pack_mods = true,
+		hoxton_revenge = 1,
+		favorite = true,
+		dlc1 = true,
+		gage_pack = true,
+		gage_pack_lmg = true,
+		gage_pack_jobs = false,
+		gage_pack_snp = true,
+		big_bank = true,
+		gage_pack_shotgun = true,
+		gage_pack_assault = true,
+		hl_miami = true,
+		gage_pack_historical = true,
+		character_pack_clover = true,
+		the_bomb = true,
+		character_pack_dragan = true,
+		dlc_akm4 = 1,
+		dlc_pack_overkill = true,
+		bbq = true,
+		west = true,
+		dlc_arena = true,
+		character_pack_sokol = true,
+		kenaz = true,
+		turtles = true,
+		dragon = true,
+		steel = true,
+		peta = true,
+		pal = true,
+		coco = true,
+		super = 1,
+		mad = true,
+		opera = true,
+		dos = true,
+		jigg = 1,
+		born = true,
+		wild = true,
+		rip = true,
+		pd2_goty = 1,
+		pd2_hw_boxing = true,
+		hlm2 = true,
+		speedrunners = 1,
+		alienware_alpha = true,
+		humble_summer_2015 = 1,
+		season_pass = true,
+		animal = true,
+		cash = true
+	}
 	self.starvr_free = {}
 	self.starvr_free.free = true
 	self.starvr_free.content = {}
@@ -4912,30 +4908,18 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
-	self.pd2_clan_fibb = {}
-	self.pd2_clan_fibb.content = {}
-	self.pd2_clan_fibb.dlc = "has_pd2_clan"
-	self.pd2_clan_fibb.content.loot_global_value = "pd2_clan"
-	self.pd2_clan_fibb.content.loot_drops = {
-		{
-			type_items = "masks",
-			item_entry = "fib_fox",
-			amount = 1
-		},
-		{
-			type_items = "masks",
-			item_entry = "fib_cat",
-			amount = 1
-		},
-		{
-			type_items = "masks",
-			item_entry = "fib_mouse",
-			amount = 1
-		},
-		{
-			type_items = "masks",
-			item_entry = "fib_hare",
-			amount = 1
+	if SystemInfo:platform() == Idstring("XB1") then
+		self.xone_bonus = {}
+		self.xone_bonus.free = true
+		self.xone_bonus.content = {}
+		self.xone_bonus.content_on_consoles = true
+		self.xone_bonus.content.loot_global_value = "infamous"
+		self.xone_bonus.content.loot_drops = {
+			{
+				type_items = "masks",
+				item_entry = "unforsaken",
+				amount = 1
+			}
 		}
-	}
+	end
 end

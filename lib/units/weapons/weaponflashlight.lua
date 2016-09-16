@@ -39,8 +39,8 @@ function WeaponFlashLight:set_npc()
 	World:effect_manager():set_hidden(self._light_effect, true)
 	self._is_npc = true
 end
-function WeaponFlashLight:_check_state(current_state)
-	WeaponFlashLight.super._check_state(self, current_state)
+function WeaponFlashLight:_check_state()
+	WeaponFlashLight.super._check_state(self)
 	self._light:set_enable(self._on)
 	self._g_light:set_visibility(self._on)
 	World:effect_manager():set_hidden(self._light_effect, not self._on)

@@ -13,6 +13,7 @@ function PlayerCarry:_enter(enter_data)
 	local my_carry_data = managers.player:get_my_carry_data()
 	if my_carry_data then
 		local carry_data = tweak_data.carry[my_carry_data.carry_id]
+		print("SET CARRY TYPE ON ENTER", carry_data.type)
 		self._tweak_data_name = carry_data.type
 	else
 		self._tweak_data_name = "light"
@@ -101,12 +102,10 @@ function PlayerCarry:_update_check_actions(t, dt)
 	new_action = new_action or self:_check_action_equip(t, input)
 	if not new_action then
 		new_action = self:_check_action_primary_attack(t, input)
-		if not new_action then
-			self:_check_stop_shooting()
-		end
 		self._shooting = new_action
 	end
 	new_action = new_action or self:_check_action_throw_projectile(t, input)
+	new_action = new_action or self:_check_action_pickup_sentry(t, input)
 	self:_check_action_interact(t, input)
 	self:_check_action_jump(t, input)
 	self:_check_action_run(t, input)

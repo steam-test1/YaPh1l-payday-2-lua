@@ -309,9 +309,7 @@ function HuskPlayerMovement:post_init()
 		self._standing_nav_seg_id = self._nav_tracker:nav_segment()
 		self._pos_rsrv_id = managers.navigation:get_pos_reservation_id()
 	end
-	if not self._unit:inventory()._equipped_selection then
-		self._unit:inventory():synch_equipped_weapon(2)
-	end
+	self._unit:inventory():synch_equipped_weapon(2)
 	self._attention_handler = CharacterAttentionObject:new(self._unit)
 	self._attention_handler:setup_attention_positions(self._m_detect_pos, nil)
 	self._enemy_weapons_hot_listen_id = "PlayerMovement" .. tostring(self._unit:key())
@@ -1833,7 +1831,6 @@ function HuskPlayerMovement:_start_driving(event_desc)
 	local vehicle_unit = vehicle_data.vehicle_unit
 	local animation = vehicle_tweak_data.animations[vehicle_data.seat]
 	self._allow_shooting = vehicle_tweak_data.seats[vehicle_data.seat].allow_shooting
-	print("husk start driving")
 	self._vehicle = vehicle_unit:vehicle()
 	self._driver = false
 	if vehicle_data.seat == "driver" then
@@ -2348,7 +2345,7 @@ function HuskPlayerMovement:is_SPOOC_attack_allowed()
 	return true
 end
 function HuskPlayerMovement:is_taser_attack_allowed()
-	if self._unit:character_damage():get_mission_blocker("invulnerable") or self._vehicle then
+	if self._unit:character_damage():get_mission_blocker("invulnerable") then
 		return false
 	end
 	return true
@@ -2393,7 +2390,6 @@ function HuskPlayerMovement:zipline_unit()
 	end
 end
 function HuskPlayerMovement:on_exit_vehicle()
-	print("husk exit vehicle")
 	local event_desc = self._sequenced_events[1]
 	if self._atention_on then
 		self._atention_on = false

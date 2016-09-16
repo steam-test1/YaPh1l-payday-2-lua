@@ -1,10 +1,6 @@
 EnemyPreferedAddUnitElement = EnemyPreferedAddUnitElement or class(MissionElement)
 EnemyPreferedAddUnitElement.SAVE_UNIT_POSITION = false
 EnemyPreferedAddUnitElement.SAVE_UNIT_ROTATION = false
-EnemyPreferedAddUnitElement.LINK_ELEMENTS = {
-	"spawn_points",
-	"spawn_groups"
-}
 function EnemyPreferedAddUnitElement:init(unit)
 	EnemyPreferedRemoveUnitElement.super.init(self, unit)
 	table.insert(self._save_values, "spawn_points")
@@ -74,6 +70,21 @@ function EnemyPreferedAddUnitElement:_delete_id_from_table(id, table_name)
 		self._hed[table_name] = nil
 	end
 end
+function EnemyPreferedAddUnitElement:remove_links(unit)
+	local rem_u_id = unit:unit_data().unit_id
+	local function _rem_func(element_ids)
+		if not element_ids then
+			return
+		end
+		for _, id in ipairs(element_ids) do
+			if id == rem_u_id then
+				table.delete(element_ids, id)
+			end
+		end
+	end
+	_rem_func(self._hed.spawn_points)
+	_rem_func(self._hed.spawn_groups)
+end
 function EnemyPreferedAddUnitElement:get_links_to_unit(...)
 	EnemyPreferedAddUnitElement.super.get_links_to_unit(self, ...)
 	if self._hed.spawn_groups then
@@ -142,7 +153,6 @@ end
 EnemyPreferedRemoveUnitElement = EnemyPreferedRemoveUnitElement or class(MissionElement)
 EnemyPreferedRemoveUnitElement.SAVE_UNIT_POSITION = false
 EnemyPreferedRemoveUnitElement.SAVE_UNIT_ROTATION = false
-EnemyPreferedRemoveUnitElement.LINK_ELEMENTS = {"elements"}
 function EnemyPreferedRemoveUnitElement:init(unit)
 	EnemyPreferedRemoveUnitElement.super.init(self, unit)
 	self._hed.elements = {}
@@ -174,6 +184,13 @@ function EnemyPreferedRemoveUnitElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
+		end
+	end
+end
+function EnemyPreferedRemoveUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
 		end
 	end
 end

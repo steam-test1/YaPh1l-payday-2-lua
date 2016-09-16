@@ -51,8 +51,6 @@ function CopInventory:_chk_spawn_shield(weapon_unit)
 end
 function CopInventory:add_unit(new_unit, equip)
 	CopInventory.super.add_unit(self, new_unit, equip)
-	new_unit:set_enabled(true)
-	new_unit:set_visible(true)
 end
 function CopInventory:get_sync_data(sync_data)
 	MPPlayerInventory.get_sync_data(self, sync_data)

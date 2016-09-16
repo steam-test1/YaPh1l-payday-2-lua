@@ -3,7 +3,6 @@ MissionElement = MissionElement or class(CoreMissionElement)
 MissionElement.SAVE_UNIT_POSITION = true
 MissionElement.SAVE_UNIT_ROTATION = true
 MissionElement.RANDOMS = nil
-MissionElement.LINK_ELEMENTS = {}
 function MissionElement:init(...)
 	CoreMissionElement.init(self, ...)
 end
@@ -381,9 +380,7 @@ function CoreMissionElement:_add_panel(parent, parent_sizer)
 end
 function CoreMissionElement:add_help_text(data)
 	if data.panel and data.sizer then
-		local text = EWS:TextCtrl(data.panel, data.text, 0, "TE_MULTILINE,TE_READONLY,TE_WORDWRAP,TE_CENTRE")
-		data.sizer:add(text, 0, 5, "EXPAND,TOP,BOTTOM")
-		return text
+		data.sizer:add(EWS:TextCtrl(data.panel, data.text, 0, "TE_MULTILINE,TE_READONLY,TE_WORDWRAP,TE_CENTRE"), 0, 5, "EXPAND,TOP,BOTTOM")
 	end
 end
 function CoreMissionElement:_add_help_text(text)
@@ -392,7 +389,7 @@ function CoreMissionElement:_add_help_text(text)
 		sizer = self._panel_sizer,
 		text = text
 	}
-	return self:add_help_text(help)
+	self:add_help_text(help)
 end
 function CoreMissionElement:_on_toolbar_add_element()
 	local function f(unit)
@@ -705,32 +702,28 @@ function CoreMissionElement:draw_link_on_executed(t, dt, selected_unit)
 	local unit_sel = self._unit == selected_unit
 	CoreMissionElement.editor_link_brush:set_color(unit_sel and Color.green or Color.white)
 	for _, unit in ipairs(self._on_executed_units) do
-		if alive(unit) then
-			if not selected_unit or unit_sel or unit == selected_unit then
-				local dir = mvector3.copy(unit:position())
-				mvector3.subtract(dir, self._unit:position())
-				local vec_len = mvector3.normalize(dir)
-				local offset = math.min(50, vec_len)
-				mvector3.multiply(dir, offset)
-				if self._distance_to_camera < 1000000 then
-					local text = self:_get_delay_string(unit:unit_data().unit_id)
-					local alternative = self:_get_on_executed(unit:unit_data().unit_id).alternative
-					if alternative then
-						text = text .. " - " .. alternative .. ""
-					end
-					CoreMissionElement.editor_link_brush:center_text(self._unit:position() + dir, text, managers.editor:camera_rotation():x(), -managers.editor:camera_rotation():z())
+		if not selected_unit or unit_sel or unit == selected_unit then
+			local dir = mvector3.copy(unit:position())
+			mvector3.subtract(dir, self._unit:position())
+			local vec_len = mvector3.normalize(dir)
+			local offset = math.min(50, vec_len)
+			mvector3.multiply(dir, offset)
+			if self._distance_to_camera < 1000000 then
+				local text = self:_get_delay_string(unit:unit_data().unit_id)
+				local alternative = self:_get_on_executed(unit:unit_data().unit_id).alternative
+				if alternative then
+					text = text .. " - " .. alternative .. ""
 				end
-				local r, g, b = self:get_link_color()
-				self:_draw_link({
-					from_unit = self._unit,
-					to_unit = unit,
-					r = r * 0.75,
-					g = g * 0.75,
-					b = b * 0.75
-				})
+				CoreMissionElement.editor_link_brush:center_text(self._unit:position() + dir, text, managers.editor:camera_rotation():x(), -managers.editor:camera_rotation():z())
 			end
-		else
-			table.delete(self._on_executed_units, unit)
+			local r, g, b = self:get_link_color()
+			self:_draw_link({
+				from_unit = self._unit,
+				to_unit = unit,
+				r = r * 0.75,
+				g = g * 0.75,
+				b = b * 0.75
+			})
 		end
 	end
 end
@@ -744,83 +737,45 @@ function CoreMissionElement:_get_delay_string(unit_id)
 	end
 	return text
 end
-function CoreMissionElement:add_on_executed(unit, prevent_undo)
-	if self:remove_on_execute(unit, true) then
+function CoreMissionElement:add_on_executed(unit)
+	if self:remove_on_execute(unit) then
 		return
 	end
-	local command = CoreEditorCommand.MissionElementAddOnExecutedCommand:new(self)
-	command:execute(self, unit)
-	if not prevent_undo then
-		managers.editor:register_undo_command(command)
+	local params = {
+		id = unit:unit_data().unit_id,
+		delay = 0
+	}
+	params.alternative = self.ON_EXECUTED_ALTERNATIVES and self.ON_EXECUTED_ALTERNATIVES[1] or nil
+	table.insert(self._on_executed_units, unit)
+	table.insert(self._hed.on_executed, params)
+	if self._timeline then
+		self._timeline:add_element(unit, params)
 	end
-end
-function CoreMissionElement:remove_on_execute(unit, prevent_undo)
-	local command = CoreEditorCommand.MissionElementRemoveOnExecutedCommand:new(self)
-	local result = command:execute(self, unit)
-	if result and not prevent_undo then
-		managers.editor:register_undo_command(command)
-	end
-	return result
-end
-function CoreMissionElement:add_link_element(element_name, unit_id, prevent_undo)
-	local command = CoreEditorCommand.MissionElementAddLinkElementCommand:new(self)
-	local result = command:execute(self, element_name, unit_id)
-	if result and not prevent_undo then
-		managers.editor:register_undo_command(command)
-	end
-end
-function CoreMissionElement:on_added_link_element(element_name, unit_id)
-end
-function CoreMissionElement:remove_link_element(element_name, unit_id, prevent_undo)
-	local command = CoreEditorCommand.MissionElementRemoveLinkElementCommand:new(self)
-	local result = command:execute(self, element_name, unit_id)
-	if result and not prevent_undo then
-		managers.editor:register_undo_command(command)
-	end
-end
-function CoreMissionElement:on_removed_link_element(element_name, unit_id)
+	self:append_elements_sorted()
+	self:set_on_executed_element(unit)
 end
 function CoreMissionElement:remove_links(unit)
-	if not self.LINK_ELEMENTS then
-		return
-	end
-	local id
-	for _, element_name in ipairs(self.LINK_ELEMENTS) do
-		if self._hed[element_name] then
-			for i = #self._hed[element_name], 1, -1 do
-				id = self._hed[element_name][i]
-				if id == unit:unit_data().unit_id then
-					self:remove_link_element(element_name, id)
-				end
-			end
-		end
-	end
 end
-function CoreMissionElement:remove_all_links()
-	if not self.LINK_ELEMENTS then
-		return
-	end
-	local id
-	for _, element_name in ipairs(self.LINK_ELEMENTS) do
-		if self._hed[element_name] then
-			for i = #self._hed[element_name], 1, -1 do
-				self:remove_link_element(element_name, self._hed[element_name][i])
+function CoreMissionElement:remove_on_execute(unit)
+	for _, on_executed in ipairs(self._hed.on_executed) do
+		if on_executed.id == unit:unit_data().unit_id then
+			if self._timeline then
+				self._timeline:remove_element(on_executed)
 			end
+			table.delete(self._hed.on_executed, on_executed)
+			table.delete(self._on_executed_units, unit)
+			self:append_elements_sorted()
+			return true
 		end
 	end
+	return false
 end
 function CoreMissionElement:delete_unit(units)
-	for i = #self._on_executed_units, 1, -1 do
-		self:remove_on_execute(self._on_executed_units[i])
-	end
+	local id = self._unit:unit_data().unit_id
 	for _, unit in ipairs(units) do
 		unit:mission_element():remove_on_execute(self._unit)
 		unit:mission_element():remove_links(self._unit)
 	end
-	self:remove_all_links()
-	local command = CoreEditorCommand.DeleteMissionElementCommand:new(self)
-	command:execute(self)
-	managers.editor:register_undo_command(command)
 end
 function CoreMissionElement:set_on_executed_element(unit, id)
 	unit = unit or self:on_execute_unit_by_id(id)
@@ -850,12 +805,7 @@ function CoreMissionElement:set_on_executed_data()
 end
 function CoreMissionElement:_set_first_executed_element()
 	if #self._hed.on_executed > 0 then
-		local unit = self:on_execute_unit_by_id(self._hed.on_executed[1].id)
-		if alive(unit) then
-			self:set_on_executed_element(unit)
-		else
-			print("could not set first executed element! ", self._hed.on_executed[1].id, unit)
-		end
+		self:set_on_executed_element(nil, self._hed.on_executed[1].id)
 	end
 end
 function CoreMissionElement:_set_on_execute_ctrlrs_enabled(enabled)

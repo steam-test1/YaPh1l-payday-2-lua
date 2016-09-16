@@ -41,13 +41,12 @@ function PlayerDamage:init(unit)
 	self._armor_regen_mul = managers.player:upgrade_value("player", "armor_regen_time_mul", 1)
 	self._dire_need = managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot")
 	self._has_damage_speed = managers.player:has_inactivate_temporary_upgrade("temporary", "damage_speed_multiplier")
-	self._has_damage_speed_team = managers.player:upgrade_value("player", "team_damage_speed_multiplier_send", 0) ~= 0
+	self._has_damage_speed_team = managers.player:upgrade_value("player", "team_damage_speed_multiplier_send")
 	local function revive_player()
 		self:revive(true)
 	end
 	managers.player:register_message(Message.RevivePlayer, self, revive_player)
 	self._current_armor_fill = 0
-	local has_swansong_skill = player_manager:has_category_upgrade("temporary", "berserker_damage_multiplier")
 	self._current_state = nil
 	self._listener_holder = unit:event_listener()
 	if player_manager:has_category_upgrade("player", "damage_to_armor") then
@@ -71,9 +70,6 @@ function PlayerDamage:init(unit)
 			CopDamage.register_listener("on_damage", {"on_damage"}, on_damage)
 		end
 	end
-	self._listener_holder:add("on_use_armor_bag", {
-		"on_use_armor_bag"
-	}, callback(self, self, "_on_use_armor_bag_event"))
 	if self:_init_armor_grinding_data() then
 		function self._on_damage_callback_func()
 			return callback(self, self, "_on_damage_armor_grinding")
@@ -82,15 +78,13 @@ function PlayerDamage:init(unit)
 		self._listener_holder:add("on_enter_bleedout", {
 			"on_enter_bleedout"
 		}, callback(self, self, "_on_enter_bleedout_event"))
-		if has_swansong_skill then
-			self._listener_holder:add("on_enter_swansong", {
-				"on_enter_swansong"
-			}, callback(self, self, "_on_enter_swansong_event"))
-			self._listener_holder:add("on_exit_swansong", {
-				"on_enter_bleedout"
-			}, callback(self, self, "_on_exit_swansong_event"))
-		end
+		self._listener_holder:add("on_enter_swansong", {
+			"on_enter_swansong"
+		}, callback(self, self, "_on_enter_swansong_event"))
 		self._listener_holder:add("on_revive", {"on_revive"}, callback(self, self, "_on_revive_event"))
+		self._listener_holder:add("on_use_armor_bag", {
+			"on_use_armor_bag"
+		}, callback(self, self, "_on_use_armor_bag_event"))
 	else
 		self:_init_standard_listeners()
 	end
@@ -117,12 +111,6 @@ function PlayerDamage:init(unit)
 			"on_revive_interaction_success"
 		}, on_revive_interaction_success)
 	end
-	managers.mission:add_global_event_listener("player_regenerate_armor", {
-		"player_regenerate_armor"
-	}, callback(self, self, "_regenerate_armor"))
-	managers.mission:add_global_event_listener("player_force_bleedout", {
-		"player_force_bleedout"
-	}, callback(self, self, "force_into_bleedout", false))
 end
 function PlayerDamage:_init_standard_listeners()
 	function self._on_damage_callback_func()
@@ -132,19 +120,13 @@ function PlayerDamage:_init_standard_listeners()
 	self._listener_holder:add("on_enter_bleedout", {
 		"on_enter_bleedout"
 	}, callback(self, self, "_on_enter_bleedout_event"))
+	self._listener_holder:add("on_enter_swansong", {
+		"on_enter_swansong"
+	}, callback(self, self, "_on_enter_swansong_event"))
 	self._listener_holder:add("on_revive", {"on_revive"}, callback(self, self, "_on_revive_event"))
-	if managers.player:has_category_upgrade("temporary", "berserker_damage_multiplier") then
-		self._listener_holder:add("on_enter_swansong", {
-			"on_enter_swansong"
-		}, callback(self, self, "_on_enter_swansong_event"))
-		self._listener_holder:add("on_exit_swansong", {
-			"on_enter_bleedout"
-		}, callback(self, self, "_on_exit_swansong_event"))
-	end
 end
 function PlayerDamage:_on_use_armor_bag_event()
 	self:_init_armor_grinding_data()
-	self:_regenerate_armor()
 end
 function PlayerDamage:_on_damage_event()
 	self:set_regenerate_timer_to_max()
@@ -177,18 +159,6 @@ end
 function PlayerDamage:_on_enter_swansong_event()
 	self:_remove_on_damage_event()
 	self._block_medkit_auto_revive = true
-	self.swansong = true
-	if Network:is_client() then
-		managers.network:session():send_to_host("sync_player_swansong", self._unit, true)
-	else
-		managers.network:session():send_to_peers("sync_swansong_hud", self._unit, managers.network:session():local_peer():id())
-	end
-end
-function PlayerDamage:_on_exit_swansong_event()
-	self.swansong = nil
-	if Network:is_client() then
-		managers.network:session():send_to_host("sync_player_swansong", self._unit, false)
-	end
 end
 function PlayerDamage:_activate_combat_medic_damage_reduction()
 	managers.player:activate_temporary_upgrade("temporary", "revive_damage_reduction")
@@ -196,7 +166,6 @@ end
 function PlayerDamage:_on_revive_event()
 	self:_add_on_damage_event()
 	self._block_medkit_auto_revive = false
-	self.swansong = nil
 end
 function PlayerDamage:_remove_on_damage_event()
 	self._listener_holder:remove("on_damage")
@@ -279,7 +248,6 @@ function PlayerDamage:update(unit, t, dt)
 				total = max_health,
 				revives = Application:digest_value(self._revives, false)
 			})
-			managers.network:session():send_to_peers("sync_swansong_timer", self._unit, delta * max_health, max_health, Application:digest_value(self._revives, false), managers.network:session():local_peer():id())
 		end
 	end
 	if self._bleed_out_blocked_by_zipline and not self._unit:movement():zipline_unit() then
@@ -359,8 +327,8 @@ function PlayerDamage:_update_armor_hud(t, dt)
 	end
 end
 function PlayerDamage:_update_regenerate_timer(t, dt)
-	self._regenerate_timer = math.max(self._regenerate_timer - dt * (self._regenerate_speed or 1), 0)
-	if self._regenerate_timer <= 0 then
+	self._regenerate_timer = self._regenerate_timer - dt * (self._regenerate_speed or 1)
+	if self._regenerate_timer < 0 then
 		self:_regenerate_armor()
 	end
 end
@@ -408,8 +376,8 @@ function PlayerDamage:replenish()
 	SoundDevice:set_rtpc("shield_status", 100)
 	SoundDevice:set_rtpc("downed_state_progression", 0)
 end
-function PlayerDamage:_regenerate_armor(no_sound)
-	if self._unit:sound() and not no_sound then
+function PlayerDamage:_regenerate_armor()
+	if self._unit:sound() then
 		self._unit:sound():play("shield_full_indicator")
 	end
 	self._regenerate_speed = nil
@@ -910,7 +878,7 @@ function PlayerDamage:damage_fall(data)
 	local die = death_limit < data.height
 	self._unit:sound():play("player_hit")
 	managers.environment_controller:hit_feedback_down()
-	managers.hud:on_hit_direction(self._unit:position(), die and HUDHitDirection.DAMAGE_TYPES.HEALTH or HUDHitDirection.DAMAGE_TYPES.ARMOUR)
+	managers.hud:on_hit_direction("down")
 	if self._bleed_out and self._unit:movement():current_state_name() ~= "jerry1" then
 		return
 	end
@@ -1086,6 +1054,14 @@ function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_s
 			self._critical_state_heart_loop_instance = self._unit:sound():play("critical_state_heart_loop")
 			self._slomo_sound_instance = self._unit:sound():play("downed_slomo_fx")
 			self._bleed_out_health = Application:digest_value(tweak_data.player.damage.BLEED_OUT_HEALTH_INIT * managers.player:upgrade_value("player", "bleed_out_health_multiplier", 1), true)
+			if managers.player:has_category_upgrade("temporary", "pistol_revive_from_bleed_out") then
+				local upgrade_value = managers.player:upgrade_value("temporary", "pistol_revive_from_bleed_out")
+				if upgrade_value == 0 then
+				else
+					local time = upgrade_value[2]
+					managers.player:activate_temporary_upgrade("temporary", "pistol_revive_from_bleed_out")
+				end
+			end
 			self:_drop_blood_sample()
 			self:on_downed()
 		end
@@ -1167,9 +1143,6 @@ function PlayerDamage:pause_downed_timer(timer, peer_id)
 		managers.hud:pd_pause_timer()
 		managers.hud:pd_start_progress(0, timer or tweak_data.interaction.revive.timer, "debug_interact_being_revived", "interaction_help")
 	end
-	if Network:is_server() then
-		managers.network:session():send_to_peers("pause_downed_timer", self._unit)
-	end
 end
 function PlayerDamage:unpause_downed_timer(peer_id)
 	self._downed_paused_counter = self._downed_paused_counter - 1
@@ -1177,9 +1150,6 @@ function PlayerDamage:unpause_downed_timer(peer_id)
 	if self._downed_paused_counter == 0 then
 		managers.hud:pd_unpause_timer()
 		managers.hud:pd_stop_progress()
-	end
-	if Network:is_server() then
-		managers.network:session():send_to_peers("unpause_downed_timer", self._unit)
 	end
 end
 function PlayerDamage:update_arrested(t, dt)
@@ -1255,7 +1225,32 @@ function PlayerDamage:_bleed_out_damage(attack_data)
 end
 function PlayerDamage:_hit_direction(col_ray)
 	if col_ray then
-		managers.hud:on_hit_direction(col_ray.position, self:get_real_armor() > 0 and HUDHitDirection.DAMAGE_TYPES.ARMOUR or HUDHitDirection.DAMAGE_TYPES.HEALTH)
+		local dir = col_ray.ray
+		local infront = math.dot(self._unit:camera():forward(), dir)
+		if infront < -0.9 then
+			managers.environment_controller:hit_feedback_front()
+		elseif infront > 0.9 then
+			managers.environment_controller:hit_feedback_back()
+			managers.hud:on_hit_direction("right")
+		else
+			local polar = self._unit:camera():forward():to_polar_with_reference(-dir, Vector3(0, 0, 1))
+			local direction = Vector3(polar.spin, polar.pitch, 0):normalized()
+			if math.abs(direction.x) > math.abs(direction.y) then
+				if 0 > direction.x then
+					managers.environment_controller:hit_feedback_left()
+					managers.hud:on_hit_direction("left")
+				else
+					managers.environment_controller:hit_feedback_right()
+					managers.hud:on_hit_direction("right")
+				end
+			elseif 0 > direction.y then
+				managers.environment_controller:hit_feedback_up()
+				managers.hud:on_hit_direction("up")
+			else
+				managers.environment_controller:hit_feedback_down()
+				managers.hud:on_hit_direction("down")
+			end
+		end
 	end
 end
 function PlayerDamage:_damage_screen()
@@ -1432,8 +1427,6 @@ function PlayerDamage:pre_destroy()
 	managers.environment_controller:set_suppression_value(0)
 	managers.sequence:remove_inflict_updator_body("fire", self._unit:key(), self._inflict_damage_body:key())
 	CopDamage.unregister_listener("on_damage")
-	managers.mission:remove_global_event_listener("player_regenerate_armor")
-	managers.mission:remove_global_event_listener("player_force_bleedout")
 end
 function PlayerDamage:_call_listeners(damage_info)
 	CopDamage._call_listeners(self, damage_info)
@@ -1559,9 +1552,6 @@ function PlayerDamage:_upd_health_regen(t, dt)
 		until done
 	end
 end
-function PlayerDamage:melee_hit_sfx()
-	return "hit_body"
-end
 function PlayerDamage:suppression_ratio()
 	return (self._supperssion_data.value or 0) / tweak_data.player.suppression.max_value
 end
@@ -1582,7 +1572,7 @@ function PlayerDamage:on_flashbanged(sound_eff_mul)
 	end
 	self:_start_tinnitus(sound_eff_mul)
 end
-function PlayerDamage:_start_tinnitus(sound_eff_mul, skip_explosion_sfx)
+function PlayerDamage:_start_tinnitus(sound_eff_mul)
 	if self._tinnitus_data then
 		if sound_eff_mul < self._tinnitus_data.intensity then
 			return
@@ -1605,9 +1595,7 @@ function PlayerDamage:_start_tinnitus(sound_eff_mul, skip_explosion_sfx)
 			snd_event = self._unit:sound():play("tinnitus_beep")
 		}
 	end
-	if not skip_explosion_sfx then
-		self._unit:sound():play("flashbang_explode_sfx_player")
-	end
+	self._unit:sound():play("flashbang_explode_sfx_player")
 end
 function PlayerDamage:_stop_tinnitus()
 	if not self._tinnitus_data then

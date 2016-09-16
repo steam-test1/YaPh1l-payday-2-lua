@@ -125,7 +125,6 @@ function AccessCameraUnitElement:_build_panel(panel, panel_sizer)
 	self:_build_value_number(panel, panel_sizer, "pitch_limit", {floats = 0, min = -1}, "Specify a pitch limit.")
 end
 AccessCameraOperatorUnitElement = AccessCameraOperatorUnitElement or class(MissionElement)
-AccessCameraOperatorUnitElement.LINK_ELEMENTS = {"elements"}
 function AccessCameraOperatorUnitElement:init(unit)
 	AccessCameraOperatorUnitElement.super.init(self, unit)
 	self._hed.operation = "none"
@@ -162,6 +161,13 @@ function AccessCameraOperatorUnitElement:add_element()
 		end
 	end
 end
+function AccessCameraOperatorUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
+		end
+	end
+end
 function AccessCameraOperatorUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "add_element"))
 end
@@ -178,7 +184,6 @@ function AccessCameraOperatorUnitElement:_build_panel(panel, panel_sizer)
 	self:_add_help_text("This element can modify point_access_camera element. Select elements to modify using insert and clicking on them.")
 end
 AccessCameraTriggerUnitElement = AccessCameraTriggerUnitElement or class(MissionElement)
-AccessCameraTriggerUnitElement.LINK_ELEMENTS = {"elements"}
 function AccessCameraTriggerUnitElement:init(unit)
 	AccessCameraTriggerUnitElement.super.init(self, unit)
 	self._hed.trigger_type = "accessed"
@@ -212,6 +217,13 @@ function AccessCameraTriggerUnitElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
+		end
+	end
+end
+function AccessCameraTriggerUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
 		end
 	end
 end

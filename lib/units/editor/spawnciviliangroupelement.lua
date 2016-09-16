@@ -1,5 +1,4 @@
 SpawnCivilianGroupUnitElement = SpawnCivilianGroupUnitElement or class(MissionElement)
-SpawnCivilianGroupUnitElement.LINK_ELEMENTS = {"elements"}
 function SpawnCivilianGroupUnitElement:init(unit)
 	SpawnCivilianGroupUnitElement.super.init(self, unit)
 	self._hed.random = false
@@ -41,6 +40,13 @@ function SpawnCivilianGroupUnitElement:add_element()
 			table.delete(self._hed.elements, id)
 		else
 			table.insert(self._hed.elements, id)
+		end
+	end
+end
+function SpawnCivilianGroupUnitElement:remove_links(unit)
+	for _, id in ipairs(self._hed.elements) do
+		if id == unit:unit_data().unit_id then
+			table.delete(self._hed.elements, id)
 		end
 	end
 end

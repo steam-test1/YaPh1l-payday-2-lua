@@ -37,16 +37,25 @@ function NewRaycastWeaponBase:init(unit)
 		end
 		managers.player:register_message(Message.SetWeaponStagger, self, clbk)
 	end
+	self._temp_reload_mul = 1
 	if self:weapon_tweak_data().bipod_deploy_multiplier then
 		self._property_mgr:set_property("bipod_deploy_multiplier", self:weapon_tweak_data().bipod_deploy_multiplier)
 	end
 	self._bloodthist_value_during_reload = 0
+end
+function NewRaycastWeaponBase:get_temp_reload_mul()
+	local mul = self._temp_reload_mul
+	self._temp_reload_mul = 1
+	return mul
 end
 function NewRaycastWeaponBase:set_stagger(value)
 	self._stagger = value
 end
 function NewRaycastWeaponBase:get_property(prop)
 	return self._property_mgr:get_property(prop)
+end
+function NewRaycastWeaponBase:set_temp_reload_multiplier(mul)
+	self._temp_reload_mul = mul
 end
 function NewRaycastWeaponBase:is_npc()
 	return false
@@ -247,13 +256,11 @@ function NewRaycastWeaponBase:check_highlight_unit(unit)
 		return
 	end
 	unit = unit:in_slot(8) and alive(unit:parent()) and unit:parent() or unit
-	if not unit or not unit:base() then
+	if not unit:in_slot(managers.slot:get_mask("enemies")) and (not unit:base() or not unit:base().is_security_camera) then
 		return
 	end
-	if unit:character_damage() and unit:character_damage().dead and unit:character_damage():dead() then
-		return
-	end
-	if unit:base().can_be_marked then
+	local highlight = unit:base().is_security_camera or unit:base().get_type and unit:base():get_type() == "swat_turret" or not unit:base()._tweak_table or managers.groupai:state():whisper_mode() and tweak_data.character[unit:base()._tweak_table].silent_priority_shout or tweak_data.character[unit:base()._tweak_table].priority_shout
+	if highlight then
 		managers.game_play_central:auto_highlight_enemy(unit, true)
 	end
 end
@@ -610,7 +617,6 @@ function NewRaycastWeaponBase:on_enabled(...)
 end
 function NewRaycastWeaponBase:on_disabled(...)
 	NewRaycastWeaponBase.super.on_disabled(self, ...)
-	self._last_gadget_idx = self._gadget_on
 	self:gadget_off()
 	self:_set_parts_enabled(false)
 end
@@ -685,33 +691,19 @@ end
 function NewRaycastWeaponBase:has_part(part_id)
 	return self._blueprint and table.contains(self._blueprint, part_id)
 end
-function NewRaycastWeaponBase:on_equip(user_unit)
-	if self:was_gadget_on() then
-		local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
-		if gadgets then
-			self:set_gadget_on(self._last_gadget_idx, false, gadgets)
-			user_unit:network():send("set_weapon_gadget_state", self._gadget_on)
-		end
-	end
-end
-function NewRaycastWeaponBase:on_unequip(user_unit)
-end
 function NewRaycastWeaponBase:has_gadget()
 	return self._has_gadget
 end
 function NewRaycastWeaponBase:is_gadget_on()
-	return self._gadget_on and self._gadget_on > 0
+	return self._gadget_on and self._gadget_on > 0 and self._gadget_on or false
 end
 function NewRaycastWeaponBase:gadget_on()
 	self:set_gadget_on(1, true)
 end
-function NewRaycastWeaponBase:was_gadget_on()
-	return self._last_gadget_idx and self._last_gadget_idx > 0 or false
-end
 function NewRaycastWeaponBase:gadget_off()
-	self:set_gadget_on(0, true, nil)
+	self:set_gadget_on(0, true, nil, true)
 end
-function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, current_state)
+function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, ignore_bipod)
 	if not ignore_enable and not self._enabled then
 		return
 	end
@@ -739,13 +731,23 @@ function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, c
 			for i, id in ipairs(gadgets) do
 				gadget = self._parts[id]
 				if gadget then
-					gadget.unit:base():set_state(self._gadget_on == i, self._sound_fire, current_state)
+					local is_bipod = ignore_bipod and gadget.unit:base():is_bipod()
+					if not is_bipod then
+						gadget.unit:base():set_state(self._gadget_on == i, self._sound_fire)
+					end
+					if gadget.unit:base():is_bipod() then
+						if gadget.unit:base():bipod_state() then
+							self._gadget_on = i
+						else
+							self._gadget_on = 0
+						end
+					end
 				end
 			end
 		end
 	end
 end
-function NewRaycastWeaponBase:toggle_gadget(current_state)
+function NewRaycastWeaponBase:toggle_gadget()
 	if not self._enabled then
 		return false
 	end
@@ -753,10 +755,23 @@ function NewRaycastWeaponBase:toggle_gadget(current_state)
 	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
 	if gadgets then
 		gadget_on = (gadget_on + 1) % (#gadgets + 1)
-		self:set_gadget_on(gadget_on, false, gadgets, current_state)
+		self:set_gadget_on(gadget_on, false, gadgets)
 		return true
 	end
-	return false
+	do return false end
+	if not self._enabled then
+		return
+	end
+	self._gadget_on = self._gadget_on or 0
+	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+	if gadgets then
+		self._gadget_on = ((self._gadget_on or 0) + 1) % (#gadgets + 1)
+		local gadget
+		for _, i in ipairs(gadgets) do
+			gadget = self._parts[i]
+			gadget.unit:base():set_state(self._gadget_on == i, self._sound_fire)
+		end
+	end
 end
 function NewRaycastWeaponBase:gadget_update()
 	self:set_gadget_on(false, true)
@@ -774,9 +789,6 @@ function NewRaycastWeaponBase:is_bipod_usable()
 	return retval
 end
 function NewRaycastWeaponBase:is_category(...)
-	local arg = {
-		...
-	}
 	local weapon_tweak_data = self:weapon_tweak_data()
 	local category = weapon_tweak_data.category
 	for i = 1, #arg do
@@ -861,7 +873,12 @@ function NewRaycastWeaponBase:_get_spread(user_unit)
 	spread_index = math.ceil((spread_index + spread_addend) * spread_multiplier)
 	spread_index = math.clamp(spread_index, 1, #tweak_data.weapon.stats.spread)
 	local spread = tweak_data.weapon.stats.spread[spread_index]
-	local stance_mul = current_state:get_movement_modifier(tweak_data.weapon[self._name_id].spread)
+	local stance_mul = 1
+	if current_state._state_data.ducking then
+		stance_mul = stance_mul + (1 - tweak_data.weapon[self._name_id].spread[current_state._moving and "moving_crouching" or "crouching"])
+	else
+		stance_mul = stance_mul + (1 - tweak_data.weapon[self._name_id].spread[current_state._moving and "moving_standing" or "standing"])
+	end
 	stance_mul = self:_convert_add_to_mul(stance_mul)
 	spread = spread * stance_mul
 	if current_state:in_steelsight() then
@@ -900,8 +917,9 @@ function NewRaycastWeaponBase:conditional_accuracy_multiplier(current_state)
 	if current_state:in_steelsight() and self:is_single_shot() then
 		mul = mul + (1 - pm:upgrade_value("player", "single_shot_accuracy_inc", 1))
 	end
-	if current_state:in_steelsight() then
-		mul = mul + (1 - managers.player:upgrade_value(self:category(), "steelsight_accuracy_inc", 1))
+	if current_state:in_steelsight() and self:is_category("shotgun") then
+		mul = mul + (1 - pm:upgrade_value("shotgun", "steelsight_accuracy_inc", 1))
+		mul = mul + (1 - pm:upgrade_value("player"))
 	end
 	if current_state._moving then
 		mul = mul + (1 - pm:upgrade_value("player", "weapon_movement_stability", 1))
@@ -964,9 +982,6 @@ function NewRaycastWeaponBase:enter_steelsight_speed_multiplier()
 	return self:_convert_add_to_mul(multiplier)
 end
 function NewRaycastWeaponBase:reload_speed_multiplier()
-	if self._current_reload_speed_multiplier then
-		return self._current_reload_speed_multiplier
-	end
 	local multiplier = 1
 	multiplier = multiplier + (1 - managers.player:upgrade_value(self:weapon_tweak_data().category, "reload_speed_multiplier", 1))
 	if self:weapon_tweak_data().sub_category then
@@ -1063,7 +1078,6 @@ function NewRaycastWeaponBase:start_reload(...)
 		self._started_reload_empty = self:clip_empty()
 		local speed_multiplier = self:reload_speed_multiplier()
 		self._next_shell_reloded_t = managers.player:player_timer():time() + self:_first_shell_reload_expire_t() / speed_multiplier
-		self._current_reload_speed_multiplier = speed_multiplier
 	end
 end
 function NewRaycastWeaponBase:started_reload_empty()
@@ -1098,7 +1112,6 @@ function NewRaycastWeaponBase:shotgun_shell_data()
 end
 function NewRaycastWeaponBase:on_reload_stop()
 	self._bloodthist_value_during_reload = 0
-	self._current_reload_speed_multiplier = nil
 end
 function NewRaycastWeaponBase:set_timer(timer, ...)
 	NewRaycastWeaponBase.super.set_timer(self, timer)

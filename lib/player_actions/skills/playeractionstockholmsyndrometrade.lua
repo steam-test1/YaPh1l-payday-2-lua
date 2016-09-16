@@ -8,7 +8,7 @@ function PlayerAction.StockholmSyndromeTrade.Function(pos, peer_id)
 	local previous_state = game_state_machine:current_state_name()
 	local co = coroutine.running()
 	while not quit do
-		if controller:get_input_pressed("jump") and not managers.hud:chat_focus() then
+		if controller:get_input_pressed("jump") then
 			if Network:is_server() then
 				managers.player:init_auto_respawn_callback(pos, peer_id, true)
 				managers.player:change_stockholm_syndrome_count(-1)
@@ -39,13 +39,8 @@ function StockholmSyndromeTradeAction:on_enter()
 	self._previous_state = game_state_machine:current_state_name()
 	self._quit = false
 	self._request_hostage_trade = false
-	self._last_can_use = false
 	managers.player:register_message(Message.CanTradeHostage, "request_stockholm_syndrome", callback(self, self, "_request_stockholm_syndrome_results"))
-	local can_use = managers.trade:is_stockholm_syndrome_allowed()
-	if can_use then
-		managers.hint:show_hint("stockholm_syndrome_hint")
-		self._last_can_use = true
-	end
+	managers.hint:show_hint("stockholm_syndrome_hint")
 end
 function StockholmSyndromeTradeAction:on_exit()
 	managers.player:unregister_message(Message.CanTradeHostage, "request_stockholm_syndrome")
@@ -58,62 +53,33 @@ function StockholmSyndromeTradeAction:on_exit()
 	self._request_hostage_trade = nil
 end
 function StockholmSyndromeTradeAction:update(t, dt)
-	local auto_activate = managers.groupai:state():num_alive_criminals() <= 0
-	local allowed, feedback_idx = StockholmSyndromeTradeAction.is_allowed()
-	if allowed and not self._last_can_use then
-		managers.hint:show_hint("stockholm_syndrome_hint")
-	end
-	if not self._request_hostage_trade and (self._controller:get_input_pressed("jump") and not managers.hud:chat_focus() or auto_activate) then
+	if managers.groupai:state():hostage_count() <= 0 then
+		self._quit = true
+	elseif not self._request_hostage_trade and self._controller:get_input_pressed("jump") then
 		local pm = managers.player
 		if Network:is_server() then
-			if allowed then
+			if not managers.trade:trade_in_progress() then
 				pm:init_auto_respawn_callback(self._pos, self._peer_id, false)
-				pm:change_stockholm_syndrome_count(-1)
+				managers.player:change_stockholm_syndrome_count(-1)
 				self._quit = true
-			elseif feedback_idx > 0 and not auto_activate then
-				self.on_failure(feedback_idx)
 			end
 		else
-			managers.network:session():send_to_host("request_stockholm_syndrome", self._pos, self._peer_id, auto_activate)
-			self._request_hostage_trade = true
+			managers.network:session():send_to_host("request_stockholm_syndrome", self._pos, self._peer_id)
 		end
+		self._request_hostage_trade = true
 	end
 	local current_state = game_state_machine:current_state_name()
 	if self._previous_state == "ingame_waiting_for_respawn" and current_state ~= self._previous_state then
 		self._quit = true
 	end
 	self._previous_state = current_state
-	self._last_can_use = allowed
 	return self._quit
 end
-local hint_feedback = {
-	"stockholm_syndrome_trade",
-	"stockholm_syndrome_stealth",
-	"stockholm_syndrome_no_hostages"
-}
-function StockholmSyndromeTradeAction:_request_stockholm_syndrome_results(can_trade, feedback_idx)
+function StockholmSyndromeTradeAction:_request_stockholm_syndrome_results(can_trade)
 	if can_trade then
 		self._quit = true
 		managers.player:change_stockholm_syndrome_count(-1)
 	else
 		self._request_hostage_trade = false
-		if feedback_idx > 0 then
-			StockholmSyndromeTradeAction.on_failure(feedback_idx)
-		end
 	end
-end
-function StockholmSyndromeTradeAction.is_allowed()
-	local allowed, trade_in_progress, is_in_stealth, no_hostages = managers.trade:is_stockholm_syndrome_allowed()
-	local hint_id = 0
-	if trade_in_progress then
-		hint_id = 1
-	elseif is_in_stealth then
-		hint_id = 2
-	elseif no_hostages then
-		hint_id = 3
-	end
-	return allowed, hint_id
-end
-function StockholmSyndromeTradeAction.on_failure(feedback_idx)
-	managers.hint:show_hint(hint_feedback[feedback_idx])
 end

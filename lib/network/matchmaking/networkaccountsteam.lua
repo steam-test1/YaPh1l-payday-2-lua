@@ -193,6 +193,7 @@ function NetworkAccountSTEAM:get_global_stat(key, days)
 	return value
 end
 function NetworkAccountSTEAM:publish_statistics(stats, force_store)
+	do return end
 	if managers.dlc:is_trial() then
 		return
 	end
@@ -344,6 +345,7 @@ function NetworkAccountSTEAM:inventory_is_loading()
 	return self._inventory_is_loading
 end
 function NetworkAccountSTEAM:inventory_reward(reward_callback, item)
+	do return false end
 	Steam:inventory_reward(reward_callback, item or 1)
 	return true
 end
@@ -383,6 +385,7 @@ function NetworkAccount:inventory_reward_open(safe, safe_instance_id, reward_unl
 	Steam:inventory_reward_open(safe_instance_id, content_tweak.def_id, reward_unlock_callback)
 end
 function NetworkAccountSTEAM:inventory_reward_dlc(def_id, reward_promo_callback)
+	do return false end
 	Steam:inventory_reward_promo(def_id, reward_promo_callback)
 end
 function NetworkAccountSTEAM:inventory_outfit_refresh()

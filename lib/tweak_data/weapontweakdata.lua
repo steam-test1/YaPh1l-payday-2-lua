@@ -265,7 +265,7 @@ end
 function WeaponTweakData:_init_data_m4_npc()
 	self.m4_npc.sounds.prefix = "m4_npc"
 	self.m4_npc.use_data.selection_index = 2
-	self.m4_npc.DAMAGE = 1
+	self.m4_npc.DAMAGE = 1.5
 	self.m4_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.m4_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.m4_npc.CLIP_AMMO_MAX = 20
@@ -281,7 +281,7 @@ end
 function WeaponTweakData:_init_data_ak47_npc()
 	self.ak47_npc.sounds.prefix = "akm_npc"
 	self.ak47_npc.use_data.selection_index = 2
-	self.ak47_npc.DAMAGE = 3
+	self.ak47_npc.DAMAGE = 4
 	self.ak47_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.ak47_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.ak47_npc.CLIP_AMMO_MAX = 20
@@ -321,7 +321,7 @@ end
 function WeaponTweakData:_init_data_r870_npc()
 	self.r870_npc.sounds.prefix = "remington_npc"
 	self.r870_npc.use_data.selection_index = 2
-	self.r870_npc.DAMAGE = 5
+	self.r870_npc.DAMAGE = 6
 	self.r870_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.r870_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
 	self.r870_npc.CLIP_AMMO_MAX = 6
@@ -382,7 +382,7 @@ end
 function WeaponTweakData:_init_data_g36_npc()
 	self.g36_npc.sounds.prefix = "g36_npc"
 	self.g36_npc.use_data.selection_index = 2
-	self.g36_npc.DAMAGE = 3
+	self.g36_npc.DAMAGE = 4
 	self.g36_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.g36_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.g36_npc.CLIP_AMMO_MAX = 20
@@ -1410,7 +1410,7 @@ function WeaponTweakData:_init_data_m134_npc()
 	self.m134_secondary_npc.armor_piercing = true
 end
 function WeaponTweakData:_init_data_rpg7_npc()
-	self.rpg7_npc.sounds.prefix = "rpg_npc"
+	self.rpg7_npc.sounds.prefix = "barrett_npc"
 	self.rpg7_npc.use_data.selection_index = 2
 	self.rpg7_npc.DAMAGE = 2
 	self.rpg7_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -1521,7 +1521,7 @@ function WeaponTweakData:_init_data_flamethrower_mk2_npc()
 	self.flamethrower_mk2_npc.suppression = 0.45
 end
 function WeaponTweakData:_init_data_m32_npc()
-	self.m32_npc.sounds.prefix = "mgl_npc"
+	self.m32_npc.sounds.prefix = "gl40_npc"
 	self.m32_npc.use_data.selection_index = 2
 	self.m32_npc.DAMAGE = 2
 	self.m32_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -1595,7 +1595,7 @@ function WeaponTweakData:_init_data_plainsrider_npc()
 	self.plainsrider_npc.suppression = 1
 end
 function WeaponTweakData:_init_data_mateba_npc()
-	self.mateba_npc.sounds.prefix = "mateba_npc"
+	self.mateba_npc.sounds.prefix = "rbull_npc"
 	self.mateba_npc.use_data.selection_index = 1
 	self.mateba_npc.DAMAGE = 4
 	self.mateba_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -2064,17 +2064,8 @@ function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	self.factory = WeaponFactoryTweakData:new()
 	tweak_data._init_wip_weapon_factory(self.factory, tweak_data)
 	self:_init_new_weapons(autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, damage_melee_default, damage_melee_effect_multiplier_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default)
-	local free_dlcs = tweak_data:free_dlc_list()
-	for _, data in pairs(self) do
-		if free_dlcs[data.global_value] then
-			data.global_value = nil
-		end
-	end
-	for _, data in pairs(self.factory.parts) do
-		if free_dlcs[data.dlc] then
-			data.dlc = nil
-		end
-	end
+	self:give_free_dlcs(self, true)
+	self:give_free_dlcs(self.factory.parts)
 end
 function WeaponTweakData:_init_stats()
 	self.stats = {}
@@ -2497,10 +2488,25 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 		max_ammo * high
 	}
 end
+function WeaponTweakData:give_free_dlcs(data_list, global_value)
+	local free_dlcs = {}
+	if global_value then
+		for _, data in pairs(data_list) do
+			if free_dlcs[data.global_value] then
+				data.global_value = nil
+			end
+		end
+	else
+		for _, data in pairs(data_list) do
+			if free_dlcs[data.dlc] then
+				data.dlc = nil
+			end
+		end
+	end
+end
 function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, damage_melee_default, damage_melee_effect_multiplier_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default)
 	local total_damage_primary = 300
 	local total_damage_secondary = 150
-	local default_bipod_spread = 1.6
 	self.new_m4 = {}
 	self.new_m4.category = "assault_rifle"
 	self.new_m4.damage_melee = damage_melee_default
@@ -2787,12 +2793,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.r870.single = {}
 	self.r870.single.fire_rate = 0.575
 	self.r870.spread = {}
-	self.r870.spread.standing = self.new_m4.spread.standing
-	self.r870.spread.crouching = self.new_m4.spread.crouching
-	self.r870.spread.steelsight = self.new_m4.spread.steelsight
-	self.r870.spread.moving_standing = self.new_m4.spread.moving_standing
-	self.r870.spread.moving_crouching = self.new_m4.spread.moving_crouching
-	self.r870.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
+	self.r870.spread.standing = self.new_m4.spread.standing * 2
+	self.r870.spread.crouching = self.new_m4.spread.crouching * 2
+	self.r870.spread.steelsight = self.new_m4.spread.steelsight * 2
+	self.r870.spread.moving_standing = self.new_m4.spread.moving_standing * 2
+	self.r870.spread.moving_crouching = self.new_m4.spread.moving_crouching * 2
+	self.r870.spread.moving_steelsight = self.new_m4.spread.moving_steelsight * 2
 	self.r870.kick = {}
 	self.r870.kick.standing = {
 		1.9,
@@ -5636,7 +5642,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hk21.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.hk21.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.hk21.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
-	self.hk21.spread.bipod = default_bipod_spread
 	self.hk21.kick = {}
 	self.hk21.kick.standing = {
 		-0.2,
@@ -5738,7 +5743,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m249.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.m249.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.m249.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
-	self.m249.spread.bipod = default_bipod_spread
 	self.m249.kick = {}
 	self.m249.kick.standing = {
 		-0.2,
@@ -5840,7 +5844,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rpk.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.rpk.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.rpk.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
-	self.rpk.spread.bipod = default_bipod_spread
 	self.rpk.kick = {}
 	self.rpk.kick.standing = {
 		-0.2,
@@ -7724,7 +7727,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mg42.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.mg42.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.mg42.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
-	self.mg42.spread.bipod = default_bipod_spread
 	self.mg42.kick = {}
 	self.mg42.kick.standing = {
 		-0.2,
@@ -10591,7 +10593,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.par.spread.moving_standing = self.new_m4.spread.moving_standing
 	self.par.spread.moving_crouching = self.new_m4.spread.moving_crouching
 	self.par.spread.moving_steelsight = self.new_m4.spread.moving_steelsight
-	self.par.spread.bipod = default_bipod_spread
 	self.par.kick = {}
 	self.par.kick.standing = {
 		-0.2,

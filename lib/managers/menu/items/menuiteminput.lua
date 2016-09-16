@@ -3,7 +3,7 @@ MenuItemInput = MenuItemInput or class(CoreMenuItem.Item)
 MenuItemInput.TYPE = "input"
 function MenuItemInput:init(data_node, parameters)
 	MenuItemInput.super.init(self, data_node, parameters)
-	self._esc_released_callback = 0
+	self._esc_callback = 0
 	self._enter_callback = 0
 	self._typing_callback = 0
 	self._type = MenuItemInput.TYPE
@@ -89,8 +89,6 @@ function MenuItemInput:_layout(row_item)
 		row_item.gui_text:set_right(self._align_right)
 		row_item.empty_gui_text:set_left(self._align_left)
 	end
-	row_item.gui_text:set_color(row_item.color)
-	row_item.empty_gui_text:set_color(row_item.color)
 	row_item.empty_gui_text:set_visible(utf8.len(row_item.gui_text:text()) < (self._empty_gui_input_limit or 1))
 	self:_update_caret(row_item)
 	self:_update_input_bg(row_item)
@@ -125,38 +123,16 @@ function MenuItemInput:esc_key_callback(row_item)
 	if not row_item or not alive(row_item.gui_text) then
 		return
 	end
-	self:_set_enabled(false)
 	self:_loose_focus(row_item)
 end
 function MenuItemInput:enter_key_callback(row_item)
 	if not row_item or not alive(row_item.gui_text) then
 		return
 	end
-	if not self._editing then
-		self:_set_enabled(true)
-		return
-	end
-	self:_set_enabled(false)
 	local text = row_item.gui_text
 	local message = text:text()
 	self:set_input_text(message)
 	self:_layout(row_item)
-end
-function MenuItemInput:_set_enabled(enabled)
-	if not self:enabled() then
-		return
-	end
-	if enabled then
-		self._editing = true
-		managers.menu:active_menu().input:set_back_enabled(false)
-		managers.menu:active_menu().input:accept_input(false)
-		managers.menu:active_menu().input:deactivate_mouse()
-	else
-		self._editing = false
-		managers.menu:active_menu().input:activate_mouse()
-		managers.menu:active_menu().input:accept_input(true)
-		managers.menu:active_menu().input:set_back_enabled(true)
-	end
 end
 function MenuItemInput:_animate_show_input(input_panel)
 	local TOTAL_T = 0.2
@@ -192,7 +168,7 @@ function MenuItemInput:trigger()
 	end
 end
 function MenuItemInput:_on_focus(row_item)
-	if self._focus or not self:enabled() then
+	if self._focus then
 		return
 	end
 	self._focus = true
@@ -202,7 +178,7 @@ function MenuItemInput:_on_focus(row_item)
 	row_item.gui_panel:key_press(callback(self, self, "key_press", row_item))
 	row_item.gui_panel:enter_text(callback(self, self, "enter_text", row_item))
 	row_item.gui_panel:key_release(callback(self, self, "key_release", row_item))
-	self._esc_released_callback = callback(self, self, "esc_key_callback", row_item)
+	self._esc_callback = callback(self, self, "esc_key_callback", row_item)
 	self._enter_callback = callback(self, self, "enter_key_callback", row_item)
 	self._typing_callback = 0
 	self._enter_text_set = false
@@ -226,7 +202,7 @@ function MenuItemInput:_loose_focus(row_item)
 	row_item.gui_panel:key_press(nil)
 	row_item.gui_panel:enter_text(nil)
 	row_item.gui_panel:key_release(nil)
-	self._esc_released_callback = 0
+	self._esc_callback = 0
 	self._enter_callback = 0
 	self._typing_callback = 0
 	row_item.gui_panel:stop()
@@ -238,7 +214,7 @@ function MenuItemInput:_loose_focus(row_item)
 end
 function MenuItemInput:_shift()
 	local k = Input:keyboard()
-	return not k:down(Idstring("left shift")) and not k:down(Idstring("right shift")) and k:has_button(Idstring("shift")) and k:down(Idstring("shift"))
+	return not k:down("left shift") and not k:down("right shift") and k:has_button("shift") and k:down("shift")
 end
 function MenuItemInput.blink(o)
 	while true do
@@ -282,7 +258,7 @@ function MenuItemInput:_update_caret(row_item)
 	if w < 3 then
 		w = 3
 	end
-	if not self._editing then
+	if not self._focus then
 		w = 0
 		h = 0
 	end
@@ -290,10 +266,14 @@ function MenuItemInput:_update_caret(row_item)
 	if row_item.align == "right" then
 		caret:set_world_right(x)
 	end
-	self:set_blinking(s == e and self._editing, row_item)
+	self:set_blinking(s == e and self._focus, row_item)
 end
 function MenuItemInput:enter_text(row_item, o, s)
-	if not row_item or not alive(row_item.gui_text) or not self._editing then
+	if not row_item or not alive(row_item.gui_text) then
+		return
+	end
+	if self._skip_first then
+		self._skip_first = false
 		return
 	end
 	local text = row_item.gui_text
@@ -321,14 +301,14 @@ function MenuItemInput:update_key_down(row_item, o, k)
 				text:set_selection(s - 1, e)
 			end
 			text:replace_text("")
-			if not (utf8.len(text:text()) < 1) or type(self._esc_released_callback) ~= "number" then
+			if not (utf8.len(text:text()) < 1) or type(self._esc_callback) ~= "number" then
 			end
 		elseif self._key_pressed == Idstring("delete") then
 			if s == e and s < n then
 				text:set_selection(s, e + 1)
 			end
 			text:replace_text("")
-			if not (utf8.len(text:text()) < 1) or type(self._esc_released_callback) ~= "number" then
+			if not (utf8.len(text:text()) < 1) or type(self._esc_callback) ~= "number" then
 			end
 		elseif self._key_pressed == Idstring("insert") then
 			local clipboard = Application:get_clipboard() or ""
@@ -366,17 +346,15 @@ function MenuItemInput:key_release(row_item, o, k)
 	if self._key_pressed == k then
 		self._key_pressed = false
 	end
-	if k == Idstring("esc") then
-		if type(self._esc_released_callback) ~= "number" then
-			self._esc_released_callback()
-		end
-	elseif k == Idstring("enter") and self._should_disable then
-		self._should_disable = false
-		self:trigger()
-	end
 end
 function MenuItemInput:key_press(row_item, o, k)
-	if not row_item or not alive(row_item.gui_text) or not self._editing then
+	if not row_item or not alive(row_item.gui_text) then
+		return
+	end
+	if self._skip_first then
+		if k == Idstring("enter") then
+			self._skip_first = false
+		end
 		return
 	end
 	local text = row_item.gui_text
@@ -391,14 +369,14 @@ function MenuItemInput:key_press(row_item, o, k)
 			text:set_selection(s - 1, e)
 		end
 		text:replace_text("")
-		if not (utf8.len(text:text()) < 1) or type(self._esc_released_callback) ~= "number" then
+		if not (utf8.len(text:text()) < 1) or type(self._esc_callback) ~= "number" then
 		end
 	elseif k == Idstring("delete") then
 		if s == e and s < n then
 			text:set_selection(s, e + 1)
 		end
 		text:replace_text("")
-		if not (utf8.len(text:text()) < 1) or type(self._esc_released_callback) ~= "number" then
+		if not (utf8.len(text:text()) < 1) or type(self._esc_callback) ~= "number" then
 		end
 	elseif k == Idstring("insert") then
 		local clipboard = Application:get_clipboard() or ""
@@ -427,7 +405,10 @@ function MenuItemInput:key_press(row_item, o, k)
 	elseif self._key_pressed == Idstring("home") then
 		text:set_selection(0, 0)
 	elseif k == Idstring("enter") then
-		self._should_disable = true
+		if type(self._enter_callback) ~= "number" then
+		end
+	elseif k == Idstring("esc") and type(self._esc_callback) ~= "number" then
+		self._esc_callback()
 	end
 	self:_layout(row_item)
 end
