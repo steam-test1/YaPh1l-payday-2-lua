@@ -615,7 +615,8 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 		table.insert(rooms_original, data.room_id)
 	end
 	local rooms = {}
-	while #rooms_original > 0 do
+	while #rooms_original > 0 and #rooms > 20 do
+		print("-----------GN: #rooms_original = ", #rooms_original)
 		table.insert(rooms, table.remove(rooms_original, math.random(#rooms_original)))
 	end
 	local function updated_session_attributes(active_info_list)
@@ -810,6 +811,9 @@ function CrimeNetManager:join_quick_play_game()
 				skip_level = is_stealth ~= stealth_enabled
 			end
 			if not skip_level and difficulty and difficulty ~= tweak_data:index_to_difficulty(attributes_numbers[2]) then
+				skip_level = true
+			end
+			if not skip_level and managers.ban_list:banned(room.owner_id) then
 				skip_level = true
 			end
 			if not skip_level and managers.network.matchmake:is_server_ok(false, room.owner_id, attributes_numbers) then
@@ -2279,7 +2283,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color,
-		blend_mode = "add",
+		blend_mode = "normal",
 		layer = 0
 	})
 	local contact_name = side_panel:text({
@@ -2289,7 +2293,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color,
-		blend_mode = "add",
+		blend_mode = "normal",
 		layer = 0
 	})
 	local info_name = side_panel:text({
@@ -2299,7 +2303,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color,
-		blend_mode = "add",
+		blend_mode = "normal",
 		layer = 0
 	})
 	stars_panel:set_w(star_size * math.min(11, #stars_panel:children()))

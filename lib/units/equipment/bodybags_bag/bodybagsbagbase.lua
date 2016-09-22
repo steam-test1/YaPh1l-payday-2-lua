@@ -24,6 +24,9 @@ function BodyBagsBagBase:init(unit)
 		managers.enemy:add_delayed_clbk(self._validate_clbk_id, callback(self, self, "_clbk_validate"), Application:time() + 60)
 	end
 end
+function BodyBagsBagBase:get_name_id()
+	return "bodybags_bag"
+end
 function BodyBagsBagBase:_clbk_validate()
 	self._validate_clbk_id = nil
 	if not self._was_dropin then

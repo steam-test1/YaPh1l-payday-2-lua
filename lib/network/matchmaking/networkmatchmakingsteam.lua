@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = 4
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.54.12"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.54.13"
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
 	self._callback_map = {}
@@ -137,9 +137,10 @@ function NetworkMatchMakingSTEAM:get_friends_lobbies()
 							owner_name = lobby:key_value("owner_name"),
 							room_id = lobby:id()
 						})
-						table.insert(info.attribute_list, {
+						local attributes_data = {
 							numbers = self:_lobby_to_numbers(lobby)
-						})
+						}
+						table.insert(info.attribute_list, attributes_data)
 					end
 				end
 			end
@@ -235,9 +236,10 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only)
 							room_id = lobby:id(),
 							owner_level = lobby:key_value("owner_level")
 						})
-						table.insert(info.attribute_list, {
+						local attributes_data = {
 							numbers = self:_lobby_to_numbers(lobby)
-						})
+						}
+						table.insert(info.attribute_list, attributes_data)
 					end
 				end
 			end

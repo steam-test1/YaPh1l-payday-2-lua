@@ -521,7 +521,9 @@ sides = {0, 0, 2, 0}})
 							end
 						end
 						for _,box in ipairs(self._boxes_by_layer[3]) do
-							box.panel:hide()
+							if alive(box.panel) then
+								box.panel:hide()
+							end
 						end
           end
 					local column_three_show_func = function()
@@ -549,7 +551,9 @@ sides = {1, 1, 2, 1}})
 							end
 						end
 						for _,box in ipairs(self._boxes_by_layer[3]) do
-							box.panel:show()
+							if alive(box.panel) then
+								box.panel:show()
+							end
 						end
           end
 					self._show_hide_data = {}
@@ -1693,7 +1697,7 @@ PlayerInventoryGui._update_deployable_box = function(self)
 	if deployable_data and deployable_data.secondary and managers.player:has_category_upgrade("player", "second_deployable") then
 		local sec_data = deployable_data.secondary
 		local clbks = {left = callback(self, self, "open_deployable_menu"), up = callback(self, self, "previous_deployable_secondary"), down = callback(self, self, "next_deployable_secondary")}
-		local icon_box = self:create_box({name = "deployable_secondary", use_borders = false, w = box.panel:w() / 2, h = box.panel:h(), padding = 5, text = sec_data.info_text, unselected_text = "", image = sec_data.item_texture, image_size_mul = 1, alpha = 1, select_anim = select_anim, unselect_anim = unselect_anim, bg_blend_mode = "normal", layer = 2, clbks = clbks})
+		local icon_box = self:create_box({name = "deployable_secondary", use_borders = false, w = box.panel:w() / 2, h = box.panel:h(), padding = 5, text = sec_data.info_text, unselected_text = "", image = sec_data.item_texture, image_size_mul = 1, alpha = 1, select_anim = select_anim, unselect_anim = unselect_anim, bg_blend_mode = "normal", layer = 3, clbks = clbks})
 		icon_box:set_center(box.panel:x() + box.panel:w() - 40, box.panel:y() + box.panel:h() / 2)
 		icon_box:set_visible(box.panel:visible())
 	if box.image_object then
@@ -1798,6 +1802,7 @@ mod_data = {selected_tab = icon.type, name = managers.blackmarket:equipped_secon
 texture_rect = {(tree - 1) * 24, 0, 22, 31}, alpha = 1, select_anim = select_anim, unselect_anim = select_anim, bg_blend_mode = "normal", layer = 3, clbks = false, links = mod_links})
 				icon_box:set_lefttop(math.round(x), math.round(y))
 				x = x + w + 2
+				icon_box:set_visible(skilltree_box:visible())
 			end
 		end
 		 -- WARNING: missing end command somewhere! Added here

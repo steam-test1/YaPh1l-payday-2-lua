@@ -570,7 +570,7 @@ function GamePlayCentralManager:auto_highlight_enemy(unit, use_player_upgrades, 
 	unit:contour():add(contour_type, true, time_multiplier)
 	return true
 end
-function GamePlayCentralManager:do_shotgun_push(unit, hit_pos, dir, distance)
+function GamePlayCentralManager:do_shotgun_push(unit, hit_pos, dir, distance, attacker)
 	if distance > 500 then
 		return
 	end

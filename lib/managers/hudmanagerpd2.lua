@@ -770,8 +770,8 @@ function HUDManager:_create_hit_direction(hud)
 	hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 	self._hud_hit_direction = HUDHitDirection:new(hud)
 end
-function HUDManager:on_hit_direction(dir, unit_type_hit)
-	self._hud_hit_direction:on_hit_direction(dir, unit_type_hit)
+function HUDManager:on_hit_direction(dir, unit_type_hit, fixed_angle)
+	self._hud_hit_direction:on_hit_direction(dir, unit_type_hit, fixed_angle)
 end
 function HUDManager:_create_downed_hud(hud)
 	hud = hud or managers.hud:script(PlayerBase.PLAYER_DOWNED_HUD)

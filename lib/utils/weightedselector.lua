@@ -1,7 +1,6 @@
 WeightedSelector = WeightedSelector or class()
 function WeightedSelector:init()
-	self._values = {}
-	self._total_weight = 0
+	self:clear()
 end
 function WeightedSelector:add(value, weight)
 	table.insert(self._values, {value = value, weight = weight})
@@ -16,4 +15,8 @@ function WeightedSelector:select()
 		rand = rand - item.weight
 	end
 	return nil
+end
+function WeightedSelector:clear()
+	self._values = {}
+	self._total_weight = 0
 end

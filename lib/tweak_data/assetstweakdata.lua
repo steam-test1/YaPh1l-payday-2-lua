@@ -37,6 +37,7 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_pd.stages = "all"
 	self.risk_pd.exclude_stages = {
 		"safehouse",
+		"chill",
 		"crojob1",
 		"haunted",
 		"cage",
@@ -51,6 +52,7 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_swat.stages = "all"
 	self.risk_swat.exclude_stages = {
 		"safehouse",
+		"chill",
 		"crojob1",
 		"haunted",
 		"cage",
@@ -65,6 +67,7 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_fbi.stages = "all"
 	self.risk_fbi.exclude_stages = {
 		"safehouse",
+		"chill",
 		"crojob1",
 		"haunted",
 		"cage",
@@ -79,6 +82,7 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_death_squad.stages = "all"
 	self.risk_death_squad.exclude_stages = {
 		"safehouse",
+		"chill",
 		"haunted",
 		"cage",
 		"kosugi",
@@ -92,6 +96,7 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_death_wish.stages = "all"
 	self.risk_death_wish.exclude_stages = {
 		"safehouse",
+		"chill",
 		"haunted",
 		"cage",
 		"kosugi",
@@ -107,6 +112,7 @@ function AssetsTweakData:_init_gage_assets(tweak_data)
 	self.gage_assignment.stages = "all"
 	self.gage_assignment.exclude_stages = {
 		"safehouse",
+		"chill",
 		"haunted",
 		"crojob1",
 		"short1_stage1",
