@@ -59,6 +59,7 @@ MissionEndState.at_enter = function(self, old_state, params)
 	if self._success then
 		print("MissionEndState:at_enter", managers.job:on_last_stage())
 		managers.job:set_stage_success(true)
+		managers.mission:call_global_event(Message.OnHeistComplete, managers.job:current_job_id())
 	if self._type == "victory" then
 		end
 		managers.money:on_mission_completed(params.num_winners)
@@ -107,7 +108,13 @@ MissionEndState.at_enter = function(self, old_state, params)
 	if managers.statistics:started_session_from_beginning() then
 		local job = nil
 		for achievement,achievement_data in pairs(tweak_data.achievement.complete_heist_stats_achievements) do
-			if Global.game_settings.difficulty == achievement_data.difficulty then
+			local difficulty_pass = nil
+			if type(achievement_data.difficulty) == "table" then
+				difficulty_pass = table.contains(achievement_data.difficulty, Global.game_settings.difficulty)
+			else
+				difficulty_pass = Global.game_settings.difficulty == achievement_data.difficulty
+			end
+			if difficulty_pass then
 				local available_jobs = nil
 				if achievement_data.contact == "all" then
 					available_jobs = {}
@@ -123,14 +130,23 @@ MissionEndState.at_enter = function(self, old_state, params)
 					job = available_jobs[id]
 					if type(job) == "table" then
 						for _,job_id in ipairs(job) do
-							if managers.statistics:completed_job(job_id, achievement_data.difficulty) > 0 then
-								table.remove(available_jobs, id)
-						else
+							local break_outer = false
+							for _,difficulty in ipairs(achievement_data.difficulty) do
+								if managers.statistics:completed_job(job_id, difficulty) > 0 then
+									table.remove(available_jobs, id)
+									break_outer = true
+							else
+								end
+							end
+							if break_outer then
+								do return end
 							end
 						end
 					else
-						if managers.statistics:completed_job(job, achievement_data.difficulty) > 0 then
-							table.remove(available_jobs, id)
+						for _,difficulty in ipairs(achievement_data.difficulty) do
+							if managers.statistics:completed_job(job, difficulty) > 0 then
+								table.remove(available_jobs, id)
+							end
 						end
 					end
 				end
@@ -631,7 +647,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 				end
 				managers.achievment:award(man_5.award)
 			end
-			local mask_pass, diff_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, all_pass, weapon_data, memory, level_id, stage, num_skills = nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
+			local mask_pass, diff_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, weapons_used_pass, everyone_killed_by_weapons_pass, everyone_killed_by_melee_pass, everyone_killed_by_grenade_pass, everyone_weapons_used_pass, enemy_killed_pass, everyone_used_weapon_category_pass, everyone_killed_by_weapon_category_pass, all_pass, weapon_data, memory, level_id, stage, num_skills = nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
 			local phalanx_vip_alive = false
 			if not managers.enemy:all_enemies() then
 				for _,enemy in pairs({}) do
@@ -686,6 +702,21 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 				is_host_pass = is_host_pass
 				converted_cops_pass = not achievement_data.converted_cops or achievement_data.converted_cops <= managers.groupai:state():get_amount_enemies_converted_to_criminals()
 				total_accuracy_pass = not achievement_data.total_accuracy or achievement_data.total_accuracy <= managers.statistics:session_hit_accuracy()
+				enemy_killed_pass = not achievement_data.killed
+				if achievement_data.killed then
+					enemy_killed_pass = true
+					for enemy,count in pairs(achievement_data.killed) do
+						local num_killed = managers.statistics:session_enemy_killed_by_type(enemy, "count")
+						if num_killed ~= 0 then
+							enemy_killed_pass = count ~= 0
+							do return end
+						end
+						enemy_killed_pass = count <= num_killed
+					if not enemy_killed_pass then
+						end
+				else
+					end
+				end
 				used_weapon_category_pass = true
 				if achievement_data.used_weapon_category then
 					local used_weapons = managers.statistics:session_used_weapons()
@@ -703,6 +734,14 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						end
 					end
 				end
+				everyone_used_weapon_category_pass = true
+				if achievement_data.everyone_used_weapon_category and managers.statistics:session_anyone_used_weapon_category_except(achievement_data.everyone_used_weapon_category) then
+					everyone_used_weapon_category_pass = false
+				end
+				everyone_killed_by_weapon_category_pass = true
+				if achievement_data.everyone_killed_by_weapon_category and managers.statistics:session_anyone_killed_by_weapon_category_except(achievement_data.everyone_killed_by_weapon_category) > 0 then
+					everyone_killed_by_weapon_category_pass = false
+				end
 				killed_by_weapons_pass = not achievement_data.killed_by_weapons
 				if achievement_data.killed_by_weapons == 0 then
 					if killed_by_weapons ~= 0 then
@@ -711,6 +750,17 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 					end
 				end
 				killed_by_weapons_pass = achievement_data.killed_by_weapons <= killed_by_weapons
+				everyone_killed_by_weapons_pass = not achievement_data.everyone_killed_by_weapons
+				do
+					if achievement_data.everyone_killed_by_weapons then
+						local everyone_killed_by_weapons = managers.statistics:session_anyone_killed_by_weapons()
+						if everyone_killed_by_weapons ~= 0 then
+							everyone_killed_by_weapons_pass = achievement_data.everyone_killed_by_weapons ~= 0
+						end
+						do return end
+					end
+					everyone_killed_by_weapons_pass = achievement_data.everyone_killed_by_weapons <= everyone_killed_by_weapons
+				end
 				killed_by_melee_pass = not achievement_data.killed_by_melee
 				if achievement_data.killed_by_melee == 0 then
 					if killed_by_melee ~= 0 then
@@ -719,6 +769,17 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 					end
 				end
 				killed_by_melee_pass = achievement_data.killed_by_melee <= killed_by_melee
+				everyone_killed_by_melee_pass = not achievement_data.everyone_killed_by_melee
+				do
+					if achievement_data.everyone_killed_by_melee then
+						local everyone_killed_by_melee = managers.statistics:session_anyone_killed_by_melee()
+						if everyone_killed_by_melee ~= 0 then
+							everyone_killed_by_melee_pass = achievement_data.everyone_killed_by_melee ~= 0
+						end
+						do return end
+					end
+					everyone_killed_by_melee_pass = achievement_data.everyone_killed_by_melee <= everyone_killed_by_melee
+				end
 				killed_by_grenade_pass = not achievement_data.killed_by_grenade
 				if achievement_data.killed_by_grenade == 0 then
 					if killed_by_grenade ~= 0 then
@@ -727,6 +788,17 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 					end
 				end
 				killed_by_grenade_pass = achievement_data.killed_by_grenade <= killed_by_grenade
+				everyone_killed_by_grenade_pass = not achievement_data.everyone_killed_by_grenade
+				do
+					if achievement_data.everyone_killed_by_grenade then
+						local everyone_killed_by_grenade = managers.statistics:session_anyone_killed_by_grenade()
+						if everyone_killed_by_grenade ~= 0 then
+							everyone_killed_by_grenade_pass = achievement_data.everyone_killed_by_grenade ~= 0
+						end
+						do return end
+					end
+					everyone_killed_by_grenade_pass = achievement_data.everyone_killed_by_grenade <= everyone_killed_by_grenade
+				end
 				civilians_killed_pass = not achievement_data.civilians_killed
 				if achievement_data.civilians_killed == 0 then
 					if civilians_killed ~= 0 then
@@ -735,6 +807,10 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 					end
 				end
 				civilians_killed_pass = achievement_data.civilians_killed <= civilians_killed
+				weapons_used_pass = not achievement_data.weapons_used
+				weapons_used_pass = not achievement_data.weapons_used or managers.statistics:session_killed_by_weapons_except(achievement_data.weapons_used) == 0
+				everyone_weapons_used_pass = not achievement_data.everyone_weapons_used
+				everyone_weapons_used_pass = not achievement_data.everyone_weapons_used or managers.statistics:session_anyone_killed_by_weapons_except(achievement_data.everyone_weapons_used) == 0
 				pass_skills = not achievement_data.num_skills
 				if not pass_skills then
 					num_skills = 0
@@ -750,7 +826,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 					for _,character_name in ipairs(achievement_data.characters) do
 						local found = false
 						for _,peer in pairs(managers.network:session():all_peers()) do
-							if peer:character() == character_name then
+							if not peer:is_dropin() and peer:character() == character_name then
 								found = true
 						else
 							end
@@ -823,7 +899,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						if managers.challenge:check_equipped(achievement_data) then
 							equipped_team_pass = managers.challenge:check_equipped_team(achievement_data)
 						end
-						all_pass = not job_pass or not jobs_pass or not level_pass or not levels_pass or not contract_pass or not diff_pass or not mask_pass or not no_shots_pass or not stealth_pass or not loud_pass or not equipped_pass or not equipped_team_pass or not num_players_pass or not pass_skills or not timer_pass or not killed_by_weapons_pass or not killed_by_melee_pass or not killed_by_grenade_pass or not complete_job_pass or not job_value_pass or not memory_pass or not phalanx_vip_alive_pass or not used_weapon_category_pass or not is_host_pass or not character_pass or not converted_cops_pass or total_accuracy_pass
+						all_pass = not job_pass or not jobs_pass or not level_pass or not levels_pass or not contract_pass or not diff_pass or not mask_pass or not no_shots_pass or not stealth_pass or not loud_pass or not equipped_pass or not equipped_team_pass or not num_players_pass or not pass_skills or not timer_pass or not killed_by_weapons_pass or not killed_by_melee_pass or not killed_by_grenade_pass or not complete_job_pass or not job_value_pass or not memory_pass or not phalanx_vip_alive_pass or not used_weapon_category_pass or not is_host_pass or not character_pass or not converted_cops_pass or not total_accuracy_pass or not weapons_used_pass or not everyone_killed_by_weapons_pass or not everyone_killed_by_melee_pass or not everyone_killed_by_grenade_pass or not everyone_weapons_used_pass or not everyone_used_weapon_category_pass or not enemy_killed_pass or everyone_killed_by_weapon_category_pass
 						if all_pass and achievement_data.need_full_job and managers.job:has_active_job() then
 							memory = managers.job:get_memory(achievement)
 							if not managers.job:interupt_stage() then
@@ -918,16 +994,16 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						all_pass = not masks_pass or not level_pass or not job_pass or not jobs_pass or not difficulty_pass or difficulties_pass
 						if all_pass then
 							local available_masks = deep_clone(achievement_data.masks)
+							local all_masks_valid = true
 							for _,peer in pairs(managers.network:session():all_peers()) do
 								local current_mask = peer:mask_id()
-								for id,mask_id in ipairs(available_masks) do
-									if current_mask == mask_id then
-										table.remove(available_masks, id)
+								if table.contains(available_masks, current_mask) then
+									table.delete(available_masks, current_mask)
 								else
-									end
+									all_masks_valid = false
 								end
 							end
-						if #available_masks == 0 then
+						if all_masks_valid then
 							end
 							if achievement_data.stat then
 								managers.achievment:award_progress(achievement_data.stat)
@@ -947,7 +1023,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1276 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1446 
 end
 
 

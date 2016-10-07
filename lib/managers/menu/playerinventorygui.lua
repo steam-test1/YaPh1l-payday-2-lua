@@ -2268,12 +2268,12 @@ PlayerInventoryGui.previous_primary = function(self)
 	if box and managers.blackmarket:equip_previous_weapon("primaries") then
 		local player_loadout_data = managers.blackmarket:player_loadout_data()
 		if player_loadout_data.primary.item_bg_texture then
-			self:update_box(box, {text = player_loadout_data.primary.info_text, text_selected_color = player_loadout_data.primary.info_text_color, image = player_loadout_data.primary.item_texture, bg_image = player_loadout_data.primary.item_bg_texture, use_background = true})
+			self:update_box(box, {text = player_loadout_data.primary.info_text, text_selected_color = player_loadout_data.primary.info_text_color or false, image = player_loadout_data.primary.item_texture, bg_image = player_loadout_data.primary.item_bg_texture, use_background = true})
 			self:_update_info_weapon("primary")
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 36 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 39 
 end
 
 PlayerInventoryGui.next_primary = function(self)
@@ -2281,12 +2281,12 @@ PlayerInventoryGui.next_primary = function(self)
 	if box and managers.blackmarket:equip_next_weapon("primaries") then
 		local player_loadout_data = managers.blackmarket:player_loadout_data()
 		if player_loadout_data.primary.item_bg_texture then
-			self:update_box(box, {text = player_loadout_data.primary.info_text, text_selected_color = player_loadout_data.primary.info_text_color, image = player_loadout_data.primary.item_texture, bg_image = player_loadout_data.primary.item_bg_texture, use_background = true})
+			self:update_box(box, {text = player_loadout_data.primary.info_text, text_selected_color = player_loadout_data.primary.info_text_color or false, image = player_loadout_data.primary.item_texture, bg_image = player_loadout_data.primary.item_bg_texture, use_background = true})
 			self:_update_info_weapon("primary")
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 36 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 39 
 end
 
 PlayerInventoryGui.open_secondary_menu = function(self)
@@ -2379,7 +2379,7 @@ end
 PlayerInventoryGui.open_throwable_menu = function(self)
 	local new_node_data = {}
 	table.insert(new_node_data, {name = "bm_menu_grenades", category = "grenades", on_create_func_name = "populate_grenades", allow_preview = true, 
-override_slots = {3, 3}, identifier = BlackMarketGui.identifiers.grenade})
+override_slots = {4, 3}, identifier = BlackMarketGui.identifiers.grenade})
 	new_node_data.scroll_tab_anywhere = true
 	new_node_data.topic_id = "bm_menu_grenades"
 	managers.menu:open_node("blackmarket_node", {new_node_data})
@@ -3367,7 +3367,10 @@ PlayerInventoryGui._get_armor_stats = function(self, name)
 			local base_value = movement_penalty * base
 			base_stats[stat.name] = {value = base_value}
 			local skill_mod = managers.player:movement_speed_multiplier(false, false, upgrade_level, 1)
-			local skill_value = skill_mod * base - base_value
+			local val = base * skill_mod
+			val = Utl.round(val, 2)
+			base_value = Utl.round(base_value, 2)
+			local skill_value = val - base_value
 			skill_stats[stat.name] = {value = skill_value}
 			skill_stats[stat.name].skill_in_effect = skill_value > 0
 		elseif stat.name == "dodge" then

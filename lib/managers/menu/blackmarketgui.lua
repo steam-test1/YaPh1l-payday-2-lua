@@ -11365,6 +11365,7 @@ function BlackMarketGui:_buy_weapon_callback(data)
 	managers.menu_component:post_event("item_buy")
 	managers.blackmarket:on_buy_weapon_platform(data.category, data.name, data.slot)
 	managers.menu:back(true)
+	managers.mission:call_global_event(Message.OnWeaponBought)
 end
 function BlackMarketGui:preview_buy_weapon_callback(data)
 	managers.blackmarket:view_weapon_platform(data.name, callback(self, self, "_open_preview_node"))

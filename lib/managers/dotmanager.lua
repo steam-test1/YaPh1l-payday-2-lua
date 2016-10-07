@@ -18,8 +18,8 @@ function DOTManager:update(t, dt)
 		end
 	end
 end
-function DOTManager:add_doted_enemy(enemy_unit, dot_damage_received_time, weapon_unit, dot_length, dot_damage, hurt_animation, variant)
-	local dot_info = self:_add_doted_enemy(enemy_unit, dot_damage_received_time, weapon_unit, dot_length, dot_damage, hurt_animation, variant)
+function DOTManager:add_doted_enemy(enemy_unit, dot_damage_received_time, weapon_unit, dot_length, dot_damage, hurt_animation, variant, weapon_id)
+	local dot_info = self:_add_doted_enemy(enemy_unit, dot_damage_received_time, weapon_unit, dot_length, dot_damage, hurt_animation, variant, weapon_id)
 end
 function DOTManager:sync_add_dot_damage(enemy_unit, dot_damage_received_time, weapon_unit, dot_length, dot_damage)
 	if enemy_unit then
@@ -27,7 +27,7 @@ function DOTManager:sync_add_dot_damage(enemy_unit, dot_damage_received_time, we
 		self:_add_doted_enemy(enemy_unit, t, weapon_unit, dot_length, dot_damage)
 	end
 end
-function DOTManager:_add_doted_enemy(enemy_unit, dot_damage_received_time, weapon_unit, dot_length, dot_damage, hurt_animation, variant)
+function DOTManager:_add_doted_enemy(enemy_unit, dot_damage_received_time, weapon_unit, dot_length, dot_damage, hurt_animation, variant, weapon_id)
 	local contains = false
 	if self._doted_enemies then
 		for _, dot_info in ipairs(self._doted_enemies) do
@@ -49,7 +49,8 @@ function DOTManager:_add_doted_enemy(enemy_unit, dot_damage_received_time, weapo
 				dot_length = dot_length,
 				dot_damage = dot_damage,
 				hurt_animation = hurt_animation,
-				variant = variant
+				variant = variant,
+				weapon_id = weapon_id
 			}
 			table.insert(self._doted_enemies, dot_info)
 			self:check_achievemnts(enemy_unit, dot_damage_received_time)
@@ -98,8 +99,9 @@ function DOTManager:_damage_dot(dot_info)
 	local damage = dot_info.dot_damage
 	local ignite_character = false
 	local weapon_unit = dot_info.weapon_unit
+	local weapon_id = dot_info.weapon_id
 	if dot_info.variant and dot_info.variant == "poison" then
-		PoisonBulletBase:give_damage_dot(col_ray, weapon_unit, attacker_unit, damage, dot_info.hurt_animation)
+		PoisonBulletBase:give_damage_dot(col_ray, weapon_unit, attacker_unit, damage, dot_info.hurt_animation, weapon_id)
 	end
 end
 function DOTManager:create_dot_data(type, custom_data)

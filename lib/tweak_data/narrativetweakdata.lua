@@ -265,6 +265,8 @@ function NarrativeTweakData:init(tweak_data)
 		95000,
 		125000,
 		200000,
+		250000,
+		250000,
 		250000
 	}
 	self.jobs.firestarter.contract_cost = {
@@ -272,6 +274,8 @@ function NarrativeTweakData:init(tweak_data)
 		78000,
 		195000,
 		390000,
+		500000,
+		500000,
 		500000
 	}
 	self.jobs.firestarter.experience_mul = {
@@ -287,6 +291,8 @@ function NarrativeTweakData:init(tweak_data)
 		30000,
 		30000,
 		30000,
+		30000,
+		30000,
 		30000
 	}
 	self.jobs.firestarter.contract_visuals.max_mission_xp = {
@@ -294,32 +300,9 @@ function NarrativeTweakData:init(tweak_data)
 		44000,
 		44000,
 		44000,
+		44000,
+		44000,
 		44000
-	}
-	self.jobs.firestarter_prof = deep_clone(self.jobs.firestarter)
-	self.jobs.firestarter_prof.jc = 60
-	self.jobs.firestarter_prof.professional = true
-	self.jobs.firestarter_prof.region = "professional"
-	self.jobs.firestarter_prof.payout = {
-		80000,
-		110000,
-		160000,
-		250000,
-		300000
-	}
-	self.jobs.firestarter_prof.contract_cost = {
-		47000,
-		94000,
-		235000,
-		470000,
-		600000
-	}
-	self.jobs.firestarter_prof.experience_mul = {
-		1,
-		1,
-		1,
-		1,
-		1
 	}
 	self.jobs.alex = {}
 	self.jobs.alex.name_id = "heist_alex"
@@ -366,6 +349,8 @@ function NarrativeTweakData:init(tweak_data)
 		15000,
 		20000,
 		30000,
+		50000,
+		50000,
 		50000
 	}
 	self.jobs.alex.contract_cost = {
@@ -373,10 +358,14 @@ function NarrativeTweakData:init(tweak_data)
 		48000,
 		120000,
 		240000,
+		300000,
+		300000,
 		300000
 	}
 	self.jobs.alex.contract_visuals = {}
 	self.jobs.alex.contract_visuals.min_mission_xp = {
+		24000,
+		24000,
 		24000,
 		24000,
 		24000,
@@ -388,32 +377,9 @@ function NarrativeTweakData:init(tweak_data)
 		96000,
 		96000,
 		96000,
+		96000,
+		96000,
 		96000
-	}
-	self.jobs.alex_prof = deep_clone(self.jobs.alex)
-	self.jobs.alex_prof.jc = 50
-	self.jobs.alex_prof.professional = true
-	self.jobs.alex_prof.region = "professional"
-	self.jobs.alex_prof.experience_mul = {
-		1,
-		1,
-		1,
-		1,
-		1.8
-	}
-	self.jobs.alex_prof.payout = {
-		10000,
-		15000,
-		30000,
-		40000,
-		80000
-	}
-	self.jobs.alex_prof.contract_cost = {
-		39000,
-		78000,
-		195000,
-		390000,
-		500000
 	}
 	self.jobs.welcome_to_the_jungle_wrapper = {}
 	self.jobs.welcome_to_the_jungle_wrapper.name_id = "heist_welcome_to_the_jungle"
@@ -442,6 +408,8 @@ function NarrativeTweakData:init(tweak_data)
 		275000,
 		400000,
 		500000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.welcome_to_the_jungle_wrapper.contract_cost = {
@@ -449,6 +417,8 @@ function NarrativeTweakData:init(tweak_data)
 		36000,
 		50000,
 		90000,
+		150000,
+		150000,
 		150000
 	}
 	self.jobs.welcome_to_the_jungle_wrapper.contract_visuals = {}
@@ -457,9 +427,13 @@ function NarrativeTweakData:init(tweak_data)
 		33000,
 		33000,
 		33000,
+		33000,
+		33000,
 		33000
 	}
 	self.jobs.welcome_to_the_jungle_wrapper.contract_visuals.max_mission_xp = {
+		37500,
+		37500,
 		37500,
 		37500,
 		37500,
@@ -472,13 +446,14 @@ function NarrativeTweakData:init(tweak_data)
 		"welcome_to_the_jungle_night_prof"
 	}
 	self.jobs.welcome_to_the_jungle_wrapper_prof.jc = 70
-	self.jobs.welcome_to_the_jungle_wrapper_prof.professional = true
 	self.jobs.welcome_to_the_jungle_wrapper_prof.region = "professional"
 	self.jobs.welcome_to_the_jungle_wrapper_prof.payout = {
 		250000,
 		300000,
 		450000,
 		550000,
+		850000,
+		850000,
 		850000
 	}
 	self.jobs.welcome_to_the_jungle_wrapper_prof.contract_cost = {
@@ -486,6 +461,8 @@ function NarrativeTweakData:init(tweak_data)
 		108000,
 		270000,
 		540000,
+		700000,
+		700000,
 		700000
 	}
 	self.jobs.welcome_to_the_jungle = {}
@@ -565,6 +542,8 @@ function NarrativeTweakData:init(tweak_data)
 		120000,
 		300000,
 		600000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.framing_frame.contract_cost = {
@@ -572,11 +551,15 @@ function NarrativeTweakData:init(tweak_data)
 		62000,
 		155000,
 		310000,
+		400000,
+		400000,
 		400000
 	}
 	self.jobs.framing_frame.contract_visuals = {}
 	self.jobs.framing_frame.contract_visuals.min_mission_xp = {
 		18500,
+		20000,
+		20000,
 		20000,
 		20000,
 		20000,
@@ -587,25 +570,9 @@ function NarrativeTweakData:init(tweak_data)
 		42000,
 		42000,
 		42000,
+		42000,
+		42000,
 		42000
-	}
-	self.jobs.framing_frame_prof = deep_clone(self.jobs.framing_frame)
-	self.jobs.framing_frame_prof.jc = 70
-	self.jobs.framing_frame_prof.professional = true
-	self.jobs.framing_frame_prof.region = "professional"
-	self.jobs.framing_frame_prof.payout = {
-		88000,
-		110000,
-		330000,
-		660000,
-		880000
-	}
-	self.jobs.framing_frame_prof.contract_cost = {
-		54000,
-		108000,
-		270000,
-		540000,
-		700000
 	}
 	self.jobs.watchdogs_wrapper = {}
 	self.jobs.watchdogs_wrapper.name_id = "heist_watchdogs"
@@ -635,6 +602,8 @@ function NarrativeTweakData:init(tweak_data)
 		74000,
 		125000,
 		185000,
+		260000,
+		260000,
 		260000
 	}
 	self.jobs.watchdogs_wrapper.contract_cost = {
@@ -642,10 +611,14 @@ function NarrativeTweakData:init(tweak_data)
 		62000,
 		155000,
 		310000,
+		400000,
+		400000,
 		400000
 	}
 	self.jobs.watchdogs_wrapper.contract_visuals = {}
 	self.jobs.watchdogs_wrapper.contract_visuals.min_mission_xp = {
+		24000,
+		24000,
 		24000,
 		24000,
 		24000,
@@ -657,28 +630,9 @@ function NarrativeTweakData:init(tweak_data)
 		40000,
 		40000,
 		40000,
+		40000,
+		40000,
 		40000
-	}
-	self.jobs.watchdogs_wrapper_prof = deep_clone(self.jobs.watchdogs_wrapper)
-	self.jobs.watchdogs_wrapper_prof.job_wrapper = {
-		"watchdogs_prof",
-		"watchdogs_night_prof"
-	}
-	self.jobs.watchdogs_wrapper_prof.jc = 60
-	self.jobs.watchdogs_wrapper_prof.professional = true
-	self.jobs.watchdogs_wrapper_prof.payout = {
-		75000,
-		85000,
-		150000,
-		200000,
-		290000
-	}
-	self.jobs.watchdogs_wrapper_prof.contract_cost = {
-		47000,
-		94000,
-		235000,
-		470000,
-		600000
 	}
 	self.jobs.watchdogs = {}
 	self.jobs.watchdogs.package = "packages/job_watchdogs"
@@ -696,7 +650,6 @@ function NarrativeTweakData:init(tweak_data)
 			world_setting = "day"
 		}
 	}
-	self.jobs.watchdogs_prof = deep_clone(self.jobs.watchdogs)
 	self.jobs.watchdogs_night = deep_clone(self.jobs.watchdogs)
 	self.jobs.watchdogs_night.chain = {
 		{
@@ -712,7 +665,6 @@ function NarrativeTweakData:init(tweak_data)
 			world_setting = "night"
 		}
 	}
-	self.jobs.watchdogs_night_prof = deep_clone(self.jobs.watchdogs_night)
 	self.jobs.nightclub = {}
 	self.jobs.nightclub.name_id = "heist_nightclub"
 	self.jobs.nightclub.briefing_id = "heist_nightclub_crimenet"
@@ -742,6 +694,8 @@ function NarrativeTweakData:init(tweak_data)
 		22500,
 		40000,
 		60000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.nightclub.contract_cost = {
@@ -749,10 +703,14 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.nightclub.contract_visuals = {}
 	self.jobs.nightclub.contract_visuals.min_mission_xp = {
+		8000,
+		8000,
 		8000,
 		8000,
 		8000,
@@ -764,18 +722,9 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
-	}
-	self.jobs.nightclub_prof = deep_clone(self.jobs.nightclub)
-	self.jobs.nightclub_prof.jc = 40
-	self.jobs.nightclub_prof.professional = true
-	self.jobs.nightclub_prof.region = "professional"
-	self.jobs.nightclub_prof.payout = {
-		20000,
-		40000,
-		60000,
-		80000,
-		95000
 	}
 	self.jobs.ukrainian_job = {}
 	self.jobs.ukrainian_job.name_id = "heist_ukrainian_job"
@@ -806,10 +755,14 @@ function NarrativeTweakData:init(tweak_data)
 		21000,
 		23000,
 		25000,
+		30000,
+		30000,
 		30000
 	}
 	self.jobs.ukrainian_job.contract_visuals = {}
 	self.jobs.ukrainian_job.contract_visuals.min_mission_xp = {
+		4000,
+		4000,
 		4000,
 		4000,
 		4000,
@@ -821,17 +774,20 @@ function NarrativeTweakData:init(tweak_data)
 		10000,
 		10000,
 		10000,
+		10000,
+		10000,
 		10000
 	}
 	self.jobs.ukrainian_job_prof = deep_clone(self.jobs.ukrainian_job)
 	self.jobs.ukrainian_job_prof.jc = 20
-	self.jobs.ukrainian_job_prof.professional = true
 	self.jobs.ukrainian_job_prof.region = "professional"
 	self.jobs.ukrainian_job_prof.payout = {
 		21000,
 		24000,
 		26000,
 		30000,
+		40000,
+		40000,
 		40000
 	}
 	self.jobs.ukrainian_job_prof.contract_cost = {
@@ -839,6 +795,8 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.jewelry_store = {}
@@ -877,6 +835,8 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		30000,
 		50000,
+		60000,
+		60000,
 		60000
 	}
 	self.jobs.jewelry_store.contract_cost = {
@@ -884,10 +844,14 @@ function NarrativeTweakData:init(tweak_data)
 		8000,
 		20000,
 		40000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.jewelry_store.contract_visuals = {}
 	self.jobs.jewelry_store.contract_visuals.min_mission_xp = {
+		2000,
+		2000,
 		2000,
 		2000,
 		2000,
@@ -899,18 +863,9 @@ function NarrativeTweakData:init(tweak_data)
 		8000,
 		8000,
 		8000,
+		8000,
+		8000,
 		8000
-	}
-	self.jobs.jewelry_store_prof = deep_clone(self.jobs.jewelry_store)
-	self.jobs.jewelry_store_prof.jc = 20
-	self.jobs.jewelry_store_prof.professional = true
-	self.jobs.jewelry_store_prof.region = "professional"
-	self.jobs.jewelry_store_prof.payout = {
-		10000,
-		20000,
-		38000,
-		50000,
-		70000
 	}
 	self.jobs.four_stores = {}
 	self.jobs.four_stores.name_id = "heist_four_stores"
@@ -941,6 +896,8 @@ function NarrativeTweakData:init(tweak_data)
 		18000,
 		45000,
 		90000,
+		120000,
+		120000,
 		120000
 	}
 	self.jobs.four_stores.contract_cost = {
@@ -948,34 +905,13 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.four_stores.contract_visuals = {}
-	self.jobs.four_stores.contract_visuals.min_mission_xp = {
-		6000,
-		6000,
-		6000,
-		6000,
-		6000
-	}
-	self.jobs.four_stores.contract_visuals.max_mission_xp = {
-		6000,
-		6000,
-		6000,
-		6000,
-		6000
-	}
-	self.jobs.four_stores_prof = deep_clone(self.jobs.four_stores)
-	self.jobs.four_stores_prof.jc = 20
-	self.jobs.four_stores_prof.professional = true
-	self.jobs.four_stores_prof.region = "professional"
-	self.jobs.four_stores_prof.payout = {
-		24000,
-		38000,
-		46000,
-		70000,
-		80000
-	}
+	self.jobs.four_stores.contract_visuals.min_mission_xp = 6000
+	self.jobs.four_stores.contract_visuals.max_mission_xp = 6000
 	self.jobs.mallcrasher = {}
 	self.jobs.mallcrasher.name_id = "heist_mallcrasher"
 	self.jobs.mallcrasher.briefing_id = "heist_mallcrasher_crimenet"
@@ -1005,6 +941,8 @@ function NarrativeTweakData:init(tweak_data)
 		18000,
 		45000,
 		90000,
+		120000,
+		120000,
 		120000
 	}
 	self.jobs.mallcrasher.contract_cost = {
@@ -1012,10 +950,14 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.mallcrasher.contract_visuals = {}
 	self.jobs.mallcrasher.contract_visuals.min_mission_xp = {
+		6000,
+		6000,
 		6000,
 		6000,
 		6000,
@@ -1027,18 +969,9 @@ function NarrativeTweakData:init(tweak_data)
 		6000,
 		6000,
 		6000,
+		6000,
+		6000,
 		6000
-	}
-	self.jobs.mallcrasher_prof = deep_clone(self.jobs.mallcrasher)
-	self.jobs.mallcrasher_prof.jc = 30
-	self.jobs.mallcrasher_prof.professional = true
-	self.jobs.mallcrasher_prof.region = "professional"
-	self.jobs.mallcrasher_prof.payout = {
-		8000,
-		16000,
-		40000,
-		80000,
-		100000
 	}
 	self.jobs.branchbank = {}
 	self.jobs.branchbank.name_id = "heist_branchbank"
@@ -1072,6 +1005,8 @@ function NarrativeTweakData:init(tweak_data)
 		30000,
 		40000,
 		70000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.branchbank.contract_cost = {
@@ -1079,10 +1014,14 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.branchbank.contract_visuals = {}
 	self.jobs.branchbank.contract_visuals.min_mission_xp = {
+		12000,
+		12000,
 		12000,
 		12000,
 		12000,
@@ -1094,17 +1033,20 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
 	self.jobs.branchbank_prof = deep_clone(self.jobs.branchbank)
 	self.jobs.branchbank_prof.jc = 30
-	self.jobs.branchbank_prof.professional = true
 	self.jobs.branchbank_prof.region = "professional"
 	self.jobs.branchbank_prof.payout = {
 		26000,
 		40000,
 		48000,
 		70000,
+		85000,
+		85000,
 		85000
 	}
 	self.jobs.branchbank_prof.contract_cost = {
@@ -1112,6 +1054,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.branchbank_deposit = {}
@@ -1147,6 +1091,8 @@ function NarrativeTweakData:init(tweak_data)
 		35000,
 		44000,
 		68000,
+		76000,
+		76000,
 		76000
 	}
 	self.jobs.branchbank_deposit.contract_cost = {
@@ -1154,10 +1100,14 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.branchbank_deposit.contract_visuals = {}
 	self.jobs.branchbank_deposit.contract_visuals.min_mission_xp = {
+		12000,
+		12000,
 		12000,
 		12000,
 		12000,
@@ -1169,25 +1119,9 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
-	}
-	self.jobs.branchbank_deposit_prof = deep_clone(self.jobs.branchbank_deposit)
-	self.jobs.branchbank_deposit_prof.jc = 30
-	self.jobs.branchbank_deposit_prof.professional = true
-	self.jobs.branchbank_deposit_prof.region = "professional"
-	self.jobs.branchbank_deposit_prof.payout = {
-		36000,
-		40000,
-		54000,
-		76000,
-		86000
-	}
-	self.jobs.branchbank_deposit_prof.contract_cost = {
-		16000,
-		32000,
-		80000,
-		160000,
-		200000
 	}
 	self.jobs.branchbank_cash = {}
 	self.jobs.branchbank_cash.name_id = "heist_branchbank_cash"
@@ -1222,6 +1156,8 @@ function NarrativeTweakData:init(tweak_data)
 		15000,
 		40000,
 		60000,
+		75000,
+		75000,
 		75000
 	}
 	self.jobs.branchbank_cash.contract_cost = {
@@ -1229,10 +1165,14 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.branchbank_cash.contract_visuals = {}
 	self.jobs.branchbank_cash.contract_visuals.min_mission_xp = {
+		12000,
+		12000,
 		12000,
 		12000,
 		12000,
@@ -1244,25 +1184,9 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
-	}
-	self.jobs.branchbank_cash_prof = deep_clone(self.jobs.branchbank_cash)
-	self.jobs.branchbank_cash_prof.jc = 30
-	self.jobs.branchbank_cash_prof.professional = true
-	self.jobs.branchbank_cash_prof.region = "professional"
-	self.jobs.branchbank_cash_prof.payout = {
-		26000,
-		40000,
-		44000,
-		68000,
-		80000
-	}
-	self.jobs.branchbank_cash_prof.contract_cost = {
-		16000,
-		32000,
-		80000,
-		160000,
-		200000
 	}
 	self.jobs.branchbank_gold = {}
 	self.jobs.branchbank_gold.name_id = "heist_branchbank_gold"
@@ -1297,6 +1221,8 @@ function NarrativeTweakData:init(tweak_data)
 		25000,
 		50000,
 		75000,
+		85000,
+		85000,
 		85000
 	}
 	self.jobs.branchbank_gold.contract_cost = {
@@ -1304,10 +1230,14 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.branchbank_gold.contract_visuals = {}
 	self.jobs.branchbank_gold.contract_visuals.min_mission_xp = {
+		12000,
+		12000,
 		12000,
 		12000,
 		12000,
@@ -1319,17 +1249,20 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
 	self.jobs.branchbank_gold_prof = deep_clone(self.jobs.branchbank_gold)
 	self.jobs.branchbank_gold_prof.jc = 30
-	self.jobs.branchbank_gold_prof.professional = true
 	self.jobs.branchbank_gold_prof.region = "professional"
 	self.jobs.branchbank_gold_prof.payout = {
 		26000,
 		40000,
 		54000,
 		76000,
+		90000,
+		90000,
 		90000
 	}
 	self.jobs.branchbank_gold_prof.contract_cost = {
@@ -1337,6 +1270,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.election_day = {}
@@ -1394,6 +1329,8 @@ function NarrativeTweakData:init(tweak_data)
 		25000,
 		40000,
 		60000,
+		90000,
+		90000,
 		90000
 	}
 	self.jobs.election_day.contract_cost = {
@@ -1401,10 +1338,14 @@ function NarrativeTweakData:init(tweak_data)
 		48000,
 		120000,
 		240000,
+		300000,
+		300000,
 		300000
 	}
 	self.jobs.election_day.contract_visuals = {}
 	self.jobs.election_day.contract_visuals.min_mission_xp = {
+		10000,
+		10000,
 		10000,
 		10000,
 		10000,
@@ -1416,25 +1357,9 @@ function NarrativeTweakData:init(tweak_data)
 		44000,
 		44000,
 		44000,
+		44000,
+		44000,
 		44000
-	}
-	self.jobs.election_day_prof = deep_clone(self.jobs.election_day)
-	self.jobs.election_day_prof.jc = 50
-	self.jobs.election_day_prof.professional = true
-	self.jobs.election_day_prof.region = "professional"
-	self.jobs.election_day_prof.payout = {
-		25000,
-		35000,
-		50000,
-		65000,
-		100000
-	}
-	self.jobs.election_day_prof.contract_cost = {
-		31000,
-		62000,
-		155000,
-		310000,
-		400000
 	}
 	self.jobs.safehouse = {}
 	self.jobs.safehouse.name_id = "heist_safehouse"
@@ -1486,6 +1411,8 @@ function NarrativeTweakData:init(tweak_data)
 		11000,
 		30000,
 		32000,
+		44000,
+		44000,
 		44000
 	}
 	self.jobs.arm_wrapper.experience_mul = {
@@ -1500,6 +1427,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.arm_cro = {}
@@ -1532,6 +1461,8 @@ function NarrativeTweakData:init(tweak_data)
 		34000,
 		50000,
 		62000,
+		74000,
+		74000,
 		74000
 	}
 	self.jobs.arm_cro.experience_mul = {
@@ -1546,12 +1477,16 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.arm_cro.dlc = "armored_transport"
 	self.jobs.arm_cro.spawn_chance_multiplier = 0.5
 	self.jobs.arm_cro.contract_visuals = {}
 	self.jobs.arm_cro.contract_visuals.min_mission_xp = {
+		12000,
+		12000,
 		12000,
 		12000,
 		12000,
@@ -1563,12 +1498,10 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
-	self.jobs.arm_cro_prof = deep_clone(self.jobs.arm_cro)
-	self.jobs.arm_cro_prof.jc = 30
-	self.jobs.arm_cro_prof.professional = true
-	self.jobs.arm_cro_prof.region = "professional"
 	self.jobs.arm_und = {}
 	self.jobs.arm_und.name_id = "heist_arm_und"
 	self.jobs.arm_und.briefing_id = "heist_arm_und_crimenet"
@@ -1599,6 +1532,8 @@ function NarrativeTweakData:init(tweak_data)
 		31000,
 		48000,
 		53000,
+		66600,
+		66600,
 		66600
 	}
 	self.jobs.arm_und.contract_cost = {
@@ -1606,6 +1541,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.arm_und.experience_mul = {
@@ -1623,6 +1560,8 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
 	self.jobs.arm_und.contract_visuals.max_mission_xp = {
@@ -1630,12 +1569,10 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
-	self.jobs.arm_und_prof = deep_clone(self.jobs.arm_und)
-	self.jobs.arm_und_prof.jc = 30
-	self.jobs.arm_und_prof.professional = true
-	self.jobs.arm_und_prof.region = "professional"
 	self.jobs.arm_hcm = {}
 	self.jobs.arm_hcm.name_id = "heist_arm_hcm"
 	self.jobs.arm_hcm.briefing_id = "heist_arm_hcm_crimenet"
@@ -1666,6 +1603,8 @@ function NarrativeTweakData:init(tweak_data)
 		31000,
 		50000,
 		52000,
+		64000,
+		64000,
 		64000
 	}
 	self.jobs.arm_hcm.contract_cost = {
@@ -1673,6 +1612,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.arm_hcm.experience_mul = {
@@ -1690,6 +1631,8 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
 	self.jobs.arm_hcm.contract_visuals.max_mission_xp = {
@@ -1697,12 +1640,10 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
-	self.jobs.arm_hcm_prof = deep_clone(self.jobs.arm_hcm)
-	self.jobs.arm_hcm_prof.jc = 30
-	self.jobs.arm_hcm_prof.professional = true
-	self.jobs.arm_hcm_prof.region = "professional"
 	self.jobs.arm_par = {}
 	self.jobs.arm_par.name_id = "heist_arm_par"
 	self.jobs.arm_par.briefing_id = "heist_arm_par_crimenet"
@@ -1733,6 +1674,8 @@ function NarrativeTweakData:init(tweak_data)
 		31000,
 		40000,
 		43000,
+		56000,
+		56000,
 		56000
 	}
 	self.jobs.arm_par.contract_cost = {
@@ -1740,6 +1683,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.arm_par.experience_mul = {
@@ -1757,6 +1702,8 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
 	self.jobs.arm_par.contract_visuals.max_mission_xp = {
@@ -1764,12 +1711,10 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
-	self.jobs.arm_par_prof = deep_clone(self.jobs.arm_par)
-	self.jobs.arm_par_prof.jc = 40
-	self.jobs.arm_par_prof.professional = true
-	self.jobs.arm_par_prof.region = "professional"
 	self.jobs.arm_fac = {}
 	self.jobs.arm_fac.name_id = "heist_arm_fac"
 	self.jobs.arm_fac.briefing_id = "heist_arm_fac_crimenet"
@@ -1800,6 +1745,8 @@ function NarrativeTweakData:init(tweak_data)
 		29000,
 		40000,
 		42000,
+		54000,
+		54000,
 		54000
 	}
 	self.jobs.arm_fac.contract_cost = {
@@ -1807,6 +1754,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.arm_fac.experience_mul = {
@@ -1824,6 +1773,8 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
 	self.jobs.arm_fac.contract_visuals.max_mission_xp = {
@@ -1831,12 +1782,10 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
 	}
-	self.jobs.arm_fac_prof = deep_clone(self.jobs.arm_fac)
-	self.jobs.arm_fac_prof.jc = 30
-	self.jobs.arm_fac_prof.professional = true
-	self.jobs.arm_fac_prof.region = "professional"
 	self.jobs.arm_for = {}
 	self.jobs.arm_for.name_id = "heist_arm_for"
 	self.jobs.arm_for.briefing_id = "heist_arm_for_crimenet"
@@ -1868,6 +1817,8 @@ function NarrativeTweakData:init(tweak_data)
 		37000,
 		81000,
 		101000,
+		202000,
+		202000,
 		202000
 	}
 	self.jobs.arm_for.experience_mul = {
@@ -1882,11 +1833,15 @@ function NarrativeTweakData:init(tweak_data)
 		62000,
 		155000,
 		310000,
+		400000,
+		400000,
 		400000
 	}
 	self.jobs.arm_for.dlc = "armored_transport"
 	self.jobs.arm_for.contract_visuals = {}
 	self.jobs.arm_for.contract_visuals.min_mission_xp = {
+		20200,
+		20200,
 		20200,
 		20200,
 		20200,
@@ -1898,12 +1853,10 @@ function NarrativeTweakData:init(tweak_data)
 		36000,
 		36000,
 		36000,
+		36000,
+		36000,
 		36000
 	}
-	self.jobs.arm_for_prof = deep_clone(self.jobs.arm_for)
-	self.jobs.arm_for_prof.jc = 70
-	self.jobs.arm_for_prof.professional = true
-	self.jobs.arm_for_prof.region = "professional"
 	self.jobs.rat = {}
 	self.jobs.rat.name_id = "heist_rat"
 	self.jobs.rat.briefing_id = "heist_rat_crimenet"
@@ -1938,6 +1891,8 @@ function NarrativeTweakData:init(tweak_data)
 		135000,
 		180000,
 		310000,
+		380000,
+		380000,
 		380000
 	}
 	self.jobs.rat.contract_cost = {
@@ -1945,6 +1900,8 @@ function NarrativeTweakData:init(tweak_data)
 		94000,
 		235000,
 		470000,
+		600000,
+		600000,
 		600000
 	}
 	self.jobs.rat.contract_visuals = {}
@@ -1953,9 +1910,13 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		16000,
 		16000,
+		16000,
+		16000,
 		16000
 	}
 	self.jobs.rat.contract_visuals.max_mission_xp = {
+		9600000,
+		9600000,
 		9600000,
 		9600000,
 		9600000,
@@ -1991,6 +1952,8 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		30000,
 		50000,
+		60000,
+		60000,
 		60000
 	}
 	self.jobs.family.contract_cost = {
@@ -1998,6 +1961,8 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.family.experience_mul = {
@@ -2013,6 +1978,8 @@ function NarrativeTweakData:init(tweak_data)
 		6000,
 		6000,
 		6000,
+		6000,
+		6000,
 		6000
 	}
 	self.jobs.family.contract_visuals.max_mission_xp = {
@@ -2020,18 +1987,9 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		20000,
 		20000,
+		20000,
+		20000,
 		20000
-	}
-	self.jobs.family_prof = deep_clone(self.jobs.family)
-	self.jobs.family_prof.jc = 50
-	self.jobs.family_prof.professional = true
-	self.jobs.family_prof.region = "professional"
-	self.jobs.family_prof.payout = {
-		40000,
-		44000,
-		62000,
-		70000,
-		85000
 	}
 	self.jobs.big = {}
 	self.jobs.big.name_id = "heist_big"
@@ -2064,6 +2022,8 @@ function NarrativeTweakData:init(tweak_data)
 		135000,
 		180000,
 		310000,
+		380000,
+		380000,
 		380000
 	}
 	self.jobs.big.contract_cost = {
@@ -2071,11 +2031,15 @@ function NarrativeTweakData:init(tweak_data)
 		94000,
 		235000,
 		470000,
+		600000,
+		600000,
 		600000
 	}
 	self.jobs.big.dlc = "big_bank"
 	self.jobs.big.contract_visuals = {}
 	self.jobs.big.contract_visuals.min_mission_xp = {
+		34000,
+		34000,
 		34000,
 		34000,
 		34000,
@@ -2087,18 +2051,9 @@ function NarrativeTweakData:init(tweak_data)
 		45000,
 		45000,
 		45000,
+		45000,
+		45000,
 		45000
-	}
-	self.jobs.big_prof = deep_clone(self.jobs.big)
-	self.jobs.big_prof.jc = 60
-	self.jobs.big_prof.professional = true
-	self.jobs.big_prof.region = "professional"
-	self.jobs.big_prof.payout = {
-		40000,
-		44000,
-		62000,
-		70000,
-		140000
 	}
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		self.jobs.roberts = {}
@@ -2130,6 +2085,8 @@ function NarrativeTweakData:init(tweak_data)
 			110000,
 			275000,
 			550000,
+			700000,
+			700000,
 			700000
 		}
 		self.jobs.roberts.experience_mul = {
@@ -2144,10 +2101,14 @@ function NarrativeTweakData:init(tweak_data)
 			48000,
 			120000,
 			240000,
+			300000,
+			300000,
 			300000
 		}
 		self.jobs.roberts.contract_visuals = {}
 		self.jobs.roberts.contract_visuals.min_mission_xp = {
+			6500,
+			6500,
 			6500,
 			6500,
 			6500,
@@ -2159,18 +2120,9 @@ function NarrativeTweakData:init(tweak_data)
 			22000,
 			22000,
 			22000,
+			22000,
+			22000,
 			22000
-		}
-		self.jobs.roberts_prof = deep_clone(self.jobs.roberts)
-		self.jobs.roberts_prof.jc = 40
-		self.jobs.roberts_prof.professional = true
-		self.jobs.roberts_prof.region = "professional"
-		self.jobs.roberts_prof.payout = {
-			40000,
-			44000,
-			62000,
-			70000,
-			140000
 		}
 	end
 	self.jobs.kosugi = {}
@@ -2202,6 +2154,8 @@ function NarrativeTweakData:init(tweak_data)
 		0,
 		0,
 		100000,
+		130000,
+		130000,
 		130000
 	}
 	self.jobs.kosugi.contract_cost = {
@@ -2209,6 +2163,8 @@ function NarrativeTweakData:init(tweak_data)
 		48000,
 		120000,
 		240000,
+		300000,
+		300000,
 		300000
 	}
 	self.jobs.kosugi.payout = {
@@ -2216,6 +2172,8 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		30000,
 		40000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.kosugi.experience_mul = {
@@ -2231,6 +2189,8 @@ function NarrativeTweakData:init(tweak_data)
 		5500,
 		5500,
 		5500,
+		5500,
+		5500,
 		5500
 	}
 	self.jobs.kosugi.contract_visuals.max_mission_xp = {
@@ -2238,18 +2198,9 @@ function NarrativeTweakData:init(tweak_data)
 		22000,
 		22000,
 		22000,
+		22000,
+		22000,
 		22000
-	}
-	self.jobs.kosugi_prof = deep_clone(self.jobs.kosugi)
-	self.jobs.kosugi_prof.jc = 40
-	self.jobs.kosugi_prof.professional = true
-	self.jobs.kosugi_prof.region = "professional"
-	self.jobs.kosugi_prof.payout = {
-		10000,
-		20000,
-		30000,
-		40000,
-		80000
 	}
 	self.jobs.mia = {}
 	self.jobs.mia.name_id = "heist_mia"
@@ -2289,6 +2240,8 @@ function NarrativeTweakData:init(tweak_data)
 		43000,
 		60000,
 		70000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.mia.contract_cost = {
@@ -2296,6 +2249,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.mia.experience_mul = {
@@ -2311,6 +2266,8 @@ function NarrativeTweakData:init(tweak_data)
 		40000,
 		40000,
 		40000,
+		40000,
+		40000,
 		40000
 	}
 	self.jobs.mia.contract_visuals.max_mission_xp = {
@@ -2318,32 +2275,9 @@ function NarrativeTweakData:init(tweak_data)
 		69000,
 		69000,
 		69000,
+		69000,
+		69000,
 		69000
-	}
-	self.jobs.mia_prof = deep_clone(self.jobs.mia)
-	self.jobs.mia_prof.jc = 70
-	self.jobs.mia_prof.professional = true
-	self.jobs.mia_prof.region = "professional"
-	self.jobs.mia_prof.payout = {
-		25000,
-		35000,
-		50000,
-		65000,
-		100000
-	}
-	self.jobs.mia_prof.contract_cost = {
-		62000,
-		124000,
-		310000,
-		620000,
-		800000
-	}
-	self.jobs.mia_prof.experience_mul = {
-		1.5,
-		1.5,
-		1.5,
-		1.5,
-		1.5
 	}
 	self.jobs.gallery = {}
 	self.jobs.gallery.name_id = "heist_gallery"
@@ -2375,6 +2309,8 @@ function NarrativeTweakData:init(tweak_data)
 		12500,
 		40000,
 		60000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.gallery.contract_cost = {
@@ -2382,11 +2318,15 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.gallery.dlc = "pd2_clan"
 	self.jobs.gallery.contract_visuals = {}
 	self.jobs.gallery.contract_visuals.min_mission_xp = {
+		5000,
+		5000,
 		5000,
 		5000,
 		5000,
@@ -2398,18 +2338,9 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000,
 		12000,
+		12000,
+		12000,
 		12000
-	}
-	self.jobs.gallery_prof = deep_clone(self.jobs.gallery)
-	self.jobs.gallery_prof.jc = 40
-	self.jobs.gallery_prof.professional = true
-	self.jobs.gallery_prof.region = "professional"
-	self.jobs.gallery_prof.payout = {
-		40000,
-		44000,
-		62000,
-		70000,
-		140000
 	}
 	self.jobs.hox = {}
 	self.jobs.hox.name_id = "heist_hox"
@@ -2448,6 +2379,8 @@ function NarrativeTweakData:init(tweak_data)
 		500000,
 		1250000,
 		2500000,
+		3200000,
+		3200000,
 		3200000
 	}
 	self.jobs.hox.dlc = "pd2_clan"
@@ -2463,10 +2396,14 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.hox.contract_visuals = {}
 	self.jobs.hox.contract_visuals.min_mission_xp = {
+		48800,
+		48800,
 		48800,
 		48800,
 		48800,
@@ -2478,32 +2415,9 @@ function NarrativeTweakData:init(tweak_data)
 		53400,
 		53400,
 		53400,
+		53400,
+		53400,
 		53400
-	}
-	self.jobs.hox_prof = deep_clone(self.jobs.hox)
-	self.jobs.hox_prof.jc = 70
-	self.jobs.hox_prof.professional = true
-	self.jobs.hox_prof.region = "professional"
-	self.jobs.hox_prof.payout = {
-		290000,
-		580000,
-		1450000,
-		2900000,
-		3800000
-	}
-	self.jobs.hox_prof.experience_mul = {
-		2,
-		2,
-		2,
-		2,
-		2
-	}
-	self.jobs.hox_prof.contract_cost = {
-		62000,
-		124000,
-		310000,
-		620000,
-		800000
 	}
 	self.jobs.pines = {}
 	self.jobs.pines.name_id = "heist_pines"
@@ -2534,6 +2448,8 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.pines.experience_mul = {
@@ -2548,10 +2464,14 @@ function NarrativeTweakData:init(tweak_data)
 		48000,
 		120000,
 		240000,
+		300000,
+		300000,
 		300000
 	}
 	self.jobs.pines.contract_visuals = {}
 	self.jobs.pines.contract_visuals.min_mission_xp = {
+		8000,
+		8000,
 		8000,
 		8000,
 		8000,
@@ -2563,32 +2483,9 @@ function NarrativeTweakData:init(tweak_data)
 		2408000,
 		2408000,
 		2408000,
+		2408000,
+		2408000,
 		2408000
-	}
-	self.jobs.pines_prof = deep_clone(self.jobs.pines)
-	self.jobs.pines_prof.jc = 70
-	self.jobs.pines_prof.professional = true
-	self.jobs.pines_prof.region = "professional"
-	self.jobs.pines_prof.payout = {
-		290000,
-		580000,
-		1450000,
-		2900000,
-		3800000
-	}
-	self.jobs.pines_prof.experience_mul = {
-		2,
-		2,
-		2,
-		2,
-		2
-	}
-	self.jobs.pines_prof.contract_cost = {
-		62000,
-		124000,
-		310000,
-		620000,
-		800000
 	}
 	self.jobs.mus = {}
 	self.jobs.mus.name_id = "heist_mus"
@@ -2626,6 +2523,8 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.mus.dlc = "hope_diamond"
@@ -2634,10 +2533,14 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.mus.contract_visuals = {}
 	self.jobs.mus.contract_visuals.min_mission_xp = {
+		17000,
+		17000,
 		17000,
 		17000,
 		17000,
@@ -2649,32 +2552,9 @@ function NarrativeTweakData:init(tweak_data)
 		36000,
 		36000,
 		36000,
+		36000,
+		36000,
 		36000
-	}
-	self.jobs.mus_prof = deep_clone(self.jobs.mus)
-	self.jobs.mus_prof.jc = 70
-	self.jobs.mus_prof.professional = true
-	self.jobs.mus_prof.region = "professional"
-	self.jobs.mus_prof.payout = {
-		290000,
-		580000,
-		1450000,
-		2900000,
-		3800000
-	}
-	self.jobs.mus_prof.experience_mul = {
-		2,
-		2,
-		2,
-		2,
-		2
-	}
-	self.jobs.mus_prof.contract_cost = {
-		62000,
-		124000,
-		310000,
-		620000,
-		800000
 	}
 	self.jobs.cage = {}
 	self.jobs.cage.name_id = "heist_cage"
@@ -2705,6 +2585,8 @@ function NarrativeTweakData:init(tweak_data)
 		30000,
 		40000,
 		70000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.cage.contract_cost = {
@@ -2712,10 +2594,14 @@ function NarrativeTweakData:init(tweak_data)
 		32000,
 		80000,
 		160000,
+		200000,
+		200000,
 		200000
 	}
 	self.jobs.cage.contract_visuals = {}
 	self.jobs.cage.contract_visuals.min_mission_xp = {
+		10000,
+		10000,
 		10000,
 		10000,
 		10000,
@@ -2727,32 +2613,9 @@ function NarrativeTweakData:init(tweak_data)
 		13000,
 		13000,
 		13000,
+		13000,
+		13000,
 		13000
-	}
-	self.jobs.cage_prof = deep_clone(self.jobs.cage)
-	self.jobs.cage_prof.jc = 70
-	self.jobs.cage_prof.professional = true
-	self.jobs.cage_prof.region = "professional"
-	self.jobs.cage_prof.payout = {
-		290000,
-		580000,
-		1450000,
-		2900000,
-		3800000
-	}
-	self.jobs.cage_prof.experience_mul = {
-		2,
-		2,
-		2,
-		2,
-		2
-	}
-	self.jobs.cage_prof.contract_cost = {
-		62000,
-		124000,
-		310000,
-		620000,
-		800000
 	}
 	self.jobs.hox_3 = {}
 	self.jobs.hox_3.name_id = "heist_hox_3"
@@ -2787,6 +2650,8 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.hox_3.contract_cost = {
@@ -2794,6 +2659,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.hox_3.contract_visuals = {}
@@ -2802,9 +2669,13 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		20000,
 		20000,
+		20000,
+		20000,
 		20000
 	}
 	self.jobs.hox_3.contract_visuals.max_mission_xp = {
+		26000,
+		26000,
 		26000,
 		26000,
 		26000,
@@ -2843,6 +2714,8 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.crojob1.contract_cost = {
@@ -2850,6 +2723,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.crojob1.experience_mul = {
@@ -2866,6 +2741,8 @@ function NarrativeTweakData:init(tweak_data)
 		18000,
 		18000,
 		18000,
+		18000,
+		18000,
 		18000
 	}
 	self.jobs.crojob1.contract_visuals.max_mission_xp = {
@@ -2873,34 +2750,10 @@ function NarrativeTweakData:init(tweak_data)
 		33500,
 		33500,
 		33500,
+		33500,
+		33500,
 		33500
 	}
-	self.jobs.crojob1_prof = deep_clone(self.jobs.crojob1)
-	self.jobs.crojob1_prof.jc = 70
-	self.jobs.crojob1_prof.professional = true
-	self.jobs.crojob1_prof.region = "professional"
-	self.jobs.crojob1_prof.payout = {
-		25000,
-		35000,
-		50000,
-		65000,
-		100000
-	}
-	self.jobs.crojob1_prof.contract_cost = {
-		120000,
-		135000,
-		200000,
-		420000,
-		500000
-	}
-	self.jobs.crojob1_prof.experience_mul = {
-		12.5,
-		12.5,
-		12.5,
-		12.5,
-		12.5
-	}
-	self.jobs.crojob1_prof.dlc = "the_bomb"
 	self.jobs.crojob_wrapper = {}
 	self.jobs.crojob_wrapper.name_id = "heist_crojob2"
 	self.jobs.crojob_wrapper.briefing_id = "heist_crojob2_crimenet"
@@ -2929,6 +2782,8 @@ function NarrativeTweakData:init(tweak_data)
 		16000,
 		40000,
 		80000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.crojob_wrapper.experience_mul = {
@@ -2943,6 +2798,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.crojob_wrapper.contract_visuals = {}
@@ -2951,9 +2808,13 @@ function NarrativeTweakData:init(tweak_data)
 		34000,
 		34000,
 		34000,
+		34000,
+		34000,
 		34000
 	}
 	self.jobs.crojob_wrapper.contract_visuals.max_mission_xp = {
+		41500,
+		41500,
 		41500,
 		41500,
 		41500,
@@ -2990,6 +2851,8 @@ function NarrativeTweakData:init(tweak_data)
 		37000,
 		81000,
 		101000,
+		202000,
+		202000,
 		202000
 	}
 	self.jobs.shoutout_raid.contract_cost = {
@@ -2997,6 +2860,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.shoutout_raid.contract_visuals = {}
@@ -3005,9 +2870,13 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		20000,
 		20000,
+		20000,
+		20000,
 		20000
 	}
 	self.jobs.shoutout_raid.contract_visuals.max_mission_xp = {
+		34000,
+		34000,
 		34000,
 		34000,
 		34000,
@@ -3061,6 +2930,8 @@ function NarrativeTweakData:init(tweak_data)
 		186000,
 		465000,
 		930000,
+		1209000,
+		1209000,
 		1209000
 	}
 	self.jobs.arena.contract_cost = {
@@ -3068,11 +2939,15 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.arena.dlc = "arena"
 	self.jobs.arena.contract_visuals = {}
 	self.jobs.arena.contract_visuals.min_mission_xp = {
+		19500,
+		19500,
 		19500,
 		19500,
 		19500,
@@ -3084,18 +2959,9 @@ function NarrativeTweakData:init(tweak_data)
 		51600,
 		51600,
 		51600,
+		51600,
+		51600,
 		51600
-	}
-	self.jobs.arena_prof = deep_clone(self.jobs.arena)
-	self.jobs.arena_prof.jc = 40
-	self.jobs.arena_prof.professional = true
-	self.jobs.arena_prof.region = "professional"
-	self.jobs.arena_prof.payout = {
-		10000,
-		20000,
-		30000,
-		40000,
-		80000
 	}
 	self.jobs.kenaz = {}
 	self.jobs.kenaz.name_id = "heist_kenaz_full"
@@ -3133,6 +2999,8 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		50000,
 		100000,
+		130000,
+		130000,
 		130000
 	}
 	self.jobs.kenaz.contract_cost = {
@@ -3140,11 +3008,15 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.kenaz.dlc = "kenaz"
 	self.jobs.kenaz.contract_visuals = {}
 	self.jobs.kenaz.contract_visuals.min_mission_xp = {
+		39250,
+		39250,
 		39250,
 		39250,
 		39250,
@@ -3156,33 +3028,9 @@ function NarrativeTweakData:init(tweak_data)
 		67500,
 		67500,
 		67500,
+		67500,
+		67500,
 		67500
-	}
-	self.jobs.kenaz_prof = deep_clone(self.jobs.kenaz)
-	self.jobs.kenaz_prof.jc = 70
-	self.jobs.kenaz_prof.professional = true
-	self.jobs.kenaz_prof.region = "professional"
-	self.jobs.kenaz_prof.payout = {
-		25000,
-		35000,
-		50000,
-		65000,
-		100000
-	}
-	self.jobs.kenaz_prof.contract_cost = {
-		120000,
-		135000,
-		200000,
-		420000,
-		500000
-	}
-	self.jobs.kenaz_prof.heat = {this_job = -2, other_jobs = 2}
-	self.jobs.kenaz_prof.experience_mul = {
-		12.5,
-		12.5,
-		12.5,
-		12.5,
-		12.5
 	}
 	self.jobs.jolly = {}
 	self.jobs.jolly.name_id = "heist_jolly"
@@ -3204,9 +3052,13 @@ function NarrativeTweakData:init(tweak_data)
 		30000,
 		30000,
 		30000,
+		30000,
+		30000,
 		30000
 	}
 	self.jobs.jolly.contract_visuals.max_mission_xp = {
+		34000,
+		34000,
 		34000,
 		34000,
 		34000,
@@ -3228,6 +3080,8 @@ function NarrativeTweakData:init(tweak_data)
 		248000,
 		620000,
 		1150000,
+		1600000,
+		1600000,
 		1600000
 	}
 	self.jobs.jolly.contract_cost = {
@@ -3235,18 +3089,9 @@ function NarrativeTweakData:init(tweak_data)
 		150000,
 		550000,
 		1050000,
+		1400000,
+		1400000,
 		1400000
-	}
-	self.jobs.jolly_prof = deep_clone(self.jobs.jolly)
-	self.jobs.jolly_prof.jc = 40
-	self.jobs.jolly_prof.professional = true
-	self.jobs.jolly_prof.region = "professional"
-	self.jobs.jolly_prof.payout = {
-		10000,
-		20000,
-		30000,
-		40000,
-		80000
 	}
 	self.jobs.red2 = {}
 	self.jobs.red2.name_id = "heist_red2"
@@ -3279,6 +3124,8 @@ function NarrativeTweakData:init(tweak_data)
 		200000,
 		500000,
 		1000000,
+		1300000,
+		1300000,
 		1300000
 	}
 	self.jobs.red2.contract_cost = {
@@ -3286,6 +3133,8 @@ function NarrativeTweakData:init(tweak_data)
 		150000,
 		400000,
 		850000,
+		1000000,
+		1000000,
 		1000000
 	}
 	self.jobs.red2.contract_visuals = {}
@@ -3294,9 +3143,13 @@ function NarrativeTweakData:init(tweak_data)
 		17500,
 		17500,
 		17500,
+		17500,
+		17500,
 		17500
 	}
 	self.jobs.red2.contract_visuals.max_mission_xp = {
+		34000,
+		34000,
 		34000,
 		34000,
 		34000,
@@ -3332,6 +3185,8 @@ function NarrativeTweakData:init(tweak_data)
 		240000,
 		600000,
 		1100000,
+		1500000,
+		1500000,
 		1500000
 	}
 	self.jobs.dinner.contract_cost = {
@@ -3339,6 +3194,8 @@ function NarrativeTweakData:init(tweak_data)
 		150000,
 		400000,
 		850000,
+		1000000,
+		1000000,
 		1000000
 	}
 	self.jobs.dinner.contract_visuals = {}
@@ -3347,9 +3204,13 @@ function NarrativeTweakData:init(tweak_data)
 		34000,
 		34000,
 		34000,
+		34000,
+		34000,
 		34000
 	}
 	self.jobs.dinner.contract_visuals.max_mission_xp = {
+		40000,
+		40000,
 		40000,
 		40000,
 		40000,
@@ -3384,6 +3245,8 @@ function NarrativeTweakData:init(tweak_data)
 		74000,
 		125000,
 		185000,
+		260000,
+		260000,
 		260000
 	}
 	self.jobs.pbr.contract_cost = {
@@ -3391,6 +3254,8 @@ function NarrativeTweakData:init(tweak_data)
 		62000,
 		155000,
 		310000,
+		400000,
+		400000,
 		400000
 	}
 	self.jobs.pbr.contract_visuals = {}
@@ -3399,9 +3264,13 @@ function NarrativeTweakData:init(tweak_data)
 		22400,
 		22400,
 		22400,
+		22400,
+		22400,
 		22400
 	}
 	self.jobs.pbr.contract_visuals.max_mission_xp = {
+		32000,
+		32000,
 		32000,
 		32000,
 		32000,
@@ -3436,6 +3305,8 @@ function NarrativeTweakData:init(tweak_data)
 		230000,
 		575000,
 		1150000,
+		1500000,
+		1500000,
 		1500000
 	}
 	self.jobs.pbr2.contract_cost = {
@@ -3443,6 +3314,8 @@ function NarrativeTweakData:init(tweak_data)
 		62000,
 		155000,
 		310000,
+		400000,
+		400000,
 		400000
 	}
 	self.jobs.pbr2.contract_visuals = {}
@@ -3451,9 +3324,13 @@ function NarrativeTweakData:init(tweak_data)
 		31100,
 		31100,
 		31100,
+		31100,
+		31100,
 		31100
 	}
 	self.jobs.pbr2.contract_visuals.max_mission_xp = {
+		31100,
+		31100,
 		31100,
 		31100,
 		31100,
@@ -3490,6 +3367,8 @@ function NarrativeTweakData:init(tweak_data)
 		230000,
 		575000,
 		1150000,
+		1500000,
+		1500000,
 		1500000
 	}
 	self.jobs.pal.contract_cost = {
@@ -3497,6 +3376,8 @@ function NarrativeTweakData:init(tweak_data)
 		62000,
 		155000,
 		310000,
+		400000,
+		400000,
 		400000
 	}
 	self.jobs.pal.contract_visuals = {}
@@ -3505,9 +3386,13 @@ function NarrativeTweakData:init(tweak_data)
 		21000,
 		21000,
 		21000,
+		21000,
+		21000,
 		21000
 	}
 	self.jobs.pal.contract_visuals.max_mission_xp = {
+		3621000,
+		3621000,
 		3621000,
 		3621000,
 		3621000,
@@ -3543,6 +3428,8 @@ function NarrativeTweakData:init(tweak_data)
 		48000,
 		120000,
 		240000,
+		300000,
+		300000,
 		300000
 	}
 	self.jobs.cane.payout = {
@@ -3550,6 +3437,8 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		30000,
 		40000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.cane.contract_visuals = {}
@@ -3558,9 +3447,13 @@ function NarrativeTweakData:init(tweak_data)
 		10900,
 		10900,
 		10900,
+		10900,
+		10900,
 		10900
 	}
 	self.jobs.cane.contract_visuals.max_mission_xp = {
+		6218000,
+		6218000,
 		6218000,
 		6218000,
 		6218000,
@@ -3596,6 +3489,8 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		30000,
 		50000,
+		60000,
+		60000,
 		60000
 	}
 	self.jobs.nail.contract_cost = {
@@ -3603,6 +3498,8 @@ function NarrativeTweakData:init(tweak_data)
 		8000,
 		20000,
 		40000,
+		100000,
+		100000,
 		100000
 	}
 	self.jobs.nail.contract_visuals = {}
@@ -3611,9 +3508,13 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		20000,
 		20000,
+		20000,
+		20000,
 		20000
 	}
 	self.jobs.nail.contract_visuals.max_mission_xp = {
+		3785000,
+		3785000,
 		3785000,
 		3785000,
 		3785000,
@@ -3657,6 +3558,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.peta.payout = {
@@ -3664,10 +3567,14 @@ function NarrativeTweakData:init(tweak_data)
 		500000,
 		1250000,
 		2500000,
+		3200000,
+		3200000,
 		3200000
 	}
 	self.jobs.peta.contract_visuals = {}
 	self.jobs.peta.contract_visuals.min_mission_xp = {
+		38000,
+		38000,
 		38000,
 		38000,
 		38000,
@@ -3679,25 +3586,9 @@ function NarrativeTweakData:init(tweak_data)
 		122000,
 		122000,
 		122000,
+		122000,
+		122000,
 		122000
-	}
-	self.jobs.peta_prof = deep_clone(self.jobs.peta)
-	self.jobs.peta_prof.jc = 70
-	self.jobs.peta_prof.professional = true
-	self.jobs.peta_prof.region = "professional"
-	self.jobs.peta_prof.contract_cost = {
-		62000,
-		124000,
-		310000,
-		620000,
-		800000
-	}
-	self.jobs.peta_prof.payout = {
-		290000,
-		580000,
-		1450000,
-		2900000,
-		3800000
 	}
 	self.jobs.man = {}
 	self.jobs.man.name_id = "heist_man"
@@ -3728,6 +3619,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.man.payout = {
@@ -3735,6 +3628,8 @@ function NarrativeTweakData:init(tweak_data)
 		275000,
 		692307,
 		1350000,
+		1800000,
+		1800000,
 		1800000
 	}
 	self.jobs.man.contract_visuals = {}
@@ -3743,9 +3638,13 @@ function NarrativeTweakData:init(tweak_data)
 		27500,
 		27500,
 		27500,
+		27500,
+		27500,
 		27500
 	}
 	self.jobs.man.contract_visuals.max_mission_xp = {
+		28500,
+		28500,
 		28500,
 		28500,
 		28500,
@@ -3776,6 +3675,8 @@ function NarrativeTweakData:init(tweak_data)
 		48000,
 		120000,
 		240000,
+		300000,
+		300000,
 		300000
 	}
 	self.jobs.dark.payout = {
@@ -3783,6 +3684,8 @@ function NarrativeTweakData:init(tweak_data)
 		20000,
 		30000,
 		40000,
+		80000,
+		80000,
 		80000
 	}
 	self.jobs.dark.contract_visuals = {}
@@ -3791,9 +3694,13 @@ function NarrativeTweakData:init(tweak_data)
 		14000,
 		14000,
 		14000,
+		14000,
+		14000,
 		14000
 	}
 	self.jobs.dark.contract_visuals.max_mission_xp = {
+		32000,
+		32000,
 		32000,
 		32000,
 		32000,
@@ -3824,6 +3731,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.mad.payout = {
@@ -3831,6 +3740,8 @@ function NarrativeTweakData:init(tweak_data)
 		275000,
 		692307,
 		1350000,
+		1800000,
+		1800000,
 		1800000
 	}
 	self.jobs.mad.contract_visuals = {}
@@ -3839,9 +3750,13 @@ function NarrativeTweakData:init(tweak_data)
 		36000,
 		36000,
 		36000,
+		36000,
+		36000,
 		36000
 	}
 	self.jobs.mad.contract_visuals.max_mission_xp = {
+		66000,
+		66000,
 		66000,
 		66000,
 		66000,
@@ -3882,6 +3797,8 @@ function NarrativeTweakData:init(tweak_data)
 		37000,
 		81000,
 		101000,
+		202000,
+		202000,
 		202000
 	}
 	self.jobs.born.contract_cost = {
@@ -3889,6 +3806,8 @@ function NarrativeTweakData:init(tweak_data)
 		124000,
 		310000,
 		620000,
+		800000,
+		800000,
 		800000
 	}
 	self.jobs.born.payout = {
@@ -3896,10 +3815,14 @@ function NarrativeTweakData:init(tweak_data)
 		275000,
 		692307,
 		1350000,
+		1800000,
+		1800000,
 		1800000
 	}
 	self.jobs.born.contract_visuals = {}
 	self.jobs.born.contract_visuals.min_mission_xp = {
+		10000,
+		10000,
 		10000,
 		10000,
 		10000,
@@ -3911,32 +3834,9 @@ function NarrativeTweakData:init(tweak_data)
 		14000,
 		14000,
 		14000,
+		14000,
+		14000,
 		14000
-	}
-	self.jobs.born_pro = deep_clone(self.jobs.born)
-	self.jobs.born_pro.jc = 70
-	self.jobs.born_pro.professional = true
-	self.jobs.born_pro.region = "professional"
-	self.jobs.born_pro.contract_cost = {
-		62000,
-		124000,
-		310000,
-		620000,
-		800000
-	}
-	self.jobs.born_pro.payout = {
-		175000,
-		357000,
-		900307,
-		1750000,
-		2370000
-	}
-	self.jobs.born_pro.experience_mul = {
-		1.5,
-		1.5,
-		1.5,
-		1.5,
-		1.5
 	}
 	self.jobs.short = {}
 	self.jobs.short.name_id = "heist_short"
@@ -3983,6 +3883,8 @@ function NarrativeTweakData:init(tweak_data)
 		74000,
 		162000,
 		202000,
+		404000,
+		404000,
 		404000
 	}
 	self.jobs.short1 = {}
@@ -4020,6 +3922,8 @@ function NarrativeTweakData:init(tweak_data)
 		37000,
 		81000,
 		101000,
+		202000,
+		202000,
 		202000
 	}
 	self.jobs.short2 = {}
@@ -4057,6 +3961,8 @@ function NarrativeTweakData:init(tweak_data)
 		37000,
 		81000,
 		101000,
+		202000,
+		202000,
 		202000
 	}
 	self.tutorials = {
@@ -4074,23 +3980,16 @@ function NarrativeTweakData:init(tweak_data)
 		"branchbank_prof",
 		"branchbank_gold_prof",
 		"firestarter",
-		"firestarter_prof",
 		"alex",
-		"alex_prof",
 		"watchdogs_wrapper",
-		"watchdogs_wrapper_prof",
 		"watchdogs",
 		"watchdogs_night",
-		"watchdogs_prof",
-		"watchdogs_night_prof",
 		"framing_frame",
-		"framing_frame_prof",
 		"welcome_to_the_jungle_wrapper_prof",
 		"welcome_to_the_jungle_prof",
 		"welcome_to_the_jungle_night_prof",
 		"family",
 		"election_day",
-		"election_day_prof",
 		"kosugi",
 		"arm_fac",
 		"arm_par",
@@ -4100,10 +3999,8 @@ function NarrativeTweakData:init(tweak_data)
 		"arm_for",
 		"big",
 		"mia",
-		"mia_prof",
 		"gallery",
 		"hox",
-		"hox_prof",
 		"hox_3",
 		"pines",
 		"cage",
@@ -4124,13 +4021,11 @@ function NarrativeTweakData:init(tweak_data)
 		"pbr",
 		"pbr2",
 		"peta",
-		"peta_prof",
 		"pal",
 		"man",
 		"mad",
 		"dark",
-		"born",
-		"born_pro"
+		"born"
 	}
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		table.insert(self._jobs_index, "roberts")

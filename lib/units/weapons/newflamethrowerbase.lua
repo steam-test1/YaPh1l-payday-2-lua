@@ -3,6 +3,7 @@ NewFlamethrowerBase.EVENT_IDS = {flamethrower_effect = 1}
 function NewFlamethrowerBase:init(...)
 	NewFlamethrowerBase.super.init(self, ...)
 	self:setup_default()
+	self.flamethrower = true
 end
 function NewFlamethrowerBase:setup_default()
 	self._rays = tweak_data.weapon[self._name_id].rays or 6

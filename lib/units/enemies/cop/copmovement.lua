@@ -259,7 +259,7 @@ function CopMovement:post_init()
 	self._unit:kill_mover()
 	self._unit:set_driving("script")
 	self._unit:unit_data().has_alarm_pager = self._tweak_data.has_alarm_pager
-	self._unit:character_damage():add_listener("movement", {
+	local event_list = {
 		"bleedout",
 		"light_hurt",
 		"heavy_hurt",
@@ -274,8 +274,10 @@ function CopMovement:post_init()
 		"death",
 		"fatal",
 		"fire_hurt",
-		"poison_hurt"
-	}, callback(self, self, "damage_clbk"))
+		"poison_hurt",
+		"concussion"
+	}
+	self._unit:character_damage():add_listener("movement", event_list, callback(self, self, "damage_clbk"))
 	self._unit:inventory():add_listener("movement", {"equip", "unequip"}, callback(self, self, "clbk_inventory"))
 	local prim_weap_name = self._ext_base:default_weapon_name("primary")
 	local sec_weap_name = self._ext_base:default_weapon_name("secondary")
@@ -593,6 +595,13 @@ function CopMovement:action_request(action_desc)
 	if not self._actions[action_desc.type] then
 		debug_pause("[CopMovement:action_request] invalid action started", inspect(self._actions), inspect(action_desc))
 		return
+	end
+	if self._action_common_data and self._action_common_data.ext_anim and not self._action_common_data.ext_anim.pose then
+		if self._ext_anim.crouch then
+			self._action_common_data.ext_anim.pose = "crouch"
+		else
+			self._action_common_data.ext_anim.pose = "stand"
+		end
 	end
 	local action, success = self._actions[action_desc.type]:new(action_desc, self._action_common_data)
 	if success and (not action.expired or not action:expired()) then
@@ -1081,7 +1090,6 @@ function CopMovement:damage_clbk(my_unit, damage_info)
 		if hurt_type == "death" then
 			debug_pause_unit(self._unit, "[CopMovement:damage_clbk] Death action skipped!!!", self._unit)
 			Application:draw_cylinder(self._m_pos, self._m_pos + math.UP * 5000, 30, 1, 0, 0)
-			print("active_actions")
 			for body_part, action in ipairs(self._active_actions) do
 				if action then
 					print(body_part, action:type(), inspect(action._blocks))
@@ -1135,6 +1143,7 @@ function CopMovement:damage_clbk(my_unit, damage_info)
 			blocks.hurt = -1
 			blocks.heavy_hurt = -1
 			blocks.hurt_sick = -1
+			blocks.concussion = -1
 		end
 	end
 	if damage_info.variant == "tase" then
@@ -1145,11 +1154,12 @@ function CopMovement:damage_clbk(my_unit, damage_info)
 		block_type = hurt_type
 	end
 	local client_interrupt
-	if Network:is_client() and (hurt_type == "light_hurt" or hurt_type == "hurt" and damage_info.variant ~= "tase" or hurt_type == "heavy_hurt" or hurt_type == "expl_hurt" or hurt_type == "shield_knock" or hurt_type == "counter_tased" or hurt_type == "taser_tased" or hurt_type == "counter_spooc" or hurt_type == "death" or hurt_type == "hurt_sick" or hurt_type == "fire_hurt" or hurt_type == "poison_hurt") then
+	if Network:is_client() and (hurt_type == "light_hurt" or hurt_type == "hurt" and damage_info.variant ~= "tase" or hurt_type == "heavy_hurt" or hurt_type == "expl_hurt" or hurt_type == "shield_knock" or hurt_type == "counter_tased" or hurt_type == "taser_tased" or hurt_type == "counter_spooc" or hurt_type == "death" or hurt_type == "hurt_sick" or hurt_type == "fire_hurt" or hurt_type == "poison_hurt" or hurt_type == "concussion") then
 		client_interrupt = true
 	end
 	local tweak = self._tweak_data
-	local action_data = {
+	local action_data
+	action_data = {
 		type = "hurt",
 		block_type = block_type,
 		hurt_type = hurt_type,
@@ -1623,10 +1633,12 @@ function CopMovement:_push_front_queued_action(action_desc)
 	table.insert(self._queued_actions, 1, action_desc)
 end
 function CopMovement:_cancel_latest_action(search_type, explicit)
-	for i = #self._queued_actions, 1, -1 do
-		if self._queued_actions[i].type == search_type then
-			table.remove(self._queued_actions, i)
-			return
+	if self._queued_actions then
+		for i = #self._queued_actions, 1, -1 do
+			if self._queued_actions[i].type == search_type then
+				table.remove(self._queued_actions, i)
+				return
+			end
 		end
 	end
 	for body_part, action in ipairs(self._active_actions) do
@@ -1645,9 +1657,11 @@ function CopMovement:_cancel_latest_action(search_type, explicit)
 	end
 end
 function CopMovement:_get_latest_walk_action()
-	for i = #self._queued_actions, 1, -1 do
-		if self._queued_actions[i].type == "walk" and self._queued_actions[i].persistent then
-			return self._queued_actions[i], true
+	if self._queued_actions then
+		for i = #self._queued_actions, 1, -1 do
+			if self._queued_actions[i].type == "walk" and self._queued_actions[i].persistent then
+				return self._queued_actions[i], true
+			end
 		end
 	end
 	if self._active_actions[2] and self._active_actions[2]:type() == "walk" then
@@ -1656,9 +1670,11 @@ function CopMovement:_get_latest_walk_action()
 	debug_pause_unit(self._unit, "[CopMovement:_get_latest_walk_action] no queued or ongoing walk action", self._unit, inspect(self._queued_actions), inspect(self._active_actions))
 end
 function CopMovement:_get_latest_act_action()
-	for i = #self._queued_actions, 1, -1 do
-		if self._queued_actions[i].type == "act" and not self._queued_actions[i].host_expired then
-			return self._queued_actions[i], true
+	if self._queued_actions then
+		for i = #self._queued_actions, 1, -1 do
+			if self._queued_actions[i].type == "act" and not self._queued_actions[i].host_expired then
+				return self._queued_actions[i], true
+			end
 		end
 	end
 	if self._active_actions[1] and self._active_actions[1]:type() == "act" then

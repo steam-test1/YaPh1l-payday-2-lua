@@ -810,7 +810,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 					end
 					if not shoot and my_data.attitude == "engage" then
 						if focus_enemy.verified then
-							if focus_enemy.verified_dis < (running and data.internal_data.weapon_range.close or data.internal_data.weapon_range.far) or focus_enemy.reaction == AIAttentionObject.REACT_SHOOT then
+							if focus_enemy.verified_dis < (running and data.internal_data.weapon_range and (data.internal_data.weapon_range.close or data.internal_data.weapon_range.far) or 500) or focus_enemy.reaction == AIAttentionObject.REACT_SHOOT then
 								shoot = true
 							end
 						else
@@ -822,7 +822,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 					end
 					aim = aim or shoot
 					if not aim then
-						if focus_enemy.verified_dis < (running and data.internal_data.weapon_range.close or data.internal_data.weapon_range.far) then
+						if focus_enemy.verified_dis < (running and data.internal_data.weapon_range and (data.internal_data.weapon_range.close or data.internal_data.weapon_range.far) or 500) then
 							aim = true
 						end
 					end

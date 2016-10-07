@@ -55,7 +55,6 @@ function ElementUnitDamage:on_executed(instigator, damage_type, damage)
 	ElementUnitDamage.super.on_executed(self, instigator)
 end
 function ElementUnitDamage:client_on_executed(...)
-	self:on_executed(...)
 end
 function ElementUnitDamage:save(data)
 	data.enabled = self._values.enabled

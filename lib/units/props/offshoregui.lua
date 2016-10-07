@@ -41,7 +41,7 @@ function OffshoreGui:setup()
 	})
 	local font_size = 220
 	local money_text = managers.experience:cash_string(managers.money:offshore())
-	self._title_text = panel:text({
+	self._money_text = panel:text({
 		text = money_text,
 		y = self._ws:panel():h() / 2 - default_offset,
 		font = "fonts/font_medium_noshadow_mf",
@@ -62,7 +62,9 @@ function OffshoreGui:sync_start()
 end
 function OffshoreGui:set_visible(visible)
 	self._visible = visible
-	self._gui:set_visible(visible)
+	if self._ws and self._ws:panel() then
+		self._ws:panel():set_visible(visible)
+	end
 end
 function OffshoreGui:lock_gui()
 	self._ws:set_cull_distance(self._cull_distance)
@@ -74,4 +76,7 @@ function OffshoreGui:destroy()
 		self._ws = nil
 		self._new_gui = nil
 	end
+end
+function OffshoreGui:update_offshore()
+	self._money_text:set_text(managers.experience:cash_string(managers.money:offshore()))
 end

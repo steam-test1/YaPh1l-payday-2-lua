@@ -644,7 +644,9 @@ function GuiTweakData:init()
 		"skulloverkillplus"
 	}
 	self.blackscreen_risk_textures = {
-		overkill_290 = "guis/textures/pd2/risklevel_deathwish_blackscreen"
+		easy_wish = "guis/textures/pd2/risklevel_deathwish_easywish_blackscreen",
+		overkill_290 = "guis/textures/pd2/risklevel_deathwish_blackscreen",
+		sm_wish = "guis/textures/pd2/risklevel_deathwish_sm_blackscreen"
 	}
 	self.suspicion_to_visibility = {}
 	self.suspicion_to_visibility[1] = {}
@@ -1703,8 +1705,8 @@ function GuiTweakData:init()
 			name_id = "menu_cn_challenge",
 			desc_id = "menu_cn_challenge_desc",
 			menu_node = "crimenet_contract_challenge",
-			x = 347,
-			y = 716,
+			x = 362,
+			y = 746,
 			icon = "guis/textures/pd2/crimenet_challenge"
 		})
 	end
@@ -1714,8 +1716,8 @@ function GuiTweakData:init()
 			name_id = "menu_cn_challenge",
 			desc_id = "menu_cn_challenge_desc",
 			menu_node = "crimenet_contract_challenge",
-			x = 347,
-			y = 716,
+			x = 362,
+			y = 746,
 			icon = "guis/textures/pd2/crimenet_challenge"
 		})
 	end
@@ -2085,7 +2087,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			}
@@ -2137,7 +2141,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2180,7 +2186,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2221,7 +2229,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2260,7 +2270,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2303,7 +2315,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2338,7 +2352,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2375,7 +2391,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2412,7 +2430,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2451,7 +2471,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2488,7 +2510,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2595,7 +2619,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2640,7 +2666,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2683,7 +2711,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2730,7 +2760,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2775,7 +2807,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2816,7 +2850,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2852,7 +2888,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2905,7 +2943,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2942,7 +2982,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -2987,7 +3029,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3042,7 +3086,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3091,7 +3137,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3140,7 +3188,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3183,7 +3233,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3234,7 +3286,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3273,7 +3327,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3316,7 +3372,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3363,7 +3421,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3408,7 +3468,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3451,7 +3513,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3498,7 +3562,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3535,7 +3601,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3576,7 +3644,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3613,7 +3683,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3656,7 +3728,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3701,7 +3775,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3744,7 +3820,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3787,7 +3865,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3836,7 +3916,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3883,7 +3965,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3930,7 +4014,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -3977,7 +4063,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4018,7 +4106,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4063,7 +4153,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4102,7 +4194,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4155,7 +4249,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4202,7 +4298,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4249,7 +4347,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4290,7 +4390,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4331,7 +4433,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			},
@@ -4368,7 +4472,9 @@ function GuiTweakData:init()
 						"hard",
 						"overkill",
 						"overkill_145",
-						"overkill_290"
+						"easy_wish",
+						"overkill_290",
+						"sm_wish"
 					}
 				}
 			}

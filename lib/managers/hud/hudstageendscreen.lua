@@ -239,10 +239,12 @@ function HUDStageEndScreen:init(hud, workspace)
 		local risks = {
 			"risk_swat",
 			"risk_fbi",
-			"risk_death_squad"
+			"risk_death_squad",
+			"risk_easy_wish"
 		}
 		if not Global.SKIP_OVERKILL_290 then
 			table.insert(risks, "risk_murder_squad")
+			table.insert(risks, "risk_sm_wish")
 		end
 		local panel_w = 0
 		local panel_h = 0
@@ -1209,10 +1211,10 @@ function HUDStageEndScreen:reset_income_count()
 	self._income_index = 0
 end
 function HUDStageEndScreen:get_count_speed_fast(dt, data)
-	return dt * math.max(20000, data[2] / 1.5)
+	return dt * math.max(20000, math.abs(data[2]) / 1.5)
 end
 function HUDStageEndScreen:get_count_speed_slow(dt, data)
-	return dt * math.max(200, data[2] / 1.5)
+	return dt * math.max(200, math.abs(data[2]) / 1.5)
 end
 function HUDStageEndScreen:display_as_cash(amount)
 	return managers.experience:cash_string(amount)
