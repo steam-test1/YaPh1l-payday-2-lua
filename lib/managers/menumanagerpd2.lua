@@ -116,7 +116,7 @@ function MenuCallbackHandler:start_job(job_data)
 		managers.network:session():send_to_peers("sync_game_settings", job_id_index, level_id_index, difficulty_index)
 		managers.network.matchmake:set_server_attributes(matchmake_attributes)
 		managers.menu_component:on_job_updated()
-		managers.menu:active_menu().logic:navigate_back(true)
+		managers.menu:open_node("lobby")
 		managers.menu:active_menu().logic:refresh_node("lobby", true)
 	else
 		managers.network.matchmake:create_lobby(matchmake_attributes)
@@ -190,6 +190,15 @@ function MenuCallbackHandler:got_skillpoint_to_spend()
 end
 function MenuCallbackHandler:got_new_lootdrop()
 	return managers.blackmarket and managers.blackmarket:got_any_new_drop()
+end
+function MenuCallbackHandler:show_custom_safehouse_menu_icon()
+	return not managers.custom_safehouse:is_daily_new() and managers.custom_safehouse:has_completed_daily() and not managers.custom_safehouse:has_rewarded_daily()
+end
+function MenuCallbackHandler:close_custom_safehouse_menu()
+	managers.custom_safehouse:disable_in_game_menu()
+end
+function MenuCallbackHandler:should_show_old_safehouse()
+	return not managers.custom_safehouse:unlocked()
 end
 function MenuCallbackHandler:got_new_content_update()
 	return false

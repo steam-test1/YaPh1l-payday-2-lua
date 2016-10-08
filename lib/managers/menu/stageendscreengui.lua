@@ -256,6 +256,7 @@ function StatsTabItem:set_stats(stats_data)
 				word_wrap = true
 			})
 			local use_medium_font = stat == "stage_cash_summary"
+			use_medium_font = use_medium_font or stat == "stage_safehouse_summary"
 			if use_medium_font then
 				desc_text:hide()
 				stat_text:set_w(new_stat_panel:w() - 20)
@@ -300,6 +301,7 @@ function StatsTabItem:feed_statistics(stats_data)
 		stat:set_h(max_h)
 		child:set_h(max_h)
 		local format_color = child:name() == "stage_cash_summary"
+		format_color = format_color or child:name() == "stage_safehouse_summary"
 		if format_color then
 			desc:hide()
 			stat:set_w(child:w() - 20)
@@ -504,6 +506,13 @@ function StageEndScreenGui:init(saferect_ws, fullrect_ws, statistics_data)
 		"gage_assignment_summary"
 	})
 	table.insert(self._items, item)
+	if managers.custom_safehouse:unlocked() then
+		item = StatsTabItem:new(self._panel, self._tab_panel, utf8.to_upper(managers.localization:text("menu_es_safehouse_summary")), 5)
+		item:set_stats({
+			"stage_safehouse_summary"
+		})
+		table.insert(self._items, item)
+	end
 	local scroll_w = self._panel:w() - self._scroll_panel:x()
 	local ix, iy, iw, ih = self._items[#self._items]:tab_text_shape()
 	self._tab_panel:set_w(ix + iw + 5)

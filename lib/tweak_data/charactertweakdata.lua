@@ -1094,7 +1094,7 @@ function CharacterTweakData:_init_spooc(presets)
 	self.spooc.weapon = deep_clone(presets.weapon.good)
 	self.spooc.detection = presets.detection.normal
 	self.spooc.HEALTH_INIT = 60
-	self.spooc.headshot_dmg_mul = 2
+	self.spooc.headshot_dmg_mul = 6
 	self.spooc.move_speed = presets.move_speed.lightning
 	self.spooc.no_retreat = true
 	self.spooc.no_arrest = true
@@ -8309,8 +8309,6 @@ function CharacterTweakData:_multiply_weapon_delay(weap_usage_table, mul)
 	end
 end
 function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
-	self.security.HEALTH_INIT = self.security.HEALTH_INIT * hp_mul
-	self.cop.HEALTH_INIT = self.cop.HEALTH_INIT * hp_mul
 	self.fbi.HEALTH_INIT = self.fbi.HEALTH_INIT * hp_mul
 	self.swat.HEALTH_INIT = self.swat.HEALTH_INIT * hp_mul
 	self.heavy_swat.HEALTH_INIT = self.heavy_swat.HEALTH_INIT * hp_mul
@@ -8326,6 +8324,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.taser.HEALTH_INIT = self.taser.HEALTH_INIT * hp_mul
 	self.city_swat.HEALTH_INIT = self.city_swat.HEALTH_INIT * hp_mul
 	self.biker_escape.HEALTH_INIT = self.biker_escape.HEALTH_INIT * hp_mul
+	self.fbi_swat.HEALTH_INIT = self.fbi_swat.HEALTH_INIT * hp_mul
 	if self.security.headshot_dmg_mul then
 		self.security.headshot_dmg_mul = self.security.headshot_dmg_mul * hs_mul
 	end
@@ -8376,6 +8375,9 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	end
 	if self.city_swat.headshot_dmg_mul then
 		self.city_swat.headshot_dmg_mul = self.city_swat.headshot_dmg_mul * hs_mul
+	end
+	if self.fbi_swat.headshot_dmg_mul then
+		self.fbi_swat.headshot_dmg_mul = self.fbi_swat.headshot_dmg_mul * hs_mul
 	end
 end
 function CharacterTweakData:_multiply_all_speeds(walk_mul, run_mul)
@@ -8767,6 +8769,8 @@ function CharacterTweakData:character_map()
 			path = "units/pd2_dlc_gitgud/characters/",
 			list = {
 				"ene_zeal_bulldozer",
+				"ene_zeal_bulldozer_2",
+				"ene_zeal_bulldozer_3",
 				"ene_zeal_cloaker",
 				"ene_zeal_swat",
 				"ene_zeal_swat_heavy",
