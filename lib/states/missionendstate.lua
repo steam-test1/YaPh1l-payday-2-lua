@@ -455,6 +455,7 @@ MissionEndState.generate_safehouse_statistics = function(self)
 	if not managers.custom_safehouse:unlocked() then
 		return 
 	end
+	local was_safehouse_raid = managers.job:current_job_id() == "chill_combat"
 	if not self._trophies_list then
 		self._trophies_list = {}
 	end
@@ -469,16 +470,12 @@ MissionEndState.generate_safehouse_statistics = function(self)
 	if has_completed_daily then
 		managers.custom_safehouse:reward_daily()
 	end
-	local was_safehouse_raid = managers.job:current_job_id() == "chill_combat"
-	if was_safehouse_raid then
-		managers.custom_safehouse:add_coins(tweak_data.safehouse.rewards.raid)
-	end
 	local stage_safehouse_summary_string = ""
 	local total_income = managers.custom_safehouse:get_coins_income()
 	local exp_income = total_income
 	local trophies_income = 0
 	local daily_income = 0
-	local raid_income = was_safehouse_raid and tweak_data.safehouse.rewards.raid or 0
+	local raid_income = was_safehouse_raid and game_state_machine:current_state():name() == "victoryscreen" and tweak_data.safehouse.rewards.raid or 0
 	for idx,trophy_data in ipairs(self._trophies_list) do
 		if trophy_data.type == "trophy" then
 			trophies_income = trophies_income + trophy_data.reward

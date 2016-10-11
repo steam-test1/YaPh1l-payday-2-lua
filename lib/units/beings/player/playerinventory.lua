@@ -28,7 +28,11 @@ function PlayerInventory:init(unit)
 end
 function PlayerInventory:pre_destroy(unit)
 	if self._weapon_add_clbk then
-		managers.enemy:remove_delayed_clbk(self._weapon_add_clbk)
+		if managers.enemy:is_clbk_registered(self._weapon_add_clbk) then
+			managers.enemy:remove_delayed_clbk(self._weapon_add_clbk)
+		else
+			Application:error("[PlayerInventory] Attempted to remove a callback that wasn't registred! " .. tostring(self._weapon_add_clbk))
+		end
 		self._weapon_add_clbk = nil
 	end
 	self:destroy_all_items()
