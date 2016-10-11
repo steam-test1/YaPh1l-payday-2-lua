@@ -161,7 +161,7 @@ MissionEndState.at_enter = function(self, old_state, params)
 			elseif achievement_data.challenge_stat then
 				managers.challenge:award_progress(achievement_data.challenge_stat)
 			elseif achievement_data.trophy_stat then
-				managers.custom_safehouse:award_progress(achievement_data.trophy_stat)
+				managers.custom_safehouse:award(achievement_data.trophy_stat)
 			elseif achievement_data.challenge_award then
 				managers.challenge:award(achievement_data.challenge_award)
 			end
@@ -442,7 +442,7 @@ MissionEndState.on_statistics_result = function(self, best_kills_peer_id, best_k
 		elseif achievement_data.challenge_stat then
 			managers.challenge:award_progress(achievement_data.challenge_stat)
 		elseif achievement_data.trophy_stat then
-			managers.custom_safehouse:award_progress(achievement_data.trophy_stat)
+			managers.custom_safehouse:award(achievement_data.trophy_stat)
 		elseif achievement_data.challenge_award then
 			managers.challenge:award(achievement_data.challenge_award)
 		else
@@ -1048,7 +1048,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						elseif achievement_data.challenge_stat then
 							managers.challenge:award_progress(achievement_data.challenge_stat)
 						elseif achievement_data.trophy_stat then
-							managers.custom_safehouse:award_progress(achievement_data.trophy_stat)
+							managers.custom_safehouse:award(achievement_data.trophy_stat)
 						elseif achievement_data.challenge_award then
 							managers.challenge:award(achievement_data.challenge_award)
 						else
@@ -1079,14 +1079,17 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						if all_pass then
 							local available_masks = deep_clone(achievement_data.masks)
 							local all_masks_valid = true
+							local valid_mask_count = 0
 							for _,peer in pairs(managers.network:session():all_peers()) do
 								local current_mask = peer:mask_id()
 								if table.contains(available_masks, current_mask) then
 									table.delete(available_masks, current_mask)
+									valid_mask_count = valid_mask_count + 1
 								else
 									all_masks_valid = false
 								end
 							end
+							all_masks_valid = not all_masks_valid or valid_mask_count == 4
 						if all_masks_valid then
 							end
 							if achievement_data.stat then
@@ -1097,7 +1100,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						elseif achievement_data.challenge_stat then
 							managers.challenge:award_progress(achievement_data.challenge_stat)
 						elseif achievement_data.trophy_stat then
-							managers.custom_safehouse:award_progress(achievement_data.trophy_stat)
+							managers.custom_safehouse:award(achievement_data.trophy_stat)
 						elseif achievement_data.challenge_award then
 							managers.challenge:award(achievement_data.challenge_award)
 						end

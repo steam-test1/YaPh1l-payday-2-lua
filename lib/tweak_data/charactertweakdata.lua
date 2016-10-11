@@ -581,6 +581,7 @@ function CharacterTweakData:_init_mobster_boss(presets)
 	self.mobster_boss.chatter = presets.enemy_chatter.no_chatter
 	self.mobster_boss.use_radio = nil
 	self.mobster_boss.can_be_tased = false
+	self.mobster_boss.immune_to_concussion = true
 	table.insert(self._enemy_list, "mobster_boss")
 end
 function CharacterTweakData:_init_biker_boss(presets)
@@ -700,6 +701,7 @@ function CharacterTweakData:_init_biker_boss(presets)
 	self.biker_boss.flammable = true
 	self.biker_boss.can_be_tased = false
 	self.biker_boss.immune_to_knock_down = true
+	self.biker_boss.immune_to_concussion = true
 	table.insert(self._enemy_list, "biker_boss")
 end
 function CharacterTweakData:_init_hector_boss(presets)
@@ -803,6 +805,7 @@ function CharacterTweakData:_init_hector_boss_no_armor(presets)
 	self.hector_boss_no_armor.chatter = presets.enemy_chatter.no_chatter
 	self.hector_boss_no_armor.use_radio = nil
 	self.hector_boss_no_armor.can_be_tased = false
+	self.hector_boss_no_armor.immune_to_concussion = true
 	table.insert(self._enemy_list, "hector_boss_no_armor")
 end
 function CharacterTweakData:_init_tank(presets)
@@ -1348,6 +1351,7 @@ function CharacterTweakData:_init_phalanx_minion(presets)
 	self.phalanx_minion.damage.shield_knocked = false
 	self.phalanx_minion.damage.immune_to_knockback = true
 	self.phalanx_minion.immune_to_knock_down = true
+	self.phalanx_minion.immune_to_concussion = true
 	self.phalanx_minion.ecm_vulnerability = 1
 	self.phalanx_minion.ecm_hurts = {
 		ears = {min_duration = 2, max_duration = 3}
@@ -1364,6 +1368,7 @@ function CharacterTweakData:_init_phalanx_vip(presets)
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.phalanx_vip.can_be_tased = false
 	self.phalanx_vip.immune_to_knock_down = true
+	self.phalanx_vip.immune_to_concussion = true
 	table.insert(self._enemy_list, "phalanx_vip")
 end
 function CharacterTweakData:_init_taser(presets)
@@ -6881,6 +6886,7 @@ function CharacterTweakData:_set_normal()
 	self.presets.gang_member_damage.HEALTH_INIT = 125
 	self:_set_characters_weapon_preset("normal")
 	self.flashbang_multiplier = 1
+	self.concussion_multiplier = 1
 end
 function CharacterTweakData:_set_hard()
 	self:_multiply_all_hp(1, 1)
@@ -6960,6 +6966,7 @@ function CharacterTweakData:_set_hard()
 	self:_set_characters_weapon_preset("normal")
 	self.presets.gang_member_damage.HEALTH_INIT = 160
 	self.flashbang_multiplier = 1.25
+	self.concussion_multiplier = 1
 	self.spooc.spooc_attack_timeout = {8, 10}
 	self.sniper.weapon.m4.FALLOFF = {
 		{
@@ -7124,6 +7131,7 @@ function CharacterTweakData:_set_overkill()
 		}
 	}
 	self.flashbang_multiplier = 1.5
+	self.concussion_multiplier = 1
 end
 function CharacterTweakData:_set_overkill_145()
 	if SystemInfo:platform() == Idstring("PS3") then
@@ -7253,6 +7261,7 @@ function CharacterTweakData:_set_overkill_145()
 		}
 	}
 	self.flashbang_multiplier = 1.75
+	self.concussion_multiplier = 1
 end
 function CharacterTweakData:_set_easy_wish()
 	if SystemInfo:platform() == Idstring("PS3") then
@@ -7392,6 +7401,7 @@ function CharacterTweakData:_set_easy_wish()
 	self.phalanx_vip.DAMAGE_CLAMP_BULLET = 80
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.flashbang_multiplier = 2
+	self.concussion_multiplier = 1
 end
 function CharacterTweakData:_set_overkill_290()
 	if SystemInfo:platform() == Idstring("PS3") then
@@ -7846,6 +7856,7 @@ function CharacterTweakData:_set_overkill_290()
 	self.phalanx_vip.DAMAGE_CLAMP_BULLET = 80
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.flashbang_multiplier = 2
+	self.concussion_multiplier = 1
 end
 function CharacterTweakData:_set_sm_wish()
 	if SystemInfo:platform() == Idstring("PS3") then
@@ -8300,6 +8311,7 @@ function CharacterTweakData:_set_sm_wish()
 	self.phalanx_vip.DAMAGE_CLAMP_BULLET = 80
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.flashbang_multiplier = 2
+	self.concussion_multiplier = 1
 end
 function CharacterTweakData:_multiply_weapon_delay(weap_usage_table, mul)
 	for _, weap_id in ipairs(self.weap_ids) do

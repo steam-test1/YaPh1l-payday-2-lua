@@ -9,6 +9,10 @@ function OffshoreGui:init(unit)
 	self:add_workspace(self._unit:get_object(Idstring(self._gui_object)))
 	self:setup()
 	self._unit:set_extension_update_enabled(Idstring("offshore_gui"), false)
+	if managers.sync then
+		managers.sync:add_managed_unit(self._unit:id(), self)
+		self:perform_sync()
+	end
 end
 function OffshoreGui:add_workspace(gui_object)
 	self._ws = self._new_gui:create_object_workspace(1280, 720, gui_object, Vector3(0, 0, 0))
@@ -52,6 +56,7 @@ function OffshoreGui:setup()
 		visible = true,
 		color = OffshoreGui.MONEY_COLOR
 	})
+	self._ws:panel():set_visible(self._visible)
 end
 function OffshoreGui:_start()
 end
@@ -65,6 +70,7 @@ function OffshoreGui:set_visible(visible)
 	if self._ws and self._ws:panel() then
 		self._ws:panel():set_visible(visible)
 	end
+	self:perform_sync()
 end
 function OffshoreGui:lock_gui()
 	self._ws:set_cull_distance(self._cull_distance)
@@ -77,6 +83,11 @@ function OffshoreGui:destroy()
 		self._new_gui = nil
 	end
 end
-function OffshoreGui:update_offshore()
-	self._money_text:set_text(managers.experience:cash_string(managers.money:offshore()))
+function OffshoreGui:update_offshore(cash)
+	self._money_text:set_text(managers.experience:cash_string(cash or managers.money:offshore()))
+end
+function OffshoreGui:perform_sync()
+	if managers.sync and Network:is_server() then
+		managers.sync:add_synced_offshore_gui(self._unit:id(), self._visible, managers.money:offshore())
+	end
 end

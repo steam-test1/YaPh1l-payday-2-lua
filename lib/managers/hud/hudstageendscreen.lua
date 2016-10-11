@@ -1414,7 +1414,7 @@ function HUDStageEndScreen:safehouse_currency_init(t, dt)
 	self:step_stage_up()
 end
 function HUDStageEndScreen:display_as_coins(amount)
-	return managers.experience:cash_string(amount, "")
+	return managers.experience:cash_string(math.floor(amount), "")
 end
 function HUDStageEndScreen:safehouse_currency_count(t, dt)
 	if self:perform_income_count(t, dt, self._safehouse_panel, self._safehouse_stage, self._safehouse, self.get_count_speed_slow, self.display_as_coins) then
