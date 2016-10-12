@@ -1915,7 +1915,7 @@ function MenuNodeCrimenetContactChillGui:_setup_menu()
 		child:set_halign("right")
 	end
 	self:_set_topic_position()
-	local y_offs = 160
+	local y_offs = 140
 	self.item_panel:set_w(self.MENU_WIDTH * 2)
 	self.item_panel:move(self.WIDTH - self.MENU_WIDTH * 2 - self.PADDING * 2, self.PADDING + y_offs)
 end
@@ -1923,7 +1923,7 @@ function MenuNodeCrimenetContactChillGui:set_difficulty(difficulty)
 	self._difficulty = difficulty
 end
 function MenuNodeCrimenetContactChillGui:get_difficulty()
-	return self._difficulty or "easy"
+	return self._difficulty or "normal"
 end
 function MenuNodeCrimenetContactChillGui:_fade_row_item(row_item)
 	MenuNodeCrimenetContactChillGui.super._fade_row_item(self, row_item)

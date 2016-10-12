@@ -5,6 +5,7 @@ function CarryData:init(unit)
 	self._dye_initiated = false
 	self._has_dye_pack = false
 	self._dye_value_multiplier = 100
+	self._linked_to = nil
 	if self._carry_id then
 		self._value = managers.money:get_bag_value(self._carry_id, self._multiplier)
 	else
@@ -27,6 +28,9 @@ function CarryData:update(unit, t, dt)
 	if self._explode_t and t > self._explode_t then
 		self._explode_t = nil
 		self:_explode()
+	end
+	if alive(self._linked_to) and self._linked_to.character_damage and self._linked_to:character_damage():dead() then
+		self:unlink()
 	end
 end
 function CarryData:_check_dye_explode()
@@ -475,11 +479,13 @@ function CarryData:link_to(parent_unit)
 			body:set_collisions_enabled(false)
 		end
 	end
+	self._linked_to = parent_unit
 	if Network:is_server() then
 		managers.network:session():send_to_peers_synched("loot_link", self._unit, parent_unit)
 	end
 end
 function CarryData:unlink()
+	self._linked_to = nil
 	self._unit:unlink()
 	local body = self._unit:body("hinge_body_1") or self._unit:body(0)
 	body:set_dynamic()
@@ -583,6 +589,7 @@ function CarryData:destroy()
 		self._register_out_of_world_dynamic_clbk_id = nil
 	end
 	self:_unregister_steal_SO()
+	self._linked_to = nil
 end
 function CarryData:set_latest_peer_id(peer_id)
 	self._latest_peer_id = peer_id
