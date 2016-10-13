@@ -638,6 +638,9 @@ function CustomSafehouseManager:is_being_raided()
 	return server_time - (self._global._spawn_cooldown or 0) >= self.SPAWN_COOLDOWN
 end
 function CustomSafehouseManager:tick_safehouse_spawn()
+	if not self:unlocked() then
+		return
+	end
 	self:spawn_safehouse_contract()
 	if not self._global._spawn_cooldown then
 		if self._global._has_entered_safehouse then

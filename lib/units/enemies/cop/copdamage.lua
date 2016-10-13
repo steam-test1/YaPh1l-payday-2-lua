@@ -337,9 +337,7 @@ function CopDamage:damage_bullet(attack_data)
 			headshot = true
 		end
 	end
-	if self._damage_reduction_multiplier then
-		damage = damage * self._damage_reduction_multiplier
-	elseif head then
+	if not self._damage_reduction_multiplier and head then
 		if self._char_tweak.headshot_dmg_mul then
 			damage = damage * self._char_tweak.headshot_dmg_mul * headshot_multiplier
 		else
@@ -723,9 +721,7 @@ function CopDamage:damage_fire(attack_data)
 			managers.player:on_headshot_dealt()
 		end
 	end
-	if self._damage_reduction_multiplier then
-		damage = damage * self._damage_reduction_multiplier
-	elseif head then
+	if not self._damage_reduction_multiplier and head then
 		if self._char_tweak.headshot_dmg_mul then
 			damage = damage * self._char_tweak.headshot_dmg_mul * headshot_multiplier
 		else
@@ -1194,9 +1190,6 @@ function CopDamage:damage_melee(attack_data)
 	damage = damage * (self._marked_dmg_mul or 1)
 	if self._unit:movement():cool() then
 		damage = self._HEALTH_INIT
-	end
-	if self._damage_reduction_multiplier then
-		damage = damage * self._damage_reduction_multiplier
 	end
 	local damage_effect = attack_data.damage_effect
 	local damage_effect_percent
@@ -2444,6 +2437,9 @@ function CopDamage:_apply_damage_reduction(damage)
 	if damage_reduction > 0 then
 		damage = damage * (1 - damage_reduction)
 		print("Applying damage reduction of ", damage_reduction * 100, "%")
+	end
+	if self._damage_reduction_multiplier then
+		damage = damage * self._damage_reduction_multiplier
 	end
 	return damage
 end
