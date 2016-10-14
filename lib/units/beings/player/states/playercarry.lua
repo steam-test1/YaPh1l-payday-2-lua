@@ -36,6 +36,7 @@ function PlayerCarry:_enter(enter_data)
 	end
 	managers.job:set_memory("kill_count_carry", nil, true)
 	managers.job:set_memory("kill_count_no_carry", nil, true)
+	self:_upd_attention()
 end
 function PlayerCarry:exit(state_data, new_state_name)
 	PlayerCarry.super.exit(self, state_data, new_state_name)

@@ -20,6 +20,7 @@ function CopInventory:init(unit)
 end
 function CopInventory:add_unit_by_name(new_unit_name, equip)
 	local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
+	managers.mutators:modify_value("CopInventory:add_unit_by_name", self)
 	self:_chk_spawn_shield(new_unit)
 	local setup_data = {}
 	setup_data.user_unit = self._unit
@@ -85,6 +86,7 @@ function CopInventory:drop_shield()
 		self._shield_unit:unlink()
 		if self._shield_unit:damage() then
 			self._shield_unit:damage():run_sequence_simple("enable_body")
+			managers.enemy:register_shield(self._shield_unit)
 		end
 	end
 end
@@ -105,6 +107,7 @@ end
 function CopInventory:destroy_all_items()
 	CopInventory.super.destroy_all_items(self)
 	if alive(self._shield_unit) then
+		managers.enemy:unregister_shield(self._shield_unit)
 		self._shield_unit:set_slot(0)
 		self._shield_unit = nil
 	end

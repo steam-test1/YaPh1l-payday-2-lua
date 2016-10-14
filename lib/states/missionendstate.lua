@@ -726,7 +726,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 				end
 				managers.achievment:award(man_5.award)
 			end
-			local mask_pass, diff_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, weapons_used_pass, everyone_killed_by_weapons_pass, everyone_killed_by_melee_pass, everyone_killed_by_grenade_pass, everyone_weapons_used_pass, enemy_killed_pass, everyone_used_weapon_category_pass, everyone_killed_by_weapon_category_pass, all_pass, weapon_data, memory, level_id, stage, num_skills = nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
+			local mask_pass, diff_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, weapons_used_pass, everyone_killed_by_weapons_pass, everyone_killed_by_melee_pass, everyone_killed_by_grenade_pass, everyone_weapons_used_pass, enemy_killed_pass, everyone_used_weapon_category_pass, everyone_killed_by_weapon_category_pass, mutators_pass, all_pass, weapon_data, memory, level_id, stage, num_skills = nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
 			local phalanx_vip_alive = false
 			if not managers.enemy:all_enemies() then
 				for _,enemy in pairs({}) do
@@ -794,6 +794,22 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 					if not enemy_killed_pass then
 						end
 				else
+					end
+				end
+				mutators_pass = not achievement_data.mutators
+				if achievement_data.mutators then
+					if achievement_data.mutators == true then
+						mutators_pass = managers.mutators:are_mutators_active()
+					end
+				else
+					if #achievement_data.mutators == table.size(managers.mutators:active_mutators()) then
+						local required_mutators = deep_clone(achievement_data.mutators)
+						for _,active_mutator in pairs(managers.mutators:active_mutators()) do
+							if table.contains(required_mutators, active_mutator.mutator:id()) then
+								table.delete(required_mutators, active_mutator.mutator:id())
+							end
+						end
+						mutators_pass = #required_mutators == 0
 					end
 				end
 				used_weapon_category_pass = true
@@ -978,7 +994,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 						if managers.challenge:check_equipped(achievement_data) then
 							equipped_team_pass = managers.challenge:check_equipped_team(achievement_data)
 						end
-						all_pass = not job_pass or not jobs_pass or not level_pass or not levels_pass or not contract_pass or not diff_pass or not mask_pass or not no_shots_pass or not stealth_pass or not loud_pass or not equipped_pass or not equipped_team_pass or not num_players_pass or not pass_skills or not timer_pass or not killed_by_weapons_pass or not killed_by_melee_pass or not killed_by_grenade_pass or not complete_job_pass or not job_value_pass or not memory_pass or not phalanx_vip_alive_pass or not used_weapon_category_pass or not is_host_pass or not character_pass or not converted_cops_pass or not total_accuracy_pass or not weapons_used_pass or not everyone_killed_by_weapons_pass or not everyone_killed_by_melee_pass or not everyone_killed_by_grenade_pass or not everyone_weapons_used_pass or not everyone_used_weapon_category_pass or not enemy_killed_pass or everyone_killed_by_weapon_category_pass
+						all_pass = not job_pass or not jobs_pass or not level_pass or not levels_pass or not contract_pass or not diff_pass or not mask_pass or not no_shots_pass or not stealth_pass or not loud_pass or not equipped_pass or not equipped_team_pass or not num_players_pass or not pass_skills or not timer_pass or not killed_by_weapons_pass or not killed_by_melee_pass or not killed_by_grenade_pass or not complete_job_pass or not job_value_pass or not memory_pass or not phalanx_vip_alive_pass or not used_weapon_category_pass or not is_host_pass or not character_pass or not converted_cops_pass or not total_accuracy_pass or not weapons_used_pass or not everyone_killed_by_weapons_pass or not everyone_killed_by_melee_pass or not everyone_killed_by_grenade_pass or not everyone_weapons_used_pass or not everyone_used_weapon_category_pass or not enemy_killed_pass or not everyone_killed_by_weapon_category_pass or mutators_pass
 						if all_pass and achievement_data.need_full_job and managers.job:has_active_job() then
 							memory = managers.job:get_memory(achievement)
 							if not managers.job:interupt_stage() then
@@ -1109,7 +1125,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1455 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1515 
 end
 
 

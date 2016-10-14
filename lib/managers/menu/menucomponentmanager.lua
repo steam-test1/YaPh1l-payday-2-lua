@@ -26,6 +26,8 @@ require("lib/managers/menu/items/CustomSafehouseHeisterInteractionDaily")
 require("lib/managers/menu/pages/CustomSafehouseGuiPageMap")
 require("lib/managers/menu/pages/CustomSafehouseGuiPageDaily")
 require("lib/managers/menu/pages/CustomSafehouseGuiPageTrophies")
+require("lib/managers/menu/MutatorsListGui")
+require("lib/managers/menu/pages/MutatorsCategoryPage")
 if not MenuComponentManager then
 	MenuComponentManager = class()
 end
@@ -80,6 +82,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.skilltree_new = {create = callback(self, self, "_create_skilltree_new_gui"), close = callback(self, self, "close_skilltree_new_gui")}
 	self._active_components.custom_safehouse = {create = callback(self, self, "create_custom_safehouse_gui"), close = callback(self, self, "close_custom_safehouse_gui")}
 	self._active_components.custom_safehouse_no_input = {create = callback(self, self, "disable_custom_safehouse_input"), close = callback(self, self, "enable_custom_safehouse_input")}
+	self._active_components.mutators_list = {create = callback(self, self, "create_mutators_list_gui"), close = callback(self, self, "close_mutators_list_gui")}
 	self._alive_components = {}
 end
 
@@ -2038,6 +2041,28 @@ MenuComponentManager.enable_custom_safehouse_input = function(self)
 		return 
 	end
 	self._custom_safehouse_gui:set_active_page(self._custom_safehouse_page or 1)
+end
+
+MenuComponentManager.mutators_list_gui = function(self)
+	return self._mutators_list_gui
+end
+
+MenuComponentManager.create_mutators_list_gui = function(self, node)
+	if not node then
+		return 
+	end
+	if not self._mutators_list_gui then
+		self._mutators_list_gui = MutatorsListGui:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("mutators_list_gui", self._mutators_list_gui)
+end
+
+MenuComponentManager.close_mutators_list_gui = function(self)
+	if self._mutators_list_gui then
+		self._mutators_list_gui:close()
+		self._mutators_list_gui = nil
+		self:unregister_component("mutators_list_gui")
+	end
 end
 
 MenuComponentManager._create_server_info_gui = function(self)

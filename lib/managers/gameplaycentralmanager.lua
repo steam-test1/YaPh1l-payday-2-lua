@@ -572,6 +572,7 @@ function GamePlayCentralManager:auto_highlight_enemy(unit, use_player_upgrades, 
 end
 function GamePlayCentralManager:get_shotgun_push_range()
 	local range = 500
+	range = managers.mutators:modify_value("GamePlayCentralManager:get_shotgun_push_range", range)
 	return range
 end
 function GamePlayCentralManager:do_shotgun_push(unit, hit_pos, dir, distance, attacker)
@@ -594,6 +595,7 @@ function GamePlayCentralManager:do_shotgun_push(unit, hit_pos, dir, distance, at
 		if u_body:enabled() and u_body:dynamic() then
 			local body_mass = u_body:mass()
 			World:play_physic_effect(Idstring("physic_effects/shotgun_hit"), u_body, Vector3(dir.x, dir.y, dir.z + 0.5) * 600 * scale, 4 * body_mass / math.random(2), rot_acc, rot_time)
+			managers.mutators:notify(Message.OnShotgunPush, unit, hit_pos, dir, distance, attacker)
 		end
 		i_u_body = i_u_body + 1
 	end

@@ -694,6 +694,7 @@ function PlayerDamage:is_friendly_fire(unit)
 		return false
 	end
 	local friendly_fire = not unit:movement():team().foes[self._unit:movement():team().id]
+	friendly_fire = managers.mutators:modify_value("PlayerDamage:FriendlyFire", friendly_fire)
 	return friendly_fire
 end
 function PlayerDamage:play_whizby(position)
@@ -718,6 +719,7 @@ function PlayerDamage:damage_bullet(attack_data)
 	local pm = managers.player
 	local dmg_mul = pm:damage_reduction_skill_multiplier("bullet")
 	attack_data.damage = attack_data.damage * dmg_mul
+	attack_data.damage = managers.mutators:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
 	local damage_absorption = pm:get_best_cocaine_damage_absorption()
 	if damage_absorption > 0 then
 		attack_data.damage = math.max(0, attack_data.damage - damage_absorption)

@@ -1238,6 +1238,7 @@ function LevelsTweakData:init()
 		throwable = "none",
 		melee = "none"
 	}
+	self.short1_stage1.disable_mutators = true
 	self.short1_stage2 = {}
 	self.short1_stage2.name_id = "heist_short1_stage2_hl"
 	self.short1_stage2.briefing_id = "heist_short1_stage2_briefing"
@@ -1263,6 +1264,7 @@ function LevelsTweakData:init()
 		throwable = "none",
 		melee = "none"
 	}
+	self.short1_stage2.disable_mutators = true
 	self.short2_stage1 = {}
 	self.short2_stage1.name_id = "heist_short2_stage1_hl"
 	self.short2_stage1.briefing_id = "heist_short2_stage1_briefing"
@@ -1282,6 +1284,7 @@ function LevelsTweakData:init()
 		throwable = "none",
 		melee = "none"
 	}
+	self.short2_stage1.disable_mutators = true
 	self.short2_stage2b = {}
 	self.short2_stage2b.name_id = "heist_short2_stage2b_hl"
 	self.short2_stage2b.briefing_id = "heist_short2_stage2b_briefing"
@@ -1301,6 +1304,7 @@ function LevelsTweakData:init()
 		throwable = "none",
 		melee = "none"
 	}
+	self.short2_stage2b.disable_mutators = true
 	self.chill = {}
 	self.chill.name_id = "heist_chill_hl"
 	self.chill.briefing_id = "heist_chill_hl_briefing"
@@ -1322,6 +1326,7 @@ function LevelsTweakData:init()
 	}
 	self.chill.hud = {no_timer = true, no_hostages = true}
 	self.chill.is_safehouse = true
+	self.chill.disable_mutators = true
 	self.chill_combat = {}
 	self.chill_combat.name_id = "heist_chill_combat_hl"
 	self.chill_combat.briefing_id = "heist_chill_combat_hl_briefing"
@@ -1336,6 +1341,7 @@ function LevelsTweakData:init()
 	self.chill_combat.group_ai_state = "safehouse"
 	self.chill_combat.is_safehouse = false
 	self.chill_combat.is_safehouse_combat = true
+	self.chill_combat.disable_mutators = true
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
