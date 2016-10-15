@@ -2323,7 +2323,8 @@ function UpgradesTweakData:init(tweak_data)
 			"bullseye",
 			"c96",
 			"par",
-			"m37"
+			"m37",
+			"rota"
 		}
 	}
 	self.level_tree[24] = {
@@ -2811,6 +2812,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_tecci_weapon_definitions()
 	self:_hajk_weapon_definitions()
 	self:_boot_weapon_definitions()
+	self:_rota_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -11205,5 +11207,13 @@ function UpgradesTweakData:_boot_weapon_definitions()
 		weapon_id = "boot",
 		factory_id = "wpn_fps_sho_boot",
 		dlc = "wild"
+	}
+end
+function UpgradesTweakData:_rota_weapon_definitions()
+	self.definitions.rota = {
+		category = "weapon",
+		weapon_id = "rota",
+		factory_id = "wpn_fps_sho_rota",
+		dlc = "rota"
 	}
 end

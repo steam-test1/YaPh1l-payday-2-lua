@@ -1047,6 +1047,15 @@ MenuComponentManager.mouse_pressed = function(self, o, button, x, y)
 	if self._player_inventory_gui and self._player_inventory_gui:mouse_pressed(button, x, y) then
 		return true
 	end
+	 -- DECOMPILER ERROR: unhandled construct in 'if'
+
+	if self._crimenet_contract_gui and button == Idstring("mouse wheel down") and self._crimenet_contract_gui:mouse_wheel_down(x, y) then
+		return true
+	end
+	do return end
+	if button == Idstring("mouse wheel up") and self._crimenet_contract_gui:mouse_wheel_up(x, y) then
+		return true
+	end
 	local used, values = nil, nil
 	if button == Idstring("mouse wheel down") then
 		used = self:run_return_on_all_live_components("mouse_wheel_down", x, y)
