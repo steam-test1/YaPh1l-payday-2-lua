@@ -94,7 +94,10 @@ function StatisticsTweakData:statistics_table()
 		"dark",
 		"mad",
 		"born",
-		"chew"
+		"chew",
+		"chill",
+		"chill_combat",
+		"flat"
 	}
 	local job_list = {
 		"jewelry_store",
@@ -161,7 +164,10 @@ function StatisticsTweakData:statistics_table()
 		"dark",
 		"mad",
 		"born",
-		"born_pro"
+		"born_pro",
+		"chill",
+		"chill_combat",
+		"flat"
 	}
 	local mask_list = {
 		"character_locked",
@@ -470,7 +476,21 @@ function StatisticsTweakData:statistics_table()
 		"fab_mega_mark",
 		"fab_mega_alien",
 		"fab_mega_doctor",
-		"fab_mega_grin"
+		"fab_mega_grin",
+		"urf_seal",
+		"gti_al_capone",
+		"gti_bugsy",
+		"gti_lucky_luciano",
+		"gti_madame_st_claire",
+		"nyck_pickle",
+		"nyck_beret",
+		"nyck_ace",
+		"nyck_cap",
+		"fib_mouse",
+		"fib_hare",
+		"fib_cat",
+		"fib_fox",
+		"spk_party"
 	}
 	local weapon_list = {
 		"ak5",
@@ -576,7 +596,8 @@ function StatisticsTweakData:statistics_table()
 		"x_akmsu",
 		"tecci",
 		"hajk",
-		"boot"
+		"boot",
+		"rota"
 	}
 	local melee_list = {
 		"weapon",
@@ -664,7 +685,8 @@ function StatisticsTweakData:statistics_table()
 		"wpn_prj_ace",
 		"wpn_prj_jav",
 		"frag_com",
-		"wpn_prj_hur"
+		"wpn_prj_hur",
+		"concussion"
 	}
 	local enemy_list = {
 		"civilian",
@@ -691,6 +713,7 @@ function StatisticsTweakData:statistics_table()
 		"tank_hw",
 		"hector_boss",
 		"hector_boss_no_armor",
+		"chavez_boss",
 		"tank_green",
 		"tank_black",
 		"tank_skull",
@@ -704,7 +727,8 @@ function StatisticsTweakData:statistics_table()
 		"cop_scared",
 		"biker_boss",
 		"cop_female",
-		"security_undominatable"
+		"security_undominatable",
+		"medic"
 	}
 	local armor_list = {
 		"level_1",

@@ -366,6 +366,8 @@ function TripMineBase:_explode(col_ray)
 			self._unit
 		}
 		managers.groupai:state():propagate_alert(alert_event)
+		managers.mission:call_global_event("tripmine_exploded")
+		Application:error("TRIPMINE EXPLODED")
 	end
 	self._unit:set_slot(0)
 end
@@ -395,6 +397,10 @@ function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage
 				hit_body:unit():push(5, dir * 500)
 			end
 		end
+	end
+	if Network:is_server() then
+		managers.mission:call_global_event("tripmine_exploded")
+		Application:error("TRIPMINE EXPLODED")
 	end
 end
 function TripMineBase:_spawn_environment_fire(user_unit, added_time, range_multiplier)

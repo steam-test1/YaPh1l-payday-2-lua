@@ -778,23 +778,29 @@ function BlackMarketManager:outfit_string_index(type)
 	if type == "deployable_amount" then
 		return 12
 	end
-	if type == "concealment_modifier" then
+	if type == "secondary_deployable" then
 		return 13
 	end
-	if type == "melee_weapon" then
+	if type == "secondary_deployable_amount" then
 		return 14
 	end
-	if type == "grenade" then
+	if type == "concealment_modifier" then
 		return 15
 	end
-	if type == "skills" then
+	if type == "melee_weapon" then
 		return 16
 	end
-	if type == "primary_cosmetics" then
+	if type == "grenade" then
 		return 17
 	end
-	if type == "secondary_cosmetics" then
+	if type == "skills" then
 		return 18
+	end
+	if type == "primary_cosmetics" then
+		return 19
+	end
+	if type == "secondary_cosmetics" then
+		return 20
 	end
 end
 function BlackMarketManager:unpack_outfit_from_string(outfit_string)
@@ -863,6 +869,8 @@ function BlackMarketManager:unpack_outfit_from_string(outfit_string)
 	outfit.grenade = data[self:outfit_string_index("grenade")] or self._defaults.grenade
 	outfit.deployable = data[self:outfit_string_index("deployable")] or nil
 	outfit.deployable_amount = tonumber(data[self:outfit_string_index("deployable_amount")] or "0")
+	outfit.secondary_deployable = data[self:outfit_string_index("secondary_deployable")] or nil
+	outfit.secondary_deployable_amount = tonumber(data[self:outfit_string_index("secondary_deployable_amount")] or "0")
 	outfit.concealment_modifier = data[self:outfit_string_index("concealment_modifier")] or 0
 	outfit.skills = managers.skilltree:unpack_from_string(data[self:outfit_string_index("skills")])
 	return outfit
@@ -928,6 +936,18 @@ function BlackMarketManager:outfit_string()
 	else
 		s = s .. " " .. "nil" .. " " .. "0"
 	end
+	local secondary_deployable = self:equipped_deployable(2)
+	if secondary_deployable then
+		s = s .. " " .. tostring(secondary_deployable)
+		local deployable_tweak_data = tweak_data.equipments[secondary_deployable]
+		if secondary_deployable == "sentry_gun_silent" then
+			secondary_deployable = "sentry_gun"
+		end
+		local amount = (deployable_tweak_data.quantity[1] or 0) + managers.player:equiptment_upgrade_value(secondary_deployable, "quantity")
+		s = s .. " " .. tostring(amount)
+	else
+		s = s .. " " .. "nil" .. " " .. "0"
+	end
 	local concealment_modifier = -self:visibility_modifiers() or 0
 	s = s .. " " .. tostring(concealment_modifier)
 	local equipped_melee_weapon = self:equipped_melee_weapon()
@@ -971,6 +991,13 @@ function BlackMarketManager:outfit_string_from_list(outfit)
 	if equipped_deployable then
 		s = s .. " " .. outfit.deployable
 		s = s .. " " .. tostring(outfit.deployable_amount)
+	else
+		s = s .. " " .. "nil" .. " " .. "0"
+	end
+	local secondary_deployable = outfit.secondary_deployable
+	if secondary_deployable then
+		s = s .. " " .. outfit.secondary_deployable
+		s = s .. " " .. tostring(outfit.secondary_deployable_amount)
 	else
 		s = s .. " " .. "nil" .. " " .. "0"
 	end
