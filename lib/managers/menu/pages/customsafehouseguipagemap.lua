@@ -337,7 +337,7 @@ function CustomSafehouseGuiPageMap:current_floor()
 end
 function CustomSafehouseGuiPageMap:_setup_info_panel()
 	local buttons = {}
-	if not managers.menu:is_pc_controller() then
+	if not managers.menu:is_pc_controller() and not self:is_being_raided() then
 		table.insert(buttons, {
 			btn = "BTN_A",
 			name_id = "menu_cs_upgrade_room"
@@ -386,18 +386,14 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 		remaining_height = remaining_height - h - BOX_GAP
 		return panel
 	end
-	if show_play_safehouse_btn then
-		self._buttons_panel = new_info_panel(self:info_panel(), "ButtonsPanel", small_font_size * #buttons + PANEL_PADDING * 2 + LINE_PADDING)
-	end
+	self._buttons_panel = new_info_panel(self:info_panel(), "ButtonsPanel", small_font_size * #buttons + PANEL_PADDING * 2 + LINE_PADDING)
 	self._coins_panel = new_info_panel(self:info_panel(), "CoinsInfoPanel", small_font_size * 2 + PANEL_PADDING * 2 + LINE_PADDING)
 	self._text_info_panel = new_info_panel(self:info_panel(), "TextInfoPanel", remaining_height)
 	local panels = {
 		self._text_info_panel,
-		self._coins_panel
+		self._coins_panel,
+		self._buttons_panel
 	}
-	if show_play_safehouse_btn then
-		table.insert(panels, self._buttons_panel)
-	end
 	self:stack_panels(BOX_GAP, panels)
 	self._buttons = {}
 	self._controllers_pc_mapping = {}
@@ -614,17 +610,21 @@ function CustomSafehouseGuiPageMap:set_top_help_text(text_id, data)
 	self._help_text:set_right(self._gui._panel:w())
 end
 function CustomSafehouseGuiPageMap:get_legend()
-	return {
-		"move",
-		"zoom",
-		"back"
-	}
+	if self:is_being_raided() then
+		return {"back"}
+	else
+		return {
+			"move",
+			"zoom",
+			"back"
+		}
+	end
 end
 function CustomSafehouseGuiPageMap:set_active(active)
 	self._help_text:set_visible(active)
 	CustomSafehouseGuiPageMap.super.set_active(self, active)
 	if not managers.menu:is_pc_controller() and alive(self._mouse_pointer) then
-		self._mouse_pointer:set_visible(active and not self:current_floor():should_disable_cursor())
+		self._mouse_pointer:set_visible(active and not self:current_floor():should_disable_cursor() and not self:is_being_raided())
 	end
 end
 function CustomSafehouseGuiPageMap:set_pointer_image(type)
@@ -749,6 +749,9 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 	if not managers.menu:is_pc_controller() then
 		if not managers.system_menu or not managers.system_menu:is_active() or not not managers.system_menu:is_closing() then
 			local axis_x, axis_y = managers.menu_component:get_left_controller_axis()
+			if self:is_being_raided() then
+				axis_x, axis_y = 0, 0
+			end
 			if axis_x ~= 0 or axis_y ~= 0 then
 				local speed = dt * 500
 				self:_move_map_position(-axis_x * speed, axis_y * speed)
@@ -756,6 +759,9 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 				self._lerp_zoom = nil
 			end
 			axis_x, axis_y = managers.menu_component:get_right_controller_axis()
+			if self:is_being_raided() then
+				axis_x, axis_y = 0, 0
+			end
 			if axis_y ~= 0 then
 				local zoomed = self:_change_zoom(axis_y * dt, self._mouse_pointer:x(), self._mouse_pointer:y())
 				self._lerp_map = nil
@@ -795,6 +801,9 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 			end
 		end
 		local max_dist = 100
+		if self:is_being_raided() then
+			max_dist = 0
+		end
 		if dist < max_dist then
 			local px, py = closest_point._panel:world_center_x(), closest_point._panel:world_center_y()
 			local dx, dy = math.abs(self._wanted_pointer.x - px), math.abs(self._wanted_pointer.y - py)

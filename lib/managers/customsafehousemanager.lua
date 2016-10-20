@@ -648,7 +648,7 @@ function CustomSafehouseManager:_on_enter_safe_house()
 	self._global._has_entered_safehouse = true
 end
 function CustomSafehouseManager:_on_heist_completed(job_id)
-	if job_id == "chill_combat" then
+	if job_id == "chill_combat" and (Network:is_server() or Global.game_settings.single_player) then
 		self:_set_safehouse_cooldown()
 	end
 end

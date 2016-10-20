@@ -70,6 +70,7 @@ function AchievmentManager:init()
 	else
 		Application:error("[AchievmentManager:init] Unsupported platform")
 	end
+	self._mission_end_achievements = {}
 end
 function AchievmentManager:init_finalize()
 	managers.savefile:add_load_sequence_done_callback_handler(callback(self, self, "_load_done"))
@@ -181,6 +182,20 @@ function AchievmentManager:total_unlocked()
 		end
 	end
 	return i
+end
+function AchievmentManager:add_heist_success_award(id)
+	self._mission_end_achievements[id] = {award = true}
+end
+function AchievmentManager:add_heist_success_award_progress(id)
+	local new_progress = (managers.job:get_memory(id, true) or 0) + 1
+	managers.job:set_memory(id, new_progress, true)
+	self._mission_end_achievements[id] = {stat = true, progress = new_progress}
+end
+function AchievmentManager:clear_heist_success_awards()
+	self._mission_end_achievements = {}
+end
+function AchievmentManager:heist_success_awards()
+	return self._mission_end_achievements
 end
 function AchievmentManager:award(id)
 	if not self:exists(id) then

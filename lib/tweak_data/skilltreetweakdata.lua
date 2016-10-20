@@ -2563,7 +2563,8 @@ function SkillTreeTweakData:init()
 		"x_usp",
 		"x_sr2",
 		"x_mp5",
-		"x_akmsu"
+		"x_akmsu",
+		"x_packrat"
 	}
 	self.skill_switches = {
 		{

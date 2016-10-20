@@ -261,8 +261,6 @@ function StatisticsTweakData:statistics_table()
 		"skullveryhard",
 		"skulloverkill",
 		"skulloverkillplus",
-		"gitgud_e_wish",
-		"gitgud_sm_wish",
 		"samurai",
 		"twitch_orc",
 		"ancient",
@@ -477,6 +475,8 @@ function StatisticsTweakData:statistics_table()
 		"fab_mega_alien",
 		"fab_mega_doctor",
 		"fab_mega_grin",
+		"gitgud_e_wish",
+		"gitgud_sm_wish",
 		"urf_seal",
 		"gti_al_capone",
 		"gti_bugsy",
@@ -490,6 +490,10 @@ function StatisticsTweakData:statistics_table()
 		"fib_hare",
 		"fib_cat",
 		"fib_fox",
+		"pim_russian_ballistic",
+		"pim_dog",
+		"pim_mustang",
+		"pim_hotelier",
 		"spk_party"
 	}
 	local weapon_list = {
@@ -597,6 +601,10 @@ function StatisticsTweakData:statistics_table()
 		"tecci",
 		"hajk",
 		"boot",
+		"packrat",
+		"schakal",
+		"desertfox",
+		"x_packrat",
 		"rota"
 	}
 	local melee_list = {
@@ -686,6 +694,7 @@ function StatisticsTweakData:statistics_table()
 		"wpn_prj_jav",
 		"frag_com",
 		"wpn_prj_hur",
+		"wpn_prj_target",
 		"concussion"
 	}
 	local enemy_list = {

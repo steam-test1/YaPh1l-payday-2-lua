@@ -1210,6 +1210,10 @@ function MenuCallbackHandler:dlc_buy_born_pc()
 	print("[MenuCallbackHandler:dlc_buy_born_pc]")
 	Steam:overlay_activate("store", 218620)
 end
+function MenuCallbackHandler:dlc_buy_pim_pc()
+	print("[MenuCallbackHandler:dlc_buy_pim_pc]")
+	Steam:overlay_activate("store", 545100)
+end
 function MenuCallbackHandler:dlc_buy_ps3()
 	print("[MenuCallbackHandler:dlc_buy_ps3]")
 	managers.dlc:buy_product("dlc1")
@@ -1272,6 +1276,7 @@ function MenuCallbackHandler:choice_job_plan_filter(item)
 end
 function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 	local dlcs = {
+		"pim",
 		"born",
 		"wild",
 		"opera",
@@ -1405,6 +1410,9 @@ function MenuCallbackHandler:visible_callback_born()
 end
 function MenuCallbackHandler:visible_callback_wild()
 	return self:is_dlc_latest_locked("wild")
+end
+function MenuCallbackHandler:visible_callback_pim()
+	return self:is_dlc_latest_locked("pim")
 end
 function MenuCallbackHandler:not_has_all_dlcs()
 	return not self:has_all_dlcs()
@@ -2867,6 +2875,7 @@ function MenuCallbackHandler:_dialog_end_game_yes()
 	managers.savefile:save_progress()
 	managers.job:deactivate_current_job()
 	managers.gage_assignment:deactivate_assignments()
+	managers.custom_safehouse:flush_completed_trophies()
 	if Network:multiplayer() then
 		Network:set_multiplayer(false)
 		managers.network:session():send_to_peers("set_peer_left")
@@ -2909,6 +2918,7 @@ function MenuCallbackHandler:load_start_menu_lobby()
 	managers.job:clear_saved_ghost_bonus()
 	managers.job:stop_sounds()
 	managers.experience:mission_xp_clear()
+	managers.custom_safehouse:flush_completed_trophies()
 	managers.network:session():load_lobby()
 end
 function MenuCallbackHandler:_dialog_end_game_no()
