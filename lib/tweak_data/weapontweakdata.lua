@@ -9758,7 +9758,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.plainsrider.panic_suppression_chance = 0.2
 	self.plainsrider.ignore_damage_upgrades = true
 	self.plainsrider.stats = {
-		damage = 150,
+		damage = 100,
 		spread = 25,
 		recoil = 25,
 		spread_moving = 12,
@@ -10489,7 +10489,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.arblast.panic_suppression_chance = 0.2
 	self.arblast.ignore_damage_upgrades = true
 	self.arblast.stats = {
-		damage = 40,
+		damage = 20,
 		spread = 25,
 		recoil = 25,
 		spread_moving = 25,
@@ -10586,7 +10586,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.frankish.panic_suppression_chance = 0.2
 	self.frankish.ignore_damage_upgrades = true
 	self.frankish.stats = {
-		damage = 150,
+		damage = 75,
 		spread = 25,
 		recoil = 25,
 		spread_moving = 25,
@@ -10684,7 +10684,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.long.panic_suppression_chance = 0.2
 	self.long.ignore_damage_upgrades = true
 	self.long.stats = {
-		damage = 40,
+		damage = 20,
 		spread = 25,
 		recoil = 25,
 		spread_moving = 25,

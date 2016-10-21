@@ -441,7 +441,8 @@ function NewSkillTreeGui:update_item()
 	self:_update_description(item)
 end
 function NewSkillTreeGui:_update_description(item)
-	local text = self._panel:child("InfoRootPanel"):child("DescriptionPanel"):child("DescriptionText")
+	local desc_panel = self._panel:child("InfoRootPanel"):child("DescriptionPanel")
+	local text = desc_panel:child("DescriptionText")
 	local tier = item:tier()
 	local skill_id = item:skill_id()
 	local tweak_data_skill = tweak_data.skilltree.skills[skill_id]
@@ -492,6 +493,12 @@ function NewSkillTreeGui:_update_description(item)
 ]] .. desc_string
 	text:set_text(full_string)
 	managers.menu_component:make_color_text(text)
+	local _, _, _, h = text:text_rect()
+	if h > desc_panel:h() - text:top() then
+		text:set_font_size(small_font_size * 0.95)
+	else
+		text:set_font_size(small_font_size)
+	end
 end
 function NewSkillTreeGui:_update_legends(item)
 	local legend_panel = self._panel:child("LegendsPanel")

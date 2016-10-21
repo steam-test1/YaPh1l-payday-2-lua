@@ -107,65 +107,7 @@ MissionEndState.at_enter = function(self, old_state, params)
 	managers.statistics:send_statistics()
 	managers.hud:set_statistics_endscreen_hud(self._criminals_completed, self._success)
 	if managers.statistics:started_session_from_beginning() then
-		local job = nil
-		for achievement,achievement_data in pairs(tweak_data.achievement.complete_heist_stats_achievements) do
-			local difficulty_pass = nil
-			if type(achievement_data.difficulty) == "table" then
-				difficulty_pass = table.contains(achievement_data.difficulty, Global.game_settings.difficulty)
-			else
-				difficulty_pass = Global.game_settings.difficulty == achievement_data.difficulty
-			end
-			if difficulty_pass then
-				local available_jobs = nil
-				if achievement_data.contact == "all" then
-					available_jobs = {}
-					for _,list in pairs(tweak_data.achievement.job_list) do
-						for _,job in pairs(list) do
-							table.insert(available_jobs, job)
-						end
-					end
-				else
-					available_jobs = deep_clone(tweak_data.achievement.job_list[achievement_data.contact])
-				end
-				for id = #available_jobs, 1, -1 do
-					job = available_jobs[id]
-					if type(job) == "table" then
-						for _,job_id in ipairs(job) do
-							local break_outer = false
-							for _,difficulty in ipairs(achievement_data.difficulty) do
-								if managers.statistics:completed_job(job_id, difficulty) > 0 then
-									table.remove(available_jobs, id)
-									break_outer = true
-							else
-								end
-							end
-							if break_outer then
-								do return end
-							end
-						end
-					else
-						for _,difficulty in ipairs(achievement_data.difficulty) do
-							if managers.statistics:completed_job(job, difficulty) > 0 then
-								table.remove(available_jobs, id)
-							end
-						end
-					end
-				end
-			if table.size(available_jobs) == 0 then
-				end
-				if achievement_data.stat then
-					managers.achievment:award_progress(achievement_data.stat)
-				end
-			elseif achievement_data.award then
-				managers.achievment:award(achievement_data.award)
-			elseif achievement_data.challenge_stat then
-				managers.challenge:award_progress(achievement_data.challenge_stat)
-			elseif achievement_data.trophy_stat then
-				managers.custom_safehouse:award(achievement_data.trophy_stat)
-			elseif achievement_data.challenge_award then
-				managers.challenge:award(achievement_data.challenge_award)
-			end
-		end
+		managers.achievment:check_complete_heist_stats_achivements()
 	end
 	if not self._success or not managers.music:jukebox_menu_track("heistresult") then
 		managers.music:post_event(managers.music:jukebox_menu_track("heistlost"))
