@@ -4953,7 +4953,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.rocket_frag.launch_speed = 2500
 	self.projectiles.rocket_frag.adjust_z = 0
 	self.projectiles.west_arrow = {}
-	self.projectiles.west_arrow.damage = 150
+	self.projectiles.west_arrow.damage = 100
 	self.projectiles.west_arrow.launch_speed = 2000
 	self.projectiles.west_arrow.adjust_z = 0
 	self.projectiles.west_arrow.mass_look_up_modifier = 1
@@ -4974,7 +4974,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.bow_poison_arrow.damage = 6.6
 	self.projectiles.bow_poison_arrow.bullet_class = "PoisonBulletBase"
 	self.projectiles.crossbow_arrow = {}
-	self.projectiles.crossbow_arrow.damage = 75
+	self.projectiles.crossbow_arrow.damage = 35
 	self.projectiles.crossbow_arrow.launch_speed = 2000
 	self.projectiles.crossbow_arrow.adjust_z = 0
 	self.projectiles.crossbow_arrow.mass_look_up_modifier = 1
@@ -4983,7 +4983,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.crossbow_poison_arrow.damage = 10
 	self.projectiles.crossbow_poison_arrow.bullet_class = "PoisonBulletBase"
 	self.projectiles.crossbow_arrow_exp = deep_clone(self.projectiles.crossbow_arrow)
-	self.projectiles.crossbow_arrow_exp.damage = 90
+	self.projectiles.crossbow_arrow_exp.damage = 45
 	self.projectiles.crossbow_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.crossbow_arrow_exp.remove_on_impact = true
 	self.projectiles.wpn_prj_four = {}
@@ -5022,7 +5022,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.wpn_prj_jav.sounds.flyby_stop = "jav_flyby_stop"
 	self.projectiles.wpn_prj_jav.sounds.impact = "jav_impact_gen"
 	self.projectiles.arblast_arrow = {}
-	self.projectiles.arblast_arrow.damage = 400
+	self.projectiles.arblast_arrow.damage = 200
 	self.projectiles.arblast_arrow.launch_speed = 3500
 	self.projectiles.arblast_arrow.adjust_z = 0
 	self.projectiles.arblast_arrow.mass_look_up_modifier = 1
@@ -5035,7 +5035,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.arblast_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.arblast_arrow_exp.remove_on_impact = true
 	self.projectiles.frankish_arrow = {}
-	self.projectiles.frankish_arrow.damage = 150
+	self.projectiles.frankish_arrow.damage = 75
 	self.projectiles.frankish_arrow.launch_speed = 2500
 	self.projectiles.frankish_arrow.adjust_z = 0
 	self.projectiles.frankish_arrow.mass_look_up_modifier = 1
@@ -5048,7 +5048,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.frankish_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.frankish_arrow_exp.remove_on_impact = true
 	self.projectiles.long_arrow = {}
-	self.projectiles.long_arrow.damage = 400
+	self.projectiles.long_arrow.damage = 200
 	self.projectiles.long_arrow.launch_speed = 3500
 	self.projectiles.long_arrow.adjust_z = -30
 	self.projectiles.long_arrow.mass_look_up_modifier = 1

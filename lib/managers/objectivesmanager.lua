@@ -98,6 +98,13 @@ function ObjectivesManager:_remind_objetive(id, title_id)
 	end
 	managers.hud:remind_objective(id)
 end
+function ObjectivesManager:get_stinger_id()
+	local job_tweak = tweak_data.narrative.jobs[managers.job:current_real_job_id()]
+	if job_tweak and job_tweak.objective_stinger then
+		return job_tweak.objective_stinger
+	end
+	return "stinger_objectivecomplete"
+end
 function ObjectivesManager:update_objective(id, load_data)
 	self:activate_objective(id, load_data, {
 		title_message = managers.localization:text("mission_objective_updated")
@@ -155,7 +162,7 @@ function ObjectivesManager:activate_objective(id, load_data, data)
 				title = title_message,
 				time = 4,
 				icon = nil,
-				event = "stinger_objectivecomplete"
+				event = self:get_stinger_id()
 			}
 		else
 			managers.hud:present_mid_text({
@@ -163,7 +170,7 @@ function ObjectivesManager:activate_objective(id, load_data, data)
 				title = title_message,
 				time = 4,
 				icon = nil,
-				event = "stinger_objectivecomplete"
+				event = self:get_stinger_id()
 			})
 		end
 	end
@@ -207,7 +214,7 @@ function ObjectivesManager:activate_objective_countdown(id, load_data, data)
 				title = title_message,
 				time = 4,
 				icon = nil,
-				event = "stinger_objectivecomplete"
+				event = self:get_stinger_id()
 			}
 		else
 			managers.hud:present_mid_text({
@@ -215,7 +222,7 @@ function ObjectivesManager:activate_objective_countdown(id, load_data, data)
 				title = title_message,
 				time = 4,
 				icon = nil,
-				event = "stinger_objectivecomplete"
+				event = self:get_stinger_id()
 			})
 		end
 	end

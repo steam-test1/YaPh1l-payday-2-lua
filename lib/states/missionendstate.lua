@@ -436,10 +436,12 @@ MissionEndState.generate_safehouse_statistics = function(self)
 	stage_safehouse_summary_string = managers.localization:text("menu_es_safehouse_earned", {amount = tostring(total_income)})
 	stage_safehouse_summary_string = stage_safehouse_summary_string .. "\n"
 	if exp_income > 0 then
-		stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_safehouse_earned_income", {amount = tostring(exp_income)}) .. "\n"
+		exp_income = managers.experience:cash_string(math.floor(exp_income), "")
+		stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_safehouse_earned_income", {amount = exp_income}) .. "\n"
 	end
 	if #self._trophies_list > 0 or has_completed_daily or was_safehouse_raid then
-		stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_safehouse_earned_challenges", {amount = tostring(trophies_income + daily_income)}) .. "\n"
+		local challenge_income = managers.experience:cash_string(math.floor(trophies_income + daily_income), "")
+		stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_safehouse_earned_challenges", {amount = challenge_income}) .. "\n"
 		for idx,trophy_data in ipairs(self._trophies_list) do
 			if trophy_data.type == "trophy" then
 				local trophy = managers.localization:text(trophy_data.name)
@@ -451,9 +453,11 @@ MissionEndState.generate_safehouse_statistics = function(self)
 		end
 	if was_safehouse_raid then
 		end
-		stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_earned_safehouse_raid", {amount = tostring(raid_income)}) .. "\n"
+		raid_income = managers.experience:cash_string(math.floor(raid_income), "")
+		stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_earned_safehouse_raid", {amount = raid_income}) .. "\n"
 	end
-	stage_safehouse_summary_string = stage_safehouse_summary_string .. "\n" .. managers.localization:text("menu_es_safehouse_total_coins", {amount = tostring(math.floor(managers.custom_safehouse:coins()))})
+	local coins_total = managers.experience:cash_string(math.floor(managers.custom_safehouse:coins()), "")
+	stage_safehouse_summary_string = stage_safehouse_summary_string .. "\n" .. managers.localization:text("menu_es_safehouse_total_coins", {amount = coins_total})
 	if managers.custom_safehouse:can_afford_any_upgrade() then
 		stage_safehouse_summary_string = stage_safehouse_summary_string .. " " .. managers.localization:text("menu_es_safehouse_upgrade_available")
 	end

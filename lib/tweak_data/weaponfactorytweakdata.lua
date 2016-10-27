@@ -21562,7 +21562,7 @@ function WeaponFactoryTweakData:_init_plainsrider()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_west/weapons/wpn_fps_bow_plainsrider_pts/wpn_fps_bow_plainsrider_m_explosive",
 		third_unit = "units/pd2_dlc_west/weapons/wpn_fps_bow_plainsrider_pts/wpn_third_bow_plainsrider_m_explosive",
-		stats = {damage = -80},
+		stats = {damage = -30},
 		custom_stats = {
 			launcher_grenade = "west_arrow_exp"
 		},
@@ -21580,7 +21580,7 @@ function WeaponFactoryTweakData:_init_plainsrider()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_turtles/weapons/wpn_fps_bow_plainsrider_m_poison/wpn_fps_bow_plainsrider_m_poison",
 		third_unit = "units/pd2_dlc_turtles/weapons/wpn_third_bow_plainsrider_m_poison/wpn_third_bow_plainsrider_m_poison",
-		stats = {damage = -140, total_ammo_mod = -6},
+		stats = {damage = -90, total_ammo_mod = -6},
 		custom_stats = {
 			launcher_grenade = "bow_poison_arrow",
 			dot_data = {
@@ -22879,7 +22879,7 @@ function WeaponFactoryTweakData:_init_hunter()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_turtles/weapons/wpn_fps_bow_hunter_pts/wpn_fps_bow_hunter_m_poison",
 		third_unit = "units/pd2_dlc_turtles/weapons/wpn_third_bow_hunter_pts/wpn_third_bow_hunter_m_poison",
-		stats = {damage = -65, total_ammo_mod = -6},
+		stats = {damage = -25, total_ammo_mod = -6},
 		custom_stats = {
 			launcher_grenade = "crossbow_poison_arrow",
 			dot_data = {
@@ -22899,7 +22899,7 @@ function WeaponFactoryTweakData:_init_hunter()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_turtles/weapons/wpn_fps_bow_hunter_pts/wpn_fps_bow_hunter_m_explosive",
 		third_unit = "units/pd2_dlc_turtles/weapons/wpn_third_bow_hunter_pts/wpn_third_bow_hunter_m_explosive",
-		stats = {damage = 15},
+		stats = {damage = -5},
 		custom_stats = {
 			launcher_grenade = "crossbow_arrow_exp"
 		},
@@ -23266,7 +23266,7 @@ function WeaponFactoryTweakData:_init_arblast()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_arblast_pts/wpn_fps_bow_arblast_m_poison",
 		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_arblast_pts/wpn_third_bow_arblast_m_poison",
-		stats = {damage = -37, total_ammo_mod = -6},
+		stats = {damage = -17, total_ammo_mod = -6},
 		custom_stats = {
 			launcher_grenade = "arblast_poison_arrow",
 			dot_data = {
@@ -23286,7 +23286,7 @@ function WeaponFactoryTweakData:_init_arblast()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_arblast_pts/wpn_fps_bow_arblast_m_explosive",
 		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_arblast_pts/wpn_third_bow_arblast_m_explosive",
-		stats = {damage = -26},
+		stats = {damage = -6},
 		custom_stats = {
 			launcher_grenade = "arblast_arrow_exp"
 		},
@@ -23366,7 +23366,7 @@ function WeaponFactoryTweakData:_init_frankish()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_frankish_pts/wpn_fps_bow_frankish_m_poison",
 		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_frankish_pts/wpn_third_bow_frankish_m_poison",
-		stats = {damage = -140, total_ammo_mod = -6},
+		stats = {damage = -65, total_ammo_mod = -6},
 		custom_stats = {
 			launcher_grenade = "frankish_poison_arrow",
 			dot_data = {
@@ -23386,7 +23386,7 @@ function WeaponFactoryTweakData:_init_frankish()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_frankish_pts/wpn_fps_bow_frankish_m_explosive",
 		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_frankish_pts/wpn_third_bow_frankish_m_explosive",
-		stats = {damage = -80},
+		stats = {damage = -5},
 		custom_stats = {
 			launcher_grenade = "frankish_arrow_exp"
 		},
@@ -23465,7 +23465,7 @@ function WeaponFactoryTweakData:_init_long()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_long_pts/wpn_fps_bow_long_m_explosive",
 		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_long_pts/wpn_third_bow_long_m_explosive",
-		stats = {damage = -26},
+		stats = {damage = -6},
 		custom_stats = {
 			launcher_grenade = "long_arrow_exp"
 		},
@@ -23482,7 +23482,7 @@ function WeaponFactoryTweakData:_init_long()
 		bullet_objects = {prefix = "g_bullet_", amount = 1},
 		unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_long_pts/wpn_fps_bow_long_m_poison",
 		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_long_pts/wpn_third_bow_long_m_poison",
-		stats = {damage = -37, total_ammo_mod = -6},
+		stats = {damage = -17, total_ammo_mod = -6},
 		custom_stats = {
 			launcher_grenade = "long_poison_arrow",
 			dot_data = {

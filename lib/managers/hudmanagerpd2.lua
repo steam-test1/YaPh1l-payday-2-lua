@@ -607,6 +607,9 @@ function HUDManager:sync_end_assault(result)
 	end
 	self._hud_assault_corner:sync_end_assault(result)
 end
+function HUDManager:sync_assault_number(assault_number)
+	self._hud_assault_corner:sync_start_assault(assault_number)
+end
 function HUDManager:show_casing(mode)
 	self._hud_assault_corner:show_casing(mode)
 end
