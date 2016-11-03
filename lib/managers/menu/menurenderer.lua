@@ -177,7 +177,9 @@ local mugshot_stencil = {
 }
 function MenuRenderer:highlight_item(item, ...)
 	MenuRenderer.super.highlight_item(self, item, ...)
-	self:post_event("highlight")
+	if item then
+		self:post_event("highlight")
+	end
 end
 function MenuRenderer:trigger_item(item)
 	MenuRenderer.super.trigger_item(self, item)

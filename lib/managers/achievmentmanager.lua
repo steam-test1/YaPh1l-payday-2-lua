@@ -413,7 +413,10 @@ end
 function AchievmentManager:_check_autounlock_infamy()
 	managers.experience:_check_achievements()
 end
-function AchievmentManager:_award_achievement(achievement_data)
+function AchievmentManager:_award_achievement(achievement_data, achievement_name)
+	if achievement_name then
+		print("[AchievmentManager] awarding: ", achievement_name)
+	end
 	if achievement_data.stat then
 		managers.achievment:award_progress(achievement_data.stat)
 	elseif achievement_data.award then

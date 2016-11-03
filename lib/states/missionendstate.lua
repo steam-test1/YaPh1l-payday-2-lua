@@ -213,7 +213,10 @@ MissionEndState.play_finishing_sound = function(self, success)
 		return 
 	end
 	if not success and managers.groupai:state():bain_state() then
-		managers.dialog:queue_dialog("Play_ban_g01x", {})
+		if Global.level_data.level_id then
+			local level_data = tweak_data.levels[Global.level_data.level_id]
+		end
+		managers.dialog:queue_dialog(level_data.failure_event or "Play_ban_g01x", {})
 	end
 end
 
@@ -973,6 +976,9 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 									end
 								end
 							end
+							if achievement_data.equipped_outfit then
+								equipped_pass = managers.challenge:check_equipped(achievement_data)
+							end
 							if managers.challenge:check_equipped(achievement_data) then
 								equipped_team_pass = managers.challenge:check_equipped_team(achievement_data)
 							end
@@ -1035,19 +1041,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 								all_pass = false
 							end
 							if all_pass then
-								if achievement_data.stat then
-									managers.achievment:award_progress(achievement_data.stat)
-								end
-							elseif achievement_data.award then
-								managers.achievment:award(achievement_data.award)
-							elseif achievement_data.challenge_stat then
-								managers.challenge:award_progress(achievement_data.challenge_stat)
-							elseif achievement_data.trophy_stat then
-								managers.custom_safehouse:award(achievement_data.trophy_stat)
-							elseif achievement_data.challenge_award then
-								managers.challenge:award(achievement_data.challenge_award)
-							else
-								Application:debug("[MissionEndState] complete_heist_achievements:", achievement)
+								managers.achievment:_award_achievement(achievement_data, achievement)
 							end
 						end
 					if managers.blackmarket:check_frog_1(managers.blackmarket) then
@@ -1109,7 +1103,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1611 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1576 
 end
 
 

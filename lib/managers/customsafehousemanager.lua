@@ -653,10 +653,13 @@ function CustomSafehouseManager:interval_til_new_daily()
 	end
 	return (self:daily_challenge_interval())
 end
-function CustomSafehouseManager:enable_in_game_menu()
+function CustomSafehouseManager:enable_in_game_menu(skip_safehouse_menu)
 	self._should_enable_hud = not Global.hud_disabled
 	managers.hud:set_disabled()
 	managers.menu:open_menu("custom_safehouse_menu")
+	if not skip_safehouse_menu then
+		managers.menu:open_node("custom_safehouse")
+	end
 end
 function CustomSafehouseManager:disable_in_game_menu()
 	if self._should_enable_hud then
@@ -749,7 +752,7 @@ function CustomSafehouseManager:spawn_safehouse_combat_contract()
 		pulse_color = Color(204, 255, 32, 32) / 255
 	}
 	if managers.menu_component._crimenet_gui then
-		managers.menu_component:post_event("pln_sfr_cnc_01_01")
+		managers.menu_component:post_event("pln_sfr_cnc_01_01", true)
 		managers.menu_component._crimenet_gui:add_special_contract(contract_data)
 		managers.menu_component._crimenet_gui:remove_job("safehouse", true)
 		self._has_spawned_safehouse_contract = true

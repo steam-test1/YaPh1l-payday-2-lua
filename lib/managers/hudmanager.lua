@@ -45,6 +45,8 @@ function HUDManager:init()
 	managers.viewport:add_resolution_changed_func(callback(self, self, "resolution_changed"))
 	self._sound_source = SoundDevice:create_source("hud")
 	managers.user:add_setting_changed_callback("controller_mod", callback(self, self, "controller_mod_changed"), true)
+	self._crosshair_visible = false
+	self._crosshair_enabled = false
 	self:_init_player_hud_values()
 	self._chatinput_changed_callback_handler = CoreEvent.CallbackEventHandler:new()
 	self._chat_focus = false
@@ -61,6 +63,18 @@ function HUDManager:init()
 	end
 	self._visible_huds_states = {}
 	self._disabled = Global.hud_disabled
+end
+function HUDManager:crosshair_enabled_changed(name, old_value, new_value)
+	self._crosshair_enabled = new_value
+	if new_value then
+		self:_layout_crosshair()
+		self:_set_crosshair_panel_visible(self._crosshair_visible)
+	else
+		self:_set_crosshair_panel_visible(false)
+	end
+end
+function HUDManager:crosshair_enabled()
+	return self._crosshair_enabled
 end
 function HUDManager:saferect_w()
 	return self._saferect:width()
@@ -1105,11 +1119,15 @@ function HUDManager:set_crosshair_offset(offset)
 end
 function HUDManager:set_crosshair_visible(visible)
 end
+function HUDManager:_set_crosshair_panel_visible(visible)
+end
 function HUDManager:present_mid_text(params)
 	params.present_mid_text = true
 	self:present(params)
 end
 function HUDManager:_kick_crosshair_offset(offset)
+end
+function HUDManager:_layout_crosshair()
 end
 function HUDManager:_update_crosshair_offset(t, dt)
 end

@@ -164,6 +164,9 @@ end
 function GroupAIStateBase:get_hunt_mode()
 	return self._hunt_mode
 end
+function GroupAIStateBase:get_assault_number()
+	return self._assault_number
+end
 function GroupAIStateBase:is_AI_enabled()
 	return self._ai_enabled
 end

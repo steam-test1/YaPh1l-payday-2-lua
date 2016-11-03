@@ -1,4 +1,24 @@
 StatisticsManager = StatisticsManager or class()
+StatisticsManager.special_unit_ids = {
+	"shield",
+	"spooc",
+	"tank",
+	"tank_hw",
+	"tank_green",
+	"tank_black",
+	"tank_skull",
+	"taser",
+	"medic",
+	"sniper",
+	"phalanx_minion",
+	"phalanx_vip",
+	"swat_turret",
+	"biker_boss",
+	"chavez_boss",
+	"mobster_boss",
+	"hector_boss",
+	"hector_boss_no_armor"
+}
 function StatisticsManager:init()
 	self:_setup()
 	self:_reset_session()
@@ -196,6 +216,13 @@ function StatisticsManager:_setup(reset)
 			tied = 0
 		},
 		tank_skull = {
+			count = 0,
+			head_shots = 0,
+			melee = 0,
+			explosion = 0,
+			tied = 0
+		},
+		swat_turret = {
 			count = 0,
 			head_shots = 0,
 			melee = 0,
@@ -1222,7 +1249,7 @@ function StatisticsManager:killed(data)
 			self._global.killed_by_grenade[throwable_id] = (self._global.killed_by_grenade[throwable_id] or 0) + 1
 		else
 			self:_add_to_killed_by_weapon(self._global.session, name_id, data, true)
-			if self._global.session.killed_by_weapon[name_id].count == tweak_data.achievement.first_blood.count then
+			if self._global.session.killed_by_weapon[name_id] and self._global.session.killed_by_weapon[name_id].count == tweak_data.achievement.first_blood.count then
 				local category = data.weapon_unit:base():weapon_tweak_data().category
 				if category == tweak_data.achievement.first_blood.weapon_type then
 					managers.achievment:award(tweak_data.achievement.first_blood.award)
@@ -1839,7 +1866,11 @@ function StatisticsManager:session_total_shots(weapon_type)
 	return weapon_data and weapon_data.total or 0
 end
 function StatisticsManager:session_total_specials_kills()
-	return self._global.session.killed.shield.count + self._global.session.killed.spooc.count + self._global.session.killed.tank.count + self._global.session.killed.taser.count + self._global.session.killed.medic.count
+	local count = 0
+	for _, id in ipairs(self.special_unit_ids) do
+		count = count + self._global.session.killed[id].count
+	end
+	return count
 end
 function StatisticsManager:session_total_head_shots()
 	return self._global.session.killed.total.head_shots
