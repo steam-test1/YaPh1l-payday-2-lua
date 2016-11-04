@@ -1130,7 +1130,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{
 				"55%",
 				"200%",
-				"0%"
+				"65%"
 			}
 		},
 		juggernaut = {

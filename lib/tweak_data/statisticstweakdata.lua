@@ -97,7 +97,8 @@ function StatisticsTweakData:statistics_table()
 		"chew",
 		"chill",
 		"chill_combat",
-		"flat"
+		"flat",
+		"help"
 	}
 	local job_list = {
 		"jewelry_store",
@@ -167,7 +168,8 @@ function StatisticsTweakData:statistics_table()
 		"born_pro",
 		"chill",
 		"chill_combat",
-		"flat"
+		"flat",
+		"help"
 	}
 	local mask_list = {
 		"character_locked",
@@ -494,7 +496,12 @@ function StatisticsTweakData:statistics_table()
 		"pim_dog",
 		"pim_mustang",
 		"pim_hotelier",
-		"spk_party"
+		"spk_party",
+		"howl_chains_zombie",
+		"hwl_dallas_zombie",
+		"hwl_hoxton_zombie",
+		"hwl_wolf_zombie",
+		"pdc16_clover"
 	}
 	local weapon_list = {
 		"ak5",
