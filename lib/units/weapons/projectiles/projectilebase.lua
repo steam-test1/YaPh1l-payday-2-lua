@@ -68,7 +68,6 @@ function ProjectileBase:create_sweep_data()
 	self._sweep_data.last_pos = mvector3.copy(self._sweep_data.current_pos)
 end
 function ProjectileBase:throw(params)
-	Application:stack_dump()
 	self._owner = params.owner
 	local velocity = params.dir
 	local adjust_z = 50

@@ -122,6 +122,7 @@ function ArrowBase:_switch_to_pickup_delay_cbk(dynamic)
 	self:_switch_to_pickup(dynamic)
 end
 function ArrowBase:_switch_to_pickup(dynamic)
+	print("ArrowBase:_switch_to_pickup dynamic", dynamic)
 	self._is_pickup = true
 	self._is_pickup_dynamic = dynamic
 	self:_remove_switch_to_pickup_clbk()
