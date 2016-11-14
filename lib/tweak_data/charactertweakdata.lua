@@ -7436,9 +7436,9 @@ function CharacterTweakData:_set_overkill_145()
 end
 function CharacterTweakData:_set_easy_wish()
 	if SystemInfo:platform() == Idstring("PS3") then
-		self:_multiply_all_hp(6, 1.5)
+		self:_multiply_all_hp(3, 1)
 	else
-		self:_multiply_all_hp(6, 1.5)
+		self:_multiply_all_hp(3, 1)
 	end
 	self.medic.HEALTH_INIT = 180
 	self.hector_boss.HEALTH_INIT = 900
