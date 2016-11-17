@@ -216,7 +216,7 @@ MissionEndState.play_finishing_sound = function(self, success)
 		if Global.level_data.level_id then
 			local level_data = tweak_data.levels[Global.level_data.level_id]
 		end
-		managers.dialog:queue_dialog(level_data.failure_event or "Play_ban_g01x", {})
+		managers.dialog:queue_dialog(level_data and level_data.failure_event or "Play_ban_g01x", {})
 	end
 end
 

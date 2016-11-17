@@ -1061,7 +1061,7 @@ PlayerInventoryGui._update_stats = function(self, name)
 	self:set_info_text("")
 	self._info_panel:clear()
 	if name == "primary" or name == "secondary" then
-		self:set_weapon_stats(self._info_panel, {
+		local stats = {
 {name = "magazine", stat_name = "extra_ammo", round_value = true}, 
 {name = "totalammo", stat_name = "total_ammo_mod", round_value = true}, 
 {name = "fire_rate", round_value = true}, 
@@ -1069,7 +1069,8 @@ PlayerInventoryGui._update_stats = function(self, name)
 {name = "spread", offset = true, revert = true, percent = true}, 
 {name = "recoil", offset = true, revert = true, percent = true}, 
 {name = "concealment", index = true}, 
-{name = "suppression", offset = true, percent = false}})
+{name = "suppression", offset = true, percent = false}}
+		self:set_weapon_stats(self._info_panel, stats)
 		self:_update_info_weapon(name)
 	elseif name == "armor" then
 		self:_update_info_armor(name)
@@ -1102,6 +1103,15 @@ PlayerInventoryGui._update_stats = function(self, name)
 		self:_update_info_deployable(name, 2)
 	else
 		local box = self._boxes_by_name[name]
+		local stats = {
+{name = "magazine", stat_name = "extra_ammo", round_value = true}, 
+{name = "totalammo", stat_name = "total_ammo_mod", round_value = true}, 
+{name = "fire_rate", round_value = true}, 
+{name = "damage"}, 
+{name = "spread", offset = true, revert = true, percent = true}, 
+{name = "recoil", offset = true, revert = true, percent = true}, 
+{name = "concealment", index = true}, 
+{name = "suppression", offset = true, percent = false}}
 		if box and box.params and box.params.mod_data then
 			if box.params.mod_data.selected_tab == "weapon_cosmetics" then
 				local cosmetics = managers.blackmarket:get_weapon_cosmetics(box.params.mod_data.category, box.params.mod_data.slot)
@@ -1111,28 +1121,12 @@ PlayerInventoryGui._update_stats = function(self, name)
 					local c_td = {}
 				end
 				if c_td.default_blueprint then
-					self:set_weapon_stats(self._info_panel, {
-{name = "magazine", stat_name = "extra_ammo", round_value = true}, 
-{name = "totalammo", stat_name = "total_ammo_mod", round_value = true}, 
-{name = "fire_rate", round_value = true}, 
-{name = "damage"}, 
-{name = "spread", offset = true, revert = true, percent = true}, 
-{name = "recoil", offset = true, revert = true, percent = true}, 
-{name = "concealment", index = true}, 
-{name = "suppression", offset = true, percent = false}})
+					self:set_weapon_stats(self._info_panel, stats)
 				end
 				self:_update_info_weapon_cosmetics(name, cosmetics)
 			end
 		else
-			self:set_weapon_mods_stats(self._info_panel, {
-{name = "magazine", stat_name = "extra_ammo", round_value = true}, 
-{name = "totalammo", stat_name = "total_ammo_mod", round_value = true}, 
-{name = "fire_rate", round_value = true}, 
-{name = "damage"}, 
-{name = "spread", offset = true, revert = true, percent = true}, 
-{name = "recoil", offset = true, revert = true, percent = true}, 
-{name = "concealment", index = true}, 
-{name = "suppression", offset = true, percent = false}})
+			self:set_weapon_mods_stats(self._info_panel, stats)
 			self:_update_info_weapon_mod(box)
 		end
 	else
@@ -1316,12 +1310,18 @@ PlayerInventoryGui._update_info_weapon_mod = function(self, box)
 				self._stats_texts[stat.name].equip:set_text((equip == 0 and "" or "") .. format_round(equip, stat.round_value))
 				self._stats_texts[stat.name].total:set_text(format_round(total_value, stat.round_value))
 				if value > 0 then
-					self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stats_positive)
-				elseif value < 0 then
-					self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stats_negative)
+					if not stat.inverted or not tweak_data.screen_colors.stats_negative then
+						self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stats_positive)
 				else
-					self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.text)
+					end
+					if value < 0 then
+						if not stat.inverted or not tweak_data.screen_colors.stats_positive then
+							self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stats_negative)
+						end
+				else
+					end
 				end
+				self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.text)
 				 -- DECOMPILER ERROR: unhandled construct in 'if'
 
 				if stat.percent and math.round(total_value) >= 100 then
@@ -1379,12 +1379,18 @@ PlayerInventoryGui._update_info_weapon = function(self, name)
 					self._stats_texts[stat.name].mods:set_text((mods_stats[stat.name].value == 0 and "" or "") .. format_round(mods_stats[stat.name].value, stat.round_valuee))
 					self._stats_texts[stat.name].skill:set_text((skill_stats[stat.name].value <= 0 or not "+") and (not skill_stats[stat.name].skill_in_effect or "") .. format_round(skill_stats[stat.name].value, stat.round_value) or "")
 					if base < value then
-						self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_positive)
-					elseif value < base then
-						self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_negative)
+						if not stat.inverted or not tweak_data.screen_colors.stats_negative then
+							self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_positive)
 					else
-						self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
+						end
+						if value < base then
+							if not stat.inverted or not tweak_data.screen_colors.stats_positive then
+								self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_negative)
+							end
+					else
+						end
 					end
+					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
 					 -- DECOMPILER ERROR: unhandled construct in 'if'
 
 					if stat.percent and math.round(value) >= 100 then
@@ -1462,12 +1468,18 @@ PlayerInventoryGui._update_info_weapon_cosmetics = function(self, name, cosmetic
 				self._stats_texts[stat.name].mods:set_text((mods_stats[stat.name].value == 0 and "" or "") .. format_round(mods_stats[stat.name].value, stat.round_valuee))
 				self._stats_texts[stat.name].skill:set_text((skill_stats[stat.name].value <= 0 or not "+") and (not skill_stats[stat.name].skill_in_effect or "") .. format_round(skill_stats[stat.name].value, stat.round_value) or "")
 				if base < value then
-					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_positive)
-				elseif value < base then
-					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_negative)
+					if not stat.inverted or not tweak_data.screen_colors.stats_negative then
+						self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_positive)
 				else
-					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
+					end
+					if value < base then
+						if not stat.inverted or not tweak_data.screen_colors.stats_positive then
+							self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stats_negative)
+						end
+				else
+					end
 				end
+				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
 				 -- DECOMPILER ERROR: unhandled construct in 'if'
 
 				if stat.percent and math.round(value) >= 100 then
