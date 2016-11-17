@@ -178,23 +178,69 @@ function HUDPackageUnlockedItem:close()
 	self._panel:animate(callback(self, self, "destroy_animation"))
 end
 HUDStageEndScreen = HUDStageEndScreen or class()
+local max_speed_up = 5
 HUDStageEndScreen.stages = {
-	"stage_money_counter_init",
-	"stage_money_counter_count",
-	"stage_money_counter_hide",
-	"safehouse_currency_init",
-	"safehouse_currency_fade_in",
-	"safehouse_currency_count",
-	"safehouse_currency_trophies",
-	"safehouse_currency_hide",
-	"stage_experience_init",
-	"stage_experience_count_exp",
-	"stage_experience_spin_up",
-	"stage_experience_show_all",
-	"stage_experience_spin_levels",
-	"stage_experience_spin_slowdown",
-	"stage_experience_end",
-	"stage_done"
+	{
+		"stage_money_counter_init",
+		max_speed_up
+	},
+	{
+		"stage_money_counter_count",
+		max_speed_up
+	},
+	{
+		"stage_money_counter_hide",
+		max_speed_up
+	},
+	{
+		"safehouse_currency_init",
+		max_speed_up
+	},
+	{
+		"safehouse_currency_fade_in",
+		max_speed_up
+	},
+	{
+		"safehouse_currency_count",
+		max_speed_up
+	},
+	{
+		"safehouse_currency_trophies",
+		max_speed_up
+	},
+	{
+		"safehouse_currency_hide",
+		max_speed_up
+	},
+	{
+		"stage_experience_init",
+		max_speed_up
+	},
+	{
+		"stage_experience_count_exp",
+		max_speed_up
+	},
+	{
+		"stage_experience_spin_up",
+		max_speed_up
+	},
+	{
+		"stage_experience_show_all",
+		max_speed_up
+	},
+	{
+		"stage_experience_spin_levels",
+		max_speed_up
+	},
+	{
+		"stage_experience_spin_slowdown",
+		max_speed_up
+	},
+	{
+		"stage_experience_end",
+		max_speed_up
+	},
+	{"stage_done", max_speed_up}
 }
 function HUDStageEndScreen:init(hud, workspace)
 	self._backdrop = MenuBackdropGUI:new(workspace)
@@ -1275,7 +1321,7 @@ function HUDStageEndScreen:stage_money_counter_init(t, dt)
 		"balance"
 	}
 	self:reset_income_count()
-	self._wait_t = t + 1
+	self._wait_t = 1
 	self:step_stage_up()
 	self._debug_m = nil
 end
@@ -1292,7 +1338,7 @@ function HUDStageEndScreen:stage_money_counter_count(t, dt)
 		WalletGuiObject.set_object_visible("wallet_money_icon", true)
 		WalletGuiObject.set_object_visible("wallet_money_text", true)
 		managers.menu_component:show_endscreen_cash_summary()
-		self._wait_t = t + 1.25
+		self._wait_t = 1.25
 		self:step_stage_up()
 	end
 end
@@ -1332,7 +1378,7 @@ function HUDStageEndScreen:perform_income_count(t, dt, parent_panel, stage_table
 					text_object:grow(0, 2)
 					managers.menu_component:post_event("box_tick")
 					self._money_text_y = text_object:bottom()
-					self._wait_t = t + 0.65
+					self._wait_t = 0.65
 					self._income_index = 1
 				elseif self._start_count_money then
 					local text_object = parent_panel:text({
@@ -1354,7 +1400,7 @@ function HUDStageEndScreen:perform_income_count(t, dt, parent_panel, stage_table
 					managers.hud:make_fine_text(dir_object)
 					dir_object:set_right(text_object:left())
 					dir_object:hide()
-					self._wait_t = t + 0.45
+					self._wait_t = 0.45
 					self._start_count_money = false
 					self._counting_money = true
 					self._money_counting_amount = 0
@@ -1374,7 +1420,7 @@ function HUDStageEndScreen:perform_income_count(t, dt, parent_panel, stage_table
 						self._counting_money = false
 						self._income_index = self._income_index + 1
 						self._money_text_y = text_object:bottom()
-						self._wait_t = t + 0.45
+						self._wait_t = 0.45
 						managers.menu_component:post_event("count_1_finished")
 						text_object:set_color(income_specific[3] or tweak_data.screen_colors.text)
 						dir_object:set_color(income_specific[3] or tweak_data.screen_colors.text)
@@ -1397,7 +1443,7 @@ function HUDStageEndScreen:perform_income_count(t, dt, parent_panel, stage_table
 				self._income_index = 0
 				self._income_stage_index = self._income_stage_index + 1
 				self._money_text_y = self._money_text_y + 15
-				self._wait_t = t + (income_data and 0 or 1)
+				self._wait_t = income_data and 0 or 1
 			end
 			return false
 		end
@@ -1420,6 +1466,10 @@ function HUDStageEndScreen:stage_money_counter_hide(t, dt)
 	self:step_stage_up()
 end
 function HUDStageEndScreen:safehouse_currency_init(t, dt)
+	if not managers.custom_safehouse:unlocked() then
+		self:step_stage_up()
+		return
+	end
 	self._coins_text:show()
 	self._coins_circle:show()
 	self._coins_backpanel:child("bg_progress_circle"):show()
@@ -1474,7 +1524,7 @@ function HUDStageEndScreen:safehouse_currency_init(t, dt)
 		w = self._lp_forepanel:w() - self._lp_xp_gained:left() - 10,
 		h = self._lp_xp_gained:top() - 10
 	})
-	self._wait_t = t + 0.5
+	self._wait_t = 0.5
 	self._start_ramp_up_t = 1
 	self._ramp_up_timer = 0
 	managers.menu_component:post_event("box_tick")
@@ -1571,6 +1621,10 @@ function HUDStageEndScreen:coin_up(new_coins, alpha_multi)
 	self._coins_text:animate(level_text_func, 1, tostring(math.floor(new_coins)))
 end
 function HUDStageEndScreen:safehouse_currency_fade_in(t, dt)
+	if not managers.custom_safehouse:unlocked() then
+		self:step_stage_up()
+		return
+	end
 	if self._start_ramp_up_t then
 		self._ramp_up_timer = math.min(self._ramp_up_timer + dt, self._start_ramp_up_t)
 		local ratio = self._ramp_up_timer / self._start_ramp_up_t
@@ -1586,6 +1640,10 @@ function HUDStageEndScreen:safehouse_currency_fade_in(t, dt)
 	self:step_stage_up()
 end
 function HUDStageEndScreen:safehouse_currency_count(t, dt)
+	if not managers.custom_safehouse:unlocked() then
+		self:step_stage_up()
+		return
+	end
 	local data = self._safehouse_data
 	if not self._last_trophy_bonus then
 		local bonus = self:_create_bonus({
@@ -1621,17 +1679,17 @@ function HUDStageEndScreen:safehouse_currency_count(t, dt)
 				self._safehouse_data.current = math.floor(self._safehouse_data.current + 1)
 				self:set_coin_text(self._safehouse_data.current)
 				self:coin_up(self._safehouse_data.current, 0.66)
-				self._wait_t = t + 0.65
+				self._wait_t = 0.65
 			else
 				self._safehouse_data.current = self._safehouse_data.current + data.remaining_income
-				self._wait_t = t + 0.4
+				self._wait_t = 0.4
 			end
 			data.remaining_income = data.remaining_income - total_next_coin_xp
 			self._next_coin_xp = nil
 			self:_end_count_up_sound()
 		end
 	else
-		self._wait_t = t + 0.5
+		self._wait_t = 0.5
 		self:_end_count_up_sound()
 		self:step_stage_up()
 	end
@@ -1643,6 +1701,10 @@ function HUDStageEndScreen:_end_count_up_sound()
 	end
 end
 function HUDStageEndScreen:safehouse_currency_trophies(t, dt)
+	if not managers.custom_safehouse:unlocked() then
+		self:step_stage_up()
+		return
+	end
 	self:_end_count_up_sound()
 	local data = self._safehouse_data
 	self._trophy_bonuses = self._trophy_bonuses or {}
@@ -1661,7 +1723,7 @@ function HUDStageEndScreen:safehouse_currency_trophies(t, dt)
 				bonus:set_top(self._last_trophy_bonus:bottom())
 			end
 			self._last_trophy_bonus = bonus
-			self._wait_t = t + 0.5
+			self._wait_t = 0.5
 			return
 		end
 		if 0 < trophy[2] then
@@ -1669,22 +1731,29 @@ function HUDStageEndScreen:safehouse_currency_trophies(t, dt)
 			trophy[2] = trophy[2] - 1
 			self:set_coin_text(self._safehouse_data.current)
 			self:coin_up(self._safehouse_data.current)
-			self._wait_t = t + 0.16
+			self._wait_t = 0.16
 			if 0 >= trophy[2] then
 				table.remove(data.trophies, 1)
-				self._wait_t = t + 1
+				self._wait_t = 1
 			end
 		end
 		return
 	end
-	WalletGuiObject.set_object_visible("wallet_coins_icon", true)
-	WalletGuiObject.set_object_visible("wallet_coins_text", true)
-	self._wait_t = t + 1
+	if managers.custom_safehouse:unlocked() then
+		WalletGuiObject.refresh()
+		WalletGuiObject.set_object_visible("wallet_coins_icon", true)
+		WalletGuiObject.set_object_visible("wallet_coins_text", true)
+	end
+	self._wait_t = 1
 	self._start_ramp_up_t = 0.35
 	self._ramp_up_timer = 0
 	self:step_stage_up()
 end
 function HUDStageEndScreen:safehouse_currency_hide(t, dt)
+	if not managers.custom_safehouse:unlocked() then
+		self:step_stage_up()
+		return
+	end
 	if self._start_ramp_up_t then
 		self._ramp_up_timer = math.min(self._ramp_up_timer + dt, self._start_ramp_up_t)
 		local ratio = 1 - self._ramp_up_timer / self._start_ramp_up_t
@@ -1874,7 +1943,7 @@ function HUDStageEndScreen:stage_experience_init(t, dt)
 	sum_text:hide()
 	self._sum_text = sum_text
 	self._lp_circle:set_color(Color(data.start_t.current / data.start_t.total, 1, 1))
-	self._wait_t = t + 0.5
+	self._wait_t = 0.5
 	self._start_ramp_up_t = 1
 	self._ramp_up_timer = 0
 	managers.menu_component:post_event("box_tick")
@@ -1966,7 +2035,7 @@ function HUDStageEndScreen:stage_experience_spin_up(t, dt)
 			self._gained_xp = self._static_gained_xp
 			self._next_level_xp = data.start_t.total - data.start_t.current
 			self._speed = 1
-			self._wait_t = t + 0.8
+			self._wait_t = 0.8
 			self._ramp_up_timer = nil
 			self._start_ramp_up_t = nil
 			ratio = 1
@@ -2045,11 +2114,11 @@ function HUDStageEndScreen:stage_experience_spin_levels(t, dt)
 			self._speed = math.max(1, self._speed * 0.55)
 			local package_unlocked = self:level_up(current_level_data.level)
 			if package_unlocked then
-				self._wait_t = t + 0.63 + (package_unlocked.upgrades and #package_unlocked.upgrades * 0.57 or 0)
+				self._wait_t = 0.63 + (package_unlocked.upgrades and #package_unlocked.upgrades * 0.57 or 0)
 				managers.menu_component:post_event("count_1_finished")
 				self._playing_sound = nil
 			else
-				self._wait_t = t + 0.4
+				self._wait_t = 0.4
 				managers.menu_component:post_event("count_1_finished")
 				self._playing_sound = nil
 			end
@@ -2145,7 +2214,6 @@ function HUDStageEndScreen:stage_experience_end(t, dt)
 		self._lp_xp_nl:set_text("")
 	end
 	managers.menu_component:post_event("count_1_finished")
-	self._wait_t = t
 	self:step_stage_up()
 end
 function HUDStageEndScreen:stage_done(t, dt)
@@ -2298,21 +2366,21 @@ function HUDStageEndScreen:give_skill_points(points)
 end
 function HUDStageEndScreen:stage_debug_loop(t, dt)
 	self:reset_stage()
-	self._wait_t = t + 3
+	self._wait_t = 3
 end
 function HUDStageEndScreen:set_speed_up(multiplier)
 	self._speed_up = multiplier
 end
 function HUDStageEndScreen:update(t, dt)
+	local stage = self._stage and self.stages[self._stage]
+	local ddt = dt * math.clamp(self._speed_up or 1, 1, stage and stage[2] or 5)
 	if self._wait_t then
-		if t > self._wait_t then
+		self._wait_t = self._wait_t - ddt
+		if self._wait_t <= 0 then
 			self._wait_t = nil
-			self._speed_up = 1
 		end
-	elseif self._stage and self.stages[self._stage] then
-		self[self.stages[self._stage]](self, t, dt * (self._speed_up or 1))
-	else
-		self._speed_up = 1
+	elseif stage then
+		self[stage[1]](self, t, ddt)
 	end
 	if self._update_skill_points then
 		self._update_skill_points = nil
@@ -2367,7 +2435,7 @@ function HUDStageEndScreen:update(t, dt)
 		skill_glow:set_center_y(self._lp_skill_points:center_y())
 		skill_glow:set_center_x(self._lp_sp_gain:left() + 5)
 		skill_glow:stop()
-		local visible = self._num_skill_points_gained > 0
+		local visible = 0 < self._num_skill_points_gained
 		if visible then
 			skill_glow:animate(animate_new_skillpoints)
 		end
