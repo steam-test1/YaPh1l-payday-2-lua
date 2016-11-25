@@ -215,6 +215,9 @@ end
 function PlayerDriving:_check_action_duck()
 	return false
 end
+function PlayerDriving:_check_use_item()
+	return false
+end
 function PlayerDriving:interaction_blocked()
 	return true
 end

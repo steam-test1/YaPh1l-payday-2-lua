@@ -120,6 +120,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_desertfox_npc()
 	self:_init_data_x_packrat_npc()
 	self:_init_data_rota_npc()
+	self:_init_data_arbiter_npc()
 	self:_precalculate_values()
 end
 function WeaponTweakData:_set_easy()
@@ -2028,6 +2029,21 @@ function WeaponTweakData:_init_data_rota_npc()
 	self.rota_npc.suppression = 1.8
 	self.rota_npc.is_shotgun = true
 end
+function WeaponTweakData:_init_data_arbiter_npc()
+	self.arbiter_npc.sounds.prefix = "mgl_npc"
+	self.arbiter_npc.use_data.selection_index = 1
+	self.arbiter_npc.DAMAGE = 2
+	self.arbiter_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.arbiter_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.arbiter_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.arbiter_npc.no_trail = true
+	self.arbiter_npc.CLIP_AMMO_MAX = 1
+	self.arbiter_npc.NR_CLIPS_MAX = 4
+	self.arbiter_npc.auto.fire_rate = 0.1
+	self.arbiter_npc.hold = "rifle"
+	self.arbiter_npc.alert_size = 2800
+	self.arbiter_npc.suppression = 1
+end
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default
 	if SystemInfo:platform() == Idstring("WIN32") then
@@ -2595,6 +2611,12 @@ function WeaponTweakData:_init_stats()
 	for i = -100, 100, 5 do
 		table.insert(self.stats.total_ammo_mod, i / 100)
 	end
+	self.stats.reload = {}
+	for i = 5, 20, 0.5 do
+		if i <= 10 or i == math.floor(i) then
+			table.insert(self.stats.reload, i / 10)
+		end
+	end
 end
 function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	local low, high
@@ -2704,7 +2726,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.glock_17 = {}
 	self.glock_17.category = "pistol"
@@ -2790,7 +2813,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.mp9 = {}
 	self.mp9.category = "smg"
@@ -2878,7 +2902,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.r870 = {}
 	self.r870.category = "shotgun"
@@ -2969,7 +2994,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.glock_18c = {}
 	self.glock_18c.category = "pistol"
@@ -3060,7 +3086,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.amcar = {}
 	self.amcar.category = "assault_rifle"
@@ -3146,7 +3173,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.m16 = {}
 	self.m16.category = "assault_rifle"
@@ -3232,7 +3260,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.olympic = {}
 	self.olympic.category = "smg"
@@ -3318,7 +3347,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.ak74 = {}
 	self.ak74.category = "assault_rifle"
@@ -3404,7 +3434,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.akm = {}
 	self.akm.category = "assault_rifle"
@@ -3490,7 +3521,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.akm_gold = {}
 	self.akm_gold.category = "assault_rifle"
@@ -3577,7 +3609,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.akmsu = {}
 	self.akmsu.category = "smg"
@@ -3663,7 +3696,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.saiga = {}
 	self.saiga.category = "shotgun"
@@ -3749,7 +3783,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.ak5 = {}
 	self.ak5.category = "assault_rifle"
@@ -3835,7 +3870,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.aug = {}
 	self.aug.category = "assault_rifle"
@@ -3917,7 +3953,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.g36 = {}
 	self.g36.category = "assault_rifle"
@@ -4000,7 +4037,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.p90 = {}
 	self.p90.category = "smg"
@@ -4082,7 +4120,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.new_m14 = {}
 	self.new_m14.category = "assault_rifle"
@@ -4165,7 +4204,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.deagle = {}
 	self.deagle.category = "pistol"
@@ -4243,7 +4283,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.new_mp5 = {}
 	self.new_mp5.category = "smg"
@@ -4327,7 +4368,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.colt_1911 = {}
 	self.colt_1911.category = "pistol"
@@ -4409,7 +4451,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.mac10 = {}
 	self.mac10.category = "smg"
@@ -4493,7 +4536,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.serbu = {}
 	self.serbu.category = "shotgun"
@@ -4574,7 +4618,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.huntsman = {}
 	self.huntsman.category = "shotgun"
@@ -4668,7 +4713,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.huntsman.stats_modifiers = {damage = 1}
 	self.b92fs = {}
@@ -4749,7 +4795,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.new_raging_bull = {}
 	self.new_raging_bull.category = "pistol"
@@ -4834,7 +4881,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.saw = {}
 	self.saw.category = "saw"
@@ -4934,7 +4982,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 16,
 		value = 1,
 		extra_ammo = 6,
-		total_ammo_mod = 21
+		total_ammo_mod = 21,
+		reload = 11
 	}
 	self.saw.hit_alert_size_increase = 4
 	self.saw_secondary = deep_clone(self.saw)
@@ -5028,7 +5077,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.g22c = {}
 	self.g22c.category = "pistol"
@@ -5114,7 +5164,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.judge = {}
 	self.judge.category = "shotgun"
@@ -5209,7 +5260,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.m45 = {}
 	self.m45.category = "smg"
@@ -5294,7 +5346,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 5
+		value = 5,
+		reload = 11
 	}
 	self.s552 = {}
 	self.s552.category = "assault_rifle"
@@ -5379,7 +5432,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.ppk = {}
 	self.ppk.category = "pistol"
@@ -5461,7 +5515,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.mp7 = {}
 	self.mp7.category = "smg"
@@ -5547,7 +5602,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 7
+		value = 7,
+		reload = 11
 	}
 	self.scar = {}
 	self.scar.category = "assault_rifle"
@@ -5632,7 +5688,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.p226 = {}
 	self.p226.category = "pistol"
@@ -5714,7 +5771,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.hk21 = {}
 	self.hk21.category = "lmg"
@@ -5816,7 +5874,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.m249 = {}
 	self.m249.category = "lmg"
@@ -5918,7 +5977,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.rpk = {}
 	self.rpk.category = "lmg"
@@ -6020,7 +6080,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.m95 = {}
 	self.m95.category = "snp"
@@ -6114,7 +6175,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 9,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.m95.armor_piercing_chance = 1
 	self.m95.stats_modifiers = {damage = 20}
@@ -6213,7 +6275,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.msr.armor_piercing_chance = 1
 	self.msr.stats_modifiers = {damage = 1}
@@ -6311,7 +6374,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.r93.armor_piercing_chance = 1
 	self.r93.stats_modifiers = {damage = 2}
@@ -6397,7 +6461,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.benelli = {}
 	self.benelli.category = "shotgun"
@@ -6481,7 +6546,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.striker = {}
 	self.striker.category = "shotgun"
@@ -6571,7 +6637,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.ksg = {}
 	self.ksg.category = "shotgun"
@@ -6664,7 +6731,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.gre_m79 = {}
 	self.gre_m79.category = "grenade_launcher"
@@ -6761,7 +6829,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.gre_m79.stats_modifiers = {damage = 10}
 	self.g3 = {}
@@ -6846,7 +6915,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.galil = {}
 	self.galil.category = "assault_rifle"
@@ -6932,7 +7002,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.famas = {}
 	self.famas.category = "assault_rifle"
@@ -7016,7 +7087,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.scorpion = {}
 	self.scorpion.category = "smg"
@@ -7102,7 +7174,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 7
+		value = 7,
+		reload = 11
 	}
 	self.tec9 = {}
 	self.tec9.category = "smg"
@@ -7188,7 +7261,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 7
+		value = 7,
+		reload = 11
 	}
 	self.uzi = {}
 	self.uzi.category = "smg"
@@ -7274,7 +7348,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 7
+		value = 7,
+		reload = 11
 	}
 	self.jowi = {}
 	self.jowi.category = "akimbo"
@@ -7364,7 +7439,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.x_1911 = {}
 	self.x_1911.category = "akimbo"
@@ -7454,7 +7530,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.x_b92fs = {}
 	self.x_b92fs.category = "akimbo"
@@ -7544,7 +7621,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.x_deagle = {}
 	self.x_deagle.category = "akimbo"
@@ -7633,7 +7711,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.g26 = {}
 	self.g26.category = "pistol"
@@ -7714,7 +7793,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.spas12 = {}
 	self.spas12.category = "shotgun"
@@ -7802,7 +7882,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.mg42 = {}
 	self.mg42.category = "lmg"
@@ -7904,7 +7985,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.c96 = {}
 	self.c96.category = "pistol"
@@ -7986,7 +8068,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.sterling = {}
 	self.sterling.category = "smg"
@@ -8072,7 +8155,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 7
+		value = 7,
+		reload = 11
 	}
 	self.mosin = {}
 	self.mosin.category = "snp"
@@ -8168,7 +8252,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.mosin.armor_piercing_chance = 1
 	self.mosin.stats_modifiers = {damage = 2}
@@ -8261,7 +8346,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.l85a2 = {}
 	self.l85a2.category = "assault_rifle"
@@ -8351,7 +8437,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.vhs = {}
 	self.vhs.category = "assault_rifle"
@@ -8441,7 +8528,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.hs2000 = {}
 	self.hs2000.category = "pistol"
@@ -8523,7 +8611,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.m134 = {}
 	self.m134.category = "minigun"
@@ -8616,7 +8705,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.rpg7 = {}
 	self.rpg7.category = "grenade_launcher"
@@ -8715,7 +8805,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.rpg7.stats_modifiers = {damage = 100}
 	self.cobray = {}
@@ -8807,7 +8898,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.b682 = {}
 	self.b682.category = "shotgun"
@@ -8903,7 +8995,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.b682.stats_modifiers = {damage = 1}
 	self.x_g22c = {}
@@ -8995,7 +9088,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.x_g17 = {}
 	self.x_g17.category = "akimbo"
@@ -9086,7 +9180,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.x_usp = {}
 	self.x_usp.category = "akimbo"
@@ -9177,7 +9272,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.flamethrower_mk2 = {}
 	self.flamethrower_mk2.category = "flamethrower"
@@ -9277,7 +9373,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 1,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.m32 = {}
 	self.m32.category = "grenade_launcher"
@@ -9379,7 +9476,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.m32.stats_modifiers = {damage = 10}
 	self.aa12 = {}
@@ -9470,7 +9568,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.peacemaker = {}
 	self.peacemaker.category = "pistol"
@@ -9568,7 +9667,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.peacemaker.stats_modifiers = {damage = 1}
 	self.winchester1874 = {}
@@ -9668,7 +9768,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.winchester1874.armor_piercing_chance = 1
 	self.winchester1874.stats_modifiers = {damage = 1}
@@ -9768,7 +9869,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.plainsrider.stats_modifiers = {damage = 10}
 	self.mateba = {}
@@ -9856,7 +9958,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.asval = {}
 	self.asval.category = "assault_rifle"
@@ -9944,7 +10047,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 12,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.sub2000 = {}
 	self.sub2000.category = "assault_rifle"
@@ -10027,7 +10131,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.wa2000 = {}
 	self.wa2000.category = "snp"
@@ -10122,7 +10227,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.wa2000.armor_piercing_chance = 1
 	self.wa2000.stats_modifiers = {damage = 1}
@@ -10215,7 +10321,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.hunter = {}
 	self.hunter.category = "crossbow"
@@ -10311,7 +10418,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.hunter.stats_modifiers = {damage = 10}
 	self.baka = {}
@@ -10403,7 +10511,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.arblast = {}
 	self.arblast.category = "crossbow"
@@ -10499,7 +10608,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.arblast.stats_modifiers = {damage = 100}
 	self.frankish = {}
@@ -10596,7 +10706,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.frankish.stats_modifiers = {damage = 10}
 	self.long = {}
@@ -10694,7 +10805,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.long.stats_modifiers = {damage = 100}
 	self.par = {}
@@ -10796,7 +10908,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 8,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.sparrow = {}
 	self.sparrow.category = "pistol"
@@ -10878,7 +10991,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.model70 = {}
 	self.model70.category = "snp"
@@ -10973,7 +11087,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 9
+		value = 9,
+		reload = 11
 	}
 	self.model70.armor_piercing_chance = 1
 	self.model70.stats_modifiers = {damage = 2}
@@ -11073,7 +11188,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.china = {}
 	self.china.category = "grenade_launcher"
@@ -11175,7 +11291,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.china.stats_modifiers = {damage = 10}
 	self.sr2 = {}
@@ -11265,7 +11382,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.x_sr2 = {}
 	self.x_sr2.category = "akimbo"
@@ -11360,7 +11478,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.pl14 = {}
 	self.pl14.category = "pistol"
@@ -11441,7 +11560,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.x_mp5 = {}
 	self.x_mp5.category = "akimbo"
@@ -11532,7 +11652,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.x_akmsu = {}
 	self.x_akmsu.category = "akimbo"
@@ -11623,7 +11744,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.tecci = {}
 	self.tecci.category = "assault_rifle"
@@ -11715,7 +11837,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.hajk = {}
 	self.hajk.category = "smg"
@@ -11805,7 +11928,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.boot = {}
 	self.boot.category = "shotgun"
@@ -11903,7 +12027,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.packrat = {}
 	self.packrat.category = "pistol"
@@ -11985,7 +12110,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.schakal = {}
 	self.schakal.category = "smg"
@@ -12076,7 +12202,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
 	self.desertfox = {}
 	self.desertfox.category = "snp"
@@ -12172,7 +12299,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 10
+		value = 10,
+		reload = 11
 	}
 	self.desertfox.armor_piercing_chance = 1
 	self.desertfox.stats_modifiers = {damage = 2}
@@ -12266,7 +12394,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 4
+		value = 4,
+		reload = 11
 	}
 	self.rota = {}
 	self.rota.category = "shotgun"
@@ -12353,8 +12482,106 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		alert_size = 7,
 		extra_ammo = 6,
 		total_ammo_mod = 21,
-		value = 1
+		value = 1,
+		reload = 11
 	}
+	self.arbiter = {}
+	self.arbiter.category = "grenade_launcher"
+	self.arbiter.projectile_type_index = 33
+	self.arbiter.projectile_type_indices = {launcher_incendiary = 34}
+	self.arbiter.damage_melee = damage_melee_default
+	self.arbiter.damage_melee_effect_mul = damage_melee_effect_multiplier_default
+	self.arbiter.sounds = {}
+	self.arbiter.sounds.fire = "arbiter_fire"
+	self.arbiter.sounds.dryfire = "shotgun_dryfire"
+	self.arbiter.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.arbiter.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.arbiter.timers = {}
+	self.arbiter.timers.reload_not_empty = 3.34
+	self.arbiter.timers.reload_empty = 4.5
+	self.arbiter.timers.unequip = 0.6
+	self.arbiter.timers.equip = 0.6
+	self.arbiter.name_id = "bm_w_arbiter"
+	self.arbiter.desc_id = "bm_w_arbiter_desc"
+	self.arbiter.description_id = "des_arbiter"
+	self.arbiter.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.arbiter.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.arbiter.use_data = {}
+	self.arbiter.use_data.selection_index = 1
+	self.arbiter.use_data.align_place = "right_hand"
+	self.arbiter.DAMAGE = 6
+	self.arbiter.damage_near = 2000
+	self.arbiter.damage_far = 3000
+	self.arbiter.rays = 6
+	self.arbiter.CLIP_AMMO_MAX = 5
+	self.arbiter.NR_CLIPS_MAX = 3
+	self.arbiter.AMMO_MAX = self.arbiter.CLIP_AMMO_MAX * self.arbiter.NR_CLIPS_MAX
+	self.arbiter.AMMO_PICKUP = {0.05, 0.65}
+	self.arbiter.FIRE_MODE = "single"
+	self.arbiter.fire_mode_data = {}
+	self.arbiter.fire_mode_data.fire_rate = 0.75
+	self.arbiter.single = {}
+	self.arbiter.single.fire_rate = 1
+	self.arbiter.spread = {}
+	self.arbiter.spread.standing = self.r870.spread.standing
+	self.arbiter.spread.crouching = self.r870.spread.crouching
+	self.arbiter.spread.steelsight = self.r870.spread.steelsight
+	self.arbiter.spread.moving_standing = self.r870.spread.moving_standing
+	self.arbiter.spread.moving_crouching = self.r870.spread.moving_crouching
+	self.arbiter.spread.moving_steelsight = self.r870.spread.moving_steelsight
+	self.arbiter.kick = {}
+	self.arbiter.kick.standing = {
+		2.9,
+		3,
+		-0.5,
+		0.5
+	}
+	self.arbiter.kick.crouching = self.arbiter.kick.standing
+	self.arbiter.kick.steelsight = self.arbiter.kick.standing
+	self.arbiter.crosshair = {}
+	self.arbiter.crosshair.standing = {}
+	self.arbiter.crosshair.crouching = {}
+	self.arbiter.crosshair.steelsight = {}
+	self.arbiter.crosshair.standing.offset = 0.16
+	self.arbiter.crosshair.standing.moving_offset = 0.8
+	self.arbiter.crosshair.standing.kick_offset = 0.6
+	self.arbiter.crosshair.standing.hidden = true
+	self.arbiter.crosshair.crouching.offset = 0.08
+	self.arbiter.crosshair.crouching.moving_offset = 0.7
+	self.arbiter.crosshair.crouching.kick_offset = 0.4
+	self.arbiter.crosshair.crouching.hidden = true
+	self.arbiter.crosshair.steelsight.hidden = true
+	self.arbiter.crosshair.steelsight.offset = 0
+	self.arbiter.crosshair.steelsight.moving_offset = 0
+	self.arbiter.crosshair.steelsight.kick_offset = 0.1
+	self.arbiter.shake = {}
+	self.arbiter.shake.fire_multiplier = 2
+	self.arbiter.shake.fire_steelsight_multiplier = 2
+	self.arbiter.autohit = autohit_shotgun_default
+	self.arbiter.aim_assist = aim_assist_shotgun_default
+	self.arbiter.animations = {}
+	self.arbiter.animations.equip_id = "equip_arbiter"
+	self.arbiter.animations.recoil_steelsight = true
+	self.arbiter.global_value = "tango"
+	self.arbiter.texture_bundle_folder = "tng"
+	self.arbiter.panic_suppression_chance = 0.2
+	self.arbiter.ignore_damage_upgrades = true
+	self.arbiter.stats = {
+		damage = 70,
+		spread = 25,
+		recoil = 25,
+		spread_moving = 6,
+		zoom = 3,
+		concealment = 18,
+		suppression = 2,
+		alert_size = 7,
+		extra_ammo = 6,
+		total_ammo_mod = 21,
+		value = 1,
+		reload = 11
+	}
+	self.arbiter.stats_modifiers = {damage = 10}
+	self.arbiter.unlock_func = "has_unlocked_arbiter"
 end
 function WeaponTweakData:_init_data_offhand_weapons()
 	self.b92fs_primary = deep_clone(self.b92fs)
@@ -13151,6 +13378,12 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.arbiter_npc = {
+		usage = "m4",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 end
 function WeaponTweakData:_precalculate_values_wip()
 end
@@ -13277,4 +13510,5 @@ function WeaponTweakData:_precalculate_values()
 	self.desertfox_npc.AMMO_MAX = self.desertfox_npc.CLIP_AMMO_MAX * self.desertfox_npc.NR_CLIPS_MAX
 	self.x_packrat_npc.AMMO_MAX = self.x_packrat_npc.CLIP_AMMO_MAX * self.x_packrat_npc.NR_CLIPS_MAX
 	self.rota_npc.AMMO_MAX = self.rota_npc.CLIP_AMMO_MAX * self.rota_npc.NR_CLIPS_MAX
+	self.arbiter_npc.AMMO_MAX = self.arbiter_npc.CLIP_AMMO_MAX * self.arbiter_npc.NR_CLIPS_MAX
 end

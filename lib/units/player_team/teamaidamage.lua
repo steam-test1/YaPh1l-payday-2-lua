@@ -273,6 +273,8 @@ function TeamAIDamage:damage_tase(attack_data)
 	end
 	return damage_info
 end
+function TeamAIDamage:damage_dot(attack_data)
+end
 function TeamAIDamage:_apply_damage(attack_data, result)
 	local damage = attack_data.damage
 	damage = math.clamp(damage, self._HEALTH_TOTAL_PERCENT, self._HEALTH_TOTAL)

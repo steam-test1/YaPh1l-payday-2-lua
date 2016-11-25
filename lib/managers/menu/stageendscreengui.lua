@@ -851,6 +851,11 @@ function StageEndScreenGui:special_btn_pressed(btn)
 		managers.hud:set_speed_up_endscreen_hud(5)
 	end
 end
+function StageEndScreenGui:special_btn_released(btn)
+	if btn == Idstring("menu_challenge_claim") then
+		managers.hud:set_speed_up_endscreen_hud(nil)
+	end
+end
 function StageEndScreenGui:accept_input(accept)
 	print("StageEndScreenGui:accept_input", accept)
 end

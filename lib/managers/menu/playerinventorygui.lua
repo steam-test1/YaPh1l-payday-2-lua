@@ -1070,6 +1070,7 @@ PlayerInventoryGui._update_stats = function(self, name)
 {name = "recoil", offset = true, revert = true, percent = true}, 
 {name = "concealment", index = true}, 
 {name = "suppression", offset = true, percent = false}}
+		table.insert(stats, {name = "reload", inverted = true})
 		self:set_weapon_stats(self._info_panel, stats)
 		self:_update_info_weapon(name)
 	elseif name == "armor" then
@@ -1112,6 +1113,7 @@ PlayerInventoryGui._update_stats = function(self, name)
 {name = "recoil", offset = true, revert = true, percent = true}, 
 {name = "concealment", index = true}, 
 {name = "suppression", offset = true, percent = false}}
+		table.insert(stats, {name = "reload", inverted = true})
 		if box and box.params and box.params.mod_data then
 			if box.params.mod_data.selected_tab == "weapon_cosmetics" then
 				local cosmetics = managers.blackmarket:get_weapon_cosmetics(box.params.mod_data.category, box.params.mod_data.slot)
