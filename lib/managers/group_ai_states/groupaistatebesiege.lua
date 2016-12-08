@@ -3060,13 +3060,13 @@ function GroupAIStateBesiege:_spawn_phalanx()
 					end
 				end
 			else
-				print("Could not get spawn_group from phalanx_area!")
+				Application:error("Could not get spawn_group from phalanx_area!")
 			end
 		else
-			print("Could not get area from phalanx_center_nav_seg!")
+			Application:error("Could not get area from phalanx_center_nav_seg!")
 		end
 	else
-		print("self._phalanx_center_pos NOT SET!!!")
+		Application:error("self._phalanx_center_pos NOT SET!!!")
 	end
 end
 function GroupAIStateBesiege:_check_phalanx_group_has_spawned()

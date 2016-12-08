@@ -16,7 +16,7 @@ function PlayerParachuting:enter(state_data, enter_data)
 end
 function PlayerParachuting:_enter(enter_data)
 	if not self._unit:camera():anim_data().equipped then
-		self._unit:camera():play_redirect(self.IDS_EQUIP)
+		self._unit:camera():play_redirect(self:get_animation("equip"))
 		self._unit:inventory():show_equipped_unit()
 	end
 	self._unit:movement().fall_rotation = self._unit:movement().fall_rotation or Rotation(0, 0, 0)

@@ -26,7 +26,7 @@ function PlayerFreefall:enter(state_data, enter_data)
 end
 function PlayerFreefall:_enter(enter_data)
 	if self._ext_camera:anim_data().equipped then
-		self._ext_camera:play_redirect(self.IDS_UNEQUIP)
+		self._ext_camera:play_redirect(self:get_animation("unequip"))
 	end
 	self._unit:movement().fall_rotation = self._unit:movement().fall_rotation or Rotation(0, 0, 0)
 	self:_pitch_down()
@@ -48,7 +48,7 @@ function PlayerFreefall:bleed_out_blocked()
 end
 function PlayerFreefall:_chk_play_falling_anim()
 	if not self._played_unequip_animation and not self._ext_camera:anim_data().unequipping then
-		self._ext_camera:play_redirect(self.IDS_FALLING)
+		self._ext_camera:play_redirect(self:get_animation("falling"))
 		self._unit:inventory():hide_equipped_unit()
 		self._played_unequip_animation = true
 	end

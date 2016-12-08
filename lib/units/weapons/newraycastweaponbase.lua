@@ -548,7 +548,12 @@ function NewRaycastWeaponBase:stance_mod()
 	local using_second_sight = self:is_second_sight_on()
 	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, self:is_second_sight_on())
 end
+function NewRaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
+	return anim
+end
 function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
+	local orig_anim = anim
+	anim = self:_get_tweak_data_weapon_animation(orig_anim)
 	local data = tweak_data.weapon.factory[self._factory_id]
 	if data.animations and data.animations[anim] then
 		local anim_name = data.animations[anim]
@@ -566,7 +571,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 			data.unit:anim_play_to(Idstring(anim_name), length, speed_multiplier)
 		end
 	end
-	NewRaycastWeaponBase.super.tweak_data_anim_play(self, anim, speed_multiplier)
+	NewRaycastWeaponBase.super.tweak_data_anim_play(self, orig_anim, speed_multiplier)
 	return true
 end
 function NewRaycastWeaponBase:tweak_data_anim_stop(anim)
@@ -750,6 +755,20 @@ function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, c
 			end
 		end
 	end
+end
+function NewRaycastWeaponBase:is_gadget_of_type_on(gadget_type)
+	local gadget
+	for i, id in ipairs(gadgets) do
+		gadget = self._parts[id]
+		if gadget then
+			local gadget_base = gadget.unit:base()
+			local correct_type = gadget_base.GADGET_TYPE == gadget_type
+			if correct_type and gadget_base:is_on() then
+				return true
+			end
+		end
+	end
+	return false
 end
 function NewRaycastWeaponBase:toggle_gadget(current_state)
 	if not self._enabled then
@@ -1132,6 +1151,9 @@ function NewRaycastWeaponBase:update_reloading(t, dt, time_left)
 		managers.job:set_memory("kill_count_no_reload_" .. tostring(self._name_id), nil, true)
 		return true
 	end
+end
+function RaycastWeaponBase:reload_prefix()
+	return ""
 end
 function NewRaycastWeaponBase:reload_interuptable()
 	if self._use_shotgun_reload then

@@ -1,7 +1,6 @@
 PlayerMaskOff = PlayerMaskOff or class(PlayerStandard)
 function PlayerMaskOff:init(unit)
 	PlayerMaskOff.super.init(self, unit)
-	self._ids_unequip = Idstring("unequip")
 	self._mask_off_attention_settings = {
 		"pl_mask_off_friend_combatant",
 		"pl_mask_off_friend_non_combatant",
@@ -24,7 +23,7 @@ function PlayerMaskOff:_enter(enter_data)
 		managers.upgrades:setup_current_weapon()
 	end
 	if self._unit:camera():anim_data().equipped then
-		self._unit:camera():play_redirect(self._ids_unequip)
+		self._unit:camera():play_redirect(self:get_animation("unequip"))
 	end
 	self._unit:base():set_slot(self._unit, 4)
 	self._ext_movement:set_attention_settings(self._mask_off_attention_settings)

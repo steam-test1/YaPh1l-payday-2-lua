@@ -87,6 +87,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.custom_safehouse_secondaries = {create = callback(self, self, "create_custom_safehouse_secondaries"), close = callback(self, self, "close_custom_safehouse_secondaries")}
 	self._active_components.new_heists = {create = callback(self, self, "create_new_heists_gui"), close = callback(self, self, "close_new_heists_gui")}
 	self._active_components.mutators_list = {create = callback(self, self, "create_mutators_list_gui"), close = callback(self, self, "close_mutators_list_gui")}
+	self._active_components.debug_quicklaunch = {create = callback(self, self, "create_debug_quicklaunch_gui"), close = callback(self, self, "close_debug_quicklaunch_gui")}
 	self._alive_components = {}
 end
 
@@ -2651,6 +2652,8 @@ MenuComponentManager.get_texture_from_mod_type = function(self, type, sub_type, 
 				do return end
 				texture = "guis/textures/pd2/blackmarket/inv_mod_bonus"
 				texture = "guis/textures/pd2/blackmarket/inv_mod_" .. tostring(sub_type or type)
+			elseif type == "vertical_grip" then
+				texture = "guis/textures/pd2/blackmarket/inv_mod_vertical_grip"
 			else
 				texture = "guis/textures/pd2/blackmarket/inv_mod_" .. type
 			end
@@ -3621,6 +3624,12 @@ MenuComponentManager.close_new_heists_gui = function(self)
 		self._new_heists_gui = nil
 		self:unregister_component("new_heists")
 	end
+end
+
+MenuComponentManager.create_debug_quicklaunch_gui = function(self, node)
+end
+
+MenuComponentManager.close_debug_quicklaunch_gui = function(self)
 end
 
 

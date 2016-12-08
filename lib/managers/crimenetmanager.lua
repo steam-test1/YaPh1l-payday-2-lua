@@ -817,7 +817,6 @@ function CrimeNetManager:join_quick_play_game()
 	if SystemInfo:platform() ~= Idstring("WIN32") then
 		return
 	end
-	local player_level = managers.experience:current_level()
 	local function f(info)
 		managers.network.matchmake:search_lobby_done()
 		local room_list = info.room_list
@@ -912,7 +911,7 @@ function CrimeNetManager:join_quick_play_game()
 		end
 	end
 	managers.network.matchmake:register_callback("search_lobby", f)
-	managers.network.matchmake:search_lobby()
+	managers.network.matchmake:search_lobby(nil, true)
 end
 CrimeNetGui = CrimeNetGui or class()
 function CrimeNetGui:init(ws, fullscreeen_ws, node)

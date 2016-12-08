@@ -1555,12 +1555,14 @@ Play the full version soon to get your full PAYDAY!]],
 		daily_grenades = {
 			trophy_stat = "daily_grenades",
 			grenade_type = "frag",
-			kill = true
+			kill = true,
+			is_civilian = false
 		},
 		daily_grenades_community = {
 			trophy_stat = "daily_grenades",
 			grenade_type = "frag_com",
-			kill = true
+			kill = true,
+			is_civilian = false
 		}
 	}
 	self.achievement.shotgun_single_shot_kills = {
@@ -2295,6 +2297,11 @@ Play the full version soon to get your full PAYDAY!]],
 			difficulty = easywish_and_above,
 			job = "help"
 		},
+		easywish_moon = {
+			award = "moon_1",
+			difficulty = easywish_and_above,
+			job = "moon"
+		},
 		complete_pines_easywish = {
 			award = "pick_59",
 			difficulty = easywish_and_above,
@@ -2577,6 +2584,11 @@ Play the full version soon to get your full PAYDAY!]],
 			difficulty = deathwish_and_above,
 			job = "help"
 		},
+		death_moon = {
+			award = "moon_2",
+			difficulty = deathwish_and_above,
+			job = "moon"
+		},
 		complete_pines_deathwish = {
 			award = "deer_5",
 			difficulty = deathwish_and_above,
@@ -2853,6 +2865,11 @@ Play the full version soon to get your full PAYDAY!]],
 			award = "orange_3",
 			difficulty = sm_wish_and_above,
 			job = "help"
+		},
+		sm_wish_moon = {
+			award = "moon_3",
+			difficulty = sm_wish_and_above,
+			job = "moon"
 		},
 		complete_pines_sm_wish = {
 			award = "axe_59",
@@ -3594,7 +3611,8 @@ Play the full version soon to get your full PAYDAY!]],
 					"wpn_prj_ace",
 					"wpn_prj_four",
 					"wpn_prj_jav",
-					"wpn_prj_hur"
+					"wpn_prj_hur",
+					"wpn_prj_target"
 				}
 			}
 		},
@@ -3730,10 +3748,15 @@ Play the full version soon to get your full PAYDAY!]],
 		daily_candy = {
 			trophy_stat = "daily_candy",
 			secured = {
-				{carry_id = "coke", amount = 1},
-				{carry_id = "coke_light", total_amount = 1},
-				{carry_id = "coke_pure", total_amount = 1},
-				{carry_id = "present", total_amount = 1}
+				{
+					carry_id = {
+						"coke",
+						"coke_light",
+						"coke_pure",
+						"present"
+					},
+					amount = 1
+				}
 			}
 		},
 		daily_art = {
@@ -3948,8 +3971,8 @@ Play the full version soon to get your full PAYDAY!]],
 				"skullveryhard",
 				"skulloverkill",
 				"skulloverkillplus",
-				"skulleasywish",
-				"skullsmwish"
+				"gitgud_e_wish",
+				"gitgud_sm_wish"
 			}
 		},
 		funding_father = {
@@ -4550,6 +4573,7 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_47_gen"
 		},
 		{track = "track_48"},
+		{track = "track_49"},
 		{
 			track = "track_32_lcv"
 		},

@@ -345,6 +345,7 @@ function PlayerManager:_setup()
 		Global.player_manager.weapons = {}
 		Global.player_manager.equipment = {}
 		Global.player_manager.grenades = {}
+		Global.player_manager.synced_upgrades = {}
 		Global.player_manager.kit = {
 			weapon_slots = {"glock_17"},
 			equipment_slots = {},
@@ -1074,6 +1075,10 @@ function PlayerManager:aquire_upgrade(upgrade)
 	self._global.upgrades[upgrade.category] = self._global.upgrades[upgrade.category] or {}
 	self._global.upgrades[upgrade.category][upgrade.upgrade] = math.max(upgrade.value, self._global.upgrades[upgrade.category][upgrade.upgrade] or 0)
 	local value = tweak_data.upgrades.values[upgrade.category][upgrade.upgrade][upgrade.value]
+	if upgrade.synced then
+		self._global.synced_upgrades[upgrade.category] = self._global.synced_upgrades[upgrade.category] or {}
+		self._global.synced_upgrades[upgrade.category][upgrade.upgrade] = true
+	end
 	if self[upgrade.upgrade] then
 		self[upgrade.upgrade](self, value)
 	end
@@ -1094,6 +1099,10 @@ function PlayerManager:aquire_incremental_upgrade(upgrade)
 	local val = self._global.upgrades[upgrade.category][upgrade.upgrade]
 	self._global.upgrades[upgrade.category][upgrade.upgrade] = (val or 0) + 1
 	local value = tweak_data.upgrades.values[upgrade.category][upgrade.upgrade][self._global.upgrades[upgrade.category][upgrade.upgrade]]
+	if upgrade.synced then
+		self._global.synced_upgrades[upgrade.category] = self._global.synced_upgrades[upgrade.category] or {}
+		self._global.synced_upgrades[upgrade.category][upgrade.upgrade] = true
+	end
 	if self[upgrade.upgrade] then
 		self[upgrade.upgrade](self, value)
 	end
@@ -1115,7 +1124,21 @@ function PlayerManager:unaquire_incremental_upgrade(upgrade)
 		if self[upgrade.upgrade] then
 			self[upgrade.upgrade](self, value)
 		end
+	elseif upgrade.synced and self._global.synced_upgrades[upgrade.category] then
+		self._global.synced_upgrades[upgrade.category][upgrade.upgrade] = nil
 	end
+end
+function PlayerManager:is_upgrade_synced(category, upgrade)
+	return self._global.synced_upgrades[category] and self._global.synced_upgrades[category][upgrade]
+end
+function PlayerManager:temporary_upgrade_index(category, upgrade)
+	if self._temporary_upgrade_indices and self._temporary_upgrade_indices[category .. upgrade] then
+		return self._temporary_upgrade_indices[category .. upgrade]
+	end
+	self._synced_temporary_upgrades_count = self._synced_temporary_upgrades_count and self._synced_temporary_upgrades_count + 1 or 1
+	self._temporary_upgrade_indices = self._temporary_upgrade_indices or {}
+	self._temporary_upgrade_indices[category .. upgrade] = self._synced_temporary_upgrades_count
+	return self._temporary_upgrade_indices[category .. upgrade]
 end
 function PlayerManager:upgrade_value(category, upgrade, default)
 	if not self._global.upgrades[category] then
@@ -1159,6 +1182,9 @@ function PlayerManager:activate_temporary_upgrade(category, upgrade)
 	self._temporary_upgrades[category] = self._temporary_upgrades[category] or {}
 	self._temporary_upgrades[category][upgrade] = {}
 	self._temporary_upgrades[category][upgrade].expire_time = Application:time() + time
+	if Network:is_client() and self:is_upgrade_synced(category, upgrade) then
+		managers.network:session():send_to_host("sync_temporary_upgrade_activated", self:temporary_upgrade_index(category, upgrade))
+	end
 end
 function PlayerManager:activate_temporary_upgrade_by_level(category, upgrade, level)
 	local upgrade_level = self:upgrade_level(category, upgrade, 0) or 0

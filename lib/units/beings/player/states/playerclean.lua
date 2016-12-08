@@ -1,7 +1,6 @@
 PlayerClean = PlayerClean or class(PlayerStandard)
 function PlayerClean:init(unit)
 	PlayerClean.super.init(self, unit)
-	self._ids_unequip = Idstring("unequip")
 end
 function PlayerClean:enter(state_data, enter_data)
 	PlayerClean.super.enter(self, state_data, enter_data)
@@ -14,7 +13,7 @@ function PlayerClean:_enter(enter_data)
 		managers.upgrades:setup_current_weapon()
 	end
 	if self._unit:camera():anim_data().equipped then
-		self._unit:camera():play_redirect(self._ids_unequip)
+		self._unit:camera():play_redirect(self:get_animation("unequip"))
 	end
 	self._unit:base():set_slot(self._unit, 4)
 	self._ext_movement:set_attention_settings({

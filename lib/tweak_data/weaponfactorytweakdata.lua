@@ -3864,7 +3864,7 @@ function WeaponFactoryTweakData:_init_ak74()
 		unit = "units/payday2/weapons/wpn_fps_ass_74_pts/wpn_fps_ass_74_m_standard",
 		stats = {value = 1}
 	}
-	self.parts.wpn_fps_ass_74_b_standard.third_unit = "units/payiday2/weapons/wpn_third_ass_74_pts/wpn_third_ass_74_b_standard"
+	self.parts.wpn_fps_ass_74_b_standard.third_unit = "units/payday2/weapons/wpn_third_ass_74_pts/wpn_third_ass_74_b_standard"
 	self.parts.wpn_fps_ass_74_body_upperreceiver.third_unit = "units/payday2/weapons/wpn_third_ass_74_pts/wpn_third_ass_74_body_upperreceiver"
 	self.parts.wpn_fps_ass_74_m_standard.third_unit = "units/payday2/weapons/wpn_third_ass_74_pts/wpn_third_ass_74_m_standard"
 	self.wpn_fps_ass_74 = {}
@@ -15697,10 +15697,11 @@ function WeaponFactoryTweakData:_init_x_1911()
 				reload_not_empty_left = "reload_not_empty_left"
 			},
 			stats = {
-				value = 3,
-				spread_moving = -2,
-				concealment = -1,
-				extra_ammo = 6
+				value = 4,
+				spread_moving = -1,
+				concealment = -2,
+				extra_ammo = 12,
+				recoil = 2
 			}
 		}
 	}
@@ -21072,10 +21073,11 @@ function WeaponFactoryTweakData:_init_x_usp()
 				reload_not_empty_left = "reload_not_empty_left"
 			},
 			stats = {
-				value = 3,
-				spread_moving = -2,
-				concealment = -1,
-				extra_ammo = 8
+				value = 4,
+				spread_moving = -1,
+				concealment = -2,
+				extra_ammo = 12,
+				recoil = 2
 			}
 		}
 	}

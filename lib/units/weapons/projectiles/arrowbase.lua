@@ -70,10 +70,7 @@ function ArrowBase:throw(...)
 	self:_tweak_data_play_sound("flyby")
 	self._requires_stop_flyby_sound = true
 	ArrowBase.super.throw(self, ...)
-	if managers.user:get_setting("throwable_contour") and self._unit:contour() then
-		self._unit:contour():add("deployable_selected")
-		self._unit:contour():_upd_opacity(0)
-	end
+	self:reload_contour()
 end
 function ArrowBase:clbk_body_activation(tag, unit, body, activated)
 	if not activated and tag == ids_pickup then
@@ -149,9 +146,8 @@ function ArrowBase:_check_stop_flyby_sound(skip_impact)
 end
 function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 	local instant_dynamic_pickup = dynamic_pickup_wanted and (is_remote or Network:is_server())
-	if managers.user:get_setting("throwable_contour") and self._unit:contour() then
-		self._unit:contour():_upd_opacity(1)
-	end
+	self._attached_to_unit = true
+	self:reload_contour()
 	self._unit:set_enabled(true)
 	self:_set_body_enabled(instant_dynamic_pickup)
 	self:_check_stop_flyby_sound(dynamic_pickup_wanted)
@@ -487,4 +483,14 @@ function ArrowBase.find_nearest_arrow(peer_id, position)
 		end
 	end
 	return closest_unit
+end
+function ArrowBase:reload_contour()
+	if self._unit:contour() then
+		if managers.user:get_setting("throwable_contour") then
+			self._unit:contour():add("deployable_selected")
+			self._unit:contour():_upd_opacity(self._attached_to_unit and 1 or 0)
+		else
+			self._unit:contour():remove("deployable_selected")
+		end
+	end
 end

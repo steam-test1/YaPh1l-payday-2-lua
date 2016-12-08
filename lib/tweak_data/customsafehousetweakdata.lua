@@ -33,8 +33,7 @@ function CustomSafehouseTweakData:init(tweak_data)
 	self:_init_map(tweak_data)
 	self.daily_redirects = {
 		daily_tapes = "daily_spacetime",
-		daily_sewers = "daily_helicopter",
-		daily_art = "daily_mortage"
+		daily_sewers = "daily_helicopter"
 	}
 end
 function CustomSafehouseTweakData:_init_heisters(tweak_data)

@@ -2,7 +2,6 @@ PlayerIncapacitated = PlayerIncapacitated or class(PlayerStandard)
 PlayerIncapacitated._update_movement = PlayerBleedOut._update_movement
 function PlayerIncapacitated:init(unit)
 	PlayerIncapacitated.super.init(self, unit)
-	self._ids_tased_exit = Idstring("tased_exit")
 end
 function PlayerIncapacitated:enter(state_data, enter_data)
 	PlayerIncapacitated.super.enter(self, state_data, enter_data)
@@ -109,7 +108,7 @@ function PlayerIncapacitated:_start_action_incapacitated(t)
 	self:_update_crosshair_offset()
 	self._unit:kill_mover()
 	self:_activate_mover(Idstring("duck"))
-	self._unit:camera():play_redirect(self._ids_tased_exit)
+	self._unit:camera():play_redirect(self:get_animation("tased_exit"))
 	self._unit:camera()._camera_unit:base():animate_fov(75)
 end
 function PlayerIncapacitated:_end_action_incapacitated(t)
