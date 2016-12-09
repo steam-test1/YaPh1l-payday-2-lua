@@ -100,7 +100,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.not_moving_accuracy_increase = {4}
 	self.values.player.hip_fire_accuracy_inc = {3}
 	self.values.player.melee_damage_stacking = {
-		{melee_multiplier = 1, max_multiplier = 3}
+		{melee_multiplier = 1, max_multiplier = 16}
 	}
 	self.ammo_bag_base = 4
 	self.ecm_jammer_base_battery_life = 20
@@ -741,9 +741,9 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.automatic_faster_reload = {
 		{
 			target_enemies = 2,
-			max_reload_increase = 1.6,
-			min_reload_increase = 1.2,
-			penalty = 0.99,
+			max_reload_increase = 2,
+			min_reload_increase = 1.4,
+			penalty = 0.98,
 			min_bullets = 20
 		}
 	}
@@ -808,14 +808,14 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.values.player.loose_ammo_restore_health_give_team = {true}
 	self.values.temporary.single_shot_fast_reload = {
-		{1.4, 2}
+		{2, 4}
 	}
 	self.values.player.gain_life_per_players = {1}
 	self.damage_to_hot_data = {
 		armors_allowed = {"level_1", "level_2"},
 		works_with_armor_kit = true,
-		tick_time = 0.5,
-		total_ticks = 6,
+		tick_time = 0.3,
+		total_ticks = 10,
 		max_stacks = false,
 		stacking_cooldown = 1.5,
 		add_stack_sources = {
@@ -835,7 +835,7 @@ function UpgradesTweakData:_init_pd2_values()
 		0.3,
 		0.4
 	}
-	self.values.player.damage_to_hot_extra_ticks = {2}
+	self.values.player.damage_to_hot_extra_ticks = {4}
 	self.values.player.armor_piercing_chance = {0.1, 0.3}
 	self.values.player.armor_regen_damage_health_ratio_multiplier = {
 		0.2,
@@ -908,7 +908,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.temporary.armor_break_invulnerable = {
 		{2, 15}
 	}
-	self.values.player.passive_always_regen_armor = {5}
+	self.values.player.passive_always_regen_armor = {1.5}
 	self.values.player.passive_damage_reduction = {0.5}
 	self.cocaine_stacks_convert_levels = {30, 25}
 	self.cocaine_stacks_dmg_absorption_value = 0.1
@@ -922,8 +922,8 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.sync_cocaine_stacks = {true}
 	self.values.player.cocaine_stacks_decay_multiplier = {0.5}
 	self.values.player.sync_cocaine_upgrade_level = {2}
-	self.values.player.cocaine_stack_absorption_multiplier = {1.5}
-	self.wild_trigger_time = 25
+	self.values.player.cocaine_stack_absorption_multiplier = {2}
+	self.wild_trigger_time = 15
 	self.wild_max_triggers_per_time = 10
 	self.values.player.wild_health_amount = {0.5}
 	self.values.player.wild_armor_amount = {0.5}
@@ -1367,7 +1367,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		speedy_reload = {
 			{"15%"},
-			{"40%", "2"}
+			{"100%", "4"}
 		},
 		single_shot_ammo_return = {
 			{
@@ -1422,7 +1422,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{"30%"}
 		},
 		bloodthirst = {
-			{"100%", "300%"},
+			{"100%", "1600%"},
 			{"50%", "10"}
 		},
 		frenzy = {
@@ -1469,10 +1469,10 @@ function UpgradesTweakData:_init_pd2_values()
 			{},
 			{
 				"2",
-				"60%",
+				"100%",
 				"1%",
 				"20",
-				"20%"
+				"40%"
 			}
 		},
 		fast_fire = {
@@ -1873,7 +1873,7 @@ function UpgradesTweakData:_init_pd2_values()
 				"-16",
 				"125%",
 				"10%",
-				"5"
+				"1.5"
 			}
 		},
 		{
@@ -1985,14 +1985,14 @@ function UpgradesTweakData:_init_pd2_values()
 		{
 			{
 				"1",
-				"0.5",
+				"0.3",
 				"3",
 				"1.5"
 			},
 			{"25%"},
 			{
 				"2",
-				"0.5",
+				"0.3",
 				"3",
 				"20%"
 			},
@@ -2003,22 +2003,22 @@ function UpgradesTweakData:_init_pd2_values()
 			},
 			{
 				"3",
-				"0.5",
+				"0.3",
 				"3",
 				"10%"
 			},
 			{"135%"},
 			{
 				"4",
-				"0.5",
+				"0.3",
 				"3",
 				"20%"
 			},
 			{"5%", "20%"},
 			{
 				"4",
-				"0.5",
-				"4",
+				"0.3",
+				"4.2",
 				"20%",
 				"10%"
 			}
@@ -2091,7 +2091,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{"135%"},
 			{"1", "25"},
 			{"5%", "20%"},
-			{"50%", "10%"}
+			{"100%", "10%"}
 		},
 		{
 			{"2", "15"},
@@ -2117,7 +2117,7 @@ function UpgradesTweakData:_init_pd2_values()
 				"5",
 				"5",
 				"10",
-				"25"
+				"15"
 			},
 			{"25%"},
 			{"10%", "1"},

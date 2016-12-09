@@ -34,19 +34,10 @@ function FPCameraPlayerBase:init(unit)
 	self._aim_assist.direction = Vector3()
 	self._aim_assist.distance = 0
 	self._aim_assist.mrotation = Rotation()
+	self._aim_assist.distance_to_aim_line = 0
 	self._fov = {fov = 75}
 	self._input = {}
-	self._tweak_data = {}
-	self._tweak_data.look_speed_dead_zone = 0.1
-	self._tweak_data.look_speed_standard = 120
-	self._tweak_data.look_speed_fast = 360
-	self._tweak_data.look_speed_steel_sight = 60
-	self._tweak_data.look_speed_transition_to_fast = 0.5
-	self._tweak_data.look_speed_transition_zone = 0.8
-	self._tweak_data.look_speed_transition_occluder = 0.95
-	self._tweak_data.uses_keyboard = true
-	self._tweak_data.aim_assist_speed = 200
-	self._tweak_data.aim_assist_use_sticky_aim = false
+	self._tweak_data = tweak_data.input.gamepad
 	self._camera_properties.look_speed_current = self._tweak_data.look_speed_standard
 	self._camera_properties.look_speed_transition_timer = 0
 	self._camera_properties.target_tilt = 0
@@ -64,11 +55,12 @@ function FPCameraPlayerBase:set_parent_unit(parent_unit)
 	local controller_type = self._parent_unit:base():controller():get_default_controller_id()
 	if controller_type == "keyboard" then
 		self._look_function = callback(self, self, "_pc_look_function")
+		self._tweak_data.uses_keyboard = true
 	elseif controller_type == "steampad" then
 		self._look_function = callback(self, self, "_steampad_look_function")
 		self._tweak_data.uses_keyboard = true
 	else
-		self._look_function = callback(self, self, "_gamepad_look_function")
+		self._look_function = callback(self, self, "_gamepad_look_function_ctl")
 		self._tweak_data.uses_keyboard = false
 	end
 end
@@ -282,7 +274,7 @@ function FPCameraPlayerBase:_update_movement(t, dt)
 	self:set_rotation(new_shoulder_rot)
 end
 local mvec1 = Vector3()
-function FPCameraPlayerBase:_update_rot(axis)
+function FPCameraPlayerBase:_update_rot(axis, unscaled_axis)
 	if self._animate_pitch then
 		self:animate_pitch_upd()
 	end
@@ -298,7 +290,7 @@ function FPCameraPlayerBase:_update_rot(axis)
 	mvector3.add(new_head_pos, self._head_stance.translation)
 	self._input.look = axis
 	self._input.look_multiplier = self._parent_unit:base():controller():get_setup():get_connection("look"):get_multiplier()
-	local stick_input_x, stick_input_y = self._look_function(axis, self._input.look_multiplier, dt)
+	local stick_input_x, stick_input_y = self._look_function(axis, self._input.look_multiplier, dt, unscaled_axis)
 	local look_polar_spin = data.spin - stick_input_x
 	local look_polar_pitch = math.clamp(data.pitch + stick_input_y, -85, 85)
 	local player_state = managers.player:current_state()
@@ -544,6 +536,62 @@ function FPCameraPlayerBase:_gamepad_look_function(stick_input, stick_input_mult
 	end
 	return 0, 0
 end
+local multiplier = Vector3()
+function FPCameraPlayerBase:_gamepad_look_function_ctl(stick_input, stick_input_multiplier, dt, unscaled_stick_input)
+	local aim_assist_x, aim_assist_y = 0, 0
+	local cs = managers.player:current_state()
+	local aim_assist = false
+	if (cs == "standard" or cs == "carry" or cs == "bipod") and managers.controller:get_default_wrapper_type() ~= "pc" and managers.user:get_setting("aim_assist") then
+		aim_assist = true
+	end
+	local dz = self._tweak_data.look_speed_dead_zone
+	local length = mvector3.length(unscaled_stick_input)
+	if dz < length then
+		mvector3.set(multiplier, stick_input_multiplier)
+		if multiplier.x - 1 > 0.001 then
+			mvector3.set_x(multiplier, 1 + 1.6 * (multiplier.x - 1) / ((tweak_data.player.camera.MAX_SENSITIVITY - tweak_data.player.camera.MIN_SENSITIVITY) * 0.5))
+		end
+		if 0.001 < multiplier.y - 1 then
+			mvector3.set_y(multiplier, 1 + 1.6 * (multiplier.y - 1) / ((tweak_data.player.camera.MAX_SENSITIVITY - tweak_data.player.camera.MIN_SENSITIVITY) * 0.5))
+		end
+		if aim_assist then
+			aim_assist_x, aim_assist_y = self:_get_aim_assist(0, dt, self._tweak_data.aim_assist_look_speed)
+		end
+		local x = unscaled_stick_input.x
+		local y = unscaled_stick_input.y
+		x = x / length
+		y = y / length
+		length = math.min(length, 1)
+		local scale = (length - dz) / (1 - dz)
+		x = x * scale
+		y = y * scale
+		unscaled_stick_input = Vector3(x, y, 0)
+		local look_speed_x, look_speed_y = self:_get_look_speed_ctl(unscaled_stick_input, multiplier, dt)
+		look_speed_y = look_speed_x
+		look_speed_x = look_speed_x * multiplier.x
+		look_speed_y = look_speed_y * multiplier.y
+		local stick_input_x = unscaled_stick_input.x * dt * look_speed_x
+		local stick_input_y = unscaled_stick_input.y * dt * look_speed_y
+		local look = Vector3(stick_input_x, stick_input_y, 0)
+		if aim_assist then
+			local len = mvector3.length(look)
+			look = Vector3(look.x + aim_assist_x, look.y, 0)
+			if length < 0.08 then
+				mvector3.normalize(look)
+				look = look * len
+			end
+		end
+		return look.x, look.y
+	end
+	if aim_assist then
+		aim_assist_x, aim_assist_y = self:_get_aim_assist(0, dt, self._tweak_data.aim_assist_move_speed)
+		local move = math.abs(self._parent_unit:movement()._current_state._stick_move.x)
+		if move >= self._tweak_data.aim_assist_move_th_min and move <= self._tweak_data.aim_assist_move_th_max then
+			return aim_assist_x, 0
+		end
+	end
+	return 0, 0
+end
 function FPCameraPlayerBase:_steampad_look_function(stick_input, stick_input_multiplier, dt)
 	if mvector3.length(stick_input) > self._tweak_data.look_speed_dead_zone * stick_input_multiplier.x then
 		local x = stick_input.x
@@ -560,6 +608,38 @@ function FPCameraPlayerBase:_get_look_speed(stick_input, stick_input_multiplier,
 		return self._tweak_data.look_speed_steel_sight
 	end
 	if not (mvector3.length(stick_input) > self._tweak_data.look_speed_transition_occluder * stick_input_multiplier.x) or not (math.abs(stick_input.x) > self._tweak_data.look_speed_transition_zone * stick_input_multiplier.x) then
+		self._camera_properties.look_speed_transition_timer = 0
+		return self._tweak_data.look_speed_standard
+	end
+	if self._camera_properties.look_speed_transition_timer >= 1 then
+		return self._tweak_data.look_speed_fast
+	end
+	local p1 = self._tweak_data.look_speed_standard
+	local p2 = self._tweak_data.look_speed_standard
+	local p3 = self._tweak_data.look_speed_standard + (self._tweak_data.look_speed_fast - self._tweak_data.look_speed_standard) / 3 * 2
+	local p4 = self._tweak_data.look_speed_fast
+	self._camera_properties.look_speed_transition_timer = self._camera_properties.look_speed_transition_timer + dt / self._tweak_data.look_speed_transition_to_fast
+	return math.bezier({
+		p1,
+		p2,
+		p3,
+		p4
+	}, self._camera_properties.look_speed_transition_timer)
+end
+local get_look_setting = function(a, b, c, t)
+	if t < 0.5 then
+		return math.lerp(a, b, t / 0.5)
+	end
+	return math.lerp(b, c, (t - 0.5) / 0.5)
+end
+local function get_look_setting_x_y(a, b, c, x, y)
+	return get_look_setting(a, b, c, x), get_look_setting(a, b, c, y)
+end
+function FPCameraPlayerBase:_get_look_speed_ctl(stick_input, stick_input_multiplier, dt)
+	if self._parent_unit:movement()._current_state:in_steelsight() then
+		return self._tweak_data.look_speed_steel_sight
+	end
+	if not (mvector3.length(stick_input) > self._tweak_data.look_speed_transition_occluder) or not (math.abs(stick_input.x) > self._tweak_data.look_speed_transition_zone) then
 		self._camera_properties.look_speed_transition_timer = 0
 		return self._tweak_data.look_speed_standard
 	end

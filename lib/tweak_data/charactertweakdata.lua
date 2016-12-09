@@ -265,7 +265,7 @@ function CharacterTweakData:_init_medic(presets)
 	self.medic.experience = {}
 	self.medic.weapon = presets.weapon.normal
 	self.medic.detection = presets.detection.normal
-	self.medic.HEALTH_INIT = 80
+	self.medic.HEALTH_INIT = 30
 	self.medic.headshot_dmg_mul = 2
 	self.medic.damage.hurt_severity = presets.hurt_severities.no_hurts
 	self.medic.suppression = presets.suppression.no_supress
@@ -7320,7 +7320,6 @@ function CharacterTweakData:_set_overkill_145()
 		self:_multiply_all_hp(3, 3)
 	end
 	self:_multiply_all_speeds(2.05, 2.1)
-	self.medic.HEALTH_INIT = 90
 	self.hector_boss.weapon.saiga.FALLOFF = {
 		{
 			r = 200,
@@ -7451,7 +7450,6 @@ function CharacterTweakData:_set_easy_wish()
 	else
 		self:_multiply_all_hp(6, 1.5)
 	end
-	self.medic.HEALTH_INIT = 180
 	self.hector_boss.HEALTH_INIT = 900
 	self.mobster_boss.HEALTH_INIT = 900
 	self.biker_boss.HEALTH_INIT = 3000
@@ -7465,7 +7463,7 @@ function CharacterTweakData:_set_easy_wish()
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.8
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 300
-	self:_set_characters_weapon_preset("easywish")
+	self:_set_characters_weapon_preset("expert")
 	self.spooc.spooc_attack_timeout = {3, 4}
 	self.sniper.weapon.m4.FALLOFF = {
 		{
@@ -7511,68 +7509,6 @@ function CharacterTweakData:_set_easy_wish()
 	self.shield.weapon.mp9.focus_delay = 0
 	self.shield.weapon.c45.aim_delay = {0, 0}
 	self.shield.weapon.c45.focus_delay = 0
-	self.taser.weapon.m4.FALLOFF = {
-		{
-			r = 100,
-			acc = {0.9, 0.95},
-			dmg_mul = 6,
-			recoil = {0.4, 0.4},
-			mode = {
-				0,
-				3,
-				3,
-				1
-			}
-		},
-		{
-			r = 500,
-			acc = {0.75, 0.95},
-			dmg_mul = 5,
-			recoil = {0.4, 0.5},
-			mode = {
-				0,
-				3,
-				3,
-				1
-			}
-		},
-		{
-			r = 1000,
-			acc = {0.7, 0.9},
-			dmg_mul = 5,
-			recoil = {0.4, 0.6},
-			mode = {
-				1,
-				2,
-				3,
-				0
-			}
-		},
-		{
-			r = 2000,
-			acc = {0.65, 0.8},
-			dmg_mul = 4,
-			recoil = {0.5, 1},
-			mode = {
-				3,
-				2,
-				2,
-				0
-			}
-		},
-		{
-			r = 3000,
-			acc = {0.55, 0.75},
-			dmg_mul = 4,
-			recoil = {1, 2},
-			mode = {
-				3,
-				1,
-				1,
-				0
-			}
-		}
-	}
 	self.city_swat.damage.explosion_damage_mul = 1
 	self.city_swat.damage.hurt_severity = self.presets.hurt_severities.light_hurt_fire_poison
 	self.shield.weapon.mp9.focus_dis = 200
@@ -7593,7 +7529,6 @@ function CharacterTweakData:_set_overkill_290()
 	else
 		self:_multiply_all_hp(6, 1.5)
 	end
-	self.medic.HEALTH_INIT = 180
 	self.hector_boss.weapon.saiga.FALLOFF = {
 		{
 			r = 200,
@@ -8050,7 +7985,6 @@ function CharacterTweakData:_set_sm_wish()
 	else
 		self:_multiply_all_hp(9, 1.5)
 	end
-	self.medic.HEALTH_INIT = 270
 	self.hector_boss.weapon.saiga.FALLOFF = {
 		{
 			r = 200,

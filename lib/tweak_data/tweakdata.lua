@@ -34,6 +34,7 @@ require("lib/tweak_data/EnvEffectTweakData")
 require("lib/tweak_data/CustomSafehouseTweakData")
 require("lib/tweak_data/TangoTweakData")
 require("lib/tweak_data/SubtitleTweakData")
+require("lib/tweak_data/InputTweakData")
 TweakData = TweakData or class()
 function TweakData:_init_wip_tweak_data()
 end
@@ -571,6 +572,7 @@ function TweakData:init()
 	self.env_effect = EnvEffectTweakData:new()
 	self.tango = TangoTweakData:new(self)
 	self.subtitles = SubtitleTweakData:new(self)
+	self.input = InputTweakData:new(self)
 	self.EFFECT_QUALITY = 0.5
 	if SystemInfo:platform() == Idstring("X360") then
 		self.EFFECT_QUALITY = 0.5

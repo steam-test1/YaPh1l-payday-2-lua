@@ -112,9 +112,14 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(66, "crimenet_filter_contract", -1)
 	self:setup_setting(67, "crimenet_filter_kick", -1)
 	self:setup_setting(68, "crimenet_filter_safehouses", false)
+	self:setup_setting(69, "camera_sensitivity_x", 1)
+	self:setup_setting(70, "camera_sensitivity_y", 1)
+	self:setup_setting(71, "enable_camera_sensitivity_separate", false)
 	self:setup_setting(73, "throwable_contour", false)
 	self:setup_setting(74, "ammo_contour", false)
 	self:setup_setting(75, "chromatic_setting", "standard")
+	self:setup_setting(76, "camera_zoom_sensitivity_x", 1)
+	self:setup_setting(77, "camera_zoom_sensitivity_y", 1)
 end
 function GenericUserManager:setup_setting(id, name, default_value)
 	assert(not Global.user_manager.setting_data_map[name], "[UserManager] Setting name \"" .. tostring(name) .. "\" already exists.")
@@ -152,7 +157,12 @@ function GenericUserManager:reset_controls_setting_map()
 		"aim_assist",
 		"controller_mod",
 		"controller_mod_type",
-		"invert_camera_x"
+		"invert_camera_x",
+		"camera_sensitivity_x",
+		"camera_sensitivity_y",
+		"enable_camera_sensitivity_separate",
+		"camera_zoom_sensitivity_x",
+		"camera_zoom_sensitivity_y"
 	}
 	for _, name in pairs(settings) do
 		self:set_setting(name, self:get_default_setting(name))

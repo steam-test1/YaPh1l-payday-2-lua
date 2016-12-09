@@ -16377,10 +16377,11 @@ function WeaponFactoryTweakData:_init_c96()
 		is_a_unlockable = true,
 		stats = {
 			value = 1,
-			recoil = 1,
-			spread = 3,
-			damage = -3,
-			concealment = -3
+			recoil = 2,
+			spread = -2,
+			damage = 110,
+			concealment = -3,
+			total_ammo_mod = -10
 		},
 		animations = {
 			reload = "reload",

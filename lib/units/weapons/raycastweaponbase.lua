@@ -414,9 +414,6 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 										if not hit_unit and not is_shoot_through and not is_shield and not is_wall then
 										else
 											local ray_from_unit = (hit_unit or is_shield) and col_ray.unit
-											if is_shield then
-												dmg_mul = (dmg_mul or 1) * 0.25
-											end
 											self._shoot_through_data.has_hit_wall = has_hit_wall or is_wall
 											self._shoot_through_data.has_passed_shield = has_passed_shield or is_shield
 											self._shoot_through_data.ray_from_unit = ray_from_unit
