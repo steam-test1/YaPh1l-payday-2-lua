@@ -403,6 +403,9 @@ function CopMovement:warp_to(pos, rot)
 end
 function CopMovement:update(unit, t, dt)
 	self._gnd_ray = nil
+	if self._pre_destroyed then
+		return
+	end
 	local old_need_upd = self._need_upd
 	self._need_upd = false
 	self:_upd_actions(t)
@@ -1972,6 +1975,7 @@ function CopMovement:on_nav_link_unregistered(element_id)
 	end
 end
 function CopMovement:pre_destroy()
+	self._pre_destroyed = true
 	tweak_data:remove_reload_callback(self)
 	if alive(self._rope) then
 		self._rope:base():retract()

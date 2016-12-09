@@ -98,7 +98,8 @@ function StatisticsTweakData:statistics_table()
 		"chill",
 		"chill_combat",
 		"flat",
-		"help"
+		"help",
+		"moon"
 	}
 	local job_list = {
 		"jewelry_store",
@@ -169,7 +170,8 @@ function StatisticsTweakData:statistics_table()
 		"chill",
 		"chill_combat",
 		"flat",
-		"help"
+		"help",
+		"moon"
 	}
 	local mask_list = {
 		"character_locked",
@@ -507,7 +509,9 @@ function StatisticsTweakData:statistics_table()
 		"tng_cloaker",
 		"tng_bandana",
 		"win_donald",
-		"win_donald_mega"
+		"win_donald_mega",
+		"moon_paycheck_chains",
+		"moon_paycheck_dallas"
 	}
 	local weapon_list = {
 		"ak5",
