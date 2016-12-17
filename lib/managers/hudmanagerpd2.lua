@@ -127,7 +127,7 @@ function HUDManager:set_teammate_weapon_firemode(i, id, firemode)
 	self._teammate_panels[i]:set_weapon_firemode(id, firemode)
 end
 function HUDManager:set_ammo_amount(selection_index, max_clip, current_clip, current_left, max)
-	if selection_index > 2 then
+	if selection_index > 3 then
 		print("set_ammo_amount", selection_index, max_clip, current_clip, current_left, max)
 		Application:stack_dump()
 		debug_pause("WRONG SELECTION INDEX!")
@@ -170,6 +170,15 @@ function HUDManager:set_player_custom_radial(data)
 end
 function HUDManager:set_teammate_custom_radial(i, data)
 	self._teammate_panels[i]:set_custom_radial(data)
+end
+function HUDManager:set_player_ability_radial(data)
+	self:set_teammate_ability_radial(HUDManager.PLAYER_PANEL, data)
+end
+function HUDManager:set_teammate_ability_radial(i, data)
+	self._teammate_panels[i]:set_ability_radial(data)
+end
+function HUDManager:activate_teammate_ability_radial(i, time)
+	self._teammate_panels[i]:activate_ability_radial(time)
 end
 function HUDManager:set_player_armor(data)
 	if data.current == 0 and not data.no_hint then
@@ -271,6 +280,12 @@ function HUDManager:set_teammate_deployable_equipment_amount(i, index, data)
 end
 function HUDManager:set_teammate_deployable_equipment_amount_from_string(i, index, data)
 	self._teammate_panels[i]:set_deployable_equipment_amount_from_string(index, data)
+end
+function HUDManager:set_player_ability_cooldown(data)
+	self:set_teammate_ability_cooldown(HUDManager.PLAYER_PANEL, data)
+end
+function HUDManager:set_teammate_ability_cooldown(i, data)
+	self._teammate_panels[i]:set_ability_cooldown(data)
 end
 function HUDManager:set_teammate_grenades(i, data)
 	self._teammate_panels[i]:set_grenades(data)
@@ -441,7 +456,8 @@ function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
 					local icon = tweak_data.blackmarket.projectiles[peer_grenades.grenade].icon
 					self:set_teammate_grenades(i, {
 						icon = icon,
-						amount = Application:digest_value(peer_grenades.amount, false)
+						amount = Application:digest_value(peer_grenades.amount, false),
+						ability = tweak_data.blackmarket.projectiles[peer_grenades.grenade].ability
 					})
 				end
 			end

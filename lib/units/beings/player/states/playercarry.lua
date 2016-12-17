@@ -108,6 +108,7 @@ function PlayerCarry:_update_check_actions(t, dt)
 		self._shooting = new_action
 	end
 	new_action = new_action or self:_check_action_throw_projectile(t, input)
+	new_action = new_action or self:_check_action_deploy_underbarrel(t, input)
 	self:_check_action_interact(t, input)
 	self:_check_action_jump(t, input)
 	self:_check_action_run(t, input)
@@ -119,7 +120,7 @@ function PlayerCarry:_update_check_actions(t, dt)
 	self:_check_action_steelsight(t, input)
 	self:_check_use_item(t, input)
 	self:_update_use_item_timers(t, input)
-	self:_check_action_change_equipment(input)
+	self:_check_action_change_equipment(t, input)
 	self:_find_pickups(t)
 end
 function PlayerCarry:_check_action_run(...)

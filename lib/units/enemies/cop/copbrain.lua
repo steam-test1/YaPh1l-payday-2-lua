@@ -57,6 +57,10 @@ logic_variants.inside_man = security_variant
 logic_variants.medic = security_variant
 logic_variants.biker_boss = security_variant
 logic_variants.chavez_boss = security_variant
+logic_variants.bolivian = security_variant
+logic_variants.bolivian_indoors = security_variant
+logic_variants.drug_lord_boss = security_variant
+logic_variants.drug_lord_boss_stealth = security_variant
 logic_variants.cop_scared = security_variant
 logic_variants.security_undominatable = security_variant
 for _, tweak_table_name in pairs({
@@ -902,9 +906,9 @@ function CopBrain:on_alarm_pager_interaction(status, player)
 			managers.groupai:state():on_successful_alarm_pager_bluff()
 			local cue_index = is_last and 4 or 1
 			if is_dead then
-				self._unit:sound():corpse_play("dsp_radio_fooled_" .. tostring(cue_index), nil, true)
+				self._unit:sound():corpse_play(self:_get_radio_id("dsp_radio_fooled_" .. tostring(cue_index)), nil, true)
 			else
-				self._unit:sound():play("dsp_radio_fooled_" .. tostring(cue_index), nil, true)
+				self._unit:sound():play(self:_get_radio_id("dsp_radio_fooled_" .. tostring(cue_index)), nil, true)
 			end
 			if is_last then
 			end
@@ -912,9 +916,9 @@ function CopBrain:on_alarm_pager_interaction(status, player)
 			managers.groupai:state():on_police_called("alarm_pager_bluff_failed")
 			self._unit:interaction():set_active(false, true)
 			if is_dead then
-				self._unit:sound():corpse_play("dsp_radio_alarm_1", nil, true)
+				self._unit:sound():corpse_play(self:_get_radio_id("dsp_radio_alarm_1"), nil, true)
 			else
-				self._unit:sound():play("dsp_radio_alarm_1", nil, true)
+				self._unit:sound():play(self:_get_radio_id("dsp_radio_alarm_1"), nil, true)
 			end
 		end
 		self:end_alarm_pager()
@@ -927,9 +931,9 @@ function CopBrain:on_alarm_pager_interaction(status, player)
 		self._unit:interaction():set_active(false, true)
 		self._unit:sound():stop()
 		if is_dead then
-			self._unit:sound():corpse_play("dsp_radio_alarm_1", nil, true)
+			self._unit:sound():corpse_play(self:_get_radio_id("dsp_radio_alarm_1"), nil, true)
 		else
-			self._unit:sound():play("dsp_radio_alarm_1", nil, true)
+			self._unit:sound():play(self:_get_radio_id("dsp_radio_alarm_1"), nil, true)
 		end
 		self:end_alarm_pager()
 	end
@@ -950,18 +954,18 @@ function CopBrain:clbk_alarm_pager(ignore_this, data)
 		end
 		self._unit:sound():stop()
 		if self._unit:character_damage():dead() then
-			self._unit:sound():corpse_play("dsp_radio_query_1", nil, true)
+			self._unit:sound():corpse_play(self:_get_radio_id("dsp_radio_query_1"), nil, true)
 		else
-			self._unit:sound():play("dsp_radio_query_1", nil, true)
+			self._unit:sound():play(self:_get_radio_id("dsp_radio_query_1"), nil, true)
 		end
 		self._unit:interaction():set_tweak_data("corpse_alarm_pager")
 		self._unit:interaction():set_active(true, true)
 	elseif pager_data.nr_calls_made < pager_data.total_nr_calls then
 		self._unit:sound():stop()
 		if self._unit:character_damage():dead() then
-			self._unit:sound():corpse_play("dsp_radio_reminder_1", nil, true)
+			self._unit:sound():corpse_play(self:_get_radio_id("dsp_radio_reminder_1"), nil, true)
 		else
-			self._unit:sound():play("dsp_radio_reminder_1", nil, true)
+			self._unit:sound():play(self:_get_radio_id("dsp_radio_reminder_1"), nil, true)
 		end
 	elseif pager_data.nr_calls_made == pager_data.total_nr_calls then
 		self._unit:interaction():set_active(false, true)
@@ -1025,6 +1029,15 @@ function CopBrain:pre_destroy(unit)
 	if self._logic_data.surrender_window then
 		managers.enemy:remove_delayed_clbk(self._logic_data.surrender_window.expire_clbk_id)
 		self._logic_data.surrender_window = nil
+	end
+end
+function CopBrain:_get_radio_id(id)
+	local tweak = tweak_data.character[self._unit:base()._tweak_table]
+	print("_get_radio_id", id, tweak and tweak.radio_prefix)
+	if tweak and tweak.radio_prefix then
+		return tweak.radio_prefix .. id
+	else
+		return id
 	end
 end
 if reload then

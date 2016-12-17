@@ -1022,7 +1022,7 @@ function CustomSafehouseGuiPageMap:mouse_moved(o, x, y)
 	return used, pointer
 end
 function CustomSafehouseGuiPageMap:mouse_pressed(button, x, y)
-	if button ~= Idstring("0") or not self._active then
+	if button ~= Idstring("0") and button ~= Idstring("1") or not self._active then
 		return
 	end
 	local ret
@@ -1335,8 +1335,12 @@ function CustomSafehouseMapPoint:init(parent, map_panel, id)
 	})
 	self:make_fine_text(self._title)
 	self._title:set_top(0)
+	local path = "guis/dlcs/chill/textures/pd2/character_icon/"
+	if tweak_table.path then
+		path = tweak_table.path
+	end
 	self._image = self._panel:bitmap({
-		texture = "guis/dlcs/chill/textures/pd2/character_icon/" .. tweak_table.icon,
+		texture = path .. tweak_table.icon,
 		w = CustomSafehouseMapPoint.WIDTH,
 		h = CustomSafehouseMapPoint.HEIGHT,
 		layer = 12

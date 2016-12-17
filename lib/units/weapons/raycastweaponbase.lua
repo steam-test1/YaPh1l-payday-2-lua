@@ -77,8 +77,15 @@ end
 function RaycastWeaponBase:has_part(part_id)
 	return false
 end
+function RaycastWeaponBase:_weapon_tweak_data_id()
+	local override_gadget = self:gadget_overrides_weapon_functions()
+	if override_gadget then
+		return override_gadget.name_id
+	end
+	return self._name_id
+end
 function RaycastWeaponBase:weapon_tweak_data()
-	return tweak_data.weapon[self._name_id]
+	return tweak_data.weapon[self:_weapon_tweak_data_id()]
 end
 function RaycastWeaponBase:selection_index()
 	return self:weapon_tweak_data().use_data.selection_index
@@ -158,8 +165,17 @@ function RaycastWeaponBase:setup(setup_data, damage_multiplier)
 		self:set_timer(self._setup.timer)
 	end
 end
+function RaycastWeaponBase:gadget_overrides_weapon_functions()
+	return false
+end
+function RaycastWeaponBase:get_all_override_weapon_gadgets()
+	return {}
+end
+function RaycastWeaponBase:gadget_function_override(func, ...)
+end
 function RaycastWeaponBase:ammo_base()
 	local base = self.parent_weapon and self.parent_weapon:base() or self
+	base = self:gadget_overrides_weapon_functions() and self:gadget_overrides_weapon_functions():ammo_base() or base
 	return base
 end
 function RaycastWeaponBase:fire_mode()
@@ -181,6 +197,9 @@ function RaycastWeaponBase:_fire_sound()
 	self:play_tweak_data_sound(self:fire_mode() == "auto" and "fire_auto" or "fire_single", "fire")
 end
 function RaycastWeaponBase:start_shooting_allowed()
+	if self:gadget_overrides_weapon_functions() then
+		return self:gadget_function_override("start_shooting_allowed")
+	end
 	return self._next_fire_allowed <= self._unit:timer():time()
 end
 function RaycastWeaponBase:start_shooting()
@@ -278,9 +297,21 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 	return ray_res
 end
 function RaycastWeaponBase:_spawn_muzzle_effect()
+	if self:gadget_overrides_weapon_functions() then
+		local r = self:gadget_function_override("_spawn_muzzle_effect")
+		if r ~= nil then
+			return
+		end
+	end
 	World:effect_manager():spawn(self._muzzle_effect_table)
 end
 function RaycastWeaponBase:_spawn_shell_eject_effect()
+	if self:gadget_overrides_weapon_functions() then
+		local r = self:gadget_function_override("_spawn_shell_eject_effect")
+		if r ~= nil then
+			return
+		end
+	end
 	if self._use_shell_ejection_effect then
 		World:effect_manager():spawn(self._shell_ejection_effect_table)
 	end
@@ -297,6 +328,9 @@ local mvec_to = Vector3()
 local mvec_spread_direction = Vector3()
 local mvec1 = Vector3()
 function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data)
+	if self:gadget_overrides_weapon_functions() then
+		return self:gadget_function_override("_fire_raycast", self, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data)
+	end
 	local result = {}
 	local hit_unit
 	local spread_x, spread_y = self:_get_spread(user_unit)
@@ -414,9 +448,6 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 										if not hit_unit and not is_shoot_through and not is_shield and not is_wall then
 										else
 											local ray_from_unit = (hit_unit or is_shield) and col_ray.unit
-											if is_shield then
-												dmg_mul = (dmg_mul or 1) * 0.25
-											end
 											self._shoot_through_data.has_hit_wall = has_hit_wall or is_wall
 											self._shoot_through_data.has_passed_shield = has_passed_shield or is_shield
 											self._shoot_through_data.ray_from_unit = ray_from_unit
@@ -714,6 +745,9 @@ function RaycastWeaponBase:force_hit(from_pos, direction, user_unit, impact_pos,
 	self._bullet_class:on_collision(col_ray, self._unit, user_unit, self._damage)
 end
 function RaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
+	if self:gadget_overrides_weapon_functions() then
+		return self:gadget_function_override("_get_tweak_data_weapon_animation", anim)
+	end
 	local animations = self:weapon_tweak_data().animations
 	return animations and animations[anim]
 end
@@ -1000,7 +1034,18 @@ function RaycastWeaponBase:set_ammo(ammo)
 	self:ammo_base():set_ammo_remaining_in_clip(math.min(self:ammo_base():get_ammo_max_per_clip(), ammo_num))
 end
 function RaycastWeaponBase:ammo_full()
-	return self:ammo_base():get_ammo_total() == self:ammo_base():get_ammo_max()
+	local is_full = function(ammo_base)
+		return ammo_base:get_ammo_total() == ammo_base:get_ammo_max()
+	end
+	if not is_full(self) then
+		return false
+	end
+	for _, gadget in ipairs(self:get_all_override_weapon_gadgets()) do
+		if gadget and gadget.ammo_base and not is_full(gadget:ammo_base()) then
+			return false
+		end
+	end
+	return true
 end
 function RaycastWeaponBase:clip_full()
 	return self:ammo_base():get_ammo_remaining_in_clip() == self:ammo_base():get_ammo_max_per_clip()
@@ -1098,6 +1143,13 @@ function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
 	end
 	local picked_up, add_amount
 	picked_up, add_amount = _add_ammo(self, ratio, add_amount_override)
+	for _, gadget in ipairs(self:get_all_override_weapon_gadgets()) do
+		if gadget and gadget.ammo_base then
+			local p, a = _add_ammo(gadget:ammo_base(), ratio, add_amount_override)
+			picked_up = p or picked_up
+			add_amount = add_amount + a
+		end
+	end
 	return picked_up, add_amount
 end
 function RaycastWeaponBase:add_ammo_ratio(ammo_ratio_increase)
@@ -1112,6 +1164,11 @@ function RaycastWeaponBase:add_ammo_ratio(ammo_ratio_increase)
 		ammo_base:set_ammo_total(ammo_total)
 	end
 	_add_ammo(self, ammo_ratio_increase)
+	for _, gadget in ipairs(self:get_all_override_weapon_gadgets()) do
+		if gadget and gadget.ammo_base then
+			_add_ammo(gadget:ammo_base(), ammo_ratio_increase)
+		end
+	end
 end
 function RaycastWeaponBase:add_ammo_from_bag(available)
 	local process_ammo = function(ammo_base, amount_available)
@@ -1128,6 +1185,13 @@ function RaycastWeaponBase:add_ammo_from_bag(available)
 	end
 	local can_have = process_ammo(self, available)
 	available = available - can_have
+	for _, gadget in ipairs(self:get_all_override_weapon_gadgets()) do
+		if gadget and gadget.ammo_base then
+			local ammo = process_ammo(gadget:ammo_base(), available)
+			can_have = can_have + ammo
+			available = available - ammo
+		end
+	end
 	return can_have
 end
 function RaycastWeaponBase:reduce_ammo_by_procentage_of_total(ammo_procentage)
@@ -1169,6 +1233,9 @@ function RaycastWeaponBase:play_sound(event)
 	self._sound_fire:post_event(event)
 end
 function RaycastWeaponBase:_get_sound_event(event, alternative_event)
+	if self:gadget_overrides_weapon_functions() then
+		return self:gadget_function_override("_get_sound_event", self, event, alternative_event)
+	end
 	local str_name = self._name_id
 	if not self.third_person_important or not self:third_person_important() then
 		str_name = self._name_id:gsub("_npc", "")

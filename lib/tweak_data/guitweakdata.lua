@@ -2044,6 +2044,15 @@ function GuiTweakData:init()
 					videos = {"wild1"},
 					post_event = "pln_contact_rust"
 				}
+			},
+			{
+				id = "chico",
+				name_id = "menu_chico",
+				{
+					desc_id = "menu_chico_desc_codex",
+					videos = {"chico1"},
+					post_event = "pln_contact_tony"
+				}
 			}
 		}
 	}
@@ -4652,6 +4661,11 @@ function GuiTweakData:init()
 		"bonus"
 	}
 	self.new_heists = {}
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_scarface",
+		texture_path = "guis/textures/pd2/new_heists/scarface",
+		url = "http://www.overkillsoftware.com/games/scarfacepacks/"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_heist_2016_moon",
 		texture_path = "guis/textures/pd2/new_heists/christmas_heist_2016",
