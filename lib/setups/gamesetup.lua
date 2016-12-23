@@ -464,6 +464,7 @@ function GameSetup:destroy()
 	end
 	managers.navigation:destroy()
 	managers.time_speed:destroy()
+	managers.hud:destroy()
 	managers.network.account:set_playing(false)
 end
 function GameSetup:end_update(t, dt)

@@ -1,8 +1,8 @@
 core:import("CoreInternalGameState")
 GameState = GameState or class(CoreInternalGameState.GameState)
-function GameState:freeflight_drop_player(pos, rot)
+function GameState:freeflight_drop_player(pos, rot, velocity)
 	if managers.player then
-		managers.player:warp_to(pos, rot)
+		managers.player:warp_to(pos, rot, nil, velocity)
 	end
 end
 function GameState:set_controller_enabled(enabled)

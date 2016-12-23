@@ -1249,6 +1249,9 @@ PlayerInventoryGui._update_info_deployable = function(self, name, slot)
 		deployable_id = "sentry_gun"
 	end
 	amount = amount + (managers.player:equiptment_upgrade_value(deployable_id, "quantity") or 0)
+	if slot and slot > 1 then
+		amount = math.ceil((amount) / 2)
+	end
 	text_string = text_string .. managers.localization:text(deployable_data.name_id) .. " (x" .. tostring(amount) .. ")" .. "\n\n"
 	if IS_WIN_32 then
 		text_string = text_string .. managers.localization:text(deployable_data.desc_id, {BTN_INTERACT = managers.localization:btn_macro("interact", true), BTN_USE_ITEM = managers.localization:btn_macro("use_item", true)}) .. "\n"

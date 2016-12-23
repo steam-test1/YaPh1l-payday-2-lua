@@ -64,6 +64,8 @@ function HUDManager:init()
 	self._visible_huds_states = {}
 	self._disabled = Global.hud_disabled
 end
+function HUDManager:destroy()
+end
 function HUDManager:crosshair_enabled_changed(name, old_value, new_value)
 	self._crosshair_enabled = new_value
 	if new_value then

@@ -618,7 +618,6 @@ function X360DLCManager:on_signin_complete()
 end
 PS4DLCManager = PS4DLCManager or class(GenericDLCManager)
 DLCManager.PLATFORM_CLASS_MAP[Idstring("PS4"):key()] = PS4DLCManager
-PS4DLCManager.SERVICE_ID = "EP4040-BLES01902_00"
 function PS4DLCManager:init()
 	PS4DLCManager.super.init(self)
 	if not Global.dlc_manager then
@@ -657,11 +656,6 @@ function PS4DLCManager:init()
 				verified = false,
 				verified_for_TheBigScore = true
 			},
-			character_pack_sokol = {
-				product_id = "PD2DLCSOKOLCHR06",
-				verified = false,
-				verified_for_TheBigScore = true
-			},
 			bbq = {
 				product_id = "PD2DLCBUTCHBBQ02",
 				verified = false,
@@ -682,6 +676,11 @@ function PS4DLCManager:init()
 				verified = false,
 				verified_for_TheBigScore = true
 			},
+			character_pack_sokol = {
+				product_id = "PD2DLCSOKOLCHR06",
+				verified = false,
+				verified_for_TheBigScore = true
+			},
 			turtles = {
 				product_id = "PD2DLCGAGENINJ07",
 				verified = false,
@@ -692,15 +691,40 @@ function PS4DLCManager:init()
 				verified = false,
 				verified_for_TheBigScore = true
 			},
+			steel = {
+				product_id = "PD2DLCGAGECHIV09",
+				verified = false,
+				verified_for_TheBigScore = true
+			},
 			berry = {
 				product_id = "PD2DLCPOINTBRK10",
 				verified = false,
 				verified_for_TheBigScore = true
 			},
-			steel = {
-				product_id = "PD2DLCGAGECHIV09",
+			mad = {
+				product_id = "PD2DLCHARDCORE11",
 				verified = false,
-				verified_for_TheBigScore = true
+				verified_for_TheBigScore = false
+			},
+			coco = {
+				product_id = "PD2DLCJIMMYCHA12",
+				verified = false,
+				verified_for_TheBigScore = false
+			},
+			pal = {
+				product_id = "PD2DLCWOLFPACK13",
+				verified = false,
+				verified_for_TheBigScore = false
+			},
+			peta = {
+				product_id = "PD2DLCGOATSIMU14",
+				verified = false,
+				verified_for_TheBigScore = false
+			},
+			opera = {
+				product_id = "PD2DLCSYDNEYCH15",
+				verified = false,
+				verified_for_TheBigScore = false
 			}
 		}
 		self:_verify_dlcs()
@@ -965,11 +989,6 @@ function XB1DLCManager:init()
 			},
 			gage_pack_historical = {
 				index = 24,
-				is_default = true,
-				no_install = true
-			},
-			pd2_clan = {
-				index = 25,
 				is_default = true,
 				no_install = true
 			}

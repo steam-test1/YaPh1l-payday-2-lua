@@ -1412,6 +1412,12 @@ function UnitNetworkHandler:give_equipment(equipment, amount, transfer, sender)
 		transfer = transfer
 	})
 end
+function UnitNetworkHandler:on_sole_criminal_respawned(peer_id, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+	managers.player:on_sole_criminal_respawned(peer_id)
+end
 function UnitNetworkHandler:killzone_set_unit(type)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
