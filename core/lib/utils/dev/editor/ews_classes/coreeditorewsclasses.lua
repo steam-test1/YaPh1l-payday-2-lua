@@ -1249,6 +1249,7 @@ function MoveTransformTypeIn:_create_ctrl(name, coor, value, type, sizer)
 	ctrl_sizer:add(EWS:StaticText(self._panel, name, "", "ALIGN_LEFT"), 0, 0, "EXPAND")
 	local ctrl = EWS:TextCtrl(self._panel, value, "", "TE_PROCESS_ENTER")
 	ctrl:set_tool_tip("Type in " .. type .. " " .. coor .. "-coordinate in meters")
+	ctrl:set_min_size(Vector3(-1, 10, 0))
 	ctrl:connect("EVT_CHAR", callback(nil, _G, "verify_number"), ctrl)
 	if type == "offset" then
 		ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_offset"), {ctrl = ctrl, coor = coor})
@@ -1259,6 +1260,7 @@ function MoveTransformTypeIn:_create_ctrl(name, coor, value, type, sizer)
 	end
 	ctrl_sizer:add(ctrl, 1, 0, "EXPAND")
 	local spin = EWS:SpinButton(self._panel, "", "SP_VERTICAL")
+	spin:set_min_size(Vector3(-1, 10, 0))
 	local c = ctrl
 	if type == "offset" then
 		c = self["_a" .. coor]
@@ -1356,6 +1358,7 @@ function RotateTransformTypeIn:_create_ctrl(name, coor, value, type, sizer)
 	ctrl_sizer:add(EWS:StaticText(self._panel, name, "", "ALIGN_LEFT"), 0, 0, "EXPAND")
 	local ctrl = EWS:TextCtrl(self._panel, value, "", "TE_PROCESS_ENTER")
 	ctrl:set_tool_tip("Type in " .. type .. " " .. coor .. "-rotation in degrees")
+	ctrl:set_min_size(Vector3(-1, 10, 0))
 	ctrl:connect("EVT_CHAR", callback(nil, _G, "verify_number"), ctrl)
 	if type == "offset" then
 		ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_offset"), {ctrl = ctrl, coor = coor})
@@ -1366,6 +1369,7 @@ function RotateTransformTypeIn:_create_ctrl(name, coor, value, type, sizer)
 	end
 	ctrl_sizer:add(ctrl, 1, 0, "EXPAND")
 	local spin = EWS:SpinButton(self._panel, "", "SP_VERTICAL")
+	spin:set_min_size(Vector3(-1, 10, 0))
 	local c = ctrl
 	if type == "offset" then
 		c = self["_a" .. coor]
@@ -1497,7 +1501,9 @@ function CameraTransformTypeIn:_create_ctrl(name, coor, value, type, sizer)
 	local ctrl_sizer = EWS:BoxSizer("HORIZONTAL")
 	ctrl_sizer:add(EWS:StaticText(self._panel, name, "", "ALIGN_LEFT"), 0, 0, "EXPAND")
 	local ctrl = EWS:TextCtrl(self._panel, value, "", "TE_PROCESS_ENTER")
+	ctrl:set_min_size(Vector3(-1, 10, 0))
 	local spin = EWS:SpinButton(self._panel, "", "SP_VERTICAL")
+	spin:set_min_size(Vector3(-1, 10, 0))
 	ctrl:connect("EVT_CHAR", callback(nil, _G, "verify_number"), ctrl)
 	if type == "offset" then
 		ctrl:set_tool_tip("Type in absolut " .. coor .. "-rotation in degrees")
