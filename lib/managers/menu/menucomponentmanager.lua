@@ -992,9 +992,6 @@ MenuComponentManager.mouse_pressed = function(self, o, button, x, y)
 	if self._crimenet_contract_gui and self._crimenet_contract_gui:mouse_pressed(o, button, x, y) then
 		return true
 	end
-	if self._crimenet_gui and self._crimenet_gui:mouse_pressed(o, button, x, y) then
-		return true
-	end
 	if self:is_preplanning_enabled() and self._preplanning_map:mouse_pressed(button, x, y) then
 		return true
 	end
@@ -1090,6 +1087,9 @@ MenuComponentManager.mouse_pressed = function(self, o, button, x, y)
 	end
 	if used then
 		return unpack(values)
+	end
+	if self._crimenet_gui and self._crimenet_gui:mouse_pressed(o, button, x, y) then
+		return true
 	end
 end
 
@@ -1215,12 +1215,6 @@ MenuComponentManager.mouse_moved = function(self, o, x, y)
 	end
 	if self._crimenet_contract_gui then
 		local used, pointer = self._crimenet_contract_gui:mouse_moved(o, x, y)
-	if pointer or used then
-		end
-		return true, wanted_pointer
-	end
-	if self._crimenet_gui then
-		local used, pointer = self._crimenet_gui:mouse_moved(o, x, y)
 	if pointer or used then
 		end
 		return true, wanted_pointer
@@ -1390,9 +1384,14 @@ MenuComponentManager.mouse_moved = function(self, o, x, y)
 	if used then
 		local _, pointer = unpack(values)
 		return true, pointer or wanted_pointer
-	else
-		return false, wanted_pointer
 	end
+	if self._crimenet_gui then
+		local used, pointer = self._crimenet_gui:mouse_moved(o, x, y)
+	if pointer or used then
+		end
+		return true, wanted_pointer
+	end
+	return false, wanted_pointer
 end
 
 MenuComponentManager.peer_outfit_updated = function(self, peer_id)

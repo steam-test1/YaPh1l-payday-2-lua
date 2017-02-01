@@ -746,6 +746,8 @@ end
 
 PlayerInventoryGui.set_info_text = function(self, text, color_ranges, recursive)
 	self._info_text:set_text(text)
+	local default_font_size = tweak_data.menu.pd2_small_font_size
+	self._info_text:set_font_size(default_font_size)
 	if color_ranges then
 		if color_ranges.add_colors_to_text_object then
 			managers.menu_component:add_colors_to_text_object(self._info_text, unpack(color_ranges))
@@ -757,17 +759,45 @@ PlayerInventoryGui.set_info_text = function(self, text, color_ranges, recursive)
 	end
 	local _, _, _, h = self._info_text:text_rect()
 	self._info_text:set_h(h)
-	if not recursive and self._info_panel:parent():h() < self._info_text:bottom() then
-		local x = self._info_text:world_left() + 1
-		local y = self._info_panel:parent():world_bottom() - self._info_text:line_height()
-		local index = self._info_text:point_to_index(x, y)
-		local text = self._info_text:text()
-		text = utf8.sub(text, 1, index)
-		text = text .. "..."
-		return self:set_info_text(text, color_ranges, true)
+	do
+		local min_font_size = math.max(math.min(6, default_font_size), math.ceil(default_font_size * 0.7))
+		while 1 do
+			if self._info_panel:parent():h() < self._info_text:bottom() then
+				local font_size = self._info_text:font_size()
+				while self._info_panel:parent():h() < self._info_text:bottom() and min_font_size < font_size do
+					self._info_text:set_font_size(font_size)
+					local _, _, _, h = self._info_text:text_rect()
+					self._info_text:set_h(h)
+					font_size = font_size - 1
+				end
+			if not recursive then
+				end
+			if self._info_panel:parent():h() < self._info_text:bottom() then
+				end
+				print("[PlayerInventoryGui] Info text dynamic font sizer failed")
+				local x = self._info_text:world_left() + 1
+				local y = self._info_panel:parent():world_bottom() - self._info_text:line_height()
+				local index = self._info_text:point_to_index(x, y)
+				local text = self._info_text:text()
+				text = utf8.sub(text, 1, index)
+				while 1 do
+					local last = utf8.sub(text, -1)
+					while last == " " or last == "\n" do
+						last = utf8.sub(text, -2, -1)
+						if last ~= "." then
+							text = utf8.sub(text, 1, -2)
+						end
+					end
+					text = text .. "..."
+					return self:set_info_text(text, color_ranges, true)
+				end
+				self._info_panel:set_top(self._info_text:bottom())
+				self._info_panel:set_h(self._info_panel:parent():h() - self._info_panel:top())
+			end
+			 -- WARNING: missing end command somewhere! Added here
+		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	self._info_panel:set_top(self._info_text:bottom())
-	self._info_panel:set_h(self._info_panel:parent():h() - self._info_panel:top())
 end
 
 PlayerInventoryGui.setup_player_stats = function(self, panel)
@@ -1381,7 +1411,7 @@ PlayerInventoryGui._update_info_weapon = function(self, name)
 				self._stats_texts[stat.name].total:set_text(format_round(value, stat.round_value))
 				self._stats_texts[stat.name].base:set_text(format_round(base, stat.round_value))
 				if mods_stats[stat.name].value <= 0 or not "+" then
-					self._stats_texts[stat.name].mods:set_text((mods_stats[stat.name].value == 0 and "" or "") .. format_round(mods_stats[stat.name].value, stat.round_valuee))
+					self._stats_texts[stat.name].mods:set_text((mods_stats[stat.name].value == 0 and "" or "") .. format_round(mods_stats[stat.name].value, stat.round_value))
 					self._stats_texts[stat.name].skill:set_text((skill_stats[stat.name].value <= 0 or not "+") and (not skill_stats[stat.name].skill_in_effect or "") .. format_round(skill_stats[stat.name].value, stat.round_value) or "")
 					if base < value then
 						if not stat.inverted or not tweak_data.screen_colors.stats_negative then
@@ -1470,7 +1500,7 @@ PlayerInventoryGui._update_info_weapon_cosmetics = function(self, name, cosmetic
 			self._stats_texts[stat.name].total:set_text(format_round(value, stat.round_value))
 			self._stats_texts[stat.name].base:set_text(format_round(base, stat.round_value))
 			if mods_stats[stat.name].value <= 0 or not "+" then
-				self._stats_texts[stat.name].mods:set_text((mods_stats[stat.name].value == 0 and "" or "") .. format_round(mods_stats[stat.name].value, stat.round_valuee))
+				self._stats_texts[stat.name].mods:set_text((mods_stats[stat.name].value == 0 and "" or "") .. format_round(mods_stats[stat.name].value, stat.round_value))
 				self._stats_texts[stat.name].skill:set_text((skill_stats[stat.name].value <= 0 or not "+") and (not skill_stats[stat.name].skill_in_effect or "") .. format_round(skill_stats[stat.name].value, stat.round_value) or "")
 				if base < value then
 					if not stat.inverted or not tweak_data.screen_colors.stats_negative then

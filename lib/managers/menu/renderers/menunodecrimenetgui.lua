@@ -202,6 +202,7 @@ end
 MenuNodeCrimenetSmartMatchmakingGui = MenuNodeCrimenetSmartMatchmakingGui or class(MenuNodeCrimenetSpecialGui)
 MenuNodeCrimenetSmartMatchmakingGui.title_id = "menu_cn_smart_matchmaking_title"
 MenuNodeCrimenetCasinoGui = MenuNodeCrimenetCasinoGui or class(MenuNodeGui)
+MenuNodeCrimenetCasinoGui.PRECISION = "%.1f"
 function MenuNodeCrimenetCasinoGui:init(node, layer, parameters)
 	parameters.font = tweak_data.menu.pd2_small_font
 	parameters.font_size = tweak_data.menu.pd2_small_font_size
@@ -581,7 +582,7 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 		self._base_chances[type] = self:_round_value(weighted_type_chance[type] / sum * 100)
 	end
 	for _, stat in pairs(self._stats_cards) do
-		local value = string.format("%.1f", self._base_chances[stat])
+		local value = string.format(MenuNodeCrimenetCasinoGui.PRECISION, self._base_chances[stat])
 		self._stat_values[stat].base:set_text(value .. "%")
 		self._stat_values[stat].total:set_text(value .. "%")
 	end
@@ -604,9 +605,9 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	local skill = self:_round_value((infamous_chance * infamous_mod - infamous_chance) * 100)
 	self._infamous_chance.value_base = value
 	self._infamous_chance.value_skill = skill
-	self._infamous_values.base:set_text(string.format("%.1f", value) .. "%")
-	self._infamous_values.skill:set_text(infamous_mod > 1 and "+" .. string.format("%.1f", skill) .. "%" or "")
-	self._infamous_values.total:set_text(string.format("%.1f", value + skill) .. "%")
+	self._infamous_values.base:set_text(string.format(MenuNodeCrimenetCasinoGui.PRECISION, value) .. "%")
+	self._infamous_values.skill:set_text(infamous_mod > 1 and "+" .. string.format(MenuNodeCrimenetCasinoGui.PRECISION, skill) .. "%" or "")
+	self._infamous_values.total:set_text(string.format(MenuNodeCrimenetCasinoGui.PRECISION, value + skill) .. "%")
 	self._breakdown_panel = self._main_panel:panel({
 		w = width,
 		h = self._betting_panel:h() - self._stats_panel:h() - space_y,
@@ -713,7 +714,7 @@ function MenuNodeCrimenetCasinoGui:set_update_values(preferred_card, secured_car
 	if preferred_card == "none" then
 		for _, card in pairs(self._stats_cards) do
 			self._stat_values[card].bets:set_text("")
-			self._stat_values[card].total:set_text(string.format("%.1f", self._base_chances[card]) .. "%")
+			self._stat_values[card].total:set_text(string.format(MenuNodeCrimenetCasinoGui.PRECISION, self._base_chances[card]) .. "%")
 		end
 		self:_set_cards(0)
 	elseif nbr_types > 1 then
@@ -731,11 +732,11 @@ function MenuNodeCrimenetCasinoGui:set_update_values(preferred_card, secured_car
 			local value = (non_secured_value + (card == preferred_card and secured_value or 0)) / 3 - self._base_chances[card]
 			value = self:_round_value(value)
 			if value ~= 0 or not "" then
-				if not (value > 0) or not ("+" .. string.format("%.1f", value)) then
+				if not (value > 0) or not ("+" .. string.format(MenuNodeCrimenetCasinoGui.PRECISION, value)) then
 				end
 			end
-			self._stat_values[card].bets:set_text(string.format("%.1f", value) .. "%")
-			self._stat_values[card].total:set_text(string.format("%.1f", value + self._base_chances[card]) .. "%")
+			self._stat_values[card].bets:set_text(string.format(MenuNodeCrimenetCasinoGui.PRECISION, value) .. "%")
+			self._stat_values[card].total:set_text(string.format(MenuNodeCrimenetCasinoGui.PRECISION, value + self._base_chances[card]) .. "%")
 			if card == preferred_card then
 				for _, item in pairs(self._stat_values[card]) do
 					item:set_alpha(1)
@@ -746,8 +747,8 @@ function MenuNodeCrimenetCasinoGui:set_update_values(preferred_card, secured_car
 	end
 	local base_value = self._infamous_chance.value_base + self._infamous_chance.value_skill
 	local bets_value = increase_infamous and self:_round_value(base_value * tweak_data:get_value("casino", "infamous_chance") - base_value) or 0
-	self._infamous_values.bets:set_text(increase_infamous and "+" .. string.format("%.1f", bets_value) .. "%" or "")
-	self._infamous_values.total:set_text(string.format("%.1f", base_value + bets_value) .. "%")
+	self._infamous_values.bets:set_text(increase_infamous and "+" .. string.format(MenuNodeCrimenetCasinoGui.PRECISION, bets_value) .. "%" or "")
+	self._infamous_values.total:set_text(string.format(MenuNodeCrimenetCasinoGui.PRECISION, base_value + bets_value) .. "%")
 	if self._betting_titles.safecards then
 		self._betting_titles.safecards:set_alpha(safecards_enabled and 1 or 0.5)
 	end

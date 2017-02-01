@@ -115,6 +115,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(73, "throwable_contour", false)
 	self:setup_setting(74, "ammo_contour", false)
 	self:setup_setting(75, "chromatic_setting", "standard")
+	self:setup_setting(76, "mute_heist_vo", false)
 end
 function GenericUserManager:setup_setting(id, name, default_value)
 	assert(not Global.user_manager.setting_data_map[name], "[UserManager] Setting name \"" .. tostring(name) .. "\" already exists.")
