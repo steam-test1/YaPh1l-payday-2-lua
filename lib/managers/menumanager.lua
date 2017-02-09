@@ -439,9 +439,6 @@ function MenuManager:effect_quality_changed(name, old_value, new_value)
 	World:effect_manager():set_quality(new_value)
 end
 function MenuManager:set_mouse_sensitivity(zoomed)
-	if self:is_console() then
-		return
-	end
 	local zoom_sense = zoomed and managers.user:get_setting("enable_camera_zoom_sensitivity")
 	local sense_x, sense_y
 	if zoom_sense then
@@ -1279,6 +1276,10 @@ function MenuCallbackHandler:dlc_buy_chico_pc()
 	print("[MenuCallbackHandler:dlc_buy_chico_pc]")
 	Steam:overlay_activate("store", 548422)
 end
+function MenuCallbackHandler:dlc_buy_spa_pc()
+	print("[MenuCallbackHandler:dlc_buy_spa_pc]")
+	Steam:overlay_activate("store", 591710)
+end
 function MenuCallbackHandler:dlc_buy_ps3()
 	print("[MenuCallbackHandler:dlc_buy_ps3]")
 	managers.dlc:buy_product("dlc1")
@@ -1341,6 +1342,7 @@ function MenuCallbackHandler:choice_job_plan_filter(item)
 end
 function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 	local dlcs = {
+		"spa",
 		"friend",
 		"chico",
 		"tango",
@@ -1491,6 +1493,9 @@ end
 function MenuCallbackHandler:visible_callback_chico()
 	return self:is_dlc_latest_locked("chico")
 end
+function MenuCallbackHandler:visible_callback_spa()
+	return self:is_dlc_latest_locked("spa")
+end
 function MenuCallbackHandler:not_has_all_dlcs()
 	return not self:has_all_dlcs()
 end
@@ -1623,6 +1628,9 @@ function MenuCallbackHandler:abort_mission_visible()
 		return false
 	end
 	return true
+end
+function MenuCallbackHandler:is_custom_safehouse_unlocked()
+	return managers.custom_safehouse:unlocked()
 end
 function MenuCallbackHandler:lobby_exist()
 	return managers.network.matchmake.lobby_handler

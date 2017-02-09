@@ -100,7 +100,9 @@ function StatisticsTweakData:statistics_table()
 		"flat",
 		"help",
 		"moon",
-		"friend"
+		"friend",
+		"spa",
+		"fish"
 	}
 	local job_list = {
 		"jewelry_store",
@@ -516,10 +518,20 @@ function StatisticsTweakData:statistics_table()
 		"moon_paycheck_dallas",
 		"sfm_01",
 		"sfm_02",
+		"sfm_03",
+		"sfm_04",
 		"chc_terry",
 		"chc_terry_begins",
 		"swm_sydney",
-		"yor"
+		"yor",
+		"sha_01",
+		"sha_02",
+		"sha_03",
+		"sha_04",
+		"spa_01",
+		"spa_02",
+		"spa_03",
+		"spa_04"
 	}
 	local weapon_list = {
 		"ak5",
@@ -633,6 +645,7 @@ function StatisticsTweakData:statistics_table()
 		"rota",
 		"arbiter",
 		"contraband",
+		"contraband_m203",
 		"ray",
 		"tti"
 	}
@@ -715,7 +728,8 @@ function StatisticsTweakData:statistics_table()
 		"road",
 		"brick",
 		"cs",
-		"ostry"
+		"ostry",
+		"catch"
 	}
 	local grenade_list = {
 		"frag",

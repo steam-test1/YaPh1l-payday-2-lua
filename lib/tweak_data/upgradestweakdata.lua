@@ -2472,7 +2472,8 @@ function UpgradesTweakData:init(tweak_data)
 			"ak5",
 			"striker",
 			"wa2000",
-			"beardy"
+			"beardy",
+			"catch"
 		}
 	}
 	self.level_tree[34] = {
@@ -2483,7 +2484,8 @@ function UpgradesTweakData:init(tweak_data)
 			"mateba",
 			"taser",
 			"desertfox",
-			"wpn_prj_target"
+			"wpn_prj_target",
+			"tti"
 		}
 	}
 	self.level_tree[35] = {
@@ -2890,6 +2892,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_arbiter_weapon_definitions()
 	self:_contraband_weapon_definitions()
 	self:_ray_weapon_definitions()
+	self:_tti_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -8534,6 +8537,10 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon",
 		dlc = "sha"
 	}
+	self.definitions.catch = {
+		category = "melee_weapon",
+		dlc = "spa"
+	}
 end
 function UpgradesTweakData:_grenades_definitions()
 	self.definitions.molotov = {category = "grenade", dlc = "bbq"}
@@ -11504,5 +11511,13 @@ function UpgradesTweakData:_ray_weapon_definitions()
 		weapon_id = "ray",
 		factory_id = "wpn_fps_gre_ray",
 		dlc = "friend"
+	}
+end
+function UpgradesTweakData:_tti_weapon_definitions()
+	self.definitions.tti = {
+		category = "weapon",
+		weapon_id = "tti",
+		factory_id = "wpn_fps_snp_tti",
+		dlc = "spa"
 	}
 end
