@@ -19,6 +19,7 @@ function HuskCopBrain:post_init()
 	self._last_alert_t = 0
 	self._unit:character_damage():add_listener("HuskCopBrain_death" .. tostring(self._unit:key()), {"death"}, callback(self, self, "clbk_death"))
 	self._post_init_complete = true
+	self._surrendered = false
 end
 function HuskCopBrain:interaction_voice()
 	return self._interaction_voice
@@ -56,6 +57,7 @@ function HuskCopBrain:load(load_data)
 	if my_load_data.following_hostage_contour then
 		self._unit:contour():add("friendly", nil, nil)
 	end
+	self._surrendered = my_load_data.surrendered
 end
 function HuskCopBrain:on_tied(aggressor_unit, not_tied, can_flee)
 	self._unit:network():send_to_host("unit_tied", aggressor_unit, can_flee)
@@ -79,6 +81,12 @@ function HuskCopBrain:on_alert(alert_data)
 	end
 	self._unit:network():send_to_host("alert", alert_data[5])
 	self._last_alert_t = TimerManager:game():time()
+end
+function HuskCopBrain:sync_surrender(surrendered)
+	self._surrendered = surrendered
+end
+function HuskCopBrain:surrendered()
+	return self._surrendered
 end
 function HuskCopBrain:on_long_dis_interacted(amount, aggressor_unit, secondary)
 	secondary = secondary or false

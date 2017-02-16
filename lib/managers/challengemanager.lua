@@ -314,6 +314,19 @@ function ChallengeManager:any_challenge_rewarded()
 		return true
 	end
 end
+function ChallengeManager:is_choose_weapon_unrewarded(id, key, reward_index)
+	if not self._global.validated then
+		return
+	end
+	local active_challenge = self:get_active_challenge(id, key)
+	if active_challenge and active_challenge.completed and not active_challenge.rewarded then
+		local reward = active_challenge.rewards[reward_index]
+		if reward and reward.choose_weapon_reward and not reward.rewarded then
+			return true
+		end
+	end
+	return false
+end
 function ChallengeManager:on_give_reward(id, key, reward_index)
 	if not self._global.validated then
 		return
@@ -323,6 +336,30 @@ function ChallengeManager:on_give_reward(id, key, reward_index)
 		local reward = active_challenge.rewards[reward_index]
 		if reward and not reward.rewarded then
 			reward = self:_give_reward(active_challenge, reward)
+			local all_rewarded = true
+			for _, reward in ipairs(active_challenge.rewards) do
+				if not reward.rewarded then
+					all_rewarded = false
+				else
+				end
+			end
+			active_challenge.rewarded = all_rewarded
+			if all_rewarded then
+				self._any_challenge_rewarded = true
+			end
+			return reward
+		end
+	end
+end
+function ChallengeManager:set_as_rewarded(id, key, reward_index)
+	if not self._global.validated then
+		return
+	end
+	local active_challenge = self:get_active_challenge(id, key)
+	if active_challenge and active_challenge.completed and not active_challenge.rewarded then
+		local reward = active_challenge.rewards[reward_index]
+		if reward and not reward.rewarded then
+			reward.rewarded = true
 			local all_rewarded = true
 			for _, reward in ipairs(active_challenge.rewards) do
 				if not reward.rewarded then
