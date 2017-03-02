@@ -19,6 +19,7 @@ require("lib/managers/menu/items/MenuItemFriend")
 require("lib/managers/menu/items/MenuItemCustomizeController")
 require("lib/managers/menu/items/MenuItemInput")
 require("lib/managers/menu/items/MenuItemTextBox")
+require("lib/managers/menu/items/MenuItemDummy")
 require("lib/managers/menu/nodes/MenuNodeTable")
 require("lib/managers/menu/nodes/MenuNodeServerList")
 core:import("CoreEvent")
@@ -1885,7 +1886,7 @@ function MenuCallbackHandler:toggle_throwable_contour(item)
 	managers.user:set_setting("throwable_contour", state, nil)
 	local throwables = World:find_units_quick("all", 20)
 	for _, unit in ipairs(throwables) do
-		if alive(unit) and unit.base and unit:base().reload_contour then
+		if alive(unit) and unit:base() and unit:base().reload_contour then
 			unit:base():reload_contour()
 		end
 	end
@@ -1895,7 +1896,7 @@ function MenuCallbackHandler:toggle_ammo_contour(item)
 	managers.user:set_setting("ammo_contour", state, nil)
 	local pickups = World:find_units_quick("all", 23)
 	for _, unit in ipairs(pickups) do
-		if alive(unit) and unit.pickup and unit:pickup().reload_contour then
+		if alive(unit) and unit:pickup() and unit:pickup().reload_contour then
 			unit:pickup():reload_contour()
 		end
 	end

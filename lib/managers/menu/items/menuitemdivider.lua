@@ -4,6 +4,8 @@ MenuItemDivider.TYPE = "divider"
 function MenuItemDivider:init(data_node, parameters)
 	MenuItemDivider.super.init(self, data_node, parameters)
 	self._type = MenuItemDivider.TYPE
+	self.no_mouse_select = true
+	self.no_select = true
 end
 function MenuItemDivider:setup_gui(node, row_item)
 	local scaled_size = managers.gui_data:scaled_size()

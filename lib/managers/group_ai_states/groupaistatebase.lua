@@ -1224,9 +1224,11 @@ function GroupAIStateBase:register_special_unit(u_key, category_name)
 end
 function GroupAIStateBase:unregister_special_unit(u_key, category_name)
 	local category = self._special_units[category_name]
-	category[u_key] = nil
-	if not next(category) then
-		self._special_units[category_name] = nil
+	if category then
+		category[u_key] = nil
+		if not next(category) then
+			self._special_units[category_name] = nil
+		end
 	end
 end
 function GroupAIStateBase:register_criminal(unit)

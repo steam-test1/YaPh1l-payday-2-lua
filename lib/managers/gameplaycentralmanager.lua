@@ -499,6 +499,7 @@ function GamePlayCentralManager:sync_heist_time(heist_time)
 	self._heist_timer.start_time = Application:time()
 end
 function GamePlayCentralManager:restart_the_game()
+	managers.criminals:save_current_character_names()
 	managers.job:stop_sounds()
 	managers.job:on_retry_job_stage()
 	managers.loot:on_retry_job_stage()

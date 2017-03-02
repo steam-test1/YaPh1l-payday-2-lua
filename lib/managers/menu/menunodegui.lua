@@ -571,8 +571,6 @@ function MenuNodeGui:_create_menu_item(row_item)
 		local status_text = managers.localization:text("menu_friends_" .. row_item.item:parameters().signin_status)
 		row_item.signin_status:set_text(utf8.to_upper(status_text))
 		self:_align_friend(row_item)
-	elseif row_item.type == "weapon_expand" or row_item.type == "weapon_upgrade_expand" then
-		row_item.item:setup_gui(self, row_item)
 	elseif not row_item.item:setup_gui(self, row_item) then
 		local cot_align = row_item.align == "right" and "left" or row_item.align == "left" and "right" or row_item.align
 		row_item.gui_panel = self:_text_item_part(row_item, self.item_panel, self:_right_align() + (row_item.is_expanded and 20 or 0))
@@ -1070,9 +1068,7 @@ function MenuNodeGui:reload_item(item)
 		row_item.color = item:enabled() and (row_item.highlighted and (row_item.hightlight_color or self.row_item_hightlight_color) or row_item.row_item_color or self.row_item_color) or row_item.disabled_color
 	end
 	if not item:reload(row_item, self) then
-		if type == "weapon_expand" or type == "weapon_upgrade_expand" then
-			self:_reload_expand(item)
-		elseif type == "expand" then
+		if type == "expand" then
 			self:_reload_expand(item)
 		elseif type == "friend" then
 			self:_reload_friend(item)
@@ -1088,7 +1084,7 @@ function MenuNodeGui:_collaps_others(my_item)
 	for _, row_item in ipairs(self.row_items) do
 		local item = row_item.item
 		local type = item:type()
-		if my_item ~= item and (type == "expand" or type == "weapon_expand" or type == "weapon_upgrade_expand") and not item:is_parent_to_item(my_item) and item:expanded() then
+		if my_item ~= item and type == "expand" and not item:is_parent_to_item(my_item) and item:expanded() then
 			item:toggle()
 			self:_reload_expand(item)
 		end
@@ -1198,8 +1194,6 @@ function MenuNodeGui:_highlight_row_item(row_item, mouse_over)
 			if not mouse_over then
 				row_item.chat_input:script().set_focus(true)
 			end
-		elseif row_item.type == "weapon_expand" or row_item.type == "weapon_upgrade_expand" then
-			row_item.item:highlight_row_item(self, row_item, mouse_over)
 		elseif row_item.item:parameters().back then
 			row_item.arrow_selected:set_visible(true)
 			row_item.arrow_unselected:set_visible(false)
@@ -1230,6 +1224,11 @@ function MenuNodeGui:_highlight_row_item(row_item, mouse_over)
 	end
 end
 function MenuNodeGui:_align_marker(row_item)
+	if row_item.item.hide_highlight then
+		self._marker_data.marker:hide()
+		return
+	end
+	self._marker_data.marker:show()
 	if self.marker_color or row_item.marker_color then
 		self._marker_data.gradient:set_color(row_item.item:enabled() and (row_item.marker_color or self.marker_color) or self.marker_disabled_color or row_item.disabled_color)
 	end
@@ -1329,8 +1328,6 @@ function MenuNodeGui:_fade_row_item(row_item)
 			row_item.border:set_visible(false)
 			row_item.chat_input:script().set_focus(false)
 			self.ws:disconnect_keyboard()
-		elseif row_item.type == "weapon_expand" or row_item.type == "weapon_upgrade_expand" then
-			row_item.item:fade_row_item(self, row_item)
 		elseif row_item.item:parameters().back then
 			row_item.arrow_selected:set_visible(false)
 			row_item.arrow_unselected:set_visible(true)
@@ -1487,7 +1484,7 @@ function MenuNodeGui:close(...)
 	for _, row_item in ipairs(self.row_items) do
 		local item = row_item.item
 		local type = item:type()
-		if (type == "expand" or type == "weapon_expand" or type == "weapon_upgrade_expand") and item:expanded() then
+		if type == "expand" and item:expanded() then
 			item:toggle()
 			self:_reload_expand(item)
 		end
