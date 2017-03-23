@@ -1757,7 +1757,7 @@ function PrePlanningMapGui:resolution_changed()
 end
 function PrePlanningMapGui:_setup_blackborders()
 	if self._blackborder_workspace then
-		Overlay:gui():destroy_workspace(self._blackborder_workspace)
+		managers.gui_data:destroy_workspace(self._blackborder_workspace)
 		self._blackborder_workspace = nil
 	end
 	self._blackborder_workspace = managers.gui_data:create_fullscreen_workspace()
@@ -3014,7 +3014,7 @@ function PrePlanningMapGui:close()
 	self:stop_event()
 	self._saferect_root_panel:remove(self._panel)
 	self._fullscreen_root_panel:remove(self._fullscreen_panel)
-	Overlay:gui():destroy_workspace(self._blackborder_workspace)
+	managers.gui_data:destroy_workspace(self._blackborder_workspace)
 	if self._resolution_changed_callback_id then
 		managers.viewport:remove_resolution_changed_func(self._resolution_changed_callback_id)
 	end

@@ -155,7 +155,9 @@ function SpecialObjectiveUnitElement:test_element()
 end
 function SpecialObjectiveUnitElement:stop_test_element()
 	for _, enemy in ipairs(self._enemies) do
-		enemy:set_slot(0)
+		if alive(enemy) then
+			enemy:set_slot(0)
+		end
 	end
 	if self._start_test_t then
 		print("Stop test time", Application:time() - self._start_test_t or 0)

@@ -776,7 +776,7 @@ function GUIDebug:init()
 end
 function GUIDebug:destroy()
 	if alive(self._workspace) then
-		Overlay:gui():destroy_workspace(self._workspace)
+		managers.gui_data:destroy_workspace(self._workspace)
 		self._workspace = nil
 	end
 end
@@ -794,7 +794,7 @@ function GUIDebug:clear()
 			text:set_color(Color(1, 0, 0))
 		end
 		self._workspace:panel():clear()
-		Overlay:gui():destroy_workspace(self._workspace)
+		managers.gui_data:destroy_workspace(self._workspace)
 		self._workspace = nil
 		self._panel = nil
 		self._text = nil
@@ -812,8 +812,7 @@ function GUIDebug:set_enabled(enabled)
 	BaseDebug.set_enabled(self, enabled)
 end
 function GUIDebug:setup()
-	local gui_scene = Overlay:gui()
-	self._workspace = gui_scene:create_screen_workspace()
+	self._workspace = managers.gui_data:create_fullscreen_workspace()
 	local gui = self._workspace:panel():gui(Idstring("core/guis/core_debug_manager"))
 	self._panel = gui:panel()
 	self._text = {}
@@ -2712,7 +2711,7 @@ function ConsoleDebug:clear()
 	ConsoleDebug.super.clear(self)
 	if alive(self._workspace) then
 		self._workspace:panel():clear()
-		Overlay:gui():destroy_workspace(self._workspace)
+		managers.gui_data:destroy_workspace(self._workspace)
 	end
 	self:destroy_controller()
 	self._workspace = nil
@@ -2855,8 +2854,7 @@ function ConsoleDebug:invalidate()
 	end
 end
 function ConsoleDebug:setup()
-	local gui_scene = Overlay:gui()
-	self._workspace = gui_scene:create_screen_workspace()
+	self._workspace = managers.gui_data:create_fullscreen_workspace()
 	local keyboard = Input:keyboard()
 	if keyboard and keyboard:enabled() and keyboard:connected() then
 		self._workspace:connect_keyboard(keyboard)
@@ -2933,7 +2931,7 @@ end
 function MenuDebug:destroy()
 	self:destroy_controller()
 	if alive(self._workspace) then
-		Overlay:gui():destroy_workspace(self._workspace)
+		managers.gui_data:destroy_workspace(self._workspace)
 		self._workspace = nil
 		self._panel = nil
 		self._option_panel = nil
@@ -3110,7 +3108,7 @@ function MenuDebug:setup_menu()
 		self._resolution_changed_callback_id = managers.viewport:add_resolution_changed_func(callback(self, self, "setup_menu"))
 	end
 	if not alive(self._workspace) then
-		self._workspace = Overlay:gui():create_screen_workspace()
+		self._workspace = managers.gui_data:create_fullscreen_workspace()
 		self._panel = self._workspace:panel()
 	else
 		self._panel:clear()
@@ -3140,7 +3138,7 @@ function MenuDebug:setup_menu()
 				option_config.color = option_data.color or self._menu_data.color or Color.red
 			end
 			if not self._preloaded_font_list or not self._preloaded_font_list[option_config.font] then
-				Overlay:gui():preload_font(option_config.font)
+				managers.gui_data:get_scene_gui():preload_font(option_config.font)
 				self._preloaded_font_list = self._preloaded_font_list or {}
 				self._preloaded_font_list[option_config.font] = true
 			end

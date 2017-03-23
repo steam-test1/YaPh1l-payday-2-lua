@@ -74,27 +74,46 @@ function MenuGuiComponentGeneric:_setup(is_start_page, component_data)
 	self._panel = self._ws:panel():panel({
 		layer = self._init_layer
 	})
-	managers.menu_component:close_contract_gui()
+	self:_setup_panel_size()
+	if self._data.close_contract_gui == nil or self._data.close_contract_gui then
+		managers.menu_component:close_contract_gui()
+	end
 	self:_add_page_title()
-	self:_add_back_button()
+	if not self._data.no_back_button then
+		self:_add_back_button()
+	end
 	self:_add_panels()
 	self:_add_tabs()
 	self:_add_legend()
-	self:_blur_background()
+	if not self._data.no_blur_background then
+		self:_blur_background()
+	end
 	self:_rec_round_object(self._panel)
 	self:set_active_page(1)
 end
+function MenuGuiComponentGeneric:_setup_panel_size()
+end
 function MenuGuiComponentGeneric:_add_page_title()
+	if alive(self._panel:child("title_text")) then
+		self._panel:remove(self._panel:child("title_text"))
+	end
 	self._title_text = self._panel:text({
 		name = "title_text",
-		text = managers.localization:to_upper_text(self._data.topic_id, self._data.topic_params),
+		text = self._data.topic_id and managers.localization:to_upper_text(self._data.topic_id, self._data.topic_params) or "",
 		font_size = large_font_size,
 		font = large_font,
 		color = tweak_data.screen_colors.text
 	})
 	self:make_fine_text(self._title_text)
+	if self._data.topic_range_color then
+		self._title_text:set_range_color(self._data.topic_range_color.from, self._data.topic_range_color.to, self._data.topic_range_color.color)
+	end
 	if MenuBackdropGUI then
+		if alive(self._fullscreen_panel:child("title_text_bg")) then
+			self._fullscreen_panel:remove(self._fullscreen_panel:child("title_text_bg"))
+		end
 		local bg_text = self._fullscreen_panel:text({
+			name = "title_text_bg",
 			text = self._title_text:text(),
 			h = 90,
 			align = "left",
@@ -165,11 +184,15 @@ function MenuGuiComponentGeneric:_blur_background()
 	blur:animate(func)
 end
 function MenuGuiComponentGeneric:_add_panels()
+	local h = self._panel:h() - TOP_ADJUSTMENT - PAGE_TAB_H
+	if not self._data.no_back_button then
+		h = h - BOT_ADJUSTMENT
+	end
 	self._page_panel = self._panel:panel({
 		name = "PageRootPanel",
 		layer = 1,
 		w = self._panel:w() * WIDTH_MULTIPLIER,
-		h = self._panel:h() - TOP_ADJUSTMENT - BOT_ADJUSTMENT - PAGE_TAB_H
+		h = h
 	})
 	self._page_panel:set_top(TOP_ADJUSTMENT + PAGE_TAB_H)
 	self._page_panel:set_left(0)
@@ -193,7 +216,7 @@ function MenuGuiComponentGeneric:_add_panels()
 	self._info_panel:set_world_top(self._page_panel:world_y())
 	self._info_panel:set_right(self._panel:w())
 	self._outline_panel = self._page_panel:panel({layer = 100})
-	self._outline_box = BoxGuiObject:new(self._outline_panel, {
+	self._outline_box = BoxGuiObject:new(self._outline_panel, self._data.outline_data or {
 		sides = {
 			1,
 			1,
@@ -314,7 +337,7 @@ function MenuGuiComponentGeneric:set_active_page(new_index, play_sound)
 	if self._outline_box then
 		self._outline_box:close()
 	end
-	self._outline_box = BoxGuiObject:new(self._outline_panel, {
+	self._outline_box = BoxGuiObject:new(self._outline_panel, self._data.outline_data or {
 		sides = {
 			1,
 			1,
@@ -380,7 +403,10 @@ function MenuGuiComponentGeneric:update(t, dt)
 	end
 end
 function MenuGuiComponentGeneric:mouse_clicked(o, button, x, y)
-	if self._panel:child("back_button"):inside(x, y) then
+	if not self._panel then
+		return
+	end
+	if self._panel:child("back_button") and self._panel:child("back_button"):inside(x, y) then
 		managers.menu:back(true)
 		return true
 	end
@@ -388,7 +414,7 @@ function MenuGuiComponentGeneric:mouse_clicked(o, button, x, y)
 		self:set_active_page(self._selected_tab:index(), true)
 		return
 	end
-	for index, tab_data in ipairs(self._tabs) do
+	for index, tab_data in ipairs(self._tabs or {}) do
 		local used = tab_data.page:mouse_clicked(o, button, x, y)
 		if used then
 			return used
@@ -458,10 +484,14 @@ function MenuGuiComponentGeneric:move_right()
 	end
 end
 function MenuGuiComponentGeneric:next_page()
-	return self:set_active_page(self._active_page + 1)
+	if self._active_page ~= nil then
+		return self:set_active_page(self._active_page + 1)
+	end
 end
 function MenuGuiComponentGeneric:previous_page()
-	return self:set_active_page(self._active_page - 1)
+	if self._active_page ~= nil then
+		return self:set_active_page(self._active_page - 1)
+	end
 end
 function MenuGuiComponentGeneric:confirm_pressed()
 	if self._selected_page then
@@ -474,6 +504,9 @@ function MenuGuiComponentGeneric:special_btn_pressed(button)
 	end
 end
 function MenuGuiComponentGeneric:update_back_button_hover(button, x, y)
+	if not self._panel or not self._panel:child("back_button") then
+		return
+	end
 	if self._panel:child("back_button"):inside(x, y) then
 		if not self._back_button_highlighted then
 			self._back_button_highlighted = true
@@ -487,6 +520,9 @@ function MenuGuiComponentGeneric:update_back_button_hover(button, x, y)
 	end
 end
 function MenuGuiComponentGeneric:update_tabs_hover(button, x, y)
+	if not self._tabs then
+		return
+	end
 	if not self._selected_tab or not self._selected_tab:inside(x, y) then
 		if self._selected_tab then
 			self._selected_tab:set_selected(false)
@@ -504,6 +540,9 @@ function MenuGuiComponentGeneric:update_tabs_hover(button, x, y)
 	end
 end
 function MenuGuiComponentGeneric:update_pages_hover(button, x, y)
+	if not self._tabs then
+		return
+	end
 	for index, tab_data in ipairs(self._tabs) do
 		local used, pointer = tab_data.page:mouse_moved(button, x, y)
 		if used then

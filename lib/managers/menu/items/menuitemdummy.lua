@@ -9,7 +9,9 @@ end
 function MenuItemDummy:setup_gui(node, row_item)
 	row_item.gui_panel = node.item_panel:panel({w = 0, h = 0})
 	row_item.gui_panel:set_left(node._mid_align(node))
+	self.no_select = true
 	self.no_mouse_select = true
+	self._highlighted = false
 	return true
 end
 function MenuItemDummy:trigger()
@@ -20,18 +22,27 @@ function MenuItemDummy:trigger()
 end
 function MenuItemDummy:set_actual_item(item)
 	self._actual_item = item
+	self.no_select = nil
+	if self._actual_item.dummy_set_highlight then
+		self._actual_item:dummy_set_highlight(false)
+	end
 end
 function MenuItemDummy:highlight_row_item(node, row_item, mouse_over)
+	self._highlighted = true
 	if self._actual_item and self._actual_item.dummy_set_highlight then
 		self._actual_item:dummy_set_highlight(true, node, row_item, mouse_over)
 	end
 	return true
 end
 function MenuItemDummy:fade_row_item(node, row_item, mouse_over)
+	self._highlighted = false
 	if self._actual_item and self._actual_item.dummy_set_highlight then
 		self._actual_item:dummy_set_highlight(false, node, row_item, mouse_over)
 	end
 	return true
+end
+function MenuItemDummy:is_highlighted()
+	return self._highlighted
 end
 function MenuItemDummy:reload()
 	return true

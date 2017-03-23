@@ -372,10 +372,11 @@ function PlayerDamage:update(unit, t, dt)
 	end
 end
 function PlayerDamage:get_revives()
+	local revives = 0
 	if self._revives then
-		return Application:digest_value(self._revives, false)
+		revives = Application:digest_value(self._revives, false)
 	end
-	return 0
+	return revives
 end
 function PlayerDamage:_update_armor_hud(t, dt)
 	local real_armor = self:get_real_armor()
@@ -1728,7 +1729,8 @@ function PlayerDamage:_stop_tinnitus()
 	self._tinnitus_data = nil
 end
 function PlayerDamage:_chk_can_take_dmg()
-	return self._can_take_dmg_timer <= 0
+	local can_take_damage = self._can_take_dmg_timer <= 0
+	return can_take_damage
 end
 function PlayerDamage:_update_can_take_dmg_timer(dt)
 	self._can_take_dmg_timer = math.max(self._can_take_dmg_timer - dt, 0)

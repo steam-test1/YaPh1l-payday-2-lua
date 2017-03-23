@@ -30,6 +30,7 @@ function CoreEnvEditor:init(env_file_name)
 	self._posteffect = {}
 	self._underlayeffect = {}
 	self._sky = {}
+	self._environment_effects = {}
 	self._reported_data_path_map = {}
 	if self._simple_mode then
 		self:read_templates()
@@ -400,6 +401,7 @@ function CoreEnvEditor:write_to_disk(path, new_name)
 		self:write_sky(file)
 		self:write_posteffect(file)
 		self:write_underlayeffect(file)
+		self:write_environment_effects(file)
 		file:print("\t</data>\n")
 		file:print("</environment>\n")
 		file:close()
@@ -445,6 +447,18 @@ function CoreEnvEditor:write_posteffect(file)
 		end
 	end
 	file:print("\t\t</post_effect>\n")
+end
+function CoreEnvEditor:write_environment_effects(file)
+	file:print("\t\t<environment_effects>\n")
+	local effects = ""
+	for i, effect in ipairs(self._environment_effects) do
+		if i > 1 then
+			effects = effects .. ";"
+		end
+		effects = effects .. effect
+	end
+	file:print("\t\t\t<param key=\"effects\" value=\"" .. effects .. "\"/>\n")
+	file:print("\t\t</environment_effects>\n")
 end
 function CoreEnvEditor:write_shadow_params(file)
 	local params = self:shadow_feed_params({})
@@ -601,6 +615,15 @@ function CoreEnvEditor:database_load_underlay(underlay_effect_node)
 	end
 	self:set_title()
 end
+function CoreEnvEditor:database_load_environment_effects(effect_node)
+	for param in effect_node:children() do
+		if param:name() == "param" and param:parameter("key") and param:parameter("key") ~= "" and param:parameter("value") and param:parameter("value") ~= "" and param:parameter("key") == "effects" then
+			self._environment_effects = string.split(param:parameter("value"), ";")
+			table.sort(self._environment_effects)
+		end
+	end
+	self:set_title()
+end
 function CoreEnvEditor:database_load_sky(sky_node)
 	if sky_node:name() == "others" then
 		for param in sky_node:children() do
@@ -652,11 +675,14 @@ function CoreEnvEditor:database_load_env(env_path)
 					self:database_load_posteffect(param)
 				elseif param:name() == "underlay_effect" then
 					self:database_load_underlay(param)
+				elseif param:name() == "environment_effects" then
+					self:database_load_environment_effects(param)
 				end
 			end
 		end
 	end
 	self:parse_shadow_data()
+	self:set_effect_data(self._environment_effects)
 	self:set_title()
 	return env
 end

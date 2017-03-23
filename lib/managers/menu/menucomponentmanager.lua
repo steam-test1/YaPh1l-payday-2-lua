@@ -3459,11 +3459,11 @@ MenuComponentManager.close = function(self)
 	self._requested_textures = {}
 	self._block_texture_requests = true
 	if alive(self._ws) then
-		Overlay:gui():destroy_workspace(self._ws)
+		managers.gui_data:destroy_workspace(self._ws)
 		self._ws = nil
 	end
 	if alive(self._fullscreen_ws) then
-		Overlay:gui():destroy_workspace(self._fullscreen_ws)
+		managers.gui_data:destroy_workspace(self._fullscreen_ws)
 		self._fullscreen_ws = nil
 	end
 end
@@ -3524,7 +3524,7 @@ end
 
 MenuComponentManager.create_test_gui = function(self)
 	if alive(Global.test_gui) then
-		Overlay:gui():destroy_workspace(Global.test_gui)
+		managers.gui_data:destroy_workspace(Global.test_gui)
 		Global.test_gui = nil
 	end
 	Global.test_gui = managers.gui_data:create_fullscreen_16_9_workspace(managers.gui_data)
@@ -3542,7 +3542,7 @@ end
 
 MenuComponentManager.destroy_test_gui = function(self)
 	if alive(Global.test_gui) then
-		Overlay:gui():destroy_workspace(Global.test_gui)
+		managers.gui_data:destroy_workspace(Global.test_gui)
 		Global.test_gui = nil
 	end
 end

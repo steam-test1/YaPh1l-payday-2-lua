@@ -405,6 +405,7 @@ function Setup:update(t, dt)
 	if self._main_thread_loading_screen_gui_visible then
 		self._main_thread_loading_screen_gui_script:update(-1, dt)
 	end
+	TestAPIHelper.update(t, dt)
 end
 function Setup:paused_update(t, dt)
 	self:_upd_unload_packages()
@@ -416,6 +417,7 @@ function Setup:paused_update(t, dt)
 	managers.menu:update(t, dt)
 	managers.blackmarket:update(t, dt)
 	game_state_machine:paused_update(t, dt)
+	TestAPIHelper.update(t, dt)
 end
 function Setup:end_update(t, dt)
 	game_state_machine:end_update(t, dt)

@@ -337,14 +337,7 @@ function CopMovement:post_init()
 	table.insert(event_list, "healed")
 	self._unit:character_damage():add_listener("movement", event_list, callback(self, self, "damage_clbk"))
 	self._unit:inventory():add_listener("movement", {"equip", "unequip"}, callback(self, self, "clbk_inventory"))
-	local prim_weap_name = self._ext_base:default_weapon_name("primary")
-	local sec_weap_name = self._ext_base:default_weapon_name("secondary")
-	if prim_weap_name then
-		self._unit:inventory():add_unit_by_name(prim_weap_name)
-	end
-	if sec_weap_name and sec_weap_name ~= prim_weap_name then
-		self._unit:inventory():add_unit_by_name(sec_weap_name)
-	end
+	self:add_weapons()
 	if self._unit:inventory():is_selection_available(2) then
 		if managers.groupai:state():whisper_mode() or not self._unit:inventory():is_selection_available(1) then
 			self._unit:inventory():equip_selection(2, true)
@@ -385,6 +378,16 @@ function CopMovement:post_init()
 		self:set_position(self._gnd_ray.position)
 	end
 	self:_post_init()
+end
+function CopMovement:add_weapons()
+	local prim_weap_name = self._ext_base:default_weapon_name("primary")
+	local sec_weap_name = self._ext_base:default_weapon_name("secondary")
+	if prim_weap_name then
+		self._unit:inventory():add_unit_by_name(prim_weap_name)
+	end
+	if sec_weap_name and sec_weap_name ~= prim_weap_name then
+		self._unit:inventory():add_unit_by_name(sec_weap_name)
+	end
 end
 function CopMovement:_post_init()
 	self:set_character_anim_variables()
@@ -1668,6 +1671,7 @@ function CopMovement:clbk_team_def()
 end
 function CopMovement:tweak_data_clbk_reload()
 	self._tweak_data = tweak_data.character[self._ext_base._tweak_table]
+	self._action_common_data = self._action_common_data or {}
 	self._action_common_data.char_tweak = self._tweak_data
 end
 function CopMovement:_chk_start_queued_action()

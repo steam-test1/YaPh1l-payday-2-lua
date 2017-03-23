@@ -518,6 +518,15 @@ function PostEffectLenseIntensityFeeder:apply(handler, viewport, scene)
 	local material = handler:_get_post_processor_modifier_material(viewport, scene, ids_bloom_lense_id, ids_bloom_combine_processor, ids_bloom_combine, ids_bloom_lense)
 	material:set_variable(ids_lense_intensity, self._current)
 end
+EnvironmentEffectFeeder = EnvironmentEffectFeeder or CoreClass.class(StringFeeder)
+EnvironmentEffectFeeder.DATA_PATH_KEY = Idstring("environment_effects/effects"):key()
+EnvironmentEffectFeeder.APPLY_GROUP_ID = Feeder.get_next_id()
+EnvironmentEffectFeeder.IS_GLOBAL = nil
+EnvironmentEffectFeeder.FILTER_CATEGORY = "Effect"
+function EnvironmentEffectFeeder:apply(handler, viewport, scene)
+	local effects = string.split(self._current, ";")
+	managers.environment_effects:set_active_effects(effects)
+end
 UnderlayPathFeeder.AFFECTED_LIST = {
 	GlobalLightColorScaleFeeder,
 	GlobalLightColorFeeder,

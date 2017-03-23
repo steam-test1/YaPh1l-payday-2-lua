@@ -184,14 +184,10 @@ function PlayerManager:check_skills()
 	else
 		self._super_syndrome_count = 0
 	end
-	if self:has_category_upgrade("player", "run_and_shoot") then
-		self.RUN_AND_SHOOT = true
-	else
-		self.RUN_AND_SHOOT = false
-	end
 end
 function PlayerManager:damage_absorption()
-	return Application:digest_value(self._damage_absorption, false)
+	local absorb = Application:digest_value(self._damage_absorption, false)
+	return absorb
 end
 function PlayerManager:set_damage_absorption(value)
 	self._damage_absorption = Application:digest_value(value, true)
@@ -1134,6 +1130,9 @@ function PlayerManager:unaquire_upgrade(upgrade)
 	if not self._global.upgrades[upgrade.category][upgrade.upgrade] then
 		Application:error("[PlayerManager:unaquire_upgrade] Can't unaquire upgrade", upgrade.upgrade)
 		return
+	end
+	if upgrade.category == "player" and upgrade.upgrade == "second_deployable" then
+		self:set_equipment_in_slot(nil, 2)
 	end
 	self:unaquire_incremental_upgrade(upgrade)
 end
@@ -2571,7 +2570,8 @@ function PlayerManager:_add_equipment(params)
 		if tweak_data.upgrade_name then
 			equipment_name = tweak_data.upgrade_name[i]
 		end
-		table.insert(amount, (quantity[i] or 0) + self:equiptment_upgrade_value(equipment_name, "quantity"))
+		local amt = (quantity[i] or 0) + self:equiptment_upgrade_value(equipment_name, "quantity")
+		table.insert(amount, amt)
 		table.insert(amount_digest, Application:digest_value(0, true))
 	end
 	local icon = params.icon or tweak_data and tweak_data.icon
@@ -2832,7 +2832,8 @@ function PlayerManager:verify_equipment(peer_id, equipment_id)
 	if peer_id == 0 then
 		local id = "asset_" .. tostring(equipment_id)
 		self._asset_equipment = self._asset_equipment or {}
-		if not tweak_data.equipments.max_amount[id] or self._asset_equipment[id] and self._asset_equipment[id] + 1 > tweak_data.equipments.max_amount[id] then
+		local max_amount = tweak_data.equipments.max_amount[id]
+		if not max_amount or self._asset_equipment[id] and max_amount < self._asset_equipment[id] + 1 then
 			local peer = managers.network:session():server_peer()
 			peer:mark_cheater(VoteManager.REASON.many_assets)
 			return false
@@ -3175,7 +3176,8 @@ function PlayerManager:get_max_grenades_by_peer_id(peer_id)
 end
 function PlayerManager:get_max_grenades(grenade_id)
 	grenade_id = grenade_id or managers.blackmarket:equipped_grenade()
-	return tweak_data:get_raw_value("blackmarket", "projectiles", grenade_id, "max_amount") or 0
+	local max_amount = tweak_data:get_raw_value("blackmarket", "projectiles", grenade_id, "max_amount") or 0
+	return max_amount
 end
 function PlayerManager:got_max_grenades()
 	local peer_id = managers.network:session():local_peer():id()
@@ -3443,7 +3445,8 @@ function PlayerManager:has_total_body_bags()
 	return self._local_player_body_bags == self:total_body_bags()
 end
 function PlayerManager:total_body_bags()
-	return self:upgrade_value("player", "corpse_dispose_amount", 0)
+	local bags = self:upgrade_value("player", "corpse_dispose_amount", 0)
+	return bags
 end
 function PlayerManager:has_max_body_bags()
 	return self._local_player_body_bags == self:max_body_bags()

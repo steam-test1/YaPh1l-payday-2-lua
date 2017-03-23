@@ -115,6 +115,13 @@ function PlayerStandard:init(unit)
 			table.insert(self._input, SecondDeployableControllerInput:new())
 		end
 	end
+	self._menu_closed_fire_cooldown = 0
+	managers.menu:add_active_changed_callback(callback(self, self, "_on_menu_active_changed"))
+end
+function PlayerStandard:_on_menu_active_changed(active)
+	if not active and self == self._ext_movement:current_state() then
+		self._menu_closed_fire_cooldown = 0.15
+	end
 end
 function PlayerStandard:get_animation(anim)
 	return PlayerStandard._current_anim_state[2][anim] or PlayerStandard.ANIM_STATES.standard[anim]
@@ -574,6 +581,9 @@ function PlayerStandard:_update_check_actions(t, dt, paused)
 		self._change_weapon_pressed_expire_t = nil
 	end
 	self:_update_steelsight_timers(t, dt)
+	if self._menu_closed_fire_cooldown > 0 then
+		self._menu_closed_fire_cooldown = self._menu_closed_fire_cooldown - dt
+	end
 	if input.btn_stats_screen_press then
 		self._unit:base():set_stats_screen_visible(true)
 	elseif input.btn_stats_screen_release then
@@ -733,7 +743,7 @@ function PlayerStandard:_get_walk_headbob()
 	elseif self._state_data.ducking then
 		return 0.0125
 	elseif self._running then
-		return 0.1 * (managers.player.RUN_AND_SHOOT and 0.5 or 1)
+		return 0.1 * (self._equipped_unit:base():run_and_shoot_allowed() and 0.5 or 1)
 	end
 	return 0.025
 end
@@ -962,7 +972,7 @@ function PlayerStandard:_start_action_running(t)
 	if self:on_ladder() or self:_on_zipline() then
 		return
 	end
-	if self._shooting and not managers.player.RUN_AND_SHOOT or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self._state_data.in_air or self:_is_throwing_projectile() or self:_is_charging_weapon() then
+	if self._shooting and not self._equipped_unit:base():run_and_shoot_allowed() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self._state_data.in_air or self:_is_throwing_projectile() or self:_is_charging_weapon() then
 		self._running_wanted = true
 		return
 	end
@@ -988,7 +998,7 @@ function PlayerStandard:_start_action_running(t)
 	self._start_running_t = t
 	self._play_stop_running_anim = nil
 	if not self:_is_reloading() or not self.RUN_AND_RELOAD then
-		if not managers.player.RUN_AND_SHOOT then
+		if not self._equipped_unit:base():run_and_shoot_allowed() then
 			self._ext_camera:play_redirect(self:get_animation("start_running"))
 		else
 			self._ext_camera:play_redirect(self:get_animation("idle"))
@@ -1004,7 +1014,7 @@ function PlayerStandard:_end_action_running(t)
 	if not self._end_running_expire_t then
 		local speed_multiplier = self._equipped_unit:base():exit_run_speed_multiplier()
 		self._end_running_expire_t = t + 0.4 / speed_multiplier
-		local stop_running = not managers.player.RUN_AND_SHOOT and (not self.RUN_AND_RELOAD or not self:_is_reloading())
+		local stop_running = not self._equipped_unit:base():run_and_shoot_allowed() and (not self.RUN_AND_RELOAD or not self:_is_reloading())
 		if stop_running then
 			self._ext_camera:play_redirect(self:get_animation("stop_running"), speed_multiplier)
 		end
@@ -1377,17 +1387,18 @@ function PlayerStandard:_start_action_interact(t, input, timer, interact_object)
 	self:_interupt_action_steelsight(t)
 	self:_interupt_action_running(t)
 	self:_interupt_action_charging_weapon(t)
-	self._interact_expire_t = t + timer
+	local final_timer = timer
+	self._interact_expire_t = t + final_timer
 	self._interact_params = {
 		object = interact_object,
-		timer = timer,
+		timer = final_timer,
 		tweak_data = interact_object:interaction().tweak_data
 	}
 	self._ext_camera:play_redirect(self:get_animation("unequip"))
 	self._equipped_unit:base():tweak_data_anim_stop("equip")
 	self._equipped_unit:base():tweak_data_anim_play("unequip")
-	managers.hud:show_interaction_bar(0, timer)
-	managers.network:session():send_to_peers_synched("sync_teammate_progress", 1, true, self._interact_params.tweak_data, timer, false)
+	managers.hud:show_interaction_bar(0, final_timer)
+	managers.network:session():send_to_peers_synched("sync_teammate_progress", 1, true, self._interact_params.tweak_data, final_timer, false)
 end
 function PlayerStandard:_interupt_action_interact(t, input, complete)
 	if self._interact_expire_t then
@@ -1708,10 +1719,6 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray)
 				dmg_multiplier = dmg_multiplier * (1 + managers.player:upgrade_value("player", "melee_damage_health_ratio_multiplier", 0) * damage_ratio)
 			end
 			dmg_multiplier = dmg_multiplier * managers.player:temporary_upgrade_value("temporary", "berserker_damage_multiplier", 1)
-			if character_unit:character_damage().dead and not character_unit:character_damage():dead() and managers.enemy:is_enemy(character_unit) and managers.player:has_category_upgrade("temporary", "melee_life_leech") and not managers.player:has_activate_temporary_upgrade("temporary", "melee_life_leech") then
-				managers.player:activate_temporary_upgrade("temporary", "melee_life_leech")
-				self._unit:character_damage():restore_health(managers.player:temporary_upgrade_value("temporary", "melee_life_leech", 1))
-			end
 			local special_weapon = tweak_data.blackmarket.melee_weapons[melee_entry].special_weapon
 			local action_data = {}
 			action_data.variant = "melee"
@@ -1907,7 +1914,7 @@ function PlayerStandard:_update_reload_timers(t, dt, input)
 				managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
 				if input.btn_steelsight_state then
 					self._steelsight_wanted = true
-				elseif self.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not managers.player.RUN_AND_SHOOT then
+				elseif self.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not self._equipped_unit:base():run_and_shoot_allowed() then
 					self._ext_camera:play_redirect(self:get_animation("start_running"))
 				end
 			end
@@ -1920,7 +1927,7 @@ function PlayerStandard:_update_reload_timers(t, dt, input)
 			managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
 			if input.btn_steelsight_state then
 				self._steelsight_wanted = true
-			elseif self.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not managers.player.RUN_AND_SHOOT then
+			elseif self.RUN_AND_RELOAD and self._running and not self._end_running_expire_t and not self._equipped_unit:base():run_and_shoot_allowed() then
 				self._ext_camera:play_redirect(self:get_animation("start_running"))
 			end
 			if self._equipped_unit:base().on_reload_stop then
@@ -2045,6 +2052,7 @@ function PlayerStandard:_update_equip_weapon_timers(t, input)
 		if input.btn_steelsight_state then
 			self._steelsight_wanted = true
 		end
+		TestAPIHelper.on_event("load_weapon")
 	end
 end
 function PlayerStandard:is_equipping()
@@ -2196,8 +2204,10 @@ function PlayerStandard:_get_intimidation_action(prime_target, char_table, amoun
 					voice_type = "stop_cop"
 				end
 			elseif prime_target.unit_type == unit_type_camera then
-				plural = false
-				voice_type = "mark_camera"
+				if not prime_target.unit or not prime_target.unit:base() or not prime_target.unit:base().is_friendly then
+					plural = false
+					voice_type = "mark_camera"
+				end
 			elseif prime_target.unit_type == unit_type_turret then
 				plural = false
 				voice_type = "mark_turret"
@@ -2587,7 +2597,7 @@ function PlayerStandard:_check_action_jump(t, input)
 	return new_action
 end
 function PlayerStandard:_start_action_jump(t, action_start_data)
-	if self._running and not self.RUN_AND_RELOAD and not managers.player.RUN_AND_SHOOT then
+	if self._running and not self.RUN_AND_RELOAD and not self._equipped_unit:base():run_and_shoot_allowed() then
 		self:_interupt_action_reload(t)
 		self._ext_camera:play_redirect(self:get_animation("stop_running"), self._equipped_unit:base():exit_run_speed_multiplier())
 	end
@@ -2802,8 +2812,8 @@ function PlayerStandard:_check_action_deploy_underbarrel(t, input)
 	if not input.btn_deploy_bipod and not self._toggle_underbarrel_wanted then
 		return new_action
 	end
-	action_forbidden = self:in_steelsight() or self:_is_throwing_projectile() or self:_is_meleeing() or self:is_equipping() or self:_changing_weapon() or self:shooting() or self:_is_reloading() or self:is_switching_stances() or self:_interacting() or self:running() and not managers.player.RUN_AND_SHOOT
-	if self._running and not managers.player.RUN_AND_SHOOT and not self._end_running_expire_t then
+	action_forbidden = self:in_steelsight() or self:_is_throwing_projectile() or self:_is_meleeing() or self:is_equipping() or self:_changing_weapon() or self:shooting() or self:_is_reloading() or self:is_switching_stances() or self:_interacting() or self:running() and not self._equipped_unit:base():run_and_shoot_allowed()
+	if self._running and not self._equipped_unit:base():run_and_shoot_allowed() and not self._end_running_expire_t then
 		self:_interupt_action_running(t)
 		self._toggle_underbarrel_wanted = true
 		return
@@ -3058,7 +3068,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 	local new_action
 	local action_wanted = input.btn_primary_attack_state or input.btn_primary_attack_release
 	if action_wanted then
-		local action_forbidden = self:_is_reloading() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self:_interacting() or self:_is_throwing_projectile() or self:_is_deploying_bipod() or self:is_switching_stances()
+		local action_forbidden = self:_is_reloading() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self:_interacting() or self:_is_throwing_projectile() or self:_is_deploying_bipod() or self._menu_closed_fire_cooldown > 0 or self:is_switching_stances()
 		if not action_forbidden then
 			self._queue_reload_interupt = nil
 			local start_shooting = false
@@ -3085,7 +3095,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 						new_action = true
 						self:_start_action_reload_enter(t)
 					end
-				elseif self._running and not managers.player.RUN_AND_SHOOT then
+				elseif self._running and not self._equipped_unit:base():run_and_shoot_allowed() then
 					self:_interupt_action_running(t)
 				else
 					if not self._shooting then
