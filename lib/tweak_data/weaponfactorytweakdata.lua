@@ -28932,8 +28932,7 @@ function WeaponFactoryTweakData:_init_siltstone()
 			spread = -1,
 			damage = -2,
 			recoil = 1,
-			spread_moving = 1,
-			concealment = 1
+			spread_moving = 1
 		},
 		perks = {"silencer"},
 		sound_switch = {
@@ -28996,7 +28995,7 @@ function WeaponFactoryTweakData:_init_siltstone()
 		stats = {
 			value = 1,
 			recoil = -2,
-			concealment = 3
+			concealment = 4
 		},
 		dlc = "grv",
 		texture_bundle_folder = "grv"
@@ -29323,6 +29322,8 @@ function WeaponFactoryTweakData:_init_flint()
 		"wpn_fps_ass_flint_o_standard",
 		"wpn_fps_ass_flint_s_standard",
 		"wpn_fps_ass_flint_g_standard",
+		"wpn_fps_upg_i_singlefire",
+		"wpn_fps_upg_i_autofire",
 		"wpn_fps_upg_fl_ass_smg_sho_peqbox",
 		"wpn_fps_upg_fl_ass_smg_sho_surefire",
 		"wpn_fps_upg_fl_ass_utg",
@@ -29356,6 +29357,7 @@ function WeaponFactoryTweakData:_init_flint()
 		"wpn_fps_upg_ak_g_hgrip",
 		"wpn_fps_upg_ak_g_pgrip",
 		"wpn_fps_upg_ak_g_wgrip",
+		"wpn_fps_upg_ak_g_rk3",
 		"wpn_fps_upg_m4_s_ubr",
 		"wpn_fps_upg_m4_s_crane",
 		"wpn_fps_upg_m4_s_mk46",
@@ -29528,6 +29530,8 @@ function WeaponFactoryTweakData:_init_coal()
 		"wpn_fps_smg_coal_m_standard",
 		"wpn_fps_smg_coal_mr_standard",
 		"wpn_fps_smg_coal_o_scopemount_standard",
+		"wpn_fps_upg_i_singlefire",
+		"wpn_fps_upg_i_autofire",
 		"wpn_fps_upg_fl_ass_smg_sho_peqbox",
 		"wpn_fps_upg_fl_ass_smg_sho_surefire",
 		"wpn_fps_upg_fl_ass_utg",
@@ -29561,6 +29565,7 @@ function WeaponFactoryTweakData:_init_coal()
 		"wpn_fps_upg_ak_g_hgrip",
 		"wpn_fps_upg_ak_g_pgrip",
 		"wpn_fps_upg_ak_g_wgrip",
+		"wpn_fps_upg_ak_g_rk3",
 		"wpn_fps_upg_o_spot"
 	}
 	self.wpn_fps_smg_coal_npc = deep_clone(self.wpn_fps_smg_coal)

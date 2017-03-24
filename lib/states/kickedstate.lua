@@ -4,6 +4,7 @@ function KickedState:init(game_state_machine, setup)
 	KickedState.super.init(self, "kicked", game_state_machine, setup)
 end
 function KickedState:at_enter(...)
+	self._kicked = true
 	self._success = false
 	self._completion_bonus_done = true
 	KickedState.super.at_enter(self, ...)
