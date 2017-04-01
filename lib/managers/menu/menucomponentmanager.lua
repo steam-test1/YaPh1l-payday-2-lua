@@ -1808,6 +1808,10 @@ MenuComponentManager.close_friends_gui = function(self)
 	end
 end
 
+MenuComponentManager._contract_gui_class = function(self)
+	return ContractBoxGui
+end
+
 MenuComponentManager._create_contract_gui = function(self)
 	if self._contract_gui then
 		self._contract_gui:set_enabled(true)
@@ -1818,7 +1822,7 @@ end
 
 MenuComponentManager.create_contract_gui = function(self)
 	self:close_contract_gui()
-	self._contract_gui = ContractBoxGui:new(self._ws, self._fullscreen_ws)
+	self._contract_gui = self:_contract_gui_class():new(self._ws, self._fullscreen_ws)
 	if not managers.menu:get_all_peers_state() then
 		local peers_state = {}
 	end

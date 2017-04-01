@@ -24,6 +24,7 @@ MissionEndState.set_controller_enabled = function(self, enabled)
 end
 
 MissionEndState.at_enter = function(self, old_state, params)
+	managers.environment_effects:stop_all()
 	local is_safe_house = not managers.job:current_job_data() or managers.job:current_job_id() == "safehouse"
 	managers.platform:set_presence("Mission_end")
 	managers.platform:set_rich_presence(is_safe_house or (Global.game_settings.single_player and "SPEnd") or "MPEnd")

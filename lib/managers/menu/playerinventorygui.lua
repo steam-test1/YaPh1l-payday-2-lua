@@ -3401,7 +3401,7 @@ PlayerInventoryGui._get_armor_stats = function(self, name)
 			skill_stats[stat.name] = {value = (base_stats[stat.name].value + managers.player:body_armor_skill_addend(name) * tweak_data.gui.stats_present_multiplier) * managers.player:body_armor_skill_multiplier(name) - base_stats[stat.name].value}
 		elseif stat.name == "health" then
 			local base = tweak_data.player.damage.HEALTH_INIT
-			local mod = managers.player:thick_skin_value()
+			local mod = managers.player:health_skill_addend()
 			base_stats[stat.name] = {value = (base + mod) * tweak_data.gui.stats_present_multiplier}
 			skill_stats[stat.name] = {value = base_stats[stat.name].value * managers.player:health_skill_multiplier() - base_stats[stat.name].value}
 		elseif stat.name == "concealment" then

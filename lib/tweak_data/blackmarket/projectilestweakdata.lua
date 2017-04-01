@@ -1,3 +1,6 @@
+function BlackMarketTweakData:_init_bullets(tweak_data)
+	self.bullets = {}
+end
 function BlackMarketTweakData:_init_projectiles(tweak_data)
 	self.projectiles = {}
 	self.projectiles.frag = {}

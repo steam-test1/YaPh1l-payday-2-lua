@@ -116,6 +116,7 @@ function TeamAIMovement:heat_clbk(state)
 end
 function TeamAIMovement:_switch_to_not_cool(instant)
 	if not Network:is_server() then
+		self._cool = false
 		return
 	end
 	if self._heat_listener_clbk then

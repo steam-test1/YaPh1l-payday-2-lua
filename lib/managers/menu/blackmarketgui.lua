@@ -1055,13 +1055,15 @@ function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)
 		end
 	end
 	if data.bitmap_texture then
-		if DB:has(Idstring("texture"), data.bitmap_texture) then
+		local texture = data.bitmap_texture[1] or data.bitmap_texture
+		local text_callback = callback(self, self, "texture_loaded_clbk", data.bitmap_texture)
+		if DB:has(Idstring("texture"), texture) then
 			self._loading_texture = true
 			if data.stream then
-				self._requested_texture = data.bitmap_texture
-				self._request_index = managers.menu_component:request_texture(self._requested_texture, texture_loaded_clbk)
+				self._requested_texture = texture
+				self._request_index = managers.menu_component:request_texture(self._requested_texture, text_callback)
 			else
-				texture_loaded_clbk(data.bitmap_texture, Idstring(data.bitmap_texture))
+				text_callback(data.bitmap_texture, Idstring(texture))
 			end
 		end
 		if not self._bitmap then
@@ -1258,7 +1260,9 @@ function BlackMarketGuiSlotItem:destroy()
 		managers.menu_component:unretrieve_texture(self._requested_texture, self._request_index)
 	end
 end
-function BlackMarketGuiSlotItem:texture_loaded_clbk(texture_idstring)
+function BlackMarketGuiSlotItem:texture_loaded_clbk(texture_data)
+	local texture = texture_data[1] or texture_data
+	local text_rect = texture_data[2]
 	if not alive(self._panel) then
 		Application:error("[BlackMarketGuiSlotItem] texture_loaded_clbk(): This code should no longer occur!!")
 		return
@@ -1267,7 +1271,7 @@ function BlackMarketGuiSlotItem:texture_loaded_clbk(texture_idstring)
 		self._bitmap:stop()
 		self._bitmap:set_rotation(0)
 		self._bitmap:set_color(Color.white)
-		self._bitmap:set_image(texture_idstring)
+		local _ = text_rect and self._bitmap:set_image(texture, unpack(texture_rect)) or self._bitmap:set_image(texture)
 		self._bitmap:set_render_template(self._data.render_template or Idstring("VertexColorTextured"))
 		self._bitmap:set_blend_mode("normal")
 		for _, bitmap in pairs(self._extra_textures) do
@@ -1277,7 +1281,8 @@ function BlackMarketGuiSlotItem:texture_loaded_clbk(texture_idstring)
 	else
 		self._bitmap = self._panel:bitmap({
 			name = "item_texture",
-			texture = texture_idstring,
+			texture = texture,
+			texture_rect = text_rect,
 			blend_mode = "normal",
 			layer = 1
 		})
@@ -3970,7 +3975,7 @@ function BlackMarketGui:_get_armor_stats(name)
 			}
 		elseif stat.name == "health" then
 			local base = tweak_data.player.damage.HEALTH_INIT
-			local mod = managers.player:thick_skin_value()
+			local mod = managers.player:health_skill_addend()
 			base_stats[stat.name] = {
 				value = (base + mod) * tweak_data.gui.stats_present_multiplier
 			}
@@ -10366,7 +10371,7 @@ function BlackMarketGui:can_swap_character(data)
 		else
 		end
 	end
-	local selected = self._extra_options_data.selected or 1
+	local selected = self._extra_options_data and self._extra_options_data.selected or 1
 	return index and self._extra_options_data and (#preferred_characters == CriminalsManager.MAX_NR_CRIMINALS or selected ~= self._extra_options_data.num_panels)
 end
 function BlackMarketGui:swap_preferred_character_to_slot_callback(data)
