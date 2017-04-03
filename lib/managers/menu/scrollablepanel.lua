@@ -109,6 +109,9 @@ function ScrollablePanel:init(parent_panel, name, data)
 	self._scroll_bar:set_center_x(scroll_down_indicator_arrow:center_x())
 	self._thread = self._panel:animate(self._update, self)
 end
+function ScrollablePanel:alive()
+	return alive(self:panel())
+end
 function ScrollablePanel:panel()
 	return self._panel
 end

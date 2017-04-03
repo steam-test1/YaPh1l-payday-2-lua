@@ -29,6 +29,7 @@ require("lib/managers/menu/pages/CustomSafehouseGuiPageTrophies")
 require("lib/managers/menu/MutatorsListGui")
 require("lib/managers/menu/pages/MutatorsCategoryPage")
 require("lib/managers/menu/NewHeistsGui")
+require("lib/managers/menu/CommunityChallengesGui")
 if not MenuComponentManager then
 	MenuComponentManager = class()
 end
@@ -87,6 +88,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.new_heists = {create = callback(self, self, "create_new_heists_gui"), close = callback(self, self, "close_new_heists_gui")}
 	self._active_components.mutators_list = {create = callback(self, self, "create_mutators_list_gui"), close = callback(self, self, "close_mutators_list_gui")}
 	self._active_components.debug_quicklaunch = {create = callback(self, self, "create_debug_quicklaunch_gui"), close = callback(self, self, "close_debug_quicklaunch_gui")}
+	self._active_components.community_challenges = {create = callback(self, self, "create_community_challenges_gui"), close = callback(self, self, "close_community_challenges_gui")}
 	self._alive_components = {}
 end
 
@@ -354,6 +356,9 @@ MenuComponentManager.update = function(self, t, dt)
 	end
 	if self._blackmarket_gui then
 		self._blackmarket_gui:update(t, dt)
+	end
+	if self._community_challenges_gui then
+		self._community_challenges_gui:update(t, dt)
 	end
 	self:run_on_all_live_components("update", t, dt)
 end
@@ -3632,6 +3637,19 @@ MenuComponentManager.create_debug_quicklaunch_gui = function(self, node)
 end
 
 MenuComponentManager.close_debug_quicklaunch_gui = function(self)
+end
+
+MenuComponentManager.create_community_challenges_gui = function(self, node)
+	self:close_community_challenges_gui()
+	self._community_challenges_gui = CommunityChallengesGui:new(self._ws:panel())
+	self._community_challenges_gui:set_leftbottom(0, 477)
+end
+
+MenuComponentManager.close_community_challenges_gui = function(self)
+	if self._community_challenges_gui then
+		self._community_challenges_gui:close()
+		self._community_challenges_gui = nil
+	end
 end
 
 
