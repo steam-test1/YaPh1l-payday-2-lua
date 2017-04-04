@@ -1071,8 +1071,10 @@ function MenuSceneManager:set_character_mask_by_id(mask_id, blueprint, unit, pee
 	self:_check_character_mask_sequence(owner_unit, mask_id, peer_id)
 end
 function MenuSceneManager:clbk_mask_loaded(blueprint, mask_unit)
-	mask_unit:base():apply_blueprint(blueprint, function()
-	end)
+	if mask_unit then
+		mask_unit:base():apply_blueprint(blueprint, function()
+		end)
+	end
 end
 function MenuSceneManager:set_character_mask(mask_name_str, unit, peer_id, mask_id, ready_clbk)
 	unit = unit or self._character_unit
@@ -1260,7 +1262,6 @@ end
 local null_vector = Vector3()
 local null_rotation = Rotation()
 function MenuSceneManager:clbk_weapon_base_unit_loaded(params, status, asset_type, asset_name)
-	print("[MenuSceneManager:clbk_weapon_base_unit_loaded]", inspect(params), status, asset_type, asset_name)
 	local owner = params.owner
 	if not alive(owner) then
 		return

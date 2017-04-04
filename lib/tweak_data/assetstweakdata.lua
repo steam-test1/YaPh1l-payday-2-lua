@@ -268,7 +268,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 		"help",
 		"moon",
 		"friend",
-		"spa"
+		"spa",
+		"run"
 	}
 	self.grenade_crate.visible_if_locked = true
 	self.grenade_crate.unlock_desc_id = "menu_asset_grenade_crate_desc"
@@ -309,7 +310,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 		"help",
 		"moon",
 		"friend",
-		"spa"
+		"spa",
+		"run"
 	}
 	self.ammo_bag.visible_if_locked = true
 	self.ammo_bag.unlock_desc_id = "menu_asset_ammo_desc"
@@ -347,7 +349,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 		"help",
 		"moon",
 		"friend",
-		"spa"
+		"spa",
+		"run"
 	}
 	self.health_bag.visible_if_locked = true
 	self.health_bag.unlock_desc_id = "menu_asset_health_desc"
@@ -1097,6 +1100,11 @@ function AssetsTweakData:_init_assets(tweak_data)
 	self.charon.texture = "guis/dlcs/spa/textures/pd2/mission_briefing/assets/charon"
 	self.charon.stages = {"spa"}
 	self.charon.no_mystery = true
+	self.location = {}
+	self.location.name_id = "menu_asset_location"
+	self.location.texture = "guis/dlcs/run/textures/pd2/mission_briefing/assets/location"
+	self.location.stages = {"run"}
+	self.location.no_mystery = true
 end
 function AssetsTweakData:_init_debug_assets(tweak_data)
 	self.debug_1 = {}

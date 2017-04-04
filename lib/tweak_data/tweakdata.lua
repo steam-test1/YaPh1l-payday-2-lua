@@ -814,7 +814,7 @@ function TweakData:init()
 		{
 			statistic_id = "type_kills_law",
 			text_id = "menu_community_challenges_kills",
-			base_target = 7500000
+			base_target = 400000
 		},
 		{
 			statistic_id = "sb17_challenge_1",
@@ -836,7 +836,7 @@ function TweakData:init()
 		{
 			statistic_id = "sb17_challenge_4",
 			text_id = "menu_community_challenges_swing_dancing",
-			base_target = 15000
+			base_target = 500
 		}
 	}
 	self.overlay_effects = {}
@@ -2396,6 +2396,11 @@ Play the full version soon to get your full PAYDAY!]],
 			difficulty = easywish_and_above,
 			job = "fish"
 		},
+		easywish_run = {
+			award = "run_5",
+			difficulty = easywish_and_above,
+			job = "run"
+		},
 		complete_pines_easywish = {
 			award = "pick_59",
 			difficulty = easywish_and_above,
@@ -2698,6 +2703,11 @@ Play the full version soon to get your full PAYDAY!]],
 			difficulty = deathwish_and_above,
 			job = "fish"
 		},
+		death_run = {
+			award = "run_6",
+			difficulty = deathwish_and_above,
+			job = "run"
+		},
 		complete_pines_deathwish = {
 			award = "deer_5",
 			difficulty = deathwish_and_above,
@@ -2994,6 +3004,11 @@ Play the full version soon to get your full PAYDAY!]],
 			award = "fish_3",
 			difficulty = sm_wish_and_above,
 			job = "fish"
+		},
+		sm_wish_run = {
+			award = "run_7",
+			difficulty = sm_wish_and_above,
+			job = "run"
 		},
 		complete_pines_sm_wish = {
 			award = "axe_59",
@@ -3392,6 +3407,26 @@ Play the full version soon to get your full PAYDAY!]],
 				secondary = "wpn_fps_smg_coal",
 				melee_weapon = "oxide"
 			}
+		},
+		run_1 = {
+			award = "run_1",
+			difficulty = normal_and_above,
+			job = "run"
+		},
+		run_2 = {
+			award = "run_2",
+			difficulty = hard_and_above,
+			job = "run"
+		},
+		run_3 = {
+			award = "run_3",
+			difficulty = veryhard_and_above,
+			job = "run"
+		},
+		run_4 = {
+			award = "run_4",
+			difficulty = overkill_and_above,
+			job = "run"
 		},
 		bain_jobs = {
 			challenge_stat = "bain_jobs",
@@ -4778,6 +4813,7 @@ Play the full version soon to get your full PAYDAY!]],
 		{track = "track_49"},
 		{track = "track_50", lock = "friend"},
 		{track = "track_51", lock = "spa"},
+		{track = "track_52"},
 		{
 			track = "track_32_lcv"
 		},
