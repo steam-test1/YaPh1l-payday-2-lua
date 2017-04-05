@@ -817,21 +817,22 @@ function TweakData:init()
 			base_target = 400000
 		},
 		{
-			statistic_id = "sb17_challenge_1",
+			statistic_id = "sb17_challenge_5",
 			text_id = "menu_community_challenges_hours_played",
 			base_target = 20000,
-			display_multiplier = 2.7777778E-4
+			display_multiplier = 0.016666668
 		},
 		{
-			statistic_id = "sb17_challenge_2",
+			statistic_id = "sb17_challenge_7",
 			text_id = "menu_community_challenges_money_earned",
-			base_target = 1.79999998E11
+			base_target = 180000,
+			additional_zeroes = 6
 		},
 		{
-			statistic_id = "sb17_challenge_3",
+			statistic_id = "sb17_challenge_6",
 			text_id = "menu_community_challenges_hours_played_team",
 			base_target = 10000,
-			display_multiplier = 2.7777778E-4
+			display_multiplier = 0.016666668
 		},
 		{
 			statistic_id = "sb17_challenge_4",
@@ -4062,7 +4063,8 @@ Play the full version soon to get your full PAYDAY!]],
 		"dinner",
 		"pal",
 		"man",
-		"flat"
+		"flat",
+		"run"
 	}
 	self.achievement.job_list.locke = {"pbr", "pbr2"}
 	self.achievement.job_list.jimmy = {"mad", "dark"}
