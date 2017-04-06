@@ -2611,7 +2611,10 @@ function WeaponFactoryTweakData:_init_m4()
 		name_id = "bm_wp_m4_uupg_o_flipup",
 		a_obj = "a_o",
 		unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_uupg_o_flipup",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_m4_uupg_draghandle = {
 		type = "drag_handle",
@@ -3313,6 +3316,9 @@ function WeaponFactoryTweakData:_init_m16()
 		stats = {value = 1},
 		adds = {
 			"wpn_fps_ass_m16_os_frontsight"
+		},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
 		}
 	}
 	self.parts.wpn_fps_ass_m16_os_frontsight = {
@@ -9361,7 +9367,10 @@ function WeaponFactoryTweakData:_init_s552()
 		texture_bundle_folder = "dlc1",
 		a_obj = "a_of",
 		unit = "units/pd2_dlc1/weapons/wpn_fps_ass_s552_pts/wpn_fps_ass_s552_o_flipup",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_ass_s552_m_standard = {
 		type = "magazine",
@@ -10131,7 +10140,10 @@ function WeaponFactoryTweakData:_init_scar()
 		texture_bundle_folder = "gage_pack",
 		a_obj = "a_o",
 		unit = "units/pd2_dlc_dec5/weapons/wpn_fps_ass_scar_pts/wpn_fps_ass_scar_o_flipups_up",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_ass_scar_s_sniper = {
 		pcs = {
@@ -12273,6 +12285,9 @@ function WeaponFactoryTweakData:_init_ksg()
 		is_a_unlockable = true,
 		adds = {
 			"wpn_fps_upg_o_mbus_front"
+		},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
 		}
 	}
 	self.parts.wpn_fps_upg_o_mbus_front = {
@@ -17858,7 +17873,10 @@ function WeaponFactoryTweakData:_init_l85a2()
 		unit = "units/pd2_dlc_clover/weapons/wpn_fps_ass_l85a2_pts/wpn_fps_ass_l85a2_o_standard",
 		stats = {value = 1},
 		texture_bundle_folder = "character_pack_clover",
-		dlc = "character_pack_clover"
+		dlc = "character_pack_clover",
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_ass_l85a2_body_standard.third_unit = "units/pd2_dlc_clover/weapons/wpn_third_ass_l85a2_pts/wpn_third_ass_l85a2_body_standard"
 	self.parts.wpn_fps_ass_l85a2_m_emag.third_unit = "units/pd2_dlc_clover/weapons/wpn_third_ass_l85a2_pts/wpn_third_ass_l85a2_m_emag"
@@ -18111,7 +18129,10 @@ function WeaponFactoryTweakData:_init_vhs()
 		unit = "units/pd2_dlc_dragan/weapons/wpn_fps_ass_vhs_pts/wpn_fps_ass_vhs_o_standard",
 		stats = {value = 1},
 		texture_bundle_folder = "character_pack_dragan",
-		dlc = "character_pack_dragan"
+		dlc = "character_pack_dragan",
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_ass_vhs_body.third_unit = "units/pd2_dlc_dragan/weapons/wpn_fps_ass_vhs_pts/wpn_third_ass_vhs_body"
 	self.parts.wpn_fps_ass_vhs_m.third_unit = "units/pd2_dlc_dragan/weapons/wpn_fps_ass_vhs_pts/wpn_third_ass_vhs_m"
@@ -19842,6 +19863,9 @@ function WeaponFactoryTweakData:_init_rpg7()
 				translation = Vector3(0.2, 0, -0.8),
 				rotation = Rotation(0, 0, -5)
 			}
+		},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
 		}
 	}
 	self.parts.wpn_fps_rpg7_sight_adapter = {
@@ -21580,7 +21604,10 @@ function WeaponFactoryTweakData:_init_aa12()
 		name_id = "bm_wp_aa12_body_rear_sight",
 		a_obj = "a_body",
 		unit = "units/pd2_dlc_bbq/weapons/wpn_fps_sho_aa12_pts/wpn_fps_sho_aa12_body_rear_sight",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_sho_aa12_bolt = {
 		type = "extra",
@@ -23118,7 +23145,10 @@ function WeaponFactoryTweakData:_init_polymer()
 		name_id = "bm_wp_polymer_bolt",
 		a_obj = "a_o",
 		unit = "units/pd2_dlc_turtles/weapons/wpn_fps_smg_polymer_pts/wpn_fps_smg_polymer_o_iron",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_smg_polymer_fg_standard = {
 		type = "foregrip",
@@ -26322,7 +26352,10 @@ function WeaponFactoryTweakData:_init_tecci()
 		name_id = "bm_wp_m4_lower_reciever",
 		a_obj = "a_o",
 		unit = "units/pd2_dlc_opera/weapons/wpn_fps_ass_tecci_pts/wpn_fps_ass_tecci_o_standard",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_ass_tecci_s_standard = {
 		type = "stock",
@@ -26520,7 +26553,10 @@ function WeaponFactoryTweakData:_init_hajk()
 		name_id = "bm_wp_hajk_o_sight",
 		a_obj = "a_o",
 		unit = "units/pd2_dlc_born/weapons/wpn_fps_smg_hajk_pts/wpn_fps_smg_hajk_o_standard",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_smg_hajk_s_standard = {
 		type = "stock",
@@ -27602,7 +27638,10 @@ function WeaponFactoryTweakData:_init_rota()
 		name_id = "bm_wp_hajk_o_sight",
 		a_obj = "a_o",
 		unit = "units/pd2_dlc_rota/weapons/wpn_fps_sho_rota_pts/wpn_fps_sho_rota_o_standard",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_sho_rota_b_long.third_unit = "units/pd2_dlc_rota/weapons/wpn_fps_sho_rota_pts/wpn_third_sho_rota_b_long"
 	self.parts.wpn_fps_sho_rota_b_short.third_unit = "units/pd2_dlc_rota/weapons/wpn_fps_sho_rota_pts/wpn_third_sho_rota_b_short"
@@ -27979,6 +28018,9 @@ function WeaponFactoryTweakData:_init_tng()
 		texture_switch = {
 			material = "gfx_reddot1",
 			channel = "diffuse_texture"
+		},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
 		}
 	}
 	self.parts.wpn_fps_upg_g36_fg_long = {
@@ -28317,7 +28359,10 @@ function WeaponFactoryTweakData:_init_arbiter()
 		name_id = "bm_wp_mp5_s_folding",
 		a_obj = "a_o",
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_gre_arbiter_pts/wpn_fps_gre_arbiter_o_standard",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_gre_arbiter_b_comp.third_unit = "units/pd2_dlc_tng/weapons/wpn_third_gre_arbiter_pts/wpn_third_gre_arbiter_b_comp"
 	self.parts.wpn_fps_gre_arbiter_b_long.third_unit = "units/pd2_dlc_tng/weapons/wpn_third_gre_arbiter_pts/wpn_third_gre_arbiter_b_long"
@@ -28461,7 +28506,10 @@ function WeaponFactoryTweakData:_init_contraband()
 		name_id = "bm_wp_contraband_o_standard",
 		a_obj = "a_o",
 		unit = "units/pd2_dlc_chico/weapons/wpn_fps_ass_contraband_pts/wpn_fps_ass_contraband_o_standard",
-		stats = {value = 1}
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
 	}
 	self.parts.wpn_fps_ass_contraband_s_standard = {
 		type = "stock",

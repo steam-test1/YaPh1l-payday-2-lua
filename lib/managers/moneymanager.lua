@@ -103,6 +103,7 @@ function MoneyManager:get_civilian_deduction()
 	end
 	local has_active_job = managers.job:has_active_job()
 	local job_and_difficulty_stars = has_active_job and managers.job:current_job_and_difficulty_stars() or 1
+	job_and_difficulty_stars = managers.crime_spree:_is_active() and tweak_data.crime_spree.base_difficulty_index or job_and_difficulty_stars
 	local multiplier = 1
 	multiplier = multiplier * managers.player:upgrade_value("player", "cleaner_cost_multiplier", 1)
 	return math.round(self:get_tweak_value("money_manager", "killing_civilian_deduction", job_and_difficulty_stars) * multiplier)
@@ -124,6 +125,10 @@ function MoneyManager:civilian_killed()
 	self:_deduct_from_total(deduct_amount)
 end
 function MoneyManager:on_mission_completed(num_winners)
+	if managers.crime_spree:_is_active() then
+		managers.loot:clear_postponed_small_loot()
+		return
+	end
 	if managers.job:skip_money() then
 		managers.loot:set_postponed_small_loot()
 		return

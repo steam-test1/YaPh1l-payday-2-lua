@@ -30,6 +30,19 @@ require("lib/managers/menu/MutatorsListGui")
 require("lib/managers/menu/pages/MutatorsCategoryPage")
 require("lib/managers/menu/NewHeistsGui")
 require("lib/managers/menu/CommunityChallengesGui")
+require("lib/managers/menu/CrimeSpreeMenuComponent")
+require("lib/managers/menu/CrimeSpreeContractMenuComponent")
+require("lib/managers/menu/CrimeSpreeMissionsMenuComponent")
+require("lib/managers/menu/CrimeSpreeDetailsMenuComponent")
+require("lib/managers/menu/CrimeSpreeRewardsMenuComponent")
+require("lib/managers/menu/CrimeSpreeModifierDetailsPage")
+require("lib/managers/menu/CrimeSpreeRewardsDetailsPage")
+require("lib/managers/menu/CrimeSpreeModifiersMenuComponent")
+require("lib/managers/menu/CrimeSpreeGageAssetsItem")
+require("lib/managers/menu/StageEndScreenTabCrimeSpree")
+require("lib/managers/menu/IngameContractGuiCrimeSpree")
+require("lib/managers/menu/CrimeSpreeContractBoxGui")
+require("lib/managers/menu/LobbyCharacterData")
 if not MenuComponentManager then
 	MenuComponentManager = class()
 end
@@ -87,6 +100,12 @@ MenuComponentManager.init = function(self)
 	self._active_components.custom_safehouse_secondaries = {create = callback(self, self, "create_custom_safehouse_secondaries"), close = callback(self, self, "close_custom_safehouse_secondaries")}
 	self._active_components.new_heists = {create = callback(self, self, "create_new_heists_gui"), close = callback(self, self, "close_new_heists_gui")}
 	self._active_components.mutators_list = {create = callback(self, self, "create_mutators_list_gui"), close = callback(self, self, "close_mutators_list_gui")}
+	self._active_components.crimenet_crimespree = {create = callback(self, self, "create_crime_spree_gui"), close = callback(self, self, "close_crime_spree_gui")}
+	self._active_components.crimenet_crime_spree_contract = {create = callback(self, self, "create_crime_spree_contract_gui"), close = callback(self, self, "close_crime_spree_contract_gui")}
+	self._active_components.crime_spree_missions = {create = callback(self, self, "create_crime_spree_missions_gui"), close = callback(self, self, "close_crime_spree_missions_gui")}
+	self._active_components.crime_spree_details = {create = callback(self, self, "create_crime_spree_details_gui"), close = callback(self, self, "close_crime_spree_details_gui")}
+	self._active_components.crime_spree_modifiers = {create = callback(self, self, "create_crime_spree_modifiers_gui"), close = callback(self, self, "close_crime_spree_modifiers_gui")}
+	self._active_components.crime_spree_rewards = {create = callback(self, self, "create_crime_spree_rewards_gui"), close = callback(self, self, "close_crime_spree_rewards_gui")}
 	self._active_components.debug_quicklaunch = {create = callback(self, self, "create_debug_quicklaunch_gui"), close = callback(self, self, "close_debug_quicklaunch_gui")}
 	self._active_components.community_challenges = {create = callback(self, self, "create_community_challenges_gui"), close = callback(self, self, "close_community_challenges_gui")}
 	self._alive_components = {}
@@ -1814,6 +1833,11 @@ MenuComponentManager.close_friends_gui = function(self)
 end
 
 MenuComponentManager._contract_gui_class = function(self)
+	if managers.crime_spree:_is_active() then
+		return CrimeSpreeContractBoxGui
+	else
+		return ContractBoxGui
+	end
 	return ContractBoxGui
 end
 
@@ -2221,6 +2245,12 @@ MenuComponentManager.unlock_asset_mission_briefing_gui = function(self, asset_id
 	end
 end
 
+MenuComponentManager.unlock_gage_asset_mission_briefing_gui = function(self, asset_id)
+	if self._mission_briefing_gui then
+		self._mission_briefing_gui:unlock_gage_asset(asset_id)
+	end
+end
+
 MenuComponentManager.set_slot_outfit_mission_briefing_gui = function(self, slot, criminal_name, outfit)
 	if self._mission_briefing_gui then
 		self._mission_briefing_gui:set_slot_outfit(slot, criminal_name, outfit)
@@ -2524,7 +2554,12 @@ end
 
 MenuComponentManager.create_ingame_contract_gui = function(self)
 	self:close_ingame_contract_gui()
-	self._ingame_contract_gui = IngameContractGui:new(self._ws)
+	if managers.crime_spree:_is_active() then
+		self._ingame_contract_gui = IngameContractGuiCrimeSpree:new(self._ws)
+		self:register_component("ingame_contract", self._ingame_contract_gui)
+	else
+		self._ingame_contract_gui = IngameContractGui:new(self._ws)
+	end
 	self._ingame_contract_gui:set_layer(tweak_data.gui.MENU_COMPONENT_LAYER)
 end
 
@@ -2532,6 +2567,7 @@ MenuComponentManager.close_ingame_contract_gui = function(self)
 	if self._ingame_contract_gui then
 		self._ingame_contract_gui:close()
 		self._ingame_contract_gui = nil
+		self:unregister_component("ingame_contract")
 	end
 end
 
@@ -3630,6 +3666,137 @@ MenuComponentManager.close_new_heists_gui = function(self)
 		self._new_heists_gui:close()
 		self._new_heists_gui = nil
 		self:unregister_component("new_heists")
+	end
+end
+
+MenuComponentManager.create_crime_spree_gui = function(self, node)
+	if not node then
+		return 
+	end
+	if not self._crime_spree_menu_comp then
+		self._crime_spree_menu_comp = CrimeSpreeMenuComponent:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crimenet_crime_spree", self._crime_spree_menu_comp)
+end
+
+MenuComponentManager.close_crime_spree_gui = function(self, node)
+	if self._crime_spree_menu_comp then
+		self._crime_spree_menu_comp:close()
+		self._crime_spree_menu_comp = nil
+		self:unregister_component("crimenet_crime_spree")
+	end
+end
+
+MenuComponentManager.create_crime_spree_contract_gui = function(self, node)
+	if not node then
+		return 
+	end
+	if not self._crime_spree_contract_menu_comp then
+		self._crime_spree_contract_menu_comp = CrimeSpreeContractMenuComponent:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crimenet_crime_spree_contract", self._crime_spree_contract_menu_comp)
+	self:disable_crimenet()
+end
+
+MenuComponentManager.close_crime_spree_contract_gui = function(self, node)
+	if self._crime_spree_contract_menu_comp then
+		self._crime_spree_contract_menu_comp:close()
+		self._crime_spree_contract_menu_comp = nil
+		self:unregister_component("crimenet_crime_spree_contract")
+		self:enable_crimenet()
+	end
+end
+
+MenuComponentManager.create_crime_spree_missions_gui = function(self, node)
+	if not node or not managers.crime_spree:_is_active() then
+		return 
+	end
+	if not self._crime_spree_missions then
+		self._crime_spree_missions = CrimeSpreeMissionsMenuComponent:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crime_spree_missions", self._crime_spree_missions)
+end
+
+MenuComponentManager.close_crime_spree_missions_gui = function(self, node)
+	if self._crime_spree_missions then
+		self._crime_spree_missions:close()
+		self._crime_spree_missions = nil
+		self:unregister_component("crime_spree_missions")
+	end
+end
+
+MenuComponentManager.crime_spree_missions_gui = function(self)
+	return self._crime_spree_missions
+end
+
+MenuComponentManager.create_crime_spree_details_gui = function(self, node)
+	if not node or not managers.crime_spree:_is_active() then
+		return 
+	end
+	if not self._crime_spree_details then
+		self._crime_spree_details = CrimeSpreeDetailsMenuComponent:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crime_spree_details", self._crime_spree_details)
+end
+
+MenuComponentManager.close_crime_spree_details_gui = function(self, node)
+	if self._crime_spree_details then
+		self._crime_spree_details:close()
+		self._crime_spree_details = nil
+		self:unregister_component("crime_spree_details")
+	end
+end
+
+MenuComponentManager.refresh_crime_spree_details_gui = function(self)
+	local node = nil
+	if self._crime_spree_details then
+		node = self._crime_spree_details._node
+	end
+	self:close_crime_spree_details_gui(node)
+	self:create_crime_spree_details_gui(node)
+end
+
+MenuComponentManager.crime_spree_details_gui = function(self)
+	return self._crime_spree_details
+end
+
+MenuComponentManager.create_crime_spree_modifiers_gui = function(self, node)
+	if not node then
+		return 
+	end
+	if not self._crime_spree_modifiers then
+		self._crime_spree_modifiers = CrimeSpreeModifiersMenuComponent:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crime_spree_modifiers", self._crime_spree_modifiers)
+end
+
+MenuComponentManager.close_crime_spree_modifiers_gui = function(self, node)
+	if self._crime_spree_modifiers then
+		self._crime_spree_modifiers:close()
+		self._crime_spree_modifiers = nil
+		self:unregister_component("crime_spree_modifiers")
+	end
+end
+
+MenuComponentManager.crime_spree_modifiers = function(self)
+	return self._crime_spree_modifiers
+end
+
+MenuComponentManager.create_crime_spree_rewards_gui = function(self, node)
+	if not node then
+		return 
+	end
+	if not self._crime_spree_rewards then
+		self._crime_spree_rewards = CrimeSpreeRewardsMenuComponent:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crime_spree_rewards", self._crime_spree_rewards)
+end
+
+MenuComponentManager.close_crime_spree_rewards_gui = function(self, node)
+	if self._crime_spree_rewards then
+		self._crime_spree_rewards:close()
+		self._crime_spree_rewards = nil
+		self:unregister_component("crime_spree_rewards")
 	end
 end
 
