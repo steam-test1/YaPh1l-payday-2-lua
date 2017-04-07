@@ -5775,7 +5775,7 @@ function DLCTweakData:init(tweak_data)
 	self.ach_cee_3.dlc = "has_achievement"
 	self.ach_cee_3.achievement_id = "cee_3"
 	self.ach_cee_3.content = {}
-	self.ach_cee_3.content.loot_global_value = "normal"
+	self.ach_cee_3.content.loot_global_value = "infamous"
 	self.ach_cee_3.content.loot_drops = {
 		{
 			type_items = "masks",
