@@ -1288,6 +1288,10 @@ function MenuCallbackHandler:dlc_buy_grv_pc()
 	print("[MenuCallbackHandler:dlc_buy_grv_pc]")
 	Steam:overlay_activate("store", 218620)
 end
+function MenuCallbackHandler:dlc_buy_mp2_pc()
+	print("[MenuCallbackHandler:dlc_buy_mp2_pc]")
+	Steam:overlay_activate("store", 218620)
+end
 function MenuCallbackHandler:dlc_buy_ps3()
 	print("[MenuCallbackHandler:dlc_buy_ps3]")
 	managers.dlc:buy_product("dlc1")
@@ -1350,6 +1354,7 @@ function MenuCallbackHandler:choice_job_plan_filter(item)
 end
 function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 	local dlcs = {
+		"mp2",
 		"grv",
 		"spa",
 		"friend",
@@ -1507,6 +1512,9 @@ function MenuCallbackHandler:visible_callback_spa()
 end
 function MenuCallbackHandler:visible_callback_grv()
 	return self:is_dlc_latest_locked("grv")
+end
+function MenuCallbackHandler:visible_callback_mp2()
+	return self:is_dlc_latest_locked("mp2")
 end
 function MenuCallbackHandler:not_has_all_dlcs()
 	return not self:has_all_dlcs()

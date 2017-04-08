@@ -897,7 +897,7 @@ function PlayerStandard:_get_max_walk_speed(t)
 	local final_speed = movement_speed * multiplier
 	return final_speed
 end
-function PlayerStandard:_start_action_steelsight(t)
+function PlayerStandard:_start_action_steelsight(t, gadget_state)
 	if self:_changing_weapon() or self:_is_reloading() or self:_interacting() or self:_is_meleeing() or self._use_item_expire_t or self:_is_throwing_projectile() or self:_on_zipline() then
 		self._steelsight_wanted = true
 		return
@@ -915,7 +915,11 @@ function PlayerStandard:_start_action_steelsight(t)
 	self:_interupt_action_running(t)
 	self:_interupt_action_cash_inspect(t)
 	local weap_base = self._equipped_unit:base()
-	weap_base:play_tweak_data_sound("enter_steelsight")
+	if gadget_state ~= nil then
+		weap_base:play_sound("gadget_steelsight_" .. (gadget_state and "enter" or "exit"))
+	else
+		weap_base:play_tweak_data_sound("enter_steelsight")
+	end
 	if weap_base:weapon_tweak_data().animations.has_steelsight_stance then
 		self:_need_to_play_idle_redirect()
 		self._state_data.steelsight_weight_target = 1
