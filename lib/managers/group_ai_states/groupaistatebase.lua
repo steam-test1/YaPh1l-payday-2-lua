@@ -2209,12 +2209,13 @@ function GroupAIStateBase:spawn_one_teamAI(is_drop_in, char_name, pos, rotation,
 		local unit_folder = lvl_tweak_data and lvl_tweak_data.unit_suit or "suit"
 		local ai_character_id = managers.criminals:character_static_data_by_name(character_name).ai_character_id
 		local unit_name = Idstring(tweak_data.blackmarket.characters[ai_character_id].npc_unit)
+		local loadout = managers.criminals:_reserve_loadout_for(character_name)
 		local unit = World:spawn_unit(unit_name, spawn_pos, spawn_rot)
-		managers.network:session():send_to_peers_synched("set_unit", unit, character_name, "", 0, 0, tweak_data.levels:get_default_team_ID("player"))
+		managers.network:session():send_to_peers_synched("set_unit", unit, character_name, managers.blackmarket:henchman_loadout_string_from_loadout(loadout), 0, 0, tweak_data.levels:get_default_team_ID("player"))
 		if char_name and not is_drop_in then
-			managers.criminals:set_unit(character_name, unit)
+			managers.criminals:set_unit(character_name, unit, loadout)
 		else
-			managers.criminals:add_character(character_name, unit, nil, true)
+			managers.criminals:add_character(character_name, unit, nil, true, loadout)
 		end
 		unit:movement():set_character_anim_variables()
 		unit:brain():set_spawn_ai({
@@ -4526,7 +4527,7 @@ function GroupAIStateBase:on_editor_sim_unit_spawned(unit)
 end
 function GroupAIStateBase:_get_balancing_multiplier(balance_multipliers)
 	local nr_players = 0
-	for u_key, u_data in pairs(self:all_player_criminals()) do
+	for u_key, u_data in pairs(self:all_criminals()) do
 		if not u_data.status then
 			nr_players = nr_players + 1
 		end

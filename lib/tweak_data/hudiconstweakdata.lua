@@ -2692,6 +2692,114 @@ function HudIconsTweakData:init()
 			csb_size
 		}
 	}
+	self.ability_1 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_abilities",
+		texture_rect = {
+			0,
+			0,
+			128,
+			128
+		}
+	}
+	self.ability_2 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_abilities",
+		texture_rect = {
+			128,
+			0,
+			128,
+			128
+		}
+	}
+	self.ability_3 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_abilities",
+		texture_rect = {
+			256,
+			0,
+			128,
+			128
+		}
+	}
+	self.ability_4 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_abilities",
+		texture_rect = {
+			384,
+			0,
+			128,
+			128
+		}
+	}
+	self.skill_1 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			0,
+			0,
+			128,
+			128
+		}
+	}
+	self.skill_2 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			128,
+			0,
+			128,
+			128
+		}
+	}
+	self.skill_3 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			256,
+			0,
+			128,
+			128
+		}
+	}
+	self.skill_4 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			384,
+			0,
+			128,
+			128
+		}
+	}
+	self.skill_5 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			0,
+			128,
+			128,
+			128
+		}
+	}
+	self.skill_6 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			128,
+			128,
+			128,
+			128
+		}
+	}
+	self.skill_7 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			256,
+			128,
+			128,
+			128
+		}
+	}
+	self.skill_8 = {
+		texture = "guis/dlcs/mom/textures/pd2/ai_skills",
+		texture_rect = {
+			384,
+			128,
+			128,
+			128
+		}
+	}
 end
 function HudIconsTweakData:get_icon_data(icon_id, default_rect)
 	local icon = tweak_data.hud_icons[icon_id] and tweak_data.hud_icons[icon_id].texture or icon_id

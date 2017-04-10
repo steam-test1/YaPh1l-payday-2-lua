@@ -1288,6 +1288,7 @@ function LootDropTweakData:init(tweak_data)
 		"sha",
 		"grv",
 		"mp2",
+		"mom",
 		"pn2"
 	}
 	self:_create_global_value_list_map()

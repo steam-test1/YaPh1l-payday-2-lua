@@ -3371,6 +3371,7 @@ function PlayerStandard:_get_swap_speed_multiplier()
 	multiplier = multiplier * managers.player:upgrade_value("weapon", "passive_swap_speed_multiplier", 1)
 	multiplier = multiplier * managers.player:upgrade_value(weapon_tweak_data.category, "swap_speed_multiplier", 1)
 	multiplier = multiplier * managers.player:upgrade_value(weapon_tweak_data.sub_category, "swap_speed_multiplier", 1)
+	multiplier = multiplier * managers.player:upgrade_value("team", "crew_faster_swap", 1)
 	if managers.player:has_activate_temporary_upgrade("temporary", "swap_weapon_faster") then
 		multiplier = multiplier * managers.player:temporary_upgrade_value("temporary", "swap_weapon_faster", 1)
 	end

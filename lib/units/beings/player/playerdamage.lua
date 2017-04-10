@@ -250,6 +250,8 @@ function PlayerDamage:force_into_bleedout(can_activate_berserker)
 	self:_set_health_effect()
 end
 function PlayerDamage:update(unit, t, dt)
+	self:_check_update_max_health()
+	self:_check_update_max_armor()
 	self:_update_can_take_dmg_timer(dt)
 	self:_update_regen_on_the_side(dt)
 	if not self._armor_stored_health_max_set then
@@ -563,21 +565,24 @@ end
 function PlayerDamage:get_real_armor()
 	return Application:digest_value(self._armor, false)
 end
+function PlayerDamage:_check_update_max_health()
+	local max_health = self:_max_health()
+	self._current_max_health = self._current_max_health or self:_max_health()
+	if self._current_max_health ~= max_health then
+		local ratio = max_health / self._current_max_health
+		self._health = Application:digest_value(math.clamp(self:get_real_health() * ratio, 0, max_health), true)
+		print("[PlayerDamage] new max health", self._current_max_health, "->", max_health)
+		self._current_max_health = max_health
+		self:update_armor_stored_health()
+	end
+end
 function PlayerDamage:change_health(change_of_health)
 	return self:set_health(self:get_real_health() + change_of_health)
 end
 function PlayerDamage:set_health(health)
+	self:_check_update_max_health()
 	local max_health = self:_max_health() * self._max_health_reduction
 	health = math.min(health, max_health)
-	self._current_max_health = self._current_max_health or max_health
-	if self._current_max_health ~= max_health then
-		local prev_health_ratio = health / self._current_max_health
-		local new_health_ratio = health / max_health
-		local diff_health_ratio = prev_health_ratio - new_health_ratio
-		health = health + math.max(0, diff_health_ratio * max_health)
-		self._current_max_health = max_health
-		self:update_armor_stored_health()
-	end
 	local prev_health = self._health and Application:digest_value(self._health, false) or health
 	self._health = Application:digest_value(math.clamp(health, 0, max_health), true)
 	self:_send_set_health()
@@ -592,10 +597,22 @@ function PlayerDamage:set_health(health)
 	})
 	return prev_health ~= Application:digest_value(self._health, false)
 end
+function PlayerDamage:_check_update_max_armor()
+	local max_armor = self:_max_armor()
+	self._current_max_armor = self._current_max_armor or self:_max_armor()
+	if self._current_max_armor ~= max_armor then
+		local ratio = max_armor / self._current_max_armor
+		self._current_armor_fill = self._current_armor_fill * ratio
+		self._armor = Application:digest_value(math.clamp(self:get_real_armor() * ratio, 0, max_armor), true)
+		print("[PlayerDamage] new max armor", self._current_max_armor, "->", max_armor)
+		self._current_max_armor = max_armor
+	end
+end
 function PlayerDamage:change_armor(change)
 	self:set_armor(self:get_real_armor() + change)
 end
 function PlayerDamage:set_armor(armor)
+	self:_check_update_max_armor()
 	armor = math.clamp(armor, 0, self:_max_armor())
 	if self._armor then
 		local current_armor = self:get_real_armor()
@@ -1624,6 +1641,7 @@ function PlayerDamage:_upd_health_regen(t, dt)
 		local max_health = self:_max_health()
 		if max_health > self:get_real_health() then
 			self:restore_health(managers.player:health_regen(), false)
+			self:restore_health(managers.player:fixed_health_regen(), true)
 			self._health_regen_update_timer = 5
 		end
 	end

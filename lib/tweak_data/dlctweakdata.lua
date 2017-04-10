@@ -59,6 +59,7 @@ function DLCTweakData:init(tweak_data)
 			sha = true,
 			fish = true,
 			lxy = true,
+			mom = true,
 			grv = true,
 			mrm = 1,
 			fir = true,
