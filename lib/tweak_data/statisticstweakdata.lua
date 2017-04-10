@@ -762,7 +762,8 @@ function StatisticsTweakData:statistics_table()
 		"cs",
 		"ostry",
 		"catch",
-		"oxide"
+		"oxide",
+		"sword"
 	}
 	local grenade_list = {
 		"frag",
