@@ -207,6 +207,16 @@ function CriminalsManager:add_character(name, unit, peer_id, ai, ai_loadout)
 	end
 	self:event_listener():call("on_criminal_added", name, unit, peer_id, ai)
 	managers.sync:send_all_synced_units_to(peer_id)
+	local current_level = managers.job and managers.job:current_level_id()
+	if current_level then
+		local sequence = tweak_data.levels[current_level] and tweak_data.levels[current_level].player_sequence
+		if sequence and alive(unit) then
+			local unit_damage = not unit:damage() and unit:camera() and unit:camera():camera_unit():damage()
+			if unit_damage then
+				unit_damage:run_sequence_simple(sequence)
+			end
+		end
+	end
 end
 function CriminalsManager:set_unit(name, unit, ai_loadout)
 	print("[CriminalsManager]:set_unit", name, unit)

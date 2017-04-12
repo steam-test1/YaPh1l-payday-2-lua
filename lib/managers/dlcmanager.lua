@@ -379,6 +379,9 @@ end
 function GenericDLCManager:has_grv()
 	return self:is_dlc_unlocked("grv")
 end
+function GenericDLCManager:has_amp()
+	return self:is_dlc_unlocked("amp")
+end
 function GenericDLCManager:has_mp2()
 	return self:is_dlc_unlocked("mp2")
 end
@@ -1089,6 +1092,7 @@ function WINDLCManager:init()
 			sha = {app_id = "218620", no_install = true},
 			spa = {app_id = "591710", no_install = true},
 			grv = {app_id = "612900", no_install = true},
+			amp = {app_id = "218620", no_install = true},
 			mp2 = {app_id = "218620", no_install = true},
 			mom = {app_id = "218620", no_install = true},
 			pn2 = {app_id = "618940", no_install = true}

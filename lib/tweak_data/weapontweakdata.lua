@@ -130,7 +130,6 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_lemming_npc()
 	self:_init_data_m4_crew()
 	self:_init_data_m14_crew()
-	self:_init_data_m14_sniper_crew()
 	self:_init_data_c45_crew()
 	self:_init_data_x_c45_crew()
 	self:_init_data_beretta92_crew()
@@ -249,6 +248,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_siltstone_crew()
 	self:_init_data_flint_crew()
 	self:_init_data_coal_crew()
+	self:_init_data_lemming_crew()
 	self:_precalculate_values()
 end
 function WeaponTweakData:_set_easy()
@@ -2364,7 +2364,7 @@ function WeaponTweakData:_init_data_raging_bull_crew()
 end
 function WeaponTweakData:_init_data_m4_crew()
 	self.m4_crew.sounds.prefix = "m4_npc"
-	self.m4_crew.use_data.selection_index = 1.5
+	self.m4_crew.use_data.selection_index = 2
 	self.m4_crew.DAMAGE = 1.5
 	self.m4_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.m4_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -2405,25 +2405,9 @@ function WeaponTweakData:_init_data_m14_crew()
 	self.m14_crew.alert_size = 5000
 	self.m14_crew.suppression = 1
 end
-function WeaponTweakData:_init_data_m14_sniper_crew()
-	self.m14_sniper_crew.sounds.prefix = "sniper_npc"
-	self.m14_sniper_crew.use_data.selection_index = 2
-	self.m14_sniper_crew.DAMAGE = 2
-	self.m14_sniper_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
-	self.m14_sniper_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.m14_sniper_crew.CLIP_AMMO_MAX = 6
-	self.m14_sniper_crew.NR_CLIPS_MAX = 8
-	self.m14_sniper_crew.hold = "rifle"
-	self.m14_sniper_crew.alert_size = 5000
-	self.m14_sniper_crew.suppression = 1
-	self.m14_sniper_crew.armor_piercing = true
-	self.svd_snp_crew = deep_clone(self.m14_sniper_crew)
-	self.svdsil_snp_crew = deep_clone(self.m14_sniper_crew)
-	self.svdsil_snp_crew.has_suppressor = "suppressed_a"
-end
 function WeaponTweakData:_init_data_r870_crew()
 	self.r870_crew.sounds.prefix = "remington_npc"
-	self.r870_crew.use_data.selection_index = 45
+	self.r870_crew.use_data.selection_index = 2
 	self.r870_crew.DAMAGE = 45
 	self.r870_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.r870_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
@@ -2484,7 +2468,7 @@ function WeaponTweakData:_init_data_mac11_crew()
 end
 function WeaponTweakData:_init_data_g36_crew()
 	self.g36_crew.sounds.prefix = "g36_npc"
-	self.g36_crew.use_data.selection_index = 1.28
+	self.g36_crew.use_data.selection_index = 2
 	self.g36_crew.DAMAGE = 1.28
 	self.g36_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.g36_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -4049,6 +4033,19 @@ function WeaponTweakData:_init_data_coal_crew()
 	self.coal_crew.alert_size = 5000
 	self.coal_crew.suppression = 1
 end
+function WeaponTweakData:_init_data_lemming_crew()
+	self.lemming_crew.sounds.prefix = "lemming_npc"
+	self.lemming_crew.use_data.selection_index = 1
+	self.lemming_crew.DAMAGE = 1
+	self.lemming_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.lemming_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.lemming_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.lemming_crew.CLIP_AMMO_MAX = 10
+	self.lemming_crew.NR_CLIPS_MAX = 5
+	self.lemming_crew.hold = "pistol"
+	self.lemming_crew.alert_size = 2500
+	self.lemming_crew.suppression = 1
+end
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default
 	if SystemInfo:platform() == Idstring("WIN32") then
@@ -4637,6 +4634,9 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	elseif selection_index == 5 then
 		low = 0.05
 		high = 0.075
+	elseif selection_index == 6 then
+		low = 0.005
+		high = 0.015
 	else
 		low = 0.01
 		high = 0.035
@@ -15286,9 +15286,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.lemming.use_data.selection_index = 1
 	self.lemming.DAMAGE = 1
 	self.lemming.CLIP_AMMO_MAX = 15
-	self.lemming.NR_CLIPS_MAX = 2
+	self.lemming.NR_CLIPS_MAX = 3
 	self.lemming.AMMO_MAX = self.lemming.CLIP_AMMO_MAX * self.lemming.NR_CLIPS_MAX
-	self.lemming.AMMO_PICKUP = {0.3, 0.4}
+	self.lemming.AMMO_PICKUP = self:_pickup_chance(self.lemming.AMMO_MAX, 6)
 	self.lemming.FIRE_MODE = "single"
 	self.lemming.fire_mode_data = {}
 	self.lemming.fire_mode_data.fire_rate = 0.1
@@ -16235,12 +16235,6 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
-	self.m14_sniper_crew = {
-		usage = "m4",
-		sounds = {},
-		use_data = {},
-		auto = {}
-	}
 	self.r870_crew = {
 		usage = "r870",
 		sounds = {},
@@ -16403,14 +16397,6 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.saw_secondary_crew = deep_clone(self.saw_crew)
 	self.sentry_gun = {
-		sounds = {},
-		auto = {}
-	}
-	self.swat_van_turret_module = {
-		sounds = {},
-		auto = {}
-	}
-	self.ceiling_turret_module = {
 		sounds = {},
 		auto = {}
 	}
@@ -16949,6 +16935,12 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.lemming_crew = {
+		usage = "c45",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 end
 function WeaponTweakData:_precalculate_values_wip()
 end
@@ -17085,9 +17077,9 @@ function WeaponTweakData:_precalculate_values()
 	self.siltstone_npc.AMMO_MAX = self.siltstone_npc.CLIP_AMMO_MAX * self.siltstone_npc.NR_CLIPS_MAX
 	self.flint_npc.AMMO_MAX = self.flint_npc.CLIP_AMMO_MAX * self.flint_npc.NR_CLIPS_MAX
 	self.coal_npc.AMMO_MAX = self.coal_npc.CLIP_AMMO_MAX * self.coal_npc.NR_CLIPS_MAX
+	self.lemming_npc.AMMO_MAX = self.lemming_npc.CLIP_AMMO_MAX * self.lemming_npc.NR_CLIPS_MAX
 	self.m4_crew.AMMO_MAX = self.m4_crew.CLIP_AMMO_MAX * self.m4_crew.NR_CLIPS_MAX
 	self.m14_crew.AMMO_MAX = self.m14_crew.CLIP_AMMO_MAX * self.m14_crew.NR_CLIPS_MAX
-	self.m14_sniper_crew.AMMO_MAX = self.m14_sniper_crew.CLIP_AMMO_MAX * self.m14_sniper_crew.NR_CLIPS_MAX
 	self.c45_crew.AMMO_MAX = self.c45_crew.CLIP_AMMO_MAX * self.c45_crew.NR_CLIPS_MAX
 	self.x_c45_crew.AMMO_MAX = self.x_c45_crew.CLIP_AMMO_MAX * self.x_c45_crew.NR_CLIPS_MAX
 	self.beretta92_crew.AMMO_MAX = self.beretta92_crew.CLIP_AMMO_MAX * self.beretta92_crew.NR_CLIPS_MAX
@@ -17192,7 +17184,6 @@ function WeaponTweakData:_precalculate_values()
 	self.x_sr2_crew.AMMO_MAX = self.x_sr2_crew.CLIP_AMMO_MAX * self.x_sr2_crew.NR_CLIPS_MAX
 	self.pl14_crew.AMMO_MAX = self.pl14_crew.CLIP_AMMO_MAX * self.pl14_crew.NR_CLIPS_MAX
 	self.rpk_lmg_crew.AMMO_MAX = self.rpk_lmg_crew.CLIP_AMMO_MAX * self.rpk_lmg_crew.NR_CLIPS_MAX
-	self.svd_snp_crew.AMMO_MAX = self.svd_snp_crew.CLIP_AMMO_MAX * self.svd_snp_crew.NR_CLIPS_MAX
 	self.akmsu_smg_crew.AMMO_MAX = self.akmsu_smg_crew.CLIP_AMMO_MAX * self.akmsu_smg_crew.NR_CLIPS_MAX
 	self.asval_smg_crew.AMMO_MAX = self.asval_smg_crew.CLIP_AMMO_MAX * self.asval_smg_crew.NR_CLIPS_MAX
 	self.sr2_smg_crew.AMMO_MAX = self.sr2_smg_crew.CLIP_AMMO_MAX * self.sr2_smg_crew.NR_CLIPS_MAX
@@ -17213,8 +17204,8 @@ function WeaponTweakData:_precalculate_values()
 	self.ray_crew.AMMO_MAX = self.ray_crew.CLIP_AMMO_MAX * self.ray_crew.NR_CLIPS_MAX
 	self.sg417_crew.AMMO_MAX = self.sg417_crew.CLIP_AMMO_MAX * self.sg417_crew.NR_CLIPS_MAX
 	self.tti_crew.AMMO_MAX = self.tti_crew.CLIP_AMMO_MAX * self.tti_crew.NR_CLIPS_MAX
-	self.svdsil_snp_crew.AMMO_MAX = self.svdsil_snp_crew.CLIP_AMMO_MAX * self.svdsil_snp_crew.NR_CLIPS_MAX
 	self.siltstone_crew.AMMO_MAX = self.siltstone_crew.CLIP_AMMO_MAX * self.siltstone_crew.NR_CLIPS_MAX
 	self.flint_crew.AMMO_MAX = self.flint_crew.CLIP_AMMO_MAX * self.flint_crew.NR_CLIPS_MAX
 	self.coal_crew.AMMO_MAX = self.coal_crew.CLIP_AMMO_MAX * self.coal_crew.NR_CLIPS_MAX
+	self.lemming_crew.AMMO_MAX = self.lemming_crew.CLIP_AMMO_MAX * self.lemming_crew.NR_CLIPS_MAX
 end
