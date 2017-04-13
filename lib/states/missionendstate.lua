@@ -182,7 +182,6 @@ MissionEndState.at_enter = function(self, old_state, params)
 	if Network:is_server() then
 		managers.network:session():set_state("game_end")
 	end
-	managers.community_challenges:on_mission_end(self._success)
 end
 
 MissionEndState.is_success = function(self)

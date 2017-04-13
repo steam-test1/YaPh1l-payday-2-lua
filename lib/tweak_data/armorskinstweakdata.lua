@@ -1,3 +1,12 @@
+local sorting_groups = {crime_spree = 1, camo = 2}
+function EconomyTweakData:get_real_armor_skin_id(skin_id)
+	local lbv = "_lbv"
+	if string.sub(skin_id, #skin_id - #lbv + 1, #skin_id) == lbv then
+		return string.sub(skin_id, 1, #skin_id - #lbv)
+	else
+		return skin_id
+	end
+end
 function EconomyTweakData:get_armor_skin_id(skin_id)
 	local use_lbv = managers.blackmarket:equipped_armor() == "level_2"
 	if use_lbv then
@@ -86,6 +95,7 @@ function EconomyTweakData:_init_armor_skins_crime_spree()
 	self.armor_skins.cvc_green.pattern_tweak = Vector3(2.82853, 0, 1)
 	self.armor_skins.cvc_green.uv_scale = Vector3(9.32087, 11.1325, 1)
 	self.armor_skins.cvc_green.uv_offset_rot = Vector3(-0.320768, 1.37938, 0)
+	self.armor_skins.cvc_green.sorting_idx = sorting_groups.crime_spree
 	self.armor_skins.cvc_black = {}
 	self.armor_skins.cvc_black.name_id = "bm_askn_black"
 	self.armor_skins.cvc_black.desc_id = "bm_askn_black_desc"
@@ -99,6 +109,7 @@ function EconomyTweakData:_init_armor_skins_crime_spree()
 	self.armor_skins.cvc_black.pattern_tweak = Vector3(2.82853, 0, 1)
 	self.armor_skins.cvc_black.uv_scale = Vector3(9.32087, 11.1325, 1)
 	self.armor_skins.cvc_black.uv_offset_rot = Vector3(-0.320768, 1.37938, 0)
+	self.armor_skins.cvc_black.sorting_idx = sorting_groups.crime_spree
 	self.armor_skins.cvc_tan = {}
 	self.armor_skins.cvc_tan.name_id = "bm_askn_cvc_tan"
 	self.armor_skins.cvc_tan.desc_id = "bm_askn_cvc_tan_desc"
@@ -112,6 +123,7 @@ function EconomyTweakData:_init_armor_skins_crime_spree()
 	self.armor_skins.cvc_tan.pattern_tweak = Vector3(2.82853, 0, 1)
 	self.armor_skins.cvc_tan.uv_scale = Vector3(9.32087, 11.1325, 1)
 	self.armor_skins.cvc_tan.uv_offset_rot = Vector3(-0.320768, 1.37938, 0)
+	self.armor_skins.cvc_tan.sorting_idx = sorting_groups.crime_spree
 	self.armor_skins.cvc_grey = {}
 	self.armor_skins.cvc_grey.name_id = "bm_askn_cvc_grey"
 	self.armor_skins.cvc_grey.desc_id = "bm_askn_cvc_grey_desc"
@@ -125,6 +137,22 @@ function EconomyTweakData:_init_armor_skins_crime_spree()
 	self.armor_skins.cvc_grey.pattern_tweak = Vector3(2.82853, 0, 1)
 	self.armor_skins.cvc_grey.uv_scale = Vector3(9.32087, 11.1325, 1)
 	self.armor_skins.cvc_grey.uv_offset_rot = Vector3(-0.320768, 1.37938, 0)
+	self.armor_skins.cvc_grey.sorting_idx = sorting_groups.crime_spree
+	self.armor_skins.cvc_grey_lbv = {}
+	self.armor_skins.cvc_grey_lbv.name_id = "bm_askn_cvc_grey_lbv"
+	self.armor_skins.cvc_grey_lbv.desc_id = "bm_askn_cvc_grey_lbv_desc"
+	self.armor_skins.cvc_grey_lbv.unlock_id = "bm_askn_find_in_crime_spree"
+	self.armor_skins.cvc_grey_lbv.rarity = "uncommon"
+	self.armor_skins.cvc_grey_lbv.reserve_quality = false
+	self.armor_skins.cvc_grey_lbv.steam_economy = false
+	self.armor_skins.cvc_grey_lbv.sorted = false
+	self.armor_skins.cvc_grey_lbv.texture_bundle_folder = "cash/safes/cvc"
+	self.armor_skins.cvc_grey_lbv.base_gradient = Idstring("units/payday2_cash/safes/cvc/base_gradient/base_cvc_002_c_df")
+	self.armor_skins.cvc_grey_lbv.sticker = Idstring("units/payday2_cash/safes/cvc/sticker/cvc_sticker_001_df")
+	self.armor_skins.cvc_grey_lbv.pattern_tweak = Vector3(2.82853, 0, 1)
+	self.armor_skins.cvc_grey_lbv.uv_scale = Vector3(9.32087, 11.1325, 1)
+	self.armor_skins.cvc_grey_lbv.uv_offset_rot = Vector3(-0.320768, 1.37938, 0)
+	self.armor_skins.cvc_grey_lbv.sorting_idx = sorting_groups.crime_spree
 	self.armor_skins.cvc_navy_blue = {}
 	self.armor_skins.cvc_navy_blue.name_id = "bm_askn_navy_blue"
 	self.armor_skins.cvc_navy_blue.desc_id = "bm_askn_navy_blue_desc"
@@ -138,6 +166,7 @@ function EconomyTweakData:_init_armor_skins_crime_spree()
 	self.armor_skins.cvc_navy_blue.pattern_tweak = Vector3(2.82853, 0, 1)
 	self.armor_skins.cvc_navy_blue.uv_scale = Vector3(9.32087, 11.1325, 1)
 	self.armor_skins.cvc_navy_blue.uv_offset_rot = Vector3(-0.320768, 1.37938, 0)
+	self.armor_skins.cvc_navy_blue.sorting_idx = sorting_groups.crime_spree
 end
 function EconomyTweakData:_init_armor_skins_armor_safe()
 	self.armor_skins.cvc_woodland_camo = {}
@@ -154,6 +183,7 @@ function EconomyTweakData:_init_armor_skins_armor_safe()
 	self.armor_skins.cvc_woodland_camo.uv_offset_rot = Vector3(0.216614, 0.925013, 0)
 	self.armor_skins.cvc_woodland_camo.pattern_tweak = Vector3(1.87455, 0, 1)
 	self.armor_skins.cvc_woodland_camo.pattern_pos = Vector3(0.216075, 0.445028, 0)
+	self.armor_skins.cvc_woodland_camo.sorting_idx = sorting_groups.camo
 	self.armor_skins.cvc_city_camo = {}
 	self.armor_skins.cvc_city_camo.name_id = "bm_askn_cvc_city_camo"
 	self.armor_skins.cvc_city_camo.desc_id = "bm_askn_cvc_city_camo_desc"
@@ -168,6 +198,23 @@ function EconomyTweakData:_init_armor_skins_armor_safe()
 	self.armor_skins.cvc_city_camo.sticker = Idstring("units/payday2_cash/safes/cvc/sticker/cvc_sticker_006_df")
 	self.armor_skins.cvc_city_camo.uv_scale = Vector3(20, 18.5698, 1)
 	self.armor_skins.cvc_city_camo.uv_offset_rot = Vector3(0.216614, 0.925013, 0)
+	self.armor_skins.cvc_city_camo.sorting_idx = sorting_groups.camo
+	self.armor_skins.cvc_city_camo_lbv = {}
+	self.armor_skins.cvc_city_camo_lbv.name_id = "bm_askn_cvc_city_camo_lbv"
+	self.armor_skins.cvc_city_camo_lbv.desc_id = "bm_askn_cvc_city_camo_lbv_desc"
+	self.armor_skins.cvc_city_camo_lbv.rarity = "uncommon"
+	self.armor_skins.cvc_city_camo_lbv.reserve_quality = true
+	self.armor_skins.cvc_city_camo_lbv.sorted = false
+	self.armor_skins.cvc_city_camo_lbv.texture_bundle_folder = "cash/safes/cvc"
+	self.armor_skins.cvc_city_camo_lbv.base_gradient = Idstring("units/payday2_cash/safes/cvc/base_gradient/base_cvc_002_b_df")
+	self.armor_skins.cvc_city_camo_lbv.pattern_gradient = Idstring("units/payday2_cash/safes/grunt/pattern_gradient/gradient_grunt_010_df")
+	self.armor_skins.cvc_city_camo_lbv.pattern = Idstring("units/payday2_cash/safes/grunt/pattern/grunt_pattern_006_df")
+	self.armor_skins.cvc_city_camo_lbv.sticker = Idstring("units/payday2_cash/safes/cvc/sticker/cvc_sticker_006_df")
+	self.armor_skins.cvc_city_camo_lbv.pattern_tweak = Vector3(1.77916, 0, 1)
+	self.armor_skins.cvc_city_camo_lbv.pattern_pos = Vector3(0.216075, 0.473647, 0)
+	self.armor_skins.cvc_city_camo_lbv.uv_scale = Vector3(20, 18.5698, 1)
+	self.armor_skins.cvc_city_camo_lbv.uv_offset_rot = Vector3(0.216614, 0.925013, 0)
+	self.armor_skins.cvc_city_camo_lbv.sorting_idx = sorting_groups.camo
 	self.armor_skins.cvc_desert_camo = {}
 	self.armor_skins.cvc_desert_camo.name_id = "bm_askn_desert_camo"
 	self.armor_skins.cvc_desert_camo.desc_id = "bm_askn_desert_camo_desc"
@@ -182,6 +229,22 @@ function EconomyTweakData:_init_armor_skins_armor_safe()
 	self.armor_skins.cvc_desert_camo.uv_offset_rot = Vector3(0.216614, 0.925013, 0)
 	self.armor_skins.cvc_desert_camo.pattern_tweak = Vector3(2.82853, 0, 1)
 	self.armor_skins.cvc_desert_camo.uv_scale = Vector3(20, 18.5698, 1)
+	self.armor_skins.cvc_desert_camo.sorting_idx = sorting_groups.camo
+	self.armor_skins.cvc_desert_camo_lbv = {}
+	self.armor_skins.cvc_desert_camo_lbv.name_id = "bm_askn_cvc_desert_camo_lbv"
+	self.armor_skins.cvc_desert_camo_lbv.desc_id = "bm_askn_cvc_desert_camo_lbv_desc"
+	self.armor_skins.cvc_desert_camo_lbv.rarity = "common"
+	self.armor_skins.cvc_desert_camo_lbv.reserve_quality = true
+	self.armor_skins.cvc_desert_camo_lbv.sorted = false
+	self.armor_skins.cvc_desert_camo_lbv.texture_bundle_folder = "cash/safes/wip"
+	self.armor_skins.cvc_desert_camo_lbv.base_gradient = Idstring("units/payday2_cash/safes/cvc/base_gradient/base_cvc_009_b_df")
+	self.armor_skins.cvc_desert_camo_lbv.pattern_gradient = Idstring("units/payday2_cash/safes/grunt/pattern_gradient/gradient_grunt_006_df")
+	self.armor_skins.cvc_desert_camo_lbv.pattern = Idstring("units/payday2_cash/safes/grunt/pattern/grunt_pattern_001_df")
+	self.armor_skins.cvc_desert_camo_lbv.sticker = Idstring("units/payday2_cash/safes/cvc/sticker/cvc_sticker_006_df")
+	self.armor_skins.cvc_desert_camo_lbv.pattern_tweak = Vector3(1.92225, 0, 1)
+	self.armor_skins.cvc_desert_camo_lbv.uv_scale = Vector3(20, 18.5698, 1)
+	self.armor_skins.cvc_desert_camo_lbv.uv_offset_rot = Vector3(0.216614, 0.925013, 0)
+	self.armor_skins.cvc_desert_camo_lbv.sorting_idx = sorting_groups.camo
 	self.armor_skins.cvc_avenger = {}
 	self.armor_skins.cvc_avenger.name_id = "bm_askn_cvc_avenger"
 	self.armor_skins.cvc_avenger.desc_id = "bm_askn_cvc_avenger_desc"
