@@ -103,7 +103,8 @@ function StatisticsTweakData:statistics_table()
 		"friend",
 		"spa",
 		"fish",
-		"run"
+		"run",
+		"glace"
 	}
 	local job_list = {
 		"jewelry_store",
@@ -179,7 +180,8 @@ function StatisticsTweakData:statistics_table()
 		"friend",
 		"spa",
 		"fish",
-		"run"
+		"run",
+		"glace"
 	}
 	local mask_list = {
 		"character_locked",
@@ -559,7 +561,12 @@ function StatisticsTweakData:statistics_table()
 		"mp2_02",
 		"mp2_03",
 		"mp2_04",
-		"mrm"
+		"mrm",
+		"mdm",
+		"amp_01",
+		"amp_02",
+		"amp_03",
+		"amp_04"
 	}
 	local weapon_list = {
 		"ak5",
