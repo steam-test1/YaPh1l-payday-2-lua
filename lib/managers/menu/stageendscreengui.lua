@@ -436,7 +436,7 @@ function StageEndScreenGui:init(saferect_ws, fullrect_ws, statistics_data)
 	})
 	self._panel:set_right(self._safe_workspace:panel():w())
 	if managers.crime_spree:_is_active() then
-		self._panel:set_bottom(self._safe_workspace:panel():h() - CrimeSpreeMissionsMenuComponent.button_size.h - padding)
+		self._panel:set_bottom(self._safe_workspace:panel():h() - (CrimeSpreeMissionsMenuComponent.get_height() + padding))
 	else
 		self._panel:set_bottom(self._safe_workspace:panel():h())
 	end
@@ -849,11 +849,7 @@ function StageEndScreenGui:mouse_moved(x, y)
 	return false, "arrow"
 end
 function StageEndScreenGui:input_focus()
-	if managers.crime_spree:_is_active() then
-		return nil
-	else
-		return self._enabled
-	end
+	return self._enabled and true or nil
 end
 function StageEndScreenGui:scroll_up()
 	if not alive(self._panel) or not alive(self._fullscreen_panel) or not self._enabled then

@@ -1216,6 +1216,9 @@ function NewRaycastWeaponBase:on_reload_stop()
 	self._bloodthist_value_during_reload = 0
 	self._current_reload_speed_multiplier = nil
 end
+function NewRaycastWeaponBase:on_reload()
+	NewRaycastWeaponBase.super.on_reload(self)
+end
 function NewRaycastWeaponBase:set_timer(timer, ...)
 	NewRaycastWeaponBase.super.set_timer(self, timer)
 	if self._assembly_complete then

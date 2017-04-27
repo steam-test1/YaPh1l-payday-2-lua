@@ -115,8 +115,10 @@ function MenuManager:init(is_start_menu)
 	end
 	self._active_changed_callback_handler = CoreEvent.CallbackEventHandler:new()
 	managers.user:add_setting_changed_callback("brightness", callback(self, self, "brightness_changed"), true)
-	managers.user:add_setting_changed_callback("camera_zoom_sensitivity", callback(self, self, "camera_sensitivity_changed"), true)
-	managers.user:add_setting_changed_callback("camera_sensitivity", callback(self, self, "camera_sensitivity_changed"), true)
+	managers.user:add_setting_changed_callback("camera_sensitivity_x", callback(self, self, "camera_sensitivity_x_changed"), true)
+	managers.user:add_setting_changed_callback("camera_sensitivity_y", callback(self, self, "camera_sensitivity_y_changed"), true)
+	managers.user:add_setting_changed_callback("camera_zoom_sensitivity_x", callback(self, self, "camera_sensitivity_x_changed"), true)
+	managers.user:add_setting_changed_callback("camera_zoom_sensitivity_y", callback(self, self, "camera_sensitivity_y_changed"), true)
 	managers.user:add_setting_changed_callback("rumble", callback(self, self, "rumble_changed"), true)
 	managers.user:add_setting_changed_callback("invert_camera_x", callback(self, self, "invert_camera_x_changed"), true)
 	managers.user:add_setting_changed_callback("invert_camera_y", callback(self, self, "invert_camera_y_changed"), true)
@@ -442,14 +444,14 @@ function MenuManager:effect_quality_changed(name, old_value, new_value)
 	World:effect_manager():set_quality(new_value)
 end
 function MenuManager:set_mouse_sensitivity(zoomed)
-	local zoom_sense = zoomed and managers.user:get_setting("enable_camera_zoom_sensitivity")
+	local zoom_sense = zoomed
 	local sense_x, sense_y
 	if zoom_sense then
-		sense_x = managers.user:get_setting("camera_zoom_sensitivity")
-		sense_y = sense_x
+		sense_x = managers.user:get_setting("camera_zoom_sensitivity_x")
+		sense_y = managers.user:get_setting("camera_zoom_sensitivity_y")
 	else
-		sense_x = managers.user:get_setting("camera_sensitivity")
-		sense_y = sense_x
+		sense_x = managers.user:get_setting("camera_sensitivity_x")
+		sense_y = managers.user:get_setting("camera_sensitivity_y")
 	end
 	if zoomed and managers.user:get_setting("enable_fov_based_sensitivity") and alive(managers.player:player_unit()) then
 		local state = managers.player:player_unit():movement():current_state()
@@ -1862,6 +1864,10 @@ end
 function MenuCallbackHandler:toggle_aim_assist(item)
 	local on = item:value() == "on"
 	managers.user:set_setting("aim_assist", on)
+end
+function MenuCallbackHandler:toggle_sticky_aim(item)
+	local on = item:value() == "on"
+	managers.user:set_setting("sticky_aim", on)
 end
 function MenuCallbackHandler:toggle_voicechat(item)
 	local vchat = item:value() == "on"
@@ -7014,9 +7020,10 @@ function MenuCrimeNetFiltersInitiator:add_filters(node)
 		}
 	}
 	for index, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
-		local contact = tweak_data.narrative.jobs[job_id].contact
+		local job_tweak = tweak_data.narrative.jobs[job_id]
+		local contact = job_tweak.contact
 		local contact_tweak = tweak_data.narrative.contacts[contact]
-		local allow = not tweak_data.narrative.jobs[job_id].wrapped_to_job and contact ~= "tests" and (not contact_tweak or not contact_tweak.hidden)
+		local allow = not job_tweak.wrapped_to_job and contact ~= "tests" and (not job_tweak or not job_tweak.hidden)
 		if allow then
 			local text_id, color_data = tweak_data.narrative:create_job_name(job_id)
 			local params = {
@@ -7516,6 +7523,14 @@ function MenuOptionInitiator:modify_controls(node)
 			option_value = "on"
 		end
 		aim_assist_item:set_value(option_value)
+	end
+	option_value = "off"
+	local sticky_aim_item = node:item("toggle_sticky_aim")
+	if sticky_aim_item then
+		if managers.user:get_setting("sticky_aim") then
+			option_value = "on"
+		end
+		sticky_aim_item:set_value(option_value)
 	end
 	local cs_item = node:item("camera_sensitivity")
 	if cs_item then

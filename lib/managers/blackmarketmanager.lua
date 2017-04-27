@@ -91,7 +91,7 @@ function BlackMarketManager:_setup_grenades()
 			grenades[grenade_id].level = weapon_level
 			grenades[grenade_id].skill_based = not is_default and weapon_level == 0 and not tweak_data.blackmarket.projectiles[grenade_id].dlc
 		end
-		if grenade.ability then
+		if grenade.ability or grenade.base_cooldown then
 			grenades[grenade_id] = {
 				unlocked = false,
 				equipped = false,
@@ -369,6 +369,9 @@ function BlackMarketManager:equipped_armor(chk_armor_kit, chk_player_state)
 	return self._defaults.armor
 end
 function BlackMarketManager:set_equipped_armor_skin(skin_id)
+	if not skin_id then
+		return
+	end
 	local skin_data = tweak_data.economy.armor_skins[skin_id]
 	if not skin_data then
 		Application:error("Attempting to equip armor skin that doesn't exist:", skin_id)
@@ -2489,11 +2492,7 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 		if bundle_folder then
 			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
 		end
-		if melee_weapon == "weapon" then
-			melee_weapon_texture = nil
-		else
-			melee_weapon_texture = guis_catalog .. "textures/pd2/blackmarket/icons/melee_weapons/" .. tostring(melee_weapon)
-		end
+		melee_weapon_texture = guis_catalog .. "textures/pd2/blackmarket/icons/melee_weapons/" .. tostring(melee_weapon)
 		melee_weapon_string = managers.localization:text(tweak_data.blackmarket.melee_weapons[melee_weapon].name_id)
 	end
 	if grenade and grenade_amount > 0 then
@@ -2522,6 +2521,8 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 		end
 		deployable_texture = guis_catalog .. "textures/pd2/blackmarket/icons/deployables/" .. tostring(deployable)
 		deployable_string = managers.localization:text(tweak_data.upgrades.definitions[deployable].name_id)
+	else
+		deployable_texture = "guis/textures/pd2/add_icon"
 	end
 	if mask then
 		mask_texture = self:get_mask_icon(mask.mask_id)
@@ -4955,7 +4956,7 @@ function BlackMarketManager:_remove_unowned_armor_skin()
 	local remove_armor = true
 	local skin_id = tweak_data.economy:get_real_armor_skin_id(self:equipped_armor_skin())
 	local a_td = tweak_data.economy.armor_skins[skin_id]
-	if a_td.steam_economy ~= false then
+	if a_td and a_td.steam_economy ~= false then
 		for instance_id, item in pairs(self._global.inventory_tradable) do
 			if item.entry == skin_id then
 				remove_armor = false

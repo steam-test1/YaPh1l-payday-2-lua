@@ -29,7 +29,7 @@ function TipsTweakData:init()
 		{
 			category = "gameplay",
 			cat_index = 103,
-			image = "tactics_stealth"
+			image = "tactics_casingmode"
 		},
 		{
 			category = "gameplay",
