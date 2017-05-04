@@ -2426,7 +2426,7 @@ end
 PlayerInventoryGui.open_throwable_menu = function(self)
 	local new_node_data = {}
 	table.insert(new_node_data, {name = "bm_menu_grenades", category = "grenades", on_create_func_name = "populate_grenades", allow_preview = true, 
-override_slots = {4, 3}, identifier = BlackMarketGui.identifiers.grenade})
+override_slots = {4, 4}, identifier = BlackMarketGui.identifiers.grenade})
 	new_node_data.scroll_tab_anywhere = true
 	new_node_data.topic_id = "bm_menu_grenades"
 	managers.menu:open_node("blackmarket_node", {new_node_data})
