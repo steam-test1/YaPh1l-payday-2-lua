@@ -1093,6 +1093,12 @@ function MenuSceneManager:set_henchmen_loadout(index, character, loadout)
 		local primary_cosmetics = crafted_primary.cosmetics
 		self:set_character_equipped_weapon(unit, primary, primary_blueprint, "primary", primary_cosmetics)
 		weapon_id = primary_id
+	else
+		local primary = tweak_data.character[character].weapon.weapons_of_choice.primary
+		primary = string.gsub(primary, "_npc", "")
+		local blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(primary)
+		self:set_character_equipped_weapon(unit, primary, blueprint, "primary", nil)
+		weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(primary)
 	end
 	self:_select_henchmen_pose(unit, weapon_id, index)
 	local pos, rot = self:get_henchmen_positioning(index)

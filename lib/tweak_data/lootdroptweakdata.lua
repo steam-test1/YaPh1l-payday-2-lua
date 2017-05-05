@@ -1315,6 +1315,7 @@ function LootDropTweakData:init(tweak_data)
 		"grv",
 		"amp",
 		"mp2",
+		"mom",
 		"pn2",
 		"max"
 	}

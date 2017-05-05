@@ -4527,12 +4527,19 @@ function GroupAIStateBase:on_editor_sim_unit_spawned(unit)
 end
 function GroupAIStateBase:_get_balancing_multiplier(balance_multipliers)
 	local nr_players = 0
-	for u_key, u_data in pairs(self:all_criminals()) do
+	for u_key, u_data in pairs(self:all_player_criminals()) do
 		if not u_data.status then
 			nr_players = nr_players + 1
 		end
 	end
 	nr_players = math.clamp(nr_players, 1, 4)
+	local nr_ai = 0
+	for u_key, u_data in pairs(self:all_AI_criminals()) do
+		if not u_data.status then
+			nr_ai = nr_ai + 1
+		end
+	end
+	nr_players = nr_players == 1 and nr_players + math.max(0, nr_ai - 1) or nr_players + nr_ai
 	return balance_multipliers[nr_players]
 end
 function GroupAIStateBase:draw_attention_objects_by_preset_name(wanted_preset_name)

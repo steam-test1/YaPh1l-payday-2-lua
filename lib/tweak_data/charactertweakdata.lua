@@ -2489,7 +2489,7 @@ function CharacterTweakData:_init_max(presets)
 	self.max.damage = presets.gang_member_damage
 	self.max.weapon = deep_clone(presets.weapon.gang_member)
 	self.max.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.max.detection = presets.detection.gang_member
@@ -2825,25 +2825,25 @@ function CharacterTweakData:_presets(tweak_data)
 		zones = {
 			{
 				health_limit = 0.4,
-				none = 0.3,
-				light = 0.6,
-				moderate = 0.1
+				none = 1,
+				light = 0,
+				moderate = 0
 			},
 			{
 				health_limit = 0.7,
-				none = 0.1,
-				light = 0.7,
-				moderate = 0.2
+				none = 1,
+				light = 0,
+				moderate = 0
 			},
 			{
-				none = 0.1,
-				light = 0.5,
-				moderate = 0.3,
-				heavy = 0.1
+				none = 1,
+				light = 0,
+				moderate = 0,
+				heavy = 0
 			}
 		}
 	}
-	presets.gang_member_damage.MIN_DAMAGE_INTERVAL = 0
+	presets.gang_member_damage.MIN_DAMAGE_INTERVAL = 0.35
 	presets.gang_member_damage.respawn_time_penalty = 0
 	presets.gang_member_damage.base_respawn_time_penalty = 5
 	presets.weapon = {}
@@ -8271,79 +8271,79 @@ function CharacterTweakData:_set_overkill_290()
 	self.presets.gang_member_damage.HEALTH_INIT = 800
 	self.presets.weapon.gang_member.beretta92.FALLOFF = {
 		{
-			r = 300,
+			r = 3000,
+			acc = {1, 1},
+			dmg_mul = 15,
+			recoil = {0.25, 0.45},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			r = 100000,
 			acc = {1, 1},
 			dmg_mul = 10,
 			recoil = {0.25, 0.45},
 			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			r = 10000,
-			acc = {1, 1},
-			dmg_mul = 5,
-			recoil = {2, 3},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
+				0,
+				0,
+				0,
+				1
 			}
 		}
 	}
 	self.presets.weapon.gang_member.m4.FALLOFF = {
 		{
-			r = 300,
+			r = 3000,
+			acc = {1, 1},
+			dmg_mul = 15,
+			recoil = {0.25, 0.45},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			r = 100000,
 			acc = {1, 1},
 			dmg_mul = 10,
 			recoil = {0.25, 0.45},
 			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			r = 10000,
-			acc = {1, 1},
-			dmg_mul = 5,
-			recoil = {2, 3},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
+				0,
+				0,
+				0,
+				1
 			}
 		}
 	}
 	self.presets.weapon.gang_member.r870.FALLOFF = {
 		{
-			r = 300,
+			r = 3000,
+			acc = {1, 1},
+			dmg_mul = 15,
+			recoil = {0.25, 0.45},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			r = 100000,
 			acc = {1, 1},
 			dmg_mul = 10,
 			recoil = {0.25, 0.45},
 			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			r = 10000,
-			acc = {1, 1},
-			dmg_mul = 5,
-			recoil = {2, 3},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
+				0,
+				0,
+				0,
+				1
 			}
 		}
 	}

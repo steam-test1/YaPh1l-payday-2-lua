@@ -1652,7 +1652,7 @@ function PlayerDamage:_upd_health_regen(t, dt)
 		local max_health = self:_max_health()
 		if max_health > self:get_real_health() then
 			self:restore_health(managers.player:health_regen(), false)
-			self:restore_health(managers.player:fixed_health_regen(), true)
+			self:restore_health(managers.player:fixed_health_regen(self:health_ratio()), true)
 			self._health_regen_update_timer = 5
 		end
 	end

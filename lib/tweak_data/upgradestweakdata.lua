@@ -968,6 +968,63 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.dodge_replenish_armor = {true}
 	self.values.player.smoke_screen_ally_dodge_bonus = {0.1}
 	self.values.player.sicario_multiplier = {2}
+	self.values.team.crew_add_health = {6}
+	self.values.team.crew_add_armor = {3}
+	self.values.team.crew_add_dodge = {0.05}
+	self.values.team.crew_add_concealment = {3}
+	self.values.team.crew_add_stamina = {50}
+	self.values.team.crew_reduce_speed_penalty = {0.5}
+	self.values.team.crew_faster_reload = {1.5}
+	self.values.team.crew_faster_swap = {1.5}
+	self.values.team.crew_throwable_regen = {35}
+	self.values.team.crew_health_regen = {2}
+	self.values.team.crew_active = {
+		1,
+		2,
+		3
+	}
+	self.values.team.crew_inspire = {
+		{
+			360,
+			240,
+			120
+		}
+	}
+	self.values.team.crew_scavenge = {
+		{
+			0.2,
+			0.4,
+			0.6
+		}
+	}
+	self.values.team.crew_interact = {
+		{
+			0.75,
+			0.5,
+			0.25
+		}
+	}
+	self.values.team.crew_ai_ap_ammo = {true}
+	local editable_crew_descrition = {
+		crew_healthy = {"60"},
+		crew_sturdy = {"30"},
+		crew_evasive = {"5"},
+		crew_quiet = {"3"},
+		crew_motivated = {"50", "50%"},
+		crew_eager = {"50%", "50%"},
+		crew_generous = {"35"},
+		crew_regen = {"5", "5"},
+		crew_inspire = {"6", "2"},
+		crew_scavenge = {"20%", "+20%"},
+		crew_interact = {"30%", "+30%"}
+	}
+	self.crew_descs = {}
+	for id, desc in pairs(editable_crew_descrition) do
+		self.crew_descs[id] = {}
+		for i, value in ipairs(desc) do
+			self.crew_descs[id]["value" .. i] = value
+		end
+	end
 	local editable_skill_descs = {
 		ammo_2x = {
 			{"2"},
@@ -9891,6 +9948,125 @@ function UpgradesTweakData:_team_definitions()
 			upgrade = "team_damage_reduction",
 			value = 1
 		}
+	}
+	self:_crew_definitions()
+end
+function UpgradesTweakData:_crew_definitions()
+	self.crew_skill_definitions = self.crew_skill_definitions or {}
+	self.crew_ability_definitions = self.crew_ability_definitions or {}
+	self.crew_skill_definitions.crew_healthy = {
+		name_id = "menu_crew_healthy",
+		icon = "skill_1",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_health",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_sturdy = {
+		name_id = "menu_crew_sturdy",
+		icon = "skill_2",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_armor",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_evasive = {
+		name_id = "menu_crew_evasive",
+		icon = "skill_3",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_dodge",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_regen = {
+		name_id = "menu_crew_regen",
+		icon = "skill_5",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_health_regen",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_motivated = {
+		name_id = "menu_crew_motivated",
+		icon = "skill_4",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_stamina",
+				value = 1
+			},
+			{
+				category = "team",
+				upgrade = "crew_reduce_speed_penalty",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_eager = {
+		name_id = "menu_crew_eager",
+		icon = "skill_8",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_faster_swap",
+				value = 1
+			},
+			{
+				category = "team",
+				upgrade = "crew_faster_reload",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_quiet = {
+		name_id = "menu_crew_quiet",
+		icon = "skill_6",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_concealment",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_generous = {
+		name_id = "menu_crew_generous",
+		icon = "skill_7",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_throwable_regen",
+				value = 1
+			}
+		}
+	}
+	self.crew_ability_definitions.crew_inspire = {
+		name_id = "menu_crew_inspire",
+		icon = "ability_1"
+	}
+	self.crew_ability_definitions.crew_scavenge = {
+		name_id = "menu_crew_scavenge",
+		icon = "ability_2"
+	}
+	self.crew_ability_definitions.crew_interact = {
+		name_id = "menu_crew_interact",
+		icon = "ability_3"
+	}
+	self.crew_ability_definitions.crew_ai_ap_ammo = {
+		name_id = "menu_crew_ai_ap_ammo",
+		icon = "ability_4"
 	}
 end
 function UpgradesTweakData:_temporary_definitions()

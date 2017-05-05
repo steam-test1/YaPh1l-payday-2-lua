@@ -43,6 +43,7 @@ require("lib/managers/menu/StageEndScreenTabCrimeSpree")
 require("lib/managers/menu/IngameContractGuiCrimeSpree")
 require("lib/managers/menu/CrimeSpreeContractBoxGui")
 require("lib/managers/menu/LobbyCharacterData")
+require("lib/managers/menu/CrewManagementGui")
 if not MenuComponentManager then
 	MenuComponentManager = class()
 end
@@ -107,6 +108,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.crime_spree_rewards = {create = callback(self, self, "create_crime_spree_rewards_gui"), close = callback(self, self, "close_crime_spree_rewards_gui")}
 	self._active_components.crime_spree_mission_end = {create = callback(self, self, "create_crime_spree_mission_end_gui"), close = callback(self, self, "close_crime_spree_mission_end_gui")}
 	self._active_components.debug_quicklaunch = {create = callback(self, self, "create_debug_quicklaunch_gui"), close = callback(self, self, "close_debug_quicklaunch_gui")}
+	self._active_components.crew_management = {create = callback(self, self, "create_crew_management_gui"), close = callback(self, self, "close_crew_management_gui")}
 	self._alive_components = {}
 end
 
@@ -3804,6 +3806,24 @@ MenuComponentManager.create_debug_quicklaunch_gui = function(self, node)
 end
 
 MenuComponentManager.close_debug_quicklaunch_gui = function(self)
+end
+
+MenuComponentManager.create_crew_management_gui = function(self, node)
+	if not node then
+		return 
+	end
+	if not self._crew_management_gui then
+		self._crew_management_gui = CrewManagementGui:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crew_management", self._crew_management_gui)
+end
+
+MenuComponentManager.close_crew_management_gui = function(self)
+	if self._crew_management_gui then
+		self._crew_management_gui:close()
+		self._crew_management_gui = nil
+		self:unregister_component("crew_management")
+	end
 end
 
 

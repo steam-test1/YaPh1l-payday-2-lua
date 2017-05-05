@@ -34,6 +34,10 @@ function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
 end
 function TeamAIInventory:add_unit(new_unit, equip)
 	TeamAIInventory.super.add_unit(self, new_unit, equip)
+	if new_unit:base().set_user_is_team_ai then
+		print("Set as team ai")
+		new_unit:base():set_user_is_team_ai(true)
+	end
 	self:_ensure_weapon_visibility(new_unit)
 end
 function TeamAIInventory:_ensure_weapon_visibility(override_weapon, override)
