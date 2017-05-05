@@ -171,9 +171,8 @@ function MenuSceneManager:_setup_gui()
 		h = self._main_panel:h() - 64
 	})
 	self._character_grab = self._main_panel:panel({
-		x = self._main_panel:w() * 0.5 - 275,
 		w = 550,
-		h = self._main_panel:h()
+		h = self._main_panel:h() - 64
 	})
 	self._character_grab2 = self._main_panel:panel({
 		x = self._main_panel:w() * 0.25,
@@ -193,7 +192,7 @@ function MenuSceneManager:_set_up_templates()
 	self._scene_templates.standard.character_visible = true
 	self._scene_templates.standard.camera_pos = ref:position()
 	self._scene_templates.standard.target_pos = target_pos
-	self._scene_templates.standard.character_pos = c_ref:position() + Vector3(50, 0, 0)
+	self._scene_templates.standard.character_pos = c_ref:position()
 	local l_pos = self._scene_templates.standard.camera_pos
 	local rot = Rotation(self._scene_templates.standard.target_pos - l_pos, math.UP)
 	local l1_pos = l_pos + rot:x() * -200 + rot:y() * 200
@@ -793,7 +792,7 @@ function MenuSceneManager:_set_character_unit(unit_name, unit, pos_override)
 		World:delete_unit(unit)
 	end
 	local a = self._bg_unit:get_object(Idstring("a_reference"))
-	unit = World:spawn_unit(Idstring(unit_name), pos_override or pos or a:position(), rot or a:rotation() * Rotation(-30, 0, 0))
+	unit = World:spawn_unit(Idstring(unit_name), pos_override or pos or a:position(), rot or a:rotation())
 	self._character_yaw = rot or a:rotation():yaw()
 	self._character_pitch = rot or a:rotation():pitch()
 	self:_set_character_unit_pose("husk_rifle1", unit)
@@ -1721,6 +1720,29 @@ function MenuSceneManager:set_character(character_id, force_recreate)
 	local equipped_mask = managers.blackmarket:equipped_mask()
 	if equipped_mask.mask_id then
 		self:_check_character_mask_sequence(self._character_unit, equipped_mask.mask_id, nil)
+	end
+	if tweak_data.blackmarket.characters[character_id].special_materials then
+		local special_material
+		local special_materials = tweak_data.blackmarket.characters[character_id].special_materials
+		for sequence, chance in pairs(special_materials) do
+			if type(chance) == "number" then
+				local rand = math.rand(chance)
+				if rand <= 1 then
+					special_material = sequence
+				end
+			else
+			end
+		end
+		special_material = special_material or table.random(special_materials)
+		if managers.blackmarket:equipped_armor_skin() ~= "none" then
+			special_material = special_material .. "_cc"
+		end
+		local special_material_ids = Idstring(special_material)
+		if not DB:has(Idstring("material_config"), special_material_ids) then
+			print("[MenuSceneManager:set_character] Missing material config", special_material)
+		else
+			self._character_unit:set_material_config(special_material_ids, true)
+		end
 	end
 	self:set_character_armor_skin(managers.blackmarket:equipped_armor_skin(), self._character_unit)
 end

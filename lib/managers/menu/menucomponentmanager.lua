@@ -29,7 +29,6 @@ require("lib/managers/menu/pages/CustomSafehouseGuiPageTrophies")
 require("lib/managers/menu/MutatorsListGui")
 require("lib/managers/menu/pages/MutatorsCategoryPage")
 require("lib/managers/menu/NewHeistsGui")
-require("lib/managers/menu/CommunityChallengesGui")
 require("lib/managers/menu/CrimeSpreeMenuComponent")
 require("lib/managers/menu/CrimeSpreeContractMenuComponent")
 require("lib/managers/menu/CrimeSpreeMissionsMenuComponent")
@@ -39,11 +38,11 @@ require("lib/managers/menu/CrimeSpreeModifierDetailsPage")
 require("lib/managers/menu/CrimeSpreeRewardsDetailsPage")
 require("lib/managers/menu/CrimeSpreeModifiersMenuComponent")
 require("lib/managers/menu/CrimeSpreeGageAssetsItem")
+require("lib/managers/menu/CrimeSpreeMissionEndOptions")
 require("lib/managers/menu/StageEndScreenTabCrimeSpree")
 require("lib/managers/menu/IngameContractGuiCrimeSpree")
 require("lib/managers/menu/CrimeSpreeContractBoxGui")
 require("lib/managers/menu/LobbyCharacterData")
-require("lib/managers/menu/CrewManagementGui")
 if not MenuComponentManager then
 	MenuComponentManager = class()
 end
@@ -101,15 +100,13 @@ MenuComponentManager.init = function(self)
 	self._active_components.custom_safehouse_secondaries = {create = callback(self, self, "create_custom_safehouse_secondaries"), close = callback(self, self, "close_custom_safehouse_secondaries")}
 	self._active_components.new_heists = {create = callback(self, self, "create_new_heists_gui"), close = callback(self, self, "close_new_heists_gui")}
 	self._active_components.mutators_list = {create = callback(self, self, "create_mutators_list_gui"), close = callback(self, self, "close_mutators_list_gui")}
-	self._active_components.crimenet_crimespree = {create = callback(self, self, "create_crime_spree_gui"), close = callback(self, self, "close_crime_spree_gui")}
 	self._active_components.crimenet_crime_spree_contract = {create = callback(self, self, "create_crime_spree_contract_gui"), close = callback(self, self, "close_crime_spree_contract_gui")}
 	self._active_components.crime_spree_missions = {create = callback(self, self, "create_crime_spree_missions_gui"), close = callback(self, self, "close_crime_spree_missions_gui")}
 	self._active_components.crime_spree_details = {create = callback(self, self, "create_crime_spree_details_gui"), close = callback(self, self, "close_crime_spree_details_gui")}
 	self._active_components.crime_spree_modifiers = {create = callback(self, self, "create_crime_spree_modifiers_gui"), close = callback(self, self, "close_crime_spree_modifiers_gui")}
 	self._active_components.crime_spree_rewards = {create = callback(self, self, "create_crime_spree_rewards_gui"), close = callback(self, self, "close_crime_spree_rewards_gui")}
+	self._active_components.crime_spree_mission_end = {create = callback(self, self, "create_crime_spree_mission_end_gui"), close = callback(self, self, "close_crime_spree_mission_end_gui")}
 	self._active_components.debug_quicklaunch = {create = callback(self, self, "create_debug_quicklaunch_gui"), close = callback(self, self, "close_debug_quicklaunch_gui")}
-	self._active_components.crew_management = {create = callback(self, self, "create_crew_management_gui"), close = callback(self, self, "close_crew_management_gui")}
-	self._active_components.community_challenges = {create = callback(self, self, "create_community_challenges_gui"), close = callback(self, self, "close_community_challenges_gui")}
 	self._alive_components = {}
 end
 
@@ -378,9 +375,6 @@ MenuComponentManager.update = function(self, t, dt)
 	if self._blackmarket_gui then
 		self._blackmarket_gui:update(t, dt)
 	end
-	if self._community_challenges_gui then
-		self._community_challenges_gui:update(t, dt)
-	end
 	self:run_on_all_live_components("update", t, dt)
 end
 
@@ -445,7 +439,7 @@ MenuComponentManager.input_focus = function(self)
 	if self._mission_briefing_gui then
 		return self._mission_briefing_gui:input_focus()
 	end
-	if self._stage_endscreen_gui then
+	if self._stage_endscreen_gui and self._stage_endscreen_gui:input_focus() ~= nil then
 		return self._stage_endscreen_gui:input_focus()
 	end
 	if self._lootdrop_casino_gui then
@@ -3671,24 +3665,6 @@ MenuComponentManager.close_new_heists_gui = function(self)
 	end
 end
 
-MenuComponentManager.create_crime_spree_gui = function(self, node)
-	if not node then
-		return 
-	end
-	if not self._crime_spree_menu_comp then
-		self._crime_spree_menu_comp = CrimeSpreeMenuComponent:new(self._ws, self._fullscreen_ws, node)
-	end
-	self:register_component("crimenet_crime_spree", self._crime_spree_menu_comp)
-end
-
-MenuComponentManager.close_crime_spree_gui = function(self, node)
-	if self._crime_spree_menu_comp then
-		self._crime_spree_menu_comp:close()
-		self._crime_spree_menu_comp = nil
-		self:unregister_component("crimenet_crime_spree")
-	end
-end
-
 MenuComponentManager.create_crime_spree_contract_gui = function(self, node)
 	if not node then
 		return 
@@ -3802,41 +3778,32 @@ MenuComponentManager.close_crime_spree_rewards_gui = function(self, node)
 	end
 end
 
+MenuComponentManager.create_crime_spree_mission_end_gui = function(self, node)
+	if not node or not managers.crime_spree:_is_active() then
+		return 
+	end
+	if not self._crime_spree_mission_end then
+		self._crime_spree_mission_end = CrimeSpreeMissionEndOptions:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crime_spree_mission_end", self._crime_spree_mission_end)
+end
+
+MenuComponentManager.close_crime_spree_mission_end_gui = function(self, node)
+	if self._crime_spree_mission_end then
+		self._crime_spree_mission_end:close()
+		self._crime_spree_mission_end = nil
+		self:unregister_component("crime_spree_mission_end")
+	end
+end
+
+MenuComponentManager.crime_spree_mission_end_gui = function(self)
+	return self._crime_spree_mission_end
+end
+
 MenuComponentManager.create_debug_quicklaunch_gui = function(self, node)
 end
 
 MenuComponentManager.close_debug_quicklaunch_gui = function(self)
-end
-
-MenuComponentManager.create_crew_management_gui = function(self, node)
-	if not node then
-		return 
-	end
-	if not self._crew_management_gui then
-		self._crew_management_gui = CrewManagementGui:new(self._ws, self._fullscreen_ws, node)
-	end
-	self:register_component("crew_management", self._crew_management_gui)
-end
-
-MenuComponentManager.close_crew_management_gui = function(self)
-	if self._crew_management_gui then
-		self._crew_management_gui:close()
-		self._crew_management_gui = nil
-		self:unregister_component("crew_management")
-	end
-end
-
-MenuComponentManager.create_community_challenges_gui = function(self, node)
-	self:close_community_challenges_gui()
-	self._community_challenges_gui = CommunityChallengesGui:new(self._ws:panel())
-	self._community_challenges_gui:set_leftbottom(0, 477)
-end
-
-MenuComponentManager.close_community_challenges_gui = function(self)
-	if self._community_challenges_gui then
-		self._community_challenges_gui:close()
-		self._community_challenges_gui = nil
-	end
 end
 
 

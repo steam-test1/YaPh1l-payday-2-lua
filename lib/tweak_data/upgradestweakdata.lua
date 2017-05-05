@@ -962,62 +962,12 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.chico_injector_health_to_speed = {
 		{5, 1}
 	}
-	self.values.team.crew_add_health = {6}
-	self.values.team.crew_add_armor = {3}
-	self.values.team.crew_add_dodge = {0.05}
-	self.values.team.crew_add_concealment = {3}
-	self.values.team.crew_add_stamina = {50}
-	self.values.team.crew_reduce_speed_penalty = {0.5}
-	self.values.team.crew_faster_reload = {1.5}
-	self.values.team.crew_faster_swap = {1.5}
-	self.values.team.crew_throwable_regen = {35}
-	self.values.team.crew_health_regen = {2}
-	self.values.team.crew_active = {
-		1,
-		2,
-		3
+	self.values.player.dodge_shot_gain = {
+		{0.2, 4}
 	}
-	self.values.team.crew_inspire = {
-		{
-			360,
-			240,
-			120
-		}
-	}
-	self.values.team.crew_scavenge = {
-		{
-			0.2,
-			0.4,
-			0.6
-		}
-	}
-	self.values.team.crew_interact = {
-		{
-			0.75,
-			0.5,
-			0.25
-		}
-	}
-	local editable_crew_descrition = {
-		crew_healthy = {"60"},
-		crew_sturdy = {"30"},
-		crew_evasive = {"5"},
-		crew_quiet = {"3"},
-		crew_motivated = {"50", "50%"},
-		crew_eager = {"50%", "50%"},
-		crew_generous = {"35"},
-		crew_regen = {"5", "5"},
-		crew_inspire = {"6", "2"},
-		crew_scavenge = {"20%", "+20%"},
-		crew_interact = {"30%", "+30%"}
-	}
-	self.crew_descs = {}
-	for id, desc in pairs(editable_crew_descrition) do
-		self.crew_descs[id] = {}
-		for i, value in ipairs(desc) do
-			self.crew_descs[id]["value" .. i] = value
-		end
-	end
+	self.values.player.dodge_replenish_armor = {true}
+	self.values.player.smoke_screen_ally_dodge_bonus = {0.1}
+	self.values.player.sicario_multiplier = {2}
 	local editable_skill_descs = {
 		ammo_2x = {
 			{"2"},
@@ -2248,6 +2198,31 @@ function UpgradesTweakData:_init_pd2_values()
 				"1",
 				"10%"
 			}
+		},
+		{
+			{
+				"8",
+				"50%",
+				"30",
+				"50%",
+				"1"
+			},
+			{"25%"},
+			{"20%", "4"},
+			{
+				"+1",
+				"15%",
+				"45%"
+			},
+			{"10%"},
+			{"135%"},
+			{},
+			{"5%", "20%"},
+			{
+				"100%",
+				"10%",
+				"10%"
+			}
 		}
 	}
 	self.specialization_descs = {}
@@ -2411,7 +2386,8 @@ function UpgradesTweakData:init(tweak_data)
 		name_id = "lvl_20",
 		upgrades = {
 			"rep_upgrade2",
-			"schakal"
+			"schakal",
+			"agave"
 		}
 	}
 	self.level_tree[21] = {
@@ -2472,7 +2448,9 @@ function UpgradesTweakData:init(tweak_data)
 			"saiga",
 			"sandsteel",
 			"packrat",
-			"lemming"
+			"lemming",
+			"chinchilla",
+			"x_chinchilla"
 		}
 	}
 	self.level_tree[27] = {
@@ -2965,6 +2943,8 @@ function UpgradesTweakData:init(tweak_data)
 	self:_flint_weapon_definitions()
 	self:_coal_weapon_definitions()
 	self:_lemming_weapon_definitions()
+	self:_chinchilla_weapon_definitions()
+	self:_x_chinchilla_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -6578,6 +6558,43 @@ function UpgradesTweakData:_player_definitions()
 			value = 1
 		}
 	}
+	self.definitions.player_dodge_shot_gain = {
+		category = "feature",
+		name_id = "menu_player_dodge_shot_gain",
+		upgrade = {
+			category = "player",
+			upgrade = "dodge_shot_gain",
+			value = 1
+		}
+	}
+	self.definitions.player_dodge_replenish_armor = {
+		category = "feature",
+		name_id = "menu_player_dodge_replenish_armor",
+		upgrade = {
+			category = "player",
+			upgrade = "dodge_replenish_armor",
+			value = 1
+		}
+	}
+	self.definitions.player_smoke_screen_ally_dodge_bonus = {
+		category = "feature",
+		name_id = "menu_player_smoke_screen_ally_dodge_bonus",
+		upgrade = {
+			category = "player",
+			upgrade = "smoke_screen_ally_dodge_bonus",
+			value = 1
+		}
+	}
+	self.definitions.player_sicario_multiplier = {
+		category = "feature",
+		name_id = "menu_player_sicario_multiplier",
+		upgrade = {
+			category = "player",
+			upgrade = "sicario_multiplier",
+			value = 1,
+			synced = true
+		}
+	}
 	self.definitions.toolset = {
 		tree = 4,
 		step = 1,
@@ -8612,6 +8629,9 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon",
 		dlc = "pn2"
 	}
+	self.definitions.agave = {
+		category = "melee_weapon"
+	}
 end
 function UpgradesTweakData:_grenades_definitions()
 	self.definitions.molotov = {category = "grenade", dlc = "bbq"}
@@ -8626,6 +8646,7 @@ function UpgradesTweakData:_grenades_definitions()
 	self.definitions.concussion = {category = "grenade"}
 	self.definitions.chico_injector = {category = "grenade", dlc = "chico"}
 	self.definitions.fir_com = {category = "grenade", dlc = "pd2_clan"}
+	self.definitions.smoke_screen_grenade = {category = "grenade", dlc = "max"}
 end
 function UpgradesTweakData:_weapon_definitions()
 	self.definitions.weapon_steelsight_highlight_specials = {
@@ -9870,121 +9891,6 @@ function UpgradesTweakData:_team_definitions()
 			upgrade = "team_damage_reduction",
 			value = 1
 		}
-	}
-	self:_crew_definitions()
-end
-function UpgradesTweakData:_crew_definitions()
-	self.crew_skill_definitions = self.crew_skill_definitions or {}
-	self.crew_ability_definitions = self.crew_ability_definitions or {}
-	self.crew_skill_definitions.crew_healthy = {
-		name_id = "menu_crew_healthy",
-		icon = "skill_1",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_add_health",
-				value = 1
-			}
-		}
-	}
-	self.crew_skill_definitions.crew_sturdy = {
-		name_id = "menu_crew_sturdy",
-		icon = "skill_2",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_add_armor",
-				value = 1
-			}
-		}
-	}
-	self.crew_skill_definitions.crew_evasive = {
-		name_id = "menu_crew_evasive",
-		icon = "skill_3",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_add_dodge",
-				value = 1
-			}
-		}
-	}
-	self.crew_skill_definitions.crew_regen = {
-		name_id = "menu_crew_regen",
-		icon = "skill_5",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_health_regen",
-				value = 1
-			}
-		}
-	}
-	self.crew_skill_definitions.crew_motivated = {
-		name_id = "menu_crew_motivated",
-		icon = "skill_4",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_add_stamina",
-				value = 1
-			},
-			{
-				category = "team",
-				upgrade = "crew_reduce_speed_penalty",
-				value = 1
-			}
-		}
-	}
-	self.crew_skill_definitions.crew_eager = {
-		name_id = "menu_crew_eager",
-		icon = "skill_8",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_faster_swap",
-				value = 1
-			},
-			{
-				category = "team",
-				upgrade = "crew_faster_reload",
-				value = 1
-			}
-		}
-	}
-	self.crew_skill_definitions.crew_quiet = {
-		name_id = "menu_crew_quiet",
-		icon = "skill_6",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_add_concealment",
-				value = 1
-			}
-		}
-	}
-	self.crew_skill_definitions.crew_generous = {
-		name_id = "menu_crew_generous",
-		icon = "skill_7",
-		upgrades = {
-			{
-				category = "team",
-				upgrade = "crew_throwable_regen",
-				value = 1
-			}
-		}
-	}
-	self.crew_ability_definitions.crew_inspire = {
-		name_id = "menu_crew_inspire",
-		icon = "ability_1"
-	}
-	self.crew_ability_definitions.crew_scavenge = {
-		name_id = "menu_crew_scavenge",
-		icon = "ability_2"
-	}
-	self.crew_ability_definitions.crew_interact = {
-		name_id = "menu_crew_interact",
-		icon = "ability_3"
 	}
 end
 function UpgradesTweakData:_temporary_definitions()
@@ -11738,5 +11644,21 @@ function UpgradesTweakData:_lemming_weapon_definitions()
 		weapon_id = "lemming",
 		factory_id = "wpn_fps_pis_lemming",
 		dlc = "pd2_clan"
+	}
+end
+function UpgradesTweakData:_chinchilla_weapon_definitions()
+	self.definitions.chinchilla = {
+		category = "weapon",
+		weapon_id = "chinchilla",
+		factory_id = "wpn_fps_pis_chinchilla",
+		dlc = "max"
+	}
+end
+function UpgradesTweakData:_x_chinchilla_weapon_definitions()
+	self.definitions.x_chinchilla = {
+		category = "weapon",
+		weapon_id = "x_chinchilla",
+		factory_id = "wpn_fps_pis_x_chinchilla",
+		dlc = "max"
 	}
 end

@@ -61,7 +61,7 @@ function MenuManager:setup_local_lobby_character()
 	local rank = managers.experience:current_rank()
 	local character = local_peer:character()
 	local progress = managers.upgrades:progress()
-	if managers.menu_scene then
+	if managers.menu_scene and not Global.game_settings.single_player then
 		managers.menu_scene:set_lobby_character_out_fit(local_peer:id(), managers.blackmarket:outfit_string(), rank)
 	end
 	local_peer:set_outfit_string(managers.blackmarket:outfit_string())
@@ -2337,4 +2337,10 @@ function MenuCallbackHandler:weapon_skin_changed(item)
 	data[key] = value
 	self:cleanup_weapon_skin_data(data)
 	skin_editor:apply_changes(skin:config().data)
+end
+function MenuCallbackHandler:toggle_controller_hint(item)
+	managers.user:set_setting("loading_screen_show_controller", item:value() == "on")
+end
+function MenuCallbackHandler:toggle_loading_hints(item)
+	managers.user:set_setting("loading_screen_show_hints", item:value() == "on")
 end

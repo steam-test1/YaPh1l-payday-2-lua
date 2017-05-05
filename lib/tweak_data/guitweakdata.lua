@@ -1728,6 +1728,32 @@ function GuiTweakData:init()
 			pulse_level = 10,
 			pulse_color = Color(255, 255, 0, 255) / 255,
 			mutators_color = Color(255, 255, 0, 255) / 255
+		},
+		{
+			id = "crime_spree",
+			name_id = "cn_crime_spree",
+			desc_id = "cn_crime_spree_help_start",
+			menu_node = "crimenet_crime_spree_contract_host",
+			mp_only = true,
+			x = 675,
+			y = 810,
+			icon = "guis/textures/pd2/crimenet_marker_crimespree",
+			pulse = true,
+			pulse_level = 10,
+			pulse_color = Color(255, 255, 255, 0) / 255
+		},
+		{
+			id = "crime_spree",
+			name_id = "cn_crime_spree",
+			desc_id = "cn_crime_spree_help_start",
+			menu_node = "crimenet_crime_spree_contract_singleplayer",
+			sp_only = true,
+			x = 675,
+			y = 810,
+			icon = "guis/textures/pd2/crimenet_marker_crimespree",
+			pulse = true,
+			pulse_level = 10,
+			pulse_color = Color(255, 255, 255, 0) / 255
 		}
 	}
 	if SystemInfo:platform() == Idstring("WIN32") then
@@ -2063,6 +2089,15 @@ function GuiTweakData:init()
 					desc_id = "menu_chico_desc_codex",
 					videos = {"chico1"},
 					post_event = "pln_contact_tony"
+				}
+			},
+			{
+				id = "max",
+				name_id = "menu_max",
+				{
+					desc_id = "menu_max_desc_codex",
+					videos = {"max1"},
+					post_event = "pln_contact_sangres"
 				}
 			}
 		}
@@ -4672,6 +4707,11 @@ function GuiTweakData:init()
 		"bonus"
 	}
 	self.new_heists = {}
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_sangres",
+		texture_path = "guis/textures/pd2/new_heists/sangres",
+		url = "http://www.overkillsoftware.com/games/sangres/"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_search_for_kento",
 		texture_path = "guis/textures/pd2/new_heists/search_for_kento",

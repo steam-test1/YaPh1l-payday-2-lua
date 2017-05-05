@@ -1,4 +1,5 @@
 require("lib/player_actions/PlayerActionManager")
+require("lib/managers/player/SmokeScreenEffect")
 PlayerManager = PlayerManager or class()
 PlayerManager.WEAPON_SLOTS = 2
 PlayerManager.TARGET_COCAINE_AMOUNT = 1500
@@ -116,6 +117,8 @@ function PlayerManager:init()
 	self:check_skills()
 end
 function PlayerManager:check_skills()
+	self._coroutine_mgr:remove_coroutine(PlayerAction.UnseenStrike)
+	self._coroutine_mgr:remove_coroutine(PlayerAction.UnseenStrikeStart)
 	self._saw_panic_when_kill = self:has_category_upgrade("saw", "panic_when_kill")
 	self._unseen_strike = self:has_category_upgrade("player", "unseen_increased_crit_chance")
 	if self:has_category_upgrade("pistol", "stacked_accuracy_bonus") then
@@ -183,6 +186,25 @@ function PlayerManager:check_skills()
 		self._super_syndrome_count = self:upgrade_value("player", "super_syndrome")
 	else
 		self._super_syndrome_count = 0
+	end
+	if self:has_category_upgrade("player", "dodge_shot_gain") then
+		do
+			local last_gain_time = 0
+			local dodge_gain = self:upgrade_value("player", "dodge_shot_gain")[1]
+			local cooldown = self:upgrade_value("player", "dodge_shot_gain")[2]
+			local function on_player_damage(attack_data)
+				local t = TimerManager:game():time()
+				if attack_data.variant == "bullet" and t > last_gain_time + cooldown then
+					last_gain_time = t
+					managers.player:_dodge_shot_gain(managers.player:_dodge_shot_gain() + dodge_gain)
+				end
+			end
+			self:register_message(Message.OnPlayerDodge, "dodge_shot_gain_dodge", callback(self, self, "_dodge_shot_gain", 0))
+			self:register_message(Message.OnPlayerDamage, "dodge_shot_gain_damage", on_player_damage)
+		end
+	end
+	if self:has_category_upgrade("player", "dodge_replenish_armor") then
+		self._message_system:register(Message.OnPlayerDodge, "dodge_replenish_armor", callback(self, self, "_dodge_replenish_armor"))
 	end
 end
 function PlayerManager:damage_absorption()
@@ -454,9 +476,10 @@ function PlayerManager:update(t, dt)
 		end
 	end
 	local equipped_grenade = managers.blackmarket:equipped_grenade()
-	if self:player_unit() and equipped_grenade and tweak_data.blackmarket.projectiles[equipped_grenade] and tweak_data.blackmarket.projectiles[equipped_grenade].ability then
+	if self:player_unit() and equipped_grenade and tweak_data.blackmarket.projectiles[equipped_grenade] and tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
 		self:update_ability_hud(equipped_grenade)
 	end
+	self:update_smoke_screens(t, dt)
 end
 function PlayerManager:add_listener(key, events, clbk)
 	self._listener_holder:add(key, events, clbk)
@@ -881,14 +904,6 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 		local multiplier = self:upgrade_value("player", "kill_change_regenerate_speed", 0)
 		damage_ext:change_regenerate_speed(amount * multiplier, tweak_data.upgrades.kill_change_regenerate_speed_percentage)
 	end
-	local gain_throwable_per_kill = managers.player:upgrade_value("team", "crew_throwable_regen", 0)
-	if gain_throwable_per_kill ~= 0 then
-		self._throw_regen_kills = (self._throw_regen_kills or 0) + 1
-		if gain_throwable_per_kill < self._throw_regen_kills then
-			managers.player:add_grenade_amount(1, true)
-			self._throw_regen_kills = 0
-		end
-	end
 	if self._on_killshot_t and t < self._on_killshot_t then
 		return
 	end
@@ -1214,25 +1229,6 @@ function PlayerManager:upgrade_value(category, upgrade, default)
 	local value = tweak_data.upgrades.values[category][upgrade][level]
 	return value or value ~= false and (default or 0 or false)
 end
-function PlayerManager:crew_ability_upgrade_value(upgrade, default)
-	if not self._global.upgrades.team or not self._global.upgrades.team[upgrade] then
-		return default or 0
-	end
-	local ai_level = self:upgrade_value("team", "crew_active", 0)
-	local level = self._global.upgrades.team[upgrade]
-	local value = tweak_data.upgrades.values.team[upgrade][level]
-	print(level, value, ai_level)
-	return value and value[ai_level] or default
-end
-function PlayerManager:start_custom_cooldown(category, upgrade, cooldown)
-	self["_cooldown_" .. category .. "_" .. upgrade] = Application:time() + cooldown
-end
-function PlayerManager:is_custom_cooldown_not_active(category, upgrade)
-	return self:has_category_upgrade(category, upgrade) and not self:has_active_ability_cooldown(category .. "_" .. upgrade)
-end
-function PlayerManager:get_custom_cooldown_left(category, upgrade)
-	return self:get_ability_cooldown_left(category .. "_" .. upgrade)
-end
 function PlayerManager:consumable_upgrade_value(upgrade, default)
 	if self._consumable_upgrades[upgrade] then
 		local amount = self._consumable_upgrades[upgrade].amount
@@ -1264,8 +1260,8 @@ function PlayerManager:activate_temporary_upgrade(category, upgrade)
 	self._temporary_upgrades[category] = self._temporary_upgrades[category] or {}
 	self._temporary_upgrades[category][upgrade] = {}
 	self._temporary_upgrades[category][upgrade].expire_time = Application:time() + time
-	if Network:is_client() and self:is_upgrade_synced(category, upgrade) then
-		managers.network:session():send_to_host("sync_temporary_upgrade_activated", self:temporary_upgrade_index(category, upgrade))
+	if self:is_upgrade_synced(category, upgrade) then
+		managers.network:session():send_to_peers("sync_temporary_upgrade_activated", self:temporary_upgrade_index(category, upgrade))
 	end
 end
 function PlayerManager:activate_temporary_upgrade_by_level(category, upgrade, level)
@@ -1646,7 +1642,6 @@ function PlayerManager:movement_speed_multiplier(speed_state, bonus_multiplier, 
 end
 function PlayerManager:mod_movement_penalty(movement_penalty)
 	local skill_mods = self:upgrade_value("player", "passive_armor_movement_penalty_multiplier", 1)
-	skill_mods = skill_mods * self:upgrade_value("team", "crew_reduce_speed_penalty", 1)
 	if skill_mods < 1 and movement_penalty < 1 then
 		local penalty = 1 - movement_penalty
 		penalty = penalty * skill_mods
@@ -1691,11 +1686,11 @@ function PlayerManager:body_armor_skill_addend(override_armor)
 		local max_health = (PlayerDamage._HEALTH_INIT + self:health_skill_addend()) * health_multiplier
 		addend = addend + max_health * self:upgrade_value("player", "armor_increase", 1)
 	end
-	addend = addend + self:upgrade_value("team", "crew_add_armor", 0)
 	return addend
 end
 function PlayerManager:skill_dodge_chance(running, crouching, on_zipline, override_armor, detection_risk)
 	local chance = self:upgrade_value("player", "passive_dodge_chance", 0)
+	chance = chance * self:upgrade_value("player", "sicario_multiplier", 1)
 	chance = chance + self:upgrade_value("player", "tier_dodge_chance", 0)
 	if running then
 		chance = chance + self:upgrade_value("player", "run_dodge_chance", 0)
@@ -1709,7 +1704,12 @@ function PlayerManager:skill_dodge_chance(running, crouching, on_zipline, overri
 	local detection_risk_add_dodge_chance = managers.player:upgrade_value("player", "detection_risk_add_dodge_chance")
 	chance = chance + self:get_value_from_risk_upgrade(detection_risk_add_dodge_chance, detection_risk)
 	chance = chance + self:upgrade_value("player", tostring(override_armor or managers.blackmarket:equipped_armor(true, true)) .. "_dodge_addend", 0)
-	chance = chance + self:upgrade_value("team", "crew_add_dodge", 0)
+	for _, smoke_screen in ipairs(self._smoke_screen_effects or {}) do
+		if smoke_screen:is_in_smoke(self:player_unit()) then
+			chance = chance + smoke_screen:dodge_bonus()
+		end
+	end
+	chance = chance + self:_dodge_shot_gain() * self:upgrade_value("player", "sicario_multiplier", 1)
 	return chance
 end
 function PlayerManager:stamina_multiplier()
@@ -1720,11 +1720,6 @@ function PlayerManager:stamina_multiplier()
 	multiplier = multiplier + self:get_hostage_bonus_multiplier("stamina") - 1
 	multiplier = managers.crime_spree:modify_value("PlayerManager:GetStaminaMultiplier", multiplier)
 	return multiplier
-end
-function PlayerManager:stamina_addend()
-	local addend = 0
-	addend = addend + self:upgrade_value("team", "crew_add_stamina", 0)
-	return addend
 end
 function PlayerManager:critical_hit_chance()
 	local multiplier = 0
@@ -1779,11 +1774,6 @@ function PlayerManager:health_regen()
 	health_regen = health_regen + self:upgrade_value("player", "passive_health_regen", 0)
 	return health_regen
 end
-function PlayerManager:fixed_health_regen()
-	local health_regen = 0
-	health_regen = health_regen + self:upgrade_value("team", "crew_health_regen", 0)
-	return health_regen
-end
 function PlayerManager:max_health()
 	local base_health = PlayerDamage._HEALTH_INIT
 	local health = (base_health + self:health_skill_addend()) * self:health_skill_multiplier()
@@ -1822,7 +1812,6 @@ function PlayerManager:damage_reduction_skill_multiplier(damage_type)
 end
 function PlayerManager:health_skill_addend()
 	local addend = 0
-	addend = addend + self:upgrade_value("team", "crew_add_health", 0)
 	if table.contains(self._global.kit.equipment_slots, "thick_skin") then
 		addend = addend + self:upgrade_value("player", "thick_skin", 0)
 	end
@@ -3166,7 +3155,7 @@ function PlayerManager:_set_grenade(params)
 	managers.hud:set_teammate_grenades(HUDManager.PLAYER_PANEL, {
 		amount = amount,
 		icon = icon,
-		ability = tweak_data.ability
+		has_cooldown = not not tweak_data.base_cooldown
 	})
 end
 function PlayerManager:add_grenade_amount(amount, sync)
@@ -3222,6 +3211,10 @@ function PlayerManager:get_synced_grenades(peer_id)
 	return self._global.synced_grenades[peer_id]
 end
 function PlayerManager:can_throw_grenade()
+	local equipped_grenade = managers.blackmarket:equipped_grenade()
+	if tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
+		return not self["_cooldown_" .. equipped_grenade] or self["_cooldown_" .. equipped_grenade] < TimerManager:game():time()
+	end
 	local peer_id = managers.network:session():local_peer():id()
 	return self:get_grenade_amount(peer_id) > 0
 end
@@ -3245,7 +3238,19 @@ function PlayerManager:has_grenade(peer_id)
 	return synced_grenade and synced_grenade.grenade and true or false
 end
 function PlayerManager:on_throw_grenade()
-	self:add_grenade_amount(-1)
+	local should_decrement = true
+	local equipped_grenade = managers.blackmarket:equipped_grenade()
+	if tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
+		self["_cooldown_" .. equipped_grenade] = TimerManager:game():time() + tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown
+		should_decrement = false
+		local function speed_up_on_kill()
+			managers.player:speed_up_ability_cooldown(equipped_grenade, 1)
+		end
+		self:register_message(Message.OnEnemyKilled, "speed_up_" .. equipped_grenade, speed_up_on_kill)
+	end
+	if should_decrement then
+		self:add_grenade_amount(-1)
+	end
 	local peer_id = managers.network:session():local_peer():id()
 	if table.contains(tweak_data.achievement.fire_in_the_hole.grenade, self:get_synced_grenades(peer_id).grenade) then
 		managers.achievment:award_progress(tweak_data.achievement.fire_in_the_hole.stat)
@@ -3597,7 +3602,6 @@ function PlayerManager:soft_reset()
 	}
 	self._global.synced_grenades = {}
 	self:clear_carry(true)
-	self._throw_regen_kills = nil
 end
 function PlayerManager:on_peer_synch_request(peer)
 	self:player_unit():network():synch_to_peer(peer)
@@ -3867,18 +3871,27 @@ function PlayerManager:activate_ability(ability)
 	if not self:player_unit() then
 		return
 	end
-	self:activate_temporary_upgrade("temporary", ability)
+	if self:has_inactivate_temporary_upgrade("temporary", ability) then
+		self:activate_temporary_upgrade("temporary", ability)
+	end
 	local t = TimerManager:game():time()
 	local tweak = tweak_data.blackmarket.projectiles[ability]
 	self["_cooldown_" .. ability] = t + tweak.base_cooldown
-	local function speed_up_on_kill()
-		managers.player:speed_up_ability_cooldown(ability, 1)
+	if self["_on_activate_" .. ability] then
+		self["_on_activate_" .. ability](self)
 	end
-	self:register_message(Message.OnEnemyKilled, "speed_up_" .. ability, speed_up_on_kill)
 	if tweak.sounds and tweak.sounds.activate then
 		self:player_unit():sound():play(tweak.sounds.activate)
 	end
-	managers.network:session():send_to_peers("sync_ability_hud", self:temporary_upgrade_index("temporary", ability), self:upgrade_value("temporary", ability)[2])
+	if self:has_inactivate_temporary_upgrade("temporary", ability) then
+		managers.network:session():send_to_peers("sync_ability_hud", self:temporary_upgrade_index("temporary", ability), self:upgrade_value("temporary", ability)[2])
+	end
+end
+function PlayerManager:_on_activate_chico_injector()
+	local speed_up_on_kill = function()
+		managers.player:speed_up_ability_cooldown("chico_injector", 1)
+	end
+	self:register_message(Message.OnEnemyKilled, "speed_up_chico_injector", speed_up_on_kill)
 end
 function PlayerManager:has_active_ability_cooldown(ability)
 	return self:get_ability_cooldown(ability) and true or false
@@ -3934,12 +3947,35 @@ function PlayerManager:reset_ability_hud()
 	managers.hud:set_player_ability_radial({current = 0, total = 1})
 	self._should_reset_ability_hud = nil
 end
-function PlayerManager:crew_add_concealment(new_value)
-	for k, v in pairs(managers.network:session():all_peers()) do
-		local unit = v:unit()
-		print(unit)
-		if unit then
-			unit:base():update_concealment()
+function PlayerManager:update_smoke_screens(t, dt)
+	if self._smoke_screen_effects and #self._smoke_screen_effects > 0 then
+		for i, smoke_screen_effect in dpairs(self._smoke_screen_effects) do
+			smoke_screen_effect:update(t, dt)
+			if not smoke_screen_effect:alive() then
+				table.remove(self._smoke_screen_effects, i)
+			end
 		end
 	end
+end
+function PlayerManager:smoke_screens()
+	return self._smoke_screen_effects or {}
+end
+function PlayerManager:spawn_smoke_screen(position, normal, grenade_unit, has_dodge_bonus)
+	local time = tweak_data.projectiles.smoke_screen_grenade.duration
+	self._smoke_screen_effects = self._smoke_screen_effects or {}
+	table.insert(self._smoke_screen_effects, SmokeScreenEffect:new(position, normal, time, has_dodge_bonus, grenade_unit))
+	if alive(self._smoke_grenade) then
+		self._smoke_grenade:set_slot(0)
+	end
+	self._smoke_grenade = grenade_unit
+end
+function PlayerManager:_dodge_shot_gain(gain_value)
+	if gain_value then
+		self._dodge_shot_gain_value = gain_value
+	else
+		return self._dodge_shot_gain_value or 0
+	end
+end
+function PlayerManager:_dodge_replenish_armor()
+	self:player_unit():character_damage():_regenerate_armor()
 end

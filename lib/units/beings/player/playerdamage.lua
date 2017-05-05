@@ -779,6 +779,14 @@ function PlayerDamage:damage_bullet(attack_data)
 	local armor_dodge_chance = pm:body_armor_value("dodge")
 	local skill_dodge_chance = pm:skill_dodge_chance(self._unit:movement():running(), self._unit:movement():crouching(), self._unit:movement():zipline_unit())
 	dodge_value = dodge_value + armor_dodge_chance + skill_dodge_chance
+	local smoke_dodge = 0
+	for _, smoke_screen in ipairs(managers.player._smoke_screen_effects or {}) do
+		if smoke_screen:is_in_smoke(self._unit) then
+			smoke_dodge = tweak_data.projectiles.smoke_screen_grenade.dodge_chance
+		else
+		end
+	end
+	dodge_value = 1 - (1 - dodge_value) * (1 - smoke_dodge)
 	if dodge_roll < dodge_value then
 		if attack_data.damage > 0 then
 			self:_send_damage_drama(attack_data, 0)
@@ -788,6 +796,7 @@ function PlayerDamage:damage_bullet(attack_data)
 		self:_hit_direction(attack_data.attacker_unit:position())
 		self._next_allowed_dmg_t = Application:digest_value(pm:player_timer():time() + self._dmg_interval, true)
 		self._last_received_dmg = attack_data.damage
+		managers.player:send_message(Message.OnPlayerDodge)
 		return
 	end
 	if self._god_mode then
@@ -855,7 +864,7 @@ function PlayerDamage:damage_bullet(attack_data)
 		self._kill_taunt_clbk_id = "kill_taunt" .. tostring(self._unit:key())
 		managers.enemy:add_delayed_clbk(self._kill_taunt_clbk_id, callback(self, self, "clbk_kill_taunt", attack_data), TimerManager:game():time() + tweak_data.timespeed.downed.fade_in + tweak_data.timespeed.downed.sustain + tweak_data.timespeed.downed.fade_out)
 	end
-	pm:send_message(Message.OnPlayerDamage, nil, nil)
+	pm:send_message(Message.OnPlayerDamage, nil, attack_data)
 	self:_call_listeners(damage_info)
 end
 function PlayerDamage:_calc_armor_damage(attack_data)
@@ -1052,6 +1061,8 @@ function PlayerDamage:damage_fall(data)
 	return true
 end
 function PlayerDamage:damage_explosion(attack_data)
+	print("[Debug] PlayerDamage:damage_explosion")
+	Application:stack_dump()
 	if not self:_chk_can_take_dmg() then
 		return
 	end
@@ -1081,7 +1092,7 @@ function PlayerDamage:damage_explosion(attack_data)
 	local armor_subtracted = self:_calc_armor_damage(attack_data)
 	attack_data.damage = attack_data.damage - (armor_subtracted or 0)
 	local health_subtracted = self:_calc_health_damage(attack_data)
-	managers.player:send_message(Message.OnPlayerDamage, nil, nil)
+	managers.player:send_message(Message.OnPlayerDamage, nil, attack_data)
 	self:_call_listeners(damage_info)
 end
 function PlayerDamage:damage_fire(attack_data)

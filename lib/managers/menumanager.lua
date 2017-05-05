@@ -115,8 +115,10 @@ function MenuManager:init(is_start_menu)
 	end
 	self._active_changed_callback_handler = CoreEvent.CallbackEventHandler:new()
 	managers.user:add_setting_changed_callback("brightness", callback(self, self, "brightness_changed"), true)
-	managers.user:add_setting_changed_callback("camera_zoom_sensitivity", callback(self, self, "camera_sensitivity_changed"), true)
-	managers.user:add_setting_changed_callback("camera_sensitivity", callback(self, self, "camera_sensitivity_changed"), true)
+	managers.user:add_setting_changed_callback("camera_sensitivity_x", callback(self, self, "camera_sensitivity_x_changed"), true)
+	managers.user:add_setting_changed_callback("camera_sensitivity_y", callback(self, self, "camera_sensitivity_y_changed"), true)
+	managers.user:add_setting_changed_callback("camera_zoom_sensitivity_x", callback(self, self, "camera_sensitivity_x_changed"), true)
+	managers.user:add_setting_changed_callback("camera_zoom_sensitivity_y", callback(self, self, "camera_sensitivity_y_changed"), true)
 	managers.user:add_setting_changed_callback("rumble", callback(self, self, "rumble_changed"), true)
 	managers.user:add_setting_changed_callback("invert_camera_x", callback(self, self, "invert_camera_x_changed"), true)
 	managers.user:add_setting_changed_callback("invert_camera_y", callback(self, self, "invert_camera_y_changed"), true)
@@ -442,14 +444,14 @@ function MenuManager:effect_quality_changed(name, old_value, new_value)
 	World:effect_manager():set_quality(new_value)
 end
 function MenuManager:set_mouse_sensitivity(zoomed)
-	local zoom_sense = zoomed and managers.user:get_setting("enable_camera_zoom_sensitivity")
+	local zoom_sense = zoomed
 	local sense_x, sense_y
 	if zoom_sense then
-		sense_x = managers.user:get_setting("camera_zoom_sensitivity")
-		sense_y = sense_x
+		sense_x = managers.user:get_setting("camera_zoom_sensitivity_x")
+		sense_y = managers.user:get_setting("camera_zoom_sensitivity_y")
 	else
-		sense_x = managers.user:get_setting("camera_sensitivity")
-		sense_y = sense_x
+		sense_x = managers.user:get_setting("camera_sensitivity_x")
+		sense_y = managers.user:get_setting("camera_sensitivity_y")
 	end
 	if zoomed and managers.user:get_setting("enable_fov_based_sensitivity") and alive(managers.player:player_unit()) then
 		local state = managers.player:player_unit():movement():current_state()
@@ -1296,6 +1298,10 @@ function MenuCallbackHandler:dlc_buy_mp2_pc()
 	print("[MenuCallbackHandler:dlc_buy_mp2_pc]")
 	Steam:overlay_activate("store", 218620)
 end
+function MenuCallbackHandler:dlc_buy_max_pc()
+	print("[MenuCallbackHandler:dlc_buy_max_pc]")
+	Steam:overlay_activate("store", 618941)
+end
 function MenuCallbackHandler:dlc_buy_ps3()
 	print("[MenuCallbackHandler:dlc_buy_ps3]")
 	managers.dlc:buy_product("dlc1")
@@ -1358,6 +1364,7 @@ function MenuCallbackHandler:choice_job_plan_filter(item)
 end
 function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 	local dlcs = {
+		"max",
 		"mp2",
 		"amp",
 		"grv",
@@ -1523,6 +1530,9 @@ function MenuCallbackHandler:visible_callback_amp()
 end
 function MenuCallbackHandler:visible_callback_mp2()
 	return self:is_dlc_latest_locked("mp2")
+end
+function MenuCallbackHandler:visible_callback_max()
+	return self:is_dlc_latest_locked("max")
 end
 function MenuCallbackHandler:not_has_all_dlcs()
 	return not self:has_all_dlcs()
@@ -1862,6 +1872,10 @@ end
 function MenuCallbackHandler:toggle_aim_assist(item)
 	local on = item:value() == "on"
 	managers.user:set_setting("aim_assist", on)
+end
+function MenuCallbackHandler:toggle_sticky_aim(item)
+	local on = item:value() == "on"
+	managers.user:set_setting("sticky_aim", on)
 end
 function MenuCallbackHandler:toggle_voicechat(item)
 	local vchat = item:value() == "on"
@@ -7014,9 +7028,10 @@ function MenuCrimeNetFiltersInitiator:add_filters(node)
 		}
 	}
 	for index, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
-		local contact = tweak_data.narrative.jobs[job_id].contact
+		local job_tweak = tweak_data.narrative.jobs[job_id]
+		local contact = job_tweak.contact
 		local contact_tweak = tweak_data.narrative.contacts[contact]
-		local allow = not tweak_data.narrative.jobs[job_id].wrapped_to_job and contact ~= "tests" and (not contact_tweak or not contact_tweak.hidden)
+		local allow = not job_tweak.wrapped_to_job and contact ~= "tests" and (not job_tweak or not job_tweak.hidden)
 		if allow then
 			local text_id, color_data = tweak_data.narrative:create_job_name(job_id)
 			local params = {
@@ -7304,6 +7319,8 @@ function MenuOptionInitiator:modify_node(node)
 		return self:modify_network_options(node)
 	elseif node_name == "gameplay_options" then
 		return self:modify_gameplay_options(node)
+	elseif node_name == "user_interface_options" then
+		return self:modify_user_interface_options(node)
 	end
 end
 function MenuOptionInitiator:refresh_node(node)
@@ -7517,6 +7534,14 @@ function MenuOptionInitiator:modify_controls(node)
 		end
 		aim_assist_item:set_value(option_value)
 	end
+	option_value = "off"
+	local sticky_aim_item = node:item("toggle_sticky_aim")
+	if sticky_aim_item then
+		if managers.user:get_setting("sticky_aim") then
+			option_value = "on"
+		end
+		sticky_aim_item:set_value(option_value)
+	end
 	local cs_item = node:item("camera_sensitivity")
 	if cs_item then
 		cs_item:set_min(tweak_data.player.camera.MIN_SENSITIVITY)
@@ -7590,6 +7615,19 @@ function MenuOptionInitiator:modify_gameplay_options(node)
 	local mute_heist_vo = node:item("toggle_mute_heist_vo")
 	if mute_heist_vo then
 		mute_heist_vo:set_value(managers.user:get_setting("mute_heist_vo") and "on" or "off")
+	end
+	return node
+end
+function MenuOptionInitiator:modify_user_interface_options(node)
+	local controller_hint_box = node:item("toggle_controller_hint")
+	local controller_hint_setting = managers.user:get_setting("loading_screen_show_controller")
+	if controller_hint_box then
+		controller_hint_box:set_value(controller_hint_setting and "on" or "off")
+	end
+	local loading_hints_box = node:item("toggle_loading_hints")
+	local loading_hints_setting = managers.user:get_setting("loading_screen_show_hints")
+	if loading_hints_box then
+		loading_hints_box:set_value(loading_hints_setting and "on" or "off")
 	end
 	return node
 end

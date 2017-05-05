@@ -29,7 +29,7 @@ function TipsTweakData:init()
 		{
 			category = "gameplay",
 			cat_index = 103,
-			image = "tactics_stealth"
+			image = "tactics_casingmode"
 		},
 		{
 			category = "gameplay",
@@ -1471,8 +1471,8 @@ function TipsTweakData:init()
 end
 function TipsTweakData:get_a_tip()
 	local tip = self.tips[math.random(#self.tips)]
-	local valid_image = DB:has(Idstring("texture"), "guis/textures/loading/hints/" .. tip.image)
-	if not valid_image then
+	local image_exists = DB:has(Idstring("texture"), "guis/textures/loading/hints/" .. tip.image)
+	if not image_exists then
 		Application:error("Warning: missing loading hint image: " .. tip.image)
 		return nil
 	end
@@ -1480,10 +1480,9 @@ function TipsTweakData:get_a_tip()
 	local text_id = "loading_" .. tip.category .. "_" .. tip.cat_index
 	return {
 		image = tip.image,
-		title = managers.localization:to_upper_text(title_id, {
-			index = tip.cat_index,
-			total = self.category_totals[tip.category]
-		}),
+		index = tip.cat_index,
+		total = self.category_totals[tip.category],
+		title = managers.localization:to_upper_text(title_id),
 		text = managers.localization:text(text_id)
 	}
 end

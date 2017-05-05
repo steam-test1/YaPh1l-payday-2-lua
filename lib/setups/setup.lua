@@ -94,7 +94,6 @@ require("lib/managers/CustomSafehouseManager")
 require("lib/managers/MutatorsManager")
 require("lib/managers/TangoManager")
 require("lib/managers/CrimeSpreeManager")
-require("lib/managers/CommunityChallengesManager")
 require("lib/utils/StatisticsGenerator")
 require("lib/utils/Bitwise")
 require("lib/utils/WeightedSelector")
@@ -158,7 +157,11 @@ end
 function Setup:load_packages()
 	PackageManager:set_resource_loaded_clbk(Idstring("unit"), nil)
 	TextureCache:set_streaming_enabled(true)
-	TextureCache:set_LOD_streaming_enabled(true)
+	if SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1") then
+		TextureCache:set_LOD_streaming_enabled(false)
+	else
+		TextureCache:set_LOD_streaming_enabled(true)
+	end
 	if not Application:editor() then
 		PackageManager:set_streaming_enabled(true)
 	end
@@ -231,7 +234,6 @@ function Setup:init_managers(managers)
 	managers.butler_mirroring = ButlerMirroringManager:new()
 	managers.tango = TangoManager:new()
 	managers.crime_spree = CrimeSpreeManager:new()
-	managers.community_challenges = CommunityChallengesManager:new()
 	game_state_machine = GameStateMachine:new()
 end
 function Setup:start_boot_loading_screen()
@@ -273,6 +275,8 @@ function Setup:_start_loading_screen()
 			PackageManager:load("packages/load_level")
 		end
 		local using_steam_controller = false
+		local show_controller = managers.user:get_setting("loading_screen_show_controller")
+		local show_hints = managers.user:get_setting("loading_screen_show_hints")
 		setup = "lib/setups/LevelLoadingSetup"
 		load_level_data = {}
 		load_level_data.level_data = Global.level_data
@@ -281,30 +285,34 @@ function Setup:_start_loading_screen()
 		load_level_data.gui_tweak_data = tweak_data.load_level
 		load_level_data.menu_tweak_data = tweak_data.menu
 		load_level_data.scale_tweak_data = tweak_data.scale
-		load_level_data.tip = tweak_data.tips:get_a_tip()
-		if using_steam_controller then
-		else
-			local coords = tweak_data:get_controller_help_coords()
-			load_level_data.controller_coords = coords and coords[table.random({"normal", "vehicle"})]
-			load_level_data.controller_image = "guis/textures/controller"
-			load_level_data.controller_shapes = {
-				{
-					position = {cx = 0.5, cy = 0.5},
-					texture_rect = {
-						0,
-						0,
-						512,
-						256
+		if show_hints then
+			load_level_data.tip = tweak_data.tips:get_a_tip()
+		end
+		if show_controller then
+			if using_steam_controller then
+			else
+				local coords = tweak_data:get_controller_help_coords()
+				load_level_data.controller_coords = coords and coords[table.random({"normal", "vehicle"})]
+				load_level_data.controller_image = "guis/textures/controller"
+				load_level_data.controller_shapes = {
+					{
+						position = {cx = 0.5, cy = 0.5},
+						texture_rect = {
+							0,
+							0,
+							512,
+							256
+						}
 					}
 				}
-			}
-		end
-		if load_level_data.controller_coords then
-			for id, data in pairs(load_level_data.controller_coords) do
-				if data.localize ~= false or not data.id then
+			end
+			if load_level_data.controller_coords then
+				for id, data in pairs(load_level_data.controller_coords) do
+					if data.localize ~= false or not data.id then
+					end
+					data.string = managers.localization:to_upper_text(data.id)
+					data.color = (data.id == "menu_button_unassigned" or data.localize == false) and Color(0.5, 0.5, 0.5) or Color.white
 				end
-				data.string = managers.localization:to_upper_text(data.id)
-				data.color = (data.id == "menu_button_unassigned" or data.localize == false) and Color(0.5, 0.5, 0.5) or Color.white
 			end
 		end
 		local load_data = load_level_data.level_tweak_data.load_data
@@ -428,7 +436,6 @@ function Setup:update(t, dt)
 	managers.vehicle:update(t, dt)
 	managers.mutators:update(t, dt)
 	managers.crime_spree:update(t, dt)
-	managers.community_challenges:update(t, dt)
 	game_state_machine:update(t, dt)
 	if self._main_thread_loading_screen_gui_visible then
 		self._main_thread_loading_screen_gui_script:update(-1, dt)
