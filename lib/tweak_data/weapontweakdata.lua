@@ -741,6 +741,19 @@ function WeaponTweakData:_init_data_m249_npc()
 	self.m249_npc.suppression = 1
 	self.rpk_lmg_npc = deep_clone(self.m249_npc)
 end
+function WeaponTweakData:_init_data_mini_npc()
+	self.mini_npc.sounds.prefix = "m249_npc"
+	self.mini_npc.use_data.selection_index = 2
+	self.mini_npc.DAMAGE = 2
+	self.mini_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.mini_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.mini_npc.CLIP_AMMO_MAX = 500
+	self.mini_npc.NR_CLIPS_MAX = 2
+	self.mini_npc.auto.fire_rate = 0.02
+	self.mini_npc.hold = "rifle"
+	self.mini_npc.alert_size = 5000
+	self.mini_npc.suppression = 1
+end
 function WeaponTweakData:_init_data_contraband_npc()
 	self.contraband_npc.sounds.prefix = "contraband_npc"
 	self.contraband_npc.use_data.selection_index = 2
@@ -3067,7 +3080,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	local total_damage_secondary = 150
 	local default_bipod_spread = 1.6
 	self.new_m4 = {}
-	self.new_m4.category = "assault_rifle"
+	self.new_m4.categories = {
+		"assault_rifle"
+	}
 	self.new_m4.damage_melee = damage_melee_default
 	self.new_m4.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.new_m4.sounds = {}
@@ -3160,7 +3175,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.glock_17 = {}
-	self.glock_17.category = "pistol"
+	self.glock_17.categories = {"pistol"}
 	self.glock_17.damage_melee = damage_melee_default
 	self.glock_17.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.glock_17.sounds = {}
@@ -3247,7 +3262,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.mp9 = {}
-	self.mp9.category = "smg"
+	self.mp9.categories = {"smg"}
 	self.mp9.damage_melee = damage_melee_default
 	self.mp9.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.mp9.sounds = {}
@@ -3336,7 +3351,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.r870 = {}
-	self.r870.category = "shotgun"
+	self.r870.categories = {"shotgun"}
 	self.r870.damage_melee = damage_melee_default
 	self.r870.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.r870.sounds = {}
@@ -3428,7 +3443,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.glock_18c = {}
-	self.glock_18c.category = "pistol"
+	self.glock_18c.categories = {"pistol"}
 	self.glock_18c.damage_melee = damage_melee_default
 	self.glock_18c.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.glock_18c.sounds = {}
@@ -3520,7 +3535,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.amcar = {}
-	self.amcar.category = "assault_rifle"
+	self.amcar.categories = {
+		"assault_rifle"
+	}
 	self.amcar.damage_melee = damage_melee_default
 	self.amcar.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.amcar.sounds = {}
@@ -3607,7 +3624,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.m16 = {}
-	self.m16.category = "assault_rifle"
+	self.m16.categories = {
+		"assault_rifle"
+	}
 	self.m16.damage_melee = damage_melee_default
 	self.m16.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.m16.sounds = {}
@@ -3694,7 +3713,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.olympic = {}
-	self.olympic.category = "smg"
+	self.olympic.categories = {"smg"}
 	self.olympic.damage_melee = damage_melee_default
 	self.olympic.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.olympic.sounds = {}
@@ -3781,7 +3800,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.ak74 = {}
-	self.ak74.category = "assault_rifle"
+	self.ak74.categories = {
+		"assault_rifle"
+	}
 	self.ak74.damage_melee = damage_melee_default
 	self.ak74.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.ak74.sounds = {}
@@ -3868,7 +3889,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.akm = {}
-	self.akm.category = "assault_rifle"
+	self.akm.categories = {
+		"assault_rifle"
+	}
 	self.akm.damage_melee = damage_melee_default
 	self.akm.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.akm.sounds = {}
@@ -3955,7 +3978,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.akm_gold = {}
-	self.akm_gold.category = "assault_rifle"
+	self.akm_gold.categories = {
+		"assault_rifle"
+	}
 	self.akm_gold.damage_melee = damage_melee_default
 	self.akm_gold.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.akm_gold.sounds = {}
@@ -4043,7 +4068,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.akmsu = {}
-	self.akmsu.category = "smg"
+	self.akmsu.categories = {"smg"}
 	self.akmsu.damage_melee = damage_melee_default
 	self.akmsu.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.akmsu.sounds = {}
@@ -4130,7 +4155,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.saiga = {}
-	self.saiga.category = "shotgun"
+	self.saiga.categories = {"shotgun"}
 	self.saiga.has_magazine = true
 	self.saiga.damage_melee = damage_melee_default
 	self.saiga.damage_melee_effect_mul = damage_melee_effect_multiplier_default
@@ -4217,7 +4242,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.ak5 = {}
-	self.ak5.category = "assault_rifle"
+	self.ak5.categories = {
+		"assault_rifle"
+	}
 	self.ak5.damage_melee = damage_melee_default
 	self.ak5.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.ak5.sounds = {}
@@ -4304,7 +4331,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.aug = {}
-	self.aug.category = "assault_rifle"
+	self.aug.categories = {
+		"assault_rifle"
+	}
 	self.aug.damage_melee = damage_melee_default
 	self.aug.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.aug.sounds = {}
@@ -4387,7 +4416,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.g36 = {}
-	self.g36.category = "assault_rifle"
+	self.g36.categories = {
+		"assault_rifle"
+	}
 	self.g36.damage_melee = damage_melee_default
 	self.g36.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.g36.sounds = {}
@@ -4471,7 +4502,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.p90 = {}
-	self.p90.category = "smg"
+	self.p90.categories = {"smg"}
 	self.p90.damage_melee = damage_melee_default
 	self.p90.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.p90.sounds = {}
@@ -4554,7 +4585,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.new_m14 = {}
-	self.new_m14.category = "assault_rifle"
+	self.new_m14.categories = {
+		"assault_rifle"
+	}
 	self.new_m14.damage_melee = damage_melee_default
 	self.new_m14.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.new_m14.sounds = {}
@@ -4638,7 +4671,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.deagle = {}
-	self.deagle.category = "pistol"
+	self.deagle.categories = {"pistol"}
 	self.deagle.damage_melee = damage_melee_default
 	self.deagle.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.deagle.sounds = {}
@@ -4717,7 +4750,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.new_mp5 = {}
-	self.new_mp5.category = "smg"
+	self.new_mp5.categories = {"smg"}
 	self.new_mp5.damage_melee = damage_melee_default
 	self.new_mp5.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.new_mp5.sounds = {}
@@ -4802,7 +4835,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.colt_1911 = {}
-	self.colt_1911.category = "pistol"
+	self.colt_1911.categories = {"pistol"}
 	self.colt_1911.damage_melee = damage_melee_default
 	self.colt_1911.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.colt_1911.sounds = {}
@@ -4885,7 +4918,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.mac10 = {}
-	self.mac10.category = "smg"
+	self.mac10.categories = {"smg"}
 	self.mac10.damage_melee = damage_melee_default
 	self.mac10.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.mac10.sounds = {}
@@ -4970,7 +5003,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.serbu = {}
-	self.serbu.category = "shotgun"
+	self.serbu.categories = {"shotgun"}
 	self.serbu.damage_melee = damage_melee_default
 	self.serbu.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.serbu.sounds = {}
@@ -5052,7 +5085,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.huntsman = {}
-	self.huntsman.category = "shotgun"
+	self.huntsman.categories = {"shotgun"}
 	self.huntsman.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -5148,7 +5181,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.huntsman.stats_modifiers = {damage = 1}
 	self.b92fs = {}
-	self.b92fs.category = "pistol"
+	self.b92fs.categories = {"pistol"}
 	self.b92fs.damage_melee = damage_melee_default
 	self.b92fs.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.b92fs.sounds = {}
@@ -5229,8 +5262,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.new_raging_bull = {}
-	self.new_raging_bull.category = "pistol"
-	self.new_raging_bull.sub_category = "revolver"
+	self.new_raging_bull.categories = {"pistol", "revolver"}
 	self.new_raging_bull.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -5315,7 +5347,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.saw = {}
-	self.saw.category = "saw"
+	self.saw.categories = {"saw"}
 	self.saw.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -5424,7 +5456,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.saw_secondary.texture_name = "saw"
 	self.saw_secondary.weapon_hold = "saw"
 	self.usp = {}
-	self.usp.category = "pistol"
+	self.usp.categories = {"pistol"}
 	self.usp.damage_melee = damage_melee_default
 	self.usp.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.usp.sounds = {}
@@ -5511,7 +5543,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.g22c = {}
-	self.g22c.category = "pistol"
+	self.g22c.categories = {"pistol"}
 	self.g22c.damage_melee = damage_melee_default
 	self.g22c.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.g22c.sounds = {}
@@ -5598,7 +5630,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.judge = {}
-	self.judge.category = "shotgun"
+	self.judge.categories = {"shotgun"}
 	self.judge.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -5694,7 +5726,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.m45 = {}
-	self.m45.category = "smg"
+	self.m45.categories = {"smg"}
 	self.m45.damage_melee = damage_melee_default
 	self.m45.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.m45.sounds = {}
@@ -5780,7 +5812,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.s552 = {}
-	self.s552.category = "assault_rifle"
+	self.s552.categories = {
+		"assault_rifle"
+	}
 	self.s552.damage_melee = damage_melee_default
 	self.s552.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.s552.sounds = {}
@@ -5866,7 +5900,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.ppk = {}
-	self.ppk.category = "pistol"
+	self.ppk.categories = {"pistol"}
 	self.ppk.damage_melee = damage_melee_default
 	self.ppk.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.ppk.sounds = {}
@@ -5949,7 +5983,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.mp7 = {}
-	self.mp7.category = "smg"
+	self.mp7.categories = {"smg"}
 	self.mp7.damage_melee = damage_melee_default
 	self.mp7.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.mp7.sounds = {}
@@ -6036,7 +6070,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.scar = {}
-	self.scar.category = "assault_rifle"
+	self.scar.categories = {
+		"assault_rifle"
+	}
 	self.scar.damage_melee = damage_melee_default
 	self.scar.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.scar.sounds = {}
@@ -6122,7 +6158,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.p226 = {}
-	self.p226.category = "pistol"
+	self.p226.categories = {"pistol"}
 	self.p226.damage_melee = damage_melee_default
 	self.p226.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.p226.sounds = {}
@@ -6205,7 +6241,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.hk21 = {}
-	self.hk21.category = "lmg"
+	self.hk21.categories = {"lmg"}
 	self.hk21.damage_melee = damage_melee_default
 	self.hk21.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.hk21.sounds = {}
@@ -6308,7 +6344,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.m249 = {}
-	self.m249.category = "lmg"
+	self.m249.categories = {"lmg"}
 	self.m249.damage_melee = damage_melee_default
 	self.m249.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.m249.sounds = {}
@@ -6411,7 +6447,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.rpk = {}
-	self.rpk.category = "lmg"
+	self.rpk.categories = {"lmg"}
 	self.rpk.damage_melee = damage_melee_default
 	self.rpk.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.rpk.sounds = {}
@@ -6514,7 +6550,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.m95 = {}
-	self.m95.category = "snp"
+	self.m95.categories = {"snp"}
 	self.m95.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -6611,7 +6647,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m95.armor_piercing_chance = 1
 	self.m95.stats_modifiers = {damage = 20}
 	self.msr = {}
-	self.msr.category = "snp"
+	self.msr.categories = {"snp"}
 	self.msr.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -6711,7 +6747,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.msr.armor_piercing_chance = 1
 	self.msr.stats_modifiers = {damage = 1}
 	self.r93 = {}
-	self.r93.category = "snp"
+	self.r93.categories = {"snp"}
 	self.r93.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -6810,7 +6846,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.r93.armor_piercing_chance = 1
 	self.r93.stats_modifiers = {damage = 2}
 	self.fal = {}
-	self.fal.category = "assault_rifle"
+	self.fal.categories = {
+		"assault_rifle"
+	}
 	self.fal.damage_melee = damage_melee_default
 	self.fal.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.fal.sounds = {}
@@ -6895,7 +6933,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.benelli = {}
-	self.benelli.category = "shotgun"
+	self.benelli.categories = {"shotgun"}
 	self.benelli.damage_melee = damage_melee_default
 	self.benelli.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.benelli.sounds = {}
@@ -6980,7 +7018,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.striker = {}
-	self.striker.category = "shotgun"
+	self.striker.categories = {"shotgun"}
 	self.striker.damage_melee = damage_melee_default
 	self.striker.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.striker.sounds = {}
@@ -7071,7 +7109,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.ksg = {}
-	self.ksg.category = "shotgun"
+	self.ksg.categories = {"shotgun"}
 	self.ksg.damage_melee = damage_melee_default
 	self.ksg.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.ksg.sounds = {}
@@ -7165,7 +7203,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.gre_m79 = {}
-	self.gre_m79.category = "grenade_launcher"
+	self.gre_m79.categories = {
+		"grenade_launcher"
+	}
 	self.gre_m79.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -7264,7 +7304,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.gre_m79.stats_modifiers = {damage = 10}
 	self.g3 = {}
-	self.g3.category = "assault_rifle"
+	self.g3.categories = {
+		"assault_rifle"
+	}
 	self.g3.damage_melee = damage_melee_default
 	self.g3.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.g3.sounds = {}
@@ -7349,7 +7391,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.galil = {}
-	self.galil.category = "assault_rifle"
+	self.galil.categories = {
+		"assault_rifle"
+	}
 	self.galil.damage_melee = damage_melee_default
 	self.galil.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.galil.sounds = {}
@@ -7436,7 +7480,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.famas = {}
-	self.famas.category = "assault_rifle"
+	self.famas.categories = {
+		"assault_rifle"
+	}
 	self.famas.damage_melee = damage_melee_default
 	self.famas.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.famas.sounds = {}
@@ -7521,7 +7567,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.scorpion = {}
-	self.scorpion.category = "smg"
+	self.scorpion.categories = {"smg"}
 	self.scorpion.damage_melee = damage_melee_default
 	self.scorpion.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.scorpion.sounds = {}
@@ -7608,7 +7654,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.tec9 = {}
-	self.tec9.category = "smg"
+	self.tec9.categories = {"smg"}
 	self.tec9.damage_melee = damage_melee_default
 	self.tec9.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.tec9.sounds = {}
@@ -7695,7 +7741,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.uzi = {}
-	self.uzi.category = "smg"
+	self.uzi.categories = {"smg"}
 	self.uzi.damage_melee = damage_melee_default
 	self.uzi.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.uzi.sounds = {}
@@ -7782,8 +7828,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.jowi = {}
-	self.jowi.category = "akimbo"
-	self.jowi.sub_category = "pistol"
+	self.jowi.categories = {"akimbo", "pistol"}
 	self.jowi.damage_melee = damage_melee_default
 	self.jowi.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.jowi.sounds = {}
@@ -7873,8 +7918,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_1911 = {}
-	self.x_1911.category = "akimbo"
-	self.x_1911.sub_category = "pistol"
+	self.x_1911.categories = {"akimbo", "pistol"}
 	self.x_1911.damage_melee = damage_melee_default
 	self.x_1911.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_1911.sounds = {}
@@ -7964,8 +8008,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_b92fs = {}
-	self.x_b92fs.category = "akimbo"
-	self.x_b92fs.sub_category = "pistol"
+	self.x_b92fs.categories = {"akimbo", "pistol"}
 	self.x_b92fs.damage_melee = damage_melee_default
 	self.x_b92fs.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_b92fs.sounds = {}
@@ -8055,8 +8098,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_deagle = {}
-	self.x_deagle.category = "akimbo"
-	self.x_deagle.sub_category = "pistol"
+	self.x_deagle.categories = {"akimbo", "pistol"}
 	self.x_deagle.damage_melee = damage_melee_default
 	self.x_deagle.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_deagle.sounds = {}
@@ -8145,7 +8187,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.g26 = {}
-	self.g26.category = "pistol"
+	self.g26.categories = {"pistol"}
 	self.g26.damage_melee = damage_melee_default
 	self.g26.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.g26.sounds = {}
@@ -8227,7 +8269,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.spas12 = {}
-	self.spas12.category = "shotgun"
+	self.spas12.categories = {"shotgun"}
 	self.spas12.damage_melee = damage_melee_default
 	self.spas12.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.spas12.sounds = {}
@@ -8316,7 +8358,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.mg42 = {}
-	self.mg42.category = "lmg"
+	self.mg42.categories = {"lmg"}
 	self.mg42.damage_melee = damage_melee_default
 	self.mg42.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.mg42.sounds = {}
@@ -8419,7 +8461,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.c96 = {}
-	self.c96.category = "pistol"
+	self.c96.categories = {"pistol"}
 	self.c96.damage_melee = damage_melee_default
 	self.c96.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.c96.sounds = {}
@@ -8502,7 +8544,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.sterling = {}
-	self.sterling.category = "smg"
+	self.sterling.categories = {"smg"}
 	self.sterling.damage_melee = damage_melee_default
 	self.sterling.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.sterling.sounds = {}
@@ -8589,7 +8631,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.mosin = {}
-	self.mosin.category = "snp"
+	self.mosin.categories = {"snp"}
 	self.mosin.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -8688,7 +8730,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mosin.armor_piercing_chance = 1
 	self.mosin.stats_modifiers = {damage = 2}
 	self.m1928 = {}
-	self.m1928.category = "smg"
+	self.m1928.categories = {"smg"}
 	self.m1928.damage_melee = damage_melee_default
 	self.m1928.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.m1928.sounds = {}
@@ -8780,7 +8822,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.l85a2 = {}
-	self.l85a2.category = "assault_rifle"
+	self.l85a2.categories = {
+		"assault_rifle"
+	}
 	self.l85a2.damage_melee = damage_melee_default
 	self.l85a2.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.l85a2.sounds = {}
@@ -8871,7 +8915,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.vhs = {}
-	self.vhs.category = "assault_rifle"
+	self.vhs.categories = {
+		"assault_rifle"
+	}
 	self.vhs.damage_melee = damage_melee_default
 	self.vhs.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.vhs.sounds = {}
@@ -8962,7 +9008,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.hs2000 = {}
-	self.hs2000.category = "pistol"
+	self.hs2000.categories = {"pistol"}
 	self.hs2000.damage_melee = damage_melee_default
 	self.hs2000.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.hs2000.sounds = {}
@@ -9045,7 +9091,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.m134 = {}
-	self.m134.category = "minigun"
+	self.m134.categories = {"minigun"}
 	self.m134.has_description = false
 	self.m134.damage_melee = damage_melee_default
 	self.m134.damage_melee_effect_mul = damage_melee_effect_multiplier_default
@@ -9139,7 +9185,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.rpg7 = {}
-	self.rpg7.category = "grenade_launcher"
+	self.rpg7.categories = {
+		"grenade_launcher"
+	}
 	self.rpg7.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -9240,7 +9288,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.rpg7.stats_modifiers = {damage = 100}
 	self.cobray = {}
-	self.cobray.category = "smg"
+	self.cobray.categories = {"smg"}
 	self.cobray.damage_melee = damage_melee_default
 	self.cobray.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.cobray.sounds = {}
@@ -9332,7 +9380,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.b682 = {}
-	self.b682.category = "shotgun"
+	self.b682.categories = {"shotgun"}
 	self.b682.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -9430,8 +9478,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.b682.stats_modifiers = {damage = 1}
 	self.x_g22c = {}
-	self.x_g22c.category = "akimbo"
-	self.x_g22c.sub_category = "pistol"
+	self.x_g22c.categories = {"akimbo", "pistol"}
 	self.x_g22c.damage_melee = damage_melee_default
 	self.x_g22c.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_g22c.sounds = {}
@@ -9522,8 +9569,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_g17 = {}
-	self.x_g17.category = "akimbo"
-	self.x_g17.sub_category = "pistol"
+	self.x_g17.categories = {"akimbo", "pistol"}
 	self.x_g17.damage_melee = damage_melee_default
 	self.x_g17.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_g17.sounds = {}
@@ -9614,8 +9660,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_usp = {}
-	self.x_usp.category = "akimbo"
-	self.x_usp.sub_category = "pistol"
+	self.x_usp.categories = {"akimbo", "pistol"}
 	self.x_usp.damage_melee = damage_melee_default
 	self.x_usp.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_usp.sounds = {}
@@ -9706,7 +9751,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.flamethrower_mk2 = {}
-	self.flamethrower_mk2.category = "flamethrower"
+	self.flamethrower_mk2.categories = {
+		"flamethrower"
+	}
 	self.flamethrower_mk2.has_description = false
 	self.flamethrower_mk2.damage_melee = damage_melee_default
 	self.flamethrower_mk2.damage_melee_effect_mul = damage_melee_effect_multiplier_default
@@ -9807,7 +9854,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.m32 = {}
-	self.m32.category = "grenade_launcher"
+	self.m32.categories = {
+		"grenade_launcher"
+	}
 	self.m32.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -9911,7 +9960,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.m32.stats_modifiers = {damage = 10}
 	self.aa12 = {}
-	self.aa12.category = "shotgun"
+	self.aa12.categories = {"shotgun"}
 	self.aa12.has_magazine = true
 	self.aa12.damage_melee = damage_melee_default
 	self.aa12.damage_melee_effect_mul = damage_melee_effect_multiplier_default
@@ -10002,8 +10051,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.peacemaker = {}
-	self.peacemaker.category = "pistol"
-	self.peacemaker.sub_category = "revolver"
+	self.peacemaker.categories = {"pistol", "revolver"}
 	self.peacemaker.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -10102,7 +10150,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.peacemaker.stats_modifiers = {damage = 1}
 	self.winchester1874 = {}
-	self.winchester1874.category = "snp"
+	self.winchester1874.categories = {"snp"}
 	self.winchester1874.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -10204,7 +10252,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.winchester1874.armor_piercing_chance = 1
 	self.winchester1874.stats_modifiers = {damage = 1}
 	self.plainsrider = {}
-	self.plainsrider.category = "bow"
+	self.plainsrider.categories = {"bow"}
 	self.plainsrider.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -10304,8 +10352,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.plainsrider.stats_modifiers = {damage = 10}
 	self.mateba = {}
-	self.mateba.category = "pistol"
-	self.mateba.sub_category = "revolver"
+	self.mateba.categories = {"pistol", "revolver"}
 	self.mateba.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -10392,7 +10439,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.asval = {}
-	self.asval.category = "assault_rifle"
+	self.asval.categories = {
+		"assault_rifle"
+	}
 	self.asval.damage_melee = damage_melee_default
 	self.asval.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.asval.sounds = {}
@@ -10481,7 +10530,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.sub2000 = {}
-	self.sub2000.category = "assault_rifle"
+	self.sub2000.categories = {
+		"assault_rifle"
+	}
 	self.sub2000.damage_melee = damage_melee_default
 	self.sub2000.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.sub2000.sounds = {}
@@ -10565,7 +10616,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.wa2000 = {}
-	self.wa2000.category = "snp"
+	self.wa2000.categories = {"snp"}
 	self.wa2000.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -10663,7 +10714,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.wa2000.armor_piercing_chance = 1
 	self.wa2000.stats_modifiers = {damage = 1}
 	self.polymer = {}
-	self.polymer.category = "smg"
+	self.polymer.categories = {"smg"}
 	self.polymer.damage_melee = damage_melee_default
 	self.polymer.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.polymer.sounds = {}
@@ -10755,7 +10806,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.hunter = {}
-	self.hunter.category = "crossbow"
+	self.hunter.categories = {"crossbow"}
 	self.hunter.projectile_type_index = 11
 	self.hunter.upgrade_blocks = {
 		weapon = {
@@ -10853,7 +10904,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.hunter.stats_modifiers = {damage = 10}
 	self.baka = {}
-	self.baka.category = "smg"
+	self.baka.categories = {"smg"}
 	self.baka.damage_melee = damage_melee_default
 	self.baka.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.baka.sounds = {}
@@ -10945,7 +10996,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.arblast = {}
-	self.arblast.category = "crossbow"
+	self.arblast.categories = {"crossbow"}
 	self.arblast.projectile_type_index = 17
 	self.arblast.upgrade_blocks = {
 		weapon = {
@@ -11043,7 +11094,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.arblast.stats_modifiers = {damage = 100}
 	self.frankish = {}
-	self.frankish.category = "crossbow"
+	self.frankish.categories = {"crossbow"}
 	self.frankish.projectile_type_index = 20
 	self.frankish.upgrade_blocks = {
 		weapon = {
@@ -11141,7 +11192,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.frankish.stats_modifiers = {damage = 10}
 	self.long = {}
-	self.long.category = "bow"
+	self.long.categories = {"bow"}
 	self.long.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -11240,7 +11291,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.long.stats_modifiers = {damage = 100}
 	self.par = {}
-	self.par.category = "lmg"
+	self.par.categories = {"lmg"}
 	self.par.damage_melee = damage_melee_default
 	self.par.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.par.sounds = {}
@@ -11342,7 +11393,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.sparrow = {}
-	self.sparrow.category = "pistol"
+	self.sparrow.categories = {"pistol"}
 	self.sparrow.damage_melee = damage_melee_default
 	self.sparrow.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.sparrow.sounds = {}
@@ -11425,7 +11476,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.model70 = {}
-	self.model70.category = "snp"
+	self.model70.categories = {"snp"}
 	self.model70.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -11523,7 +11574,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.model70.armor_piercing_chance = 1
 	self.model70.stats_modifiers = {damage = 2}
 	self.m37 = {}
-	self.m37.category = "shotgun"
+	self.m37.categories = {"shotgun"}
 	self.m37.damage_melee = damage_melee_default
 	self.m37.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.m37.sounds = {}
@@ -11622,7 +11673,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.china = {}
-	self.china.category = "grenade_launcher"
+	self.china.categories = {
+		"grenade_launcher"
+	}
 	self.china.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -11726,7 +11779,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.china.stats_modifiers = {damage = 10}
 	self.sr2 = {}
-	self.sr2.category = "smg"
+	self.sr2.categories = {"smg"}
 	self.sr2.damage_melee = damage_melee_default
 	self.sr2.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.sr2.sounds = {}
@@ -11816,8 +11869,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_sr2 = {}
-	self.x_sr2.category = "akimbo"
-	self.x_sr2.sub_category = "smg"
+	self.x_sr2.categories = {"akimbo", "smg"}
 	self.x_sr2.damage_melee = damage_melee_default
 	self.x_sr2.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_sr2.sounds = {}
@@ -11912,7 +11964,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.pl14 = {}
-	self.pl14.category = "pistol"
+	self.pl14.categories = {"pistol"}
 	self.pl14.damage_melee = damage_melee_default
 	self.pl14.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.pl14.sounds = {}
@@ -11994,8 +12046,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_mp5 = {}
-	self.x_mp5.category = "akimbo"
-	self.x_mp5.sub_category = "smg"
+	self.x_mp5.categories = {"akimbo", "smg"}
 	self.x_mp5.damage_melee = damage_melee_default
 	self.x_mp5.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_mp5.sounds = {}
@@ -12086,8 +12137,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_akmsu = {}
-	self.x_akmsu.category = "akimbo"
-	self.x_akmsu.sub_category = "smg"
+	self.x_akmsu.categories = {"akimbo", "smg"}
 	self.x_akmsu.damage_melee = damage_melee_default
 	self.x_akmsu.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_akmsu.sounds = {}
@@ -12178,7 +12228,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.tecci = {}
-	self.tecci.category = "assault_rifle"
+	self.tecci.categories = {
+		"assault_rifle"
+	}
 	self.tecci.damage_melee = damage_melee_default
 	self.tecci.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.tecci.sounds = {}
@@ -12271,7 +12323,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.hajk = {}
-	self.hajk.category = "smg"
+	self.hajk.categories = {"smg"}
 	self.hajk.damage_melee = damage_melee_default
 	self.hajk.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.hajk.sounds = {}
@@ -12362,7 +12414,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.boot = {}
-	self.boot.category = "shotgun"
+	self.boot.categories = {"shotgun"}
 	self.boot.damage_melee = damage_melee_default
 	self.boot.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.boot.sounds = {}
@@ -12461,7 +12513,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.packrat = {}
-	self.packrat.category = "pistol"
+	self.packrat.categories = {"pistol"}
 	self.packrat.damage_melee = damage_melee_default
 	self.packrat.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.packrat.sounds = {}
@@ -12544,7 +12596,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.schakal = {}
-	self.schakal.category = "smg"
+	self.schakal.categories = {"smg"}
 	self.schakal.damage_melee = damage_melee_default
 	self.schakal.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.schakal.sounds = {}
@@ -12636,7 +12688,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.desertfox = {}
-	self.desertfox.category = "snp"
+	self.desertfox.categories = {"snp"}
 	self.desertfox.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -12735,8 +12787,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.desertfox.armor_piercing_chance = 1
 	self.desertfox.stats_modifiers = {damage = 2}
 	self.x_packrat = {}
-	self.x_packrat.category = "akimbo"
-	self.x_packrat.sub_category = "pistol"
+	self.x_packrat.categories = {"akimbo", "pistol"}
 	self.x_packrat.damage_melee = damage_melee_default
 	self.x_packrat.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.x_packrat.sounds = {}
@@ -12828,7 +12879,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.rota = {}
-	self.rota.category = "shotgun"
+	self.rota.categories = {"shotgun"}
 	self.rota.has_magazine = true
 	self.rota.damage_melee = damage_melee_default
 	self.rota.damage_melee_effect_mul = damage_melee_effect_multiplier_default
@@ -12916,7 +12967,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.arbiter = {}
-	self.arbiter.category = "grenade_launcher"
+	self.arbiter.categories = {
+		"grenade_launcher"
+	}
 	self.arbiter.projectile_type_index = 33
 	self.arbiter.projectile_type_indices = {launcher_incendiary = 34}
 	self.arbiter.damage_melee = damage_melee_default
@@ -13013,7 +13066,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.arbiter.stats_modifiers = {damage = 10}
 	self.arbiter.unlock_func = "has_unlocked_arbiter"
 	self.contraband = {}
-	self.contraband.category = "assault_rifle"
+	self.contraband.categories = {
+		"assault_rifle"
+	}
 	self.contraband.damage_melee = damage_melee_default
 	self.contraband.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.contraband.sounds = {}
@@ -13099,7 +13154,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.contraband_m203 = {}
-	self.contraband_m203.category = "grenade_launcher"
+	self.contraband_m203.categories = {
+		"grenade_launcher"
+	}
 	self.contraband_m203.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -13200,7 +13257,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.contraband_m203.stats_modifiers = {damage = 10}
 	self.ray = {}
-	self.ray.category = "grenade_launcher"
+	self.ray.categories = {
+		"grenade_launcher"
+	}
 	self.ray.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -13304,7 +13363,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.ray.stats_modifiers = {damage = 100}
 	self.tti = {}
-	self.tti.category = "snp"
+	self.tti.categories = {"snp"}
 	self.tti.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -13402,7 +13461,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.tti.armor_piercing_chance = 1
 	self.tti.stats_modifiers = {damage = 1}
 	self.siltstone = {}
-	self.siltstone.category = "snp"
+	self.siltstone.categories = {"snp"}
 	self.siltstone.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -13500,7 +13559,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.siltstone.armor_piercing_chance = 1
 	self.siltstone.stats_modifiers = {damage = 2}
 	self.flint = {}
-	self.flint.category = "assault_rifle"
+	self.flint.categories = {
+		"assault_rifle"
+	}
 	self.flint.damage_melee = damage_melee_default
 	self.flint.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.flint.sounds = {}
@@ -13587,7 +13648,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.coal = {}
-	self.coal.category = "smg"
+	self.coal.categories = {"smg"}
 	self.coal.damage_melee = damage_melee_default
 	self.coal.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.coal.sounds = {}
@@ -13679,7 +13740,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.lemming = {}
-	self.lemming.category = "pistol"
+	self.lemming.categories = {"pistol"}
 	self.lemming.damage_melee = damage_melee_default
 	self.lemming.damage_melee_effect_mul = damage_melee_effect_multiplier_default
 	self.lemming.sounds = {}
@@ -13766,8 +13827,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.lemming.armor_piercing_chance = 1
 	self.chinchilla = {}
-	self.chinchilla.category = "pistol"
-	self.chinchilla.sub_category = "revolver"
+	self.chinchilla.categories = {"pistol", "revolver"}
 	self.chinchilla.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
@@ -13853,8 +13913,11 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = 11
 	}
 	self.x_chinchilla = {}
-	self.x_chinchilla.category = "akimbo"
-	self.x_chinchilla.sub_category = "revolver"
+	self.x_chinchilla.categories = {
+		"akimbo",
+		"pistol",
+		"revolver"
+	}
 	self.x_chinchilla.upgrade_blocks = {
 		weapon = {
 			"clip_ammo_increase"
