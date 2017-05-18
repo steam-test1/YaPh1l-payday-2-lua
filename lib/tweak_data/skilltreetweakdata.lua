@@ -346,7 +346,6 @@ function SkillTreeTweakData:init()
 		},
 		[2] = {
 			upgrades = {
-				"player_convert_enemies_health_multiplier",
 				"player_convert_enemies_damage_multiplier",
 				"player_convert_enemies_interaction_speed_multiplier"
 			},
@@ -2681,7 +2680,8 @@ function SkillTreeTweakData:init()
 			{
 				upgrades = {
 					"team_passive_stamina_multiplier_1",
-					"player_passive_intimidate_range_mul"
+					"player_passive_intimidate_range_mul",
+					"player_damage_dampener_close_contact_1"
 				},
 				cost = 400,
 				icon_xy = {2, 0},

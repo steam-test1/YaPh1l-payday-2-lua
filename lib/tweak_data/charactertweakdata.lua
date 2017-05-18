@@ -2149,7 +2149,7 @@ function CharacterTweakData:_init_russian(presets)
 	self.russian.damage = presets.gang_member_damage
 	self.russian.weapon = deep_clone(presets.weapon.gang_member)
 	self.russian.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_ak47/wpn_npc_ak47"),
+		primary = "wpn_fps_ass_74_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92")
 	}
 	self.russian.detection = presets.detection.gang_member
@@ -2169,7 +2169,8 @@ function CharacterTweakData:_init_german(presets)
 	self.german.damage = presets.gang_member_damage
 	self.german.weapon = deep_clone(presets.weapon.gang_member)
 	self.german.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_mp5/wpn_npc_mp5")
+		primary = "wpn_fps_ass_m4_npc",
+		secondary = Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92")
 	}
 	self.german.detection = presets.detection.gang_member
 	self.german.move_speed = presets.move_speed.very_fast
@@ -2188,7 +2189,7 @@ function CharacterTweakData:_init_spanish(presets)
 	self.spanish.damage = presets.gang_member_damage
 	self.spanish.weapon = deep_clone(presets.weapon.gang_member)
 	self.spanish.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.spanish.detection = presets.detection.gang_member
@@ -2208,7 +2209,7 @@ function CharacterTweakData:_init_american(presets)
 	self.american.damage = presets.gang_member_damage
 	self.american.weapon = deep_clone(presets.weapon.gang_member)
 	self.american.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_ak47/wpn_npc_ak47"),
+		primary = "wpn_fps_ass_74_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
 	}
 	self.american.detection = presets.detection.gang_member
@@ -2228,7 +2229,7 @@ function CharacterTweakData:_init_jowi(presets)
 	self.jowi.damage = presets.gang_member_damage
 	self.jowi.weapon = deep_clone(presets.weapon.gang_member)
 	self.jowi.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
 	}
 	self.jowi.detection = presets.detection.gang_member
@@ -2248,7 +2249,7 @@ function CharacterTweakData:_init_old_hoxton(presets)
 	self.old_hoxton.damage = presets.gang_member_damage
 	self.old_hoxton.weapon = deep_clone(presets.weapon.gang_member)
 	self.old_hoxton.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.old_hoxton.detection = presets.detection.gang_member
@@ -2268,7 +2269,7 @@ function CharacterTweakData:_init_clover(presets)
 	self.female_1.damage = presets.gang_member_damage
 	self.female_1.weapon = deep_clone(presets.weapon.gang_member)
 	self.female_1.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.female_1.detection = presets.detection.gang_member
@@ -2288,7 +2289,7 @@ function CharacterTweakData:_init_dragan(presets)
 	self.dragan.damage = presets.gang_member_damage
 	self.dragan.weapon = deep_clone(presets.weapon.gang_member)
 	self.dragan.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
 	}
 	self.dragan.detection = presets.detection.gang_member
@@ -2308,7 +2309,7 @@ function CharacterTweakData:_init_jacket(presets)
 	self.jacket.damage = presets.gang_member_damage
 	self.jacket.weapon = deep_clone(presets.weapon.gang_member)
 	self.jacket.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
 	}
 	self.jacket.detection = presets.detection.gang_member
@@ -2328,7 +2329,7 @@ function CharacterTweakData:_init_bonnie(presets)
 	self.bonnie.damage = presets.gang_member_damage
 	self.bonnie.weapon = deep_clone(presets.weapon.gang_member)
 	self.bonnie.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.bonnie.detection = presets.detection.gang_member
@@ -2348,7 +2349,7 @@ function CharacterTweakData:_init_sokol(presets)
 	self.sokol.damage = presets.gang_member_damage
 	self.sokol.weapon = deep_clone(presets.weapon.gang_member)
 	self.sokol.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.sokol.detection = presets.detection.gang_member
@@ -2368,7 +2369,7 @@ function CharacterTweakData:_init_dragon(presets)
 	self.dragon.damage = presets.gang_member_damage
 	self.dragon.weapon = deep_clone(presets.weapon.gang_member)
 	self.dragon.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.dragon.detection = presets.detection.gang_member
@@ -2388,7 +2389,7 @@ function CharacterTweakData:_init_bodhi(presets)
 	self.bodhi.damage = presets.gang_member_damage
 	self.bodhi.weapon = deep_clone(presets.weapon.gang_member)
 	self.bodhi.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
 	}
 	self.bodhi.detection = presets.detection.gang_member
@@ -2408,7 +2409,7 @@ function CharacterTweakData:_init_jimmy(presets)
 	self.jimmy.damage = presets.gang_member_damage
 	self.jimmy.weapon = deep_clone(presets.weapon.gang_member)
 	self.jimmy.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
 	}
 	self.jimmy.detection = presets.detection.gang_member
@@ -2428,7 +2429,7 @@ function CharacterTweakData:_init_sydney(presets)
 	self.sydney.damage = presets.gang_member_damage
 	self.sydney.weapon = deep_clone(presets.weapon.gang_member)
 	self.sydney.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.sydney.detection = presets.detection.gang_member
@@ -2448,7 +2449,7 @@ function CharacterTweakData:_init_wild(presets)
 	self.wild.damage = presets.gang_member_damage
 	self.wild.weapon = deep_clone(presets.weapon.gang_member)
 	self.wild.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.wild.detection = presets.detection.gang_member
@@ -2468,7 +2469,7 @@ function CharacterTweakData:_init_chico(presets)
 	self.chico.damage = presets.gang_member_damage
 	self.chico.weapon = deep_clone(presets.weapon.gang_member)
 	self.chico.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.chico.detection = presets.detection.gang_member
@@ -2488,7 +2489,7 @@ function CharacterTweakData:_init_max(presets)
 	self.max.damage = presets.gang_member_damage
 	self.max.weapon = deep_clone(presets.weapon.gang_member)
 	self.max.weapon.weapons_of_choice = {
-		primary = Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		primary = "wpn_fps_ass_m4_npc",
 		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
 	}
 	self.max.detection = presets.detection.gang_member
@@ -2824,25 +2825,25 @@ function CharacterTweakData:_presets(tweak_data)
 		zones = {
 			{
 				health_limit = 0.4,
-				none = 0.3,
-				light = 0.6,
-				moderate = 0.1
+				none = 1,
+				light = 0,
+				moderate = 0
 			},
 			{
 				health_limit = 0.7,
-				none = 0.1,
-				light = 0.7,
-				moderate = 0.2
+				none = 1,
+				light = 0,
+				moderate = 0
 			},
 			{
-				none = 0.1,
-				light = 0.5,
-				moderate = 0.3,
-				heavy = 0.1
+				none = 1,
+				light = 0,
+				moderate = 0,
+				heavy = 0
 			}
 		}
 	}
-	presets.gang_member_damage.MIN_DAMAGE_INTERVAL = 0
+	presets.gang_member_damage.MIN_DAMAGE_INTERVAL = 0.35
 	presets.gang_member_damage.respawn_time_penalty = 0
 	presets.gang_member_damage.base_respawn_time_penalty = 5
 	presets.weapon = {}
@@ -6022,6 +6023,10 @@ function CharacterTweakData:_presets(tweak_data)
 	presets.weapon.gang_member.ak47 = presets.weapon.gang_member.m4
 	presets.weapon.gang_member.mossberg = presets.weapon.gang_member.r870
 	presets.weapon.gang_member.mac11 = presets.weapon.gang_member.mp5
+	presets.weapon.gang_member.rifle = deep_clone(presets.weapon.gang_member.m4)
+	presets.weapon.gang_member.rifle.autofire_rounds = nil
+	presets.weapon.gang_member.akimbo_pistol = presets.weapon.gang_member.beretta92
+	presets.weapon.gang_member.saiga = deep_clone(presets.weapon.gang_member.r870)
 	presets.detection = {}
 	presets.detection.normal = {
 		idle = {},
@@ -7460,6 +7465,10 @@ function CharacterTweakData:_set_normal()
 	self.presets.weapon.gang_member.ak47 = self.presets.weapon.gang_member.m4
 	self.presets.weapon.gang_member.mossberg = self.presets.weapon.gang_member.r870
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.mp5
+	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.m4)
+	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
+	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.beretta92
+	self.presets.weapon.gang_member.saiga = deep_clone(self.presets.weapon.gang_member.r870)
 	self.flashbang_multiplier = 1
 	self.concussion_multiplier = 1
 end
@@ -7625,6 +7634,10 @@ function CharacterTweakData:_set_hard()
 	self.presets.weapon.gang_member.ak47 = self.presets.weapon.gang_member.m4
 	self.presets.weapon.gang_member.mossberg = self.presets.weapon.gang_member.r870
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.mp5
+	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.m4)
+	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
+	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.beretta92
+	self.presets.weapon.gang_member.saiga = deep_clone(self.presets.weapon.gang_member.r870)
 	self.flashbang_multiplier = 1.25
 	self.concussion_multiplier = 1
 	self.spooc.spooc_attack_timeout = {8, 10}
@@ -7834,6 +7847,10 @@ function CharacterTweakData:_set_overkill()
 	self.presets.weapon.gang_member.ak47 = self.presets.weapon.gang_member.m4
 	self.presets.weapon.gang_member.mossberg = self.presets.weapon.gang_member.r870
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.mp5
+	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.m4)
+	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
+	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.beretta92
+	self.presets.weapon.gang_member.saiga = deep_clone(self.presets.weapon.gang_member.r870)
 	self:_set_characters_weapon_preset("good")
 	self:_set_characters_weapon_preset("good")
 	self.spooc.spooc_attack_timeout = {6, 8}
@@ -8112,6 +8129,10 @@ function CharacterTweakData:_set_easy_wish()
 	self.presets.weapon.gang_member.ak47 = self.presets.weapon.gang_member.m4
 	self.presets.weapon.gang_member.mossberg = self.presets.weapon.gang_member.r870
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.mp5
+	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.m4)
+	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
+	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.beretta92
+	self.presets.weapon.gang_member.saiga = deep_clone(self.presets.weapon.gang_member.r870)
 	self:_set_characters_weapon_preset("expert")
 	self.spooc.spooc_attack_timeout = {3, 4}
 	self.sniper.weapon.m4.FALLOFF = {
@@ -8255,79 +8276,79 @@ function CharacterTweakData:_set_overkill_290()
 	self.presets.gang_member_damage.HEALTH_INIT = 800
 	self.presets.weapon.gang_member.beretta92.FALLOFF = {
 		{
-			r = 300,
+			r = 3000,
+			acc = {1, 1},
+			dmg_mul = 15,
+			recoil = {0.25, 0.45},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			r = 100000,
 			acc = {1, 1},
 			dmg_mul = 10,
 			recoil = {0.25, 0.45},
 			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			r = 10000,
-			acc = {1, 1},
-			dmg_mul = 5,
-			recoil = {2, 3},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
+				0,
+				0,
+				0,
+				1
 			}
 		}
 	}
 	self.presets.weapon.gang_member.m4.FALLOFF = {
 		{
-			r = 300,
+			r = 3000,
+			acc = {1, 1},
+			dmg_mul = 15,
+			recoil = {0.25, 0.45},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			r = 100000,
 			acc = {1, 1},
 			dmg_mul = 10,
 			recoil = {0.25, 0.45},
 			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			r = 10000,
-			acc = {1, 1},
-			dmg_mul = 5,
-			recoil = {2, 3},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
+				0,
+				0,
+				0,
+				1
 			}
 		}
 	}
 	self.presets.weapon.gang_member.r870.FALLOFF = {
 		{
-			r = 300,
+			r = 3000,
+			acc = {1, 1},
+			dmg_mul = 15,
+			recoil = {0.25, 0.45},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			r = 100000,
 			acc = {1, 1},
 			dmg_mul = 10,
 			recoil = {0.25, 0.45},
 			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			r = 10000,
-			acc = {1, 1},
-			dmg_mul = 5,
-			recoil = {2, 3},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
+				0,
+				0,
+				0,
+				1
 			}
 		}
 	}
@@ -8337,6 +8358,10 @@ function CharacterTweakData:_set_overkill_290()
 	self.presets.weapon.gang_member.ak47 = self.presets.weapon.gang_member.m4
 	self.presets.weapon.gang_member.mossberg = self.presets.weapon.gang_member.r870
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.mp5
+	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.m4)
+	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
+	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.beretta92
+	self.presets.weapon.gang_member.saiga = deep_clone(self.presets.weapon.gang_member.r870)
 	self:_set_characters_weapon_preset("deathwish")
 	self.spooc.spooc_attack_timeout = {3, 4}
 	self.sniper.weapon.m4.FALLOFF = {
@@ -8877,6 +8902,10 @@ function CharacterTweakData:_set_sm_wish()
 	self.presets.weapon.gang_member.ak47 = self.presets.weapon.gang_member.m4
 	self.presets.weapon.gang_member.mossberg = self.presets.weapon.gang_member.r870
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.mp5
+	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.m4)
+	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
+	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.beretta92
+	self.presets.weapon.gang_member.saiga = deep_clone(self.presets.weapon.gang_member.r870)
 	self:_set_characters_weapon_preset("deathwish")
 	self.spooc.spooc_attack_timeout = {3, 4}
 	self.sniper.weapon.m4.FALLOFF = {

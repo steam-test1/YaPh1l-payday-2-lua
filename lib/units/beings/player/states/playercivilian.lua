@@ -109,7 +109,7 @@ function PlayerCivilian:_check_action_interact(t, input)
 	return new_action
 end
 function PlayerCivilian:_start_action_interact(t, input, timer, interact_object)
-	self._interact_expire_t = t + timer
+	self._interact_expire_t = timer
 	self._interact_params = {
 		object = interact_object,
 		timer = timer,
@@ -133,11 +133,14 @@ function PlayerCivilian:_interupt_action_interact(t, input, complete)
 end
 function PlayerCivilian:_update_interaction_timers(t)
 	if self._interact_expire_t then
+		local dt = self:_get_interaction_speed()
+		self._interact_expire_t = self._interact_expire_t - dt
+		print("self._interact_expire_t: ", self._interact_expire_t)
 		if not alive(self._interact_params.object) or self._interact_params.object ~= managers.interaction:active_unit() or self._interact_params.tweak_data ~= self._interact_params.object:interaction().tweak_data or self._interact_params.object:interaction():check_interupt() then
 			self:_interupt_action_interact(t)
 		else
-			managers.hud:set_interaction_bar_width(self._interact_params.timer - (self._interact_expire_t - t), self._interact_params.timer)
-			if t >= self._interact_expire_t then
+			managers.hud:set_interaction_bar_width(self._interact_params.timer - self._interact_expire_t, self._interact_params.timer)
+			if self._interact_expire_t <= 0 then
 				self:_end_action_interact(t)
 				self._interact_expire_t = nil
 			end

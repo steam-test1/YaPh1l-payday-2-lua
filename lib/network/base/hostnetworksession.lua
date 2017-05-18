@@ -351,6 +351,9 @@ function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 		return
 	end
 	name = name or "Player " .. tostring(id)
+	if managers.wait then
+		managers.wait:clear_peer(id)
+	end
 	local peer
 	id, peer = HostNetworkSession.super.add_peer(self, name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
 	self:chk_server_joinable_state()
@@ -495,7 +498,15 @@ function HostNetworkSession:chk_spawn_member_unit(peer, peer_id)
 	if not self:all_peers_done_loading_outfits() then
 		return
 	end
-	self:_spawn_dropin_player(peer)
+	if managers.wait:check_if_waiting_needed() then
+		self:_add_waiting(peer)
+	else
+		self:_spawn_dropin_player(peer)
+	end
+end
+function HostNetworkSession:_add_waiting(peer)
+	managers.wait:add_waiting(peer:id())
+	peer:make_waiting()
 end
 function HostNetworkSession:_spawn_dropin_player(peer)
 	managers.achievment:set_script_data("cant_touch_fail", true)

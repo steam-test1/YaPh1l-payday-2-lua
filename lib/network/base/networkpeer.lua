@@ -864,6 +864,7 @@ function NetworkPeer:set_name(name)
 	self._name = name
 end
 function NetworkPeer:destroy()
+	local _ = managers.wait and managers.wait:remove_waiting(self:id())
 	print("[NetworkPeer:destroy]", self:id())
 	if self._rpc then
 		Network:reset_connection(self._rpc)
@@ -1356,6 +1357,10 @@ function NetworkPeer:sync_data(peer)
 end
 function NetworkPeer:unit()
 	return self._unit
+end
+function NetworkPeer:make_waiting()
+	managers.wait:add_waiting(self._id)
+	self:send_queued_sync("set_waiting")
 end
 function NetworkPeer:spawn_unit(spawn_point_id, is_drop_in, spawn_as)
 	if self._unit then

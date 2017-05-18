@@ -490,6 +490,10 @@ function HUDMissionBriefing:hide()
 		self._background_layer_two:clear()
 	end
 end
+function HUDMissionBriefing:show()
+	print("SHOW")
+	self._backdrop:show()
+end
 function HUDMissionBriefing:inside_slot(peer_id, child, x, y)
 	local slot = self._ready_slot_panel:child("slot_" .. tostring(peer_id))
 	if not slot or not alive(slot) then

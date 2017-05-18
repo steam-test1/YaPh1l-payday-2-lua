@@ -2692,6 +2692,20 @@ function HudIconsTweakData:init()
 			csb_size
 		}
 	}
+	self:create_grid_atlas("guis/dlcs/mom/textures/pd2/ai_abilities", 512, 512, 128, 128)
+	self.ability_1 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self.ability_2 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self.ability_3 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self.ability_4 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self:create_grid_atlas("guis/dlcs/mom/textures/pd2/ai_skills", 512, 512, 128, 128)
+	self.skill_1 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	self.skill_2 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	self.skill_3 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	self.skill_4 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	self.skill_5 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	self.skill_6 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	self.skill_7 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	self.skill_8 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
 end
 local atlas_data
 function HudIconsTweakData:create_grid_atlas(image_name, tex_w, tex_h, grid_w, grid_h)

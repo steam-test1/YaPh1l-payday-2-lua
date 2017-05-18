@@ -13,6 +13,7 @@ require("lib/managers/menu/CrimeNetCasinoGui")
 require("lib/managers/menu/MenuSceneGui")
 require("lib/managers/menu/PlayerProfileGuiObject")
 require("lib/managers/menu/IngameContractGui")
+require("lib/managers/menu/IngameWaitingGui")
 require("lib/managers/menu/IngameManualGui")
 require("lib/managers/menu/PrePlanningMapGui")
 require("lib/managers/menu/GameInstallingGui")
@@ -43,6 +44,7 @@ require("lib/managers/menu/StageEndScreenTabCrimeSpree")
 require("lib/managers/menu/IngameContractGuiCrimeSpree")
 require("lib/managers/menu/CrimeSpreeContractBoxGui")
 require("lib/managers/menu/LobbyCharacterData")
+require("lib/managers/menu/CrewManagementGui")
 if not MenuComponentManager then
 	MenuComponentManager = class()
 end
@@ -88,6 +90,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.menuscene_info = {create = callback(self, self, "_create_menuscene_info_gui"), close = callback(self, self, "_close_menuscene_info_gui")}
 	self._active_components.player_profile = {create = callback(self, self, "_create_player_profile_gui"), close = callback(self, self, "close_player_profile_gui")}
 	self._active_components.ingame_contract = {create = callback(self, self, "_create_ingame_contract_gui"), close = callback(self, self, "close_ingame_contract_gui")}
+	self._active_components.ingame_waiting = {create = callback(self, self, "_create_ingame_waiting_gui"), close = callback(self, self, "close_ingame_waiting_gui")}
 	self._active_components.ingame_manual = {create = callback(self, self, "_create_ingame_manual_gui"), close = callback(self, self, "close_ingame_manual_gui")}
 	self._active_components.inventory_list = {create = callback(self, self, "_create_inventory_list_gui"), close = callback(self, self, "close_inventory_list_gui")}
 	self._active_components.preplanning_map = {create = callback(self, self, "create_preplanning_map_gui"), close = callback(self, self, "close_preplanning_map_gui")}
@@ -107,6 +110,7 @@ MenuComponentManager.init = function(self)
 	self._active_components.crime_spree_rewards = {create = callback(self, self, "create_crime_spree_rewards_gui"), close = callback(self, self, "close_crime_spree_rewards_gui")}
 	self._active_components.crime_spree_mission_end = {create = callback(self, self, "create_crime_spree_mission_end_gui"), close = callback(self, self, "close_crime_spree_mission_end_gui")}
 	self._active_components.debug_quicklaunch = {create = callback(self, self, "create_debug_quicklaunch_gui"), close = callback(self, self, "close_debug_quicklaunch_gui")}
+	self._active_components.crew_management = {create = callback(self, self, "create_crew_management_gui"), close = callback(self, self, "close_crew_management_gui")}
 	self._alive_components = {}
 end
 
@@ -685,6 +689,9 @@ MenuComponentManager.next_page = function(self)
 	if self._player_inventory_gui and self._player_inventory_gui:next_page() then
 		return true
 	end
+	if self._crimenet_contract_gui and self._crimenet_contract_gui:next_page() then
+		return true
+	end
 	local used, values = self:run_return_on_all_live_components("next_page")
 	if used then
 		return unpack(values)
@@ -723,6 +730,9 @@ MenuComponentManager.previous_page = function(self)
 		return true
 	end
 	if self._player_inventory_gui and self._player_inventory_gui:previous_page() then
+		return true
+	end
+	if self._crimenet_contract_gui and self._crimenet_contract_gui:previous_page() then
 		return true
 	end
 	local used, values = self:run_return_on_all_live_components("previous_page")
@@ -2567,6 +2577,28 @@ MenuComponentManager.close_ingame_contract_gui = function(self)
 	end
 end
 
+MenuComponentManager._create_ingame_waiting_gui = function(self)
+	self:create_ingame_waiting_gui()
+end
+
+MenuComponentManager.create_ingame_waiting_gui = function(self)
+	if not Network:is_server() then
+		return 
+	end
+	self:close_ingame_waiting_gui()
+	self._ingame_waiting_gui = IngameWaitingGui:new(self._ws)
+	self._ingame_waiting_gui:set_layer(tweak_data.gui.MENU_COMPONENT_LAYER)
+	self:register_component("ingame_waiting", self._ingame_waiting_gui)
+end
+
+MenuComponentManager.close_ingame_waiting_gui = function(self)
+	if self._ingame_waiting_gui then
+		self._ingame_waiting_gui:close()
+		self._ingame_waiting_gui = nil
+		self:unregister_component("ingame_waiting")
+	end
+end
+
 MenuComponentManager._create_profile_gui = function(self)
 	if self._profile_gui then
 		self._profile_gui:set_enabled(true)
@@ -3804,6 +3836,24 @@ MenuComponentManager.create_debug_quicklaunch_gui = function(self, node)
 end
 
 MenuComponentManager.close_debug_quicklaunch_gui = function(self)
+end
+
+MenuComponentManager.create_crew_management_gui = function(self, node)
+	if not node then
+		return 
+	end
+	if not self._crew_management_gui then
+		self._crew_management_gui = CrewManagementGui:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component("crew_management", self._crew_management_gui)
+end
+
+MenuComponentManager.close_crew_management_gui = function(self)
+	if self._crew_management_gui then
+		self._crew_management_gui:close()
+		self._crew_management_gui = nil
+		self:unregister_component("crew_management")
+	end
 end
 
 

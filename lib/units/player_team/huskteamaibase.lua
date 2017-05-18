@@ -1,4 +1,6 @@
 HuskTeamAIBase = HuskTeamAIBase or class(HuskCopBase)
+HuskTeamAIBase.set_loadout = TeamAIBase.set_loadout
+HuskTeamAIBase.remove_upgrades = TeamAIBase.remove_upgrades
 function HuskTeamAIBase:default_weapon_name()
 	return TeamAIBase.default_weapon_name(self)
 end
@@ -20,6 +22,7 @@ function HuskTeamAIBase:on_death_exit()
 	self:set_slot(self._unit, 0)
 end
 function HuskTeamAIBase:pre_destroy(unit)
+	self:remove_upgrades()
 	unit:movement():pre_destroy()
 	unit:inventory():pre_destroy(unit)
 	TeamAIBase.unregister(self)
@@ -36,7 +39,9 @@ function HuskTeamAIBase:load(data)
 				managers.network:session():on_peer_lost(peer, peer:id())
 			end
 		end
-		managers.criminals:add_character(character_name, self._unit, nil, true)
+		local loadout = managers.blackmarket:unpack_henchman_loadout_string(data.base.loadout)
+		managers.blackmarket:verfify_recived_crew_loadout(loadout, true)
+		managers.criminals:add_character(character_name, self._unit, nil, true, loadout)
 	end
 end
 function HuskTeamAIBase:chk_freeze_anims()

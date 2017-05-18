@@ -26,7 +26,9 @@ function WeaponFlashLight:init(unit)
 	World:effect_manager():set_hidden(self._light_effect, true)
 end
 function WeaponFlashLight:is_haunted()
-	return false
+	local job_id = managers.job and managers.job:current_job_id()
+	local tweak = job_id and tweak_data.narrative.jobs[job_id]
+	return tweak and tweak.is_halloween_level
 end
 function WeaponFlashLight:set_npc()
 	if self._light_effect then

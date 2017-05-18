@@ -15,7 +15,7 @@ function StatisticsTweakData:init()
 	}
 end
 function StatisticsTweakData:statistics_specializations()
-	return 16
+	return 18
 end
 function StatisticsTweakData:statistics_table()
 	local level_list = {
@@ -566,7 +566,9 @@ function StatisticsTweakData:statistics_table()
 		"amp_01",
 		"amp_02",
 		"amp_03",
-		"amp_04"
+		"amp_04",
+		"max",
+		"max_begins"
 	}
 	local weapon_list = {
 		"ak5",
@@ -772,7 +774,8 @@ function StatisticsTweakData:statistics_table()
 		"ostry",
 		"catch",
 		"oxide",
-		"sword"
+		"sword",
+		"agave"
 	}
 	local grenade_list = {
 		"frag",
@@ -785,7 +788,8 @@ function StatisticsTweakData:statistics_table()
 		"wpn_prj_hur",
 		"wpn_prj_target",
 		"concussion",
-		"fir_com"
+		"fir_com",
+		"smoke_screen_grenade"
 	}
 	local enemy_list = {
 		"civilian",
@@ -860,7 +864,8 @@ function StatisticsTweakData:statistics_table()
 		"jimmy",
 		"sydney",
 		"wild",
-		"chico"
+		"chico",
+		"max"
 	}
 	local deployable_list = {
 		"ammo_bag",

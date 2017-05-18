@@ -164,7 +164,9 @@ function add_prints(class_name, ignore_list)
 	end
 end
 function tag_print(tag, ...)
-	tag = "[" .. tag .. "]"
+	if string.sub(tag, 1, 1) ~= "[" or not tag then
+		tag = "[" .. tag .. "]"
+	end
 	local do_things = function(tag, ...)
 		local str = ""
 		local need_front = true

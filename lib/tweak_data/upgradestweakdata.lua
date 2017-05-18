@@ -138,12 +138,12 @@ function UpgradesTweakData:_init_pd2_values()
 	self.hostage_near_player_multiplier = 1.25
 	self.hostage_max_num = {
 		health_regen = 1,
-		health = 10,
-		stamina = 10,
+		health = 4,
+		stamina = 4,
 		damage_dampener = 1
 	}
 	self.on_headshot_dealt_cooldown = 2
-	self.on_killshot_cooldown = 2
+	self.on_killshot_cooldown = 1
 	self.on_damage_dealt_cooldown = 2
 	self.close_combat_distance = 1800
 	self.killshot_close_panic_range = 900
@@ -219,7 +219,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.convert_enemies = {true}
 	self.values.player.convert_enemies_max_minions = {1, 2}
 	self.values.player.convert_enemies_health_multiplier = {0.45}
-	self.values.player.convert_enemies_damage_multiplier = {2}
+	self.values.player.convert_enemies_damage_multiplier = {1.35}
 	self.values.player.xp_multiplier = {1.15}
 	self.values.team.xp.multiplier = {1.3}
 	self.values.pistol.reload_speed_multiplier = {1.5}
@@ -279,7 +279,7 @@ function UpgradesTweakData:_init_pd2_values()
 		{1.15, 7}
 	}
 	self.values.temporary.dmg_dampener_outnumbered = {
-		{0.85, 7}
+		{0.9, 7}
 	}
 	self.values.player.extra_ammo_multiplier = {1.25}
 	self.values.player.pick_up_ammo_multiplier = {1.35, 1.75}
@@ -437,9 +437,9 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.can_free_run = {true}
 	self.values.ecm_jammer.affects_cameras = {true}
 	self.values.player.passive_dodge_chance = {
-		0.1,
-		0.25,
-		0.4
+		0.15,
+		0.3,
+		0.45
 	}
 	self.values.weapon.passive_swap_speed_multiplier = {1.8, 2}
 	self.values.player.passive_concealment_modifier = {1}
@@ -505,8 +505,8 @@ function UpgradesTweakData:_init_pd2_values()
 			amount = 200
 		}
 	}
-	self.values.team.health.hostage_multiplier = {1.02}
-	self.values.team.stamina.hostage_multiplier = {1.04}
+	self.values.team.health.hostage_multiplier = {1.06}
+	self.values.team.stamina.hostage_multiplier = {1.12}
 	self.values.player.minion_master_speed_multiplier = {1.1}
 	self.values.player.minion_master_health_multiplier = {1.3}
 	self.values.player.mark_enemy_time_multiplier = {2}
@@ -731,7 +731,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.first_aid_kit.downs_restore_chance = {0.1}
 	self.values.first_aid_kit.first_aid_kit_auto_recovery = {500}
 	self.values.temporary.first_aid_damage_reduction = {
-		{0.85, 120}
+		{0.9, 120}
 	}
 	self.values.player.extra_corpse_dispose_amount = {1}
 	self.values.player.standstill_omniscience = {true}
@@ -760,9 +760,9 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.run_and_shoot = {true}
 	self.values.player.armor_regen_timer_stand_still_multiplier = {0.8}
 	self.values.player.tier_dodge_chance = {
-		0.1,
-		0.15,
-		0.2
+		0.2,
+		0.25,
+		0.3
 	}
 	self.values.player.stand_still_crouch_camouflage_bonus = {
 		0.9,
@@ -779,9 +779,9 @@ function UpgradesTweakData:_init_pd2_values()
 		{0.92, 7}
 	}
 	self.values.temporary.dmg_dampener_close_contact = {
-		{0.92, 7},
-		{0.84, 7},
-		{0.76, 7}
+		{0.94, 7},
+		{0.88, 7},
+		{0.82, 7}
 	}
 	self.values.melee.stacking_hit_damage_multiplier = {0.1, 0.2}
 	self.values.melee.stacking_hit_expire_t = {7}
@@ -790,18 +790,18 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.killshot_close_regen_armor_bonus = {3}
 	self.values.player.killshot_close_panic_chance = {0.75}
 	self.loose_ammo_restore_health_values = {
-		base = 4,
+		base = 8,
 		cd = 4,
 		multiplier = 0.2,
-		{0, 2},
-		{2, 4},
-		{4, 6}
+		{0, 4},
+		{4, 8},
+		{8, 12}
 	}
 	self.values.player.marked_inc_dmg_distance = {
 		{1000, 1.5}
 	}
 	self.loose_ammo_give_team_ratio = 0.5
-	self.loose_ammo_give_team_health_ratio = 1
+	self.loose_ammo_give_team_health_ratio = 0.5
 	self.values.temporary.loose_ammo_restore_health = {}
 	for i, data in ipairs(self.loose_ammo_restore_health_values) do
 		local base = self.loose_ammo_restore_health_values.base
@@ -820,7 +820,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.temporary.single_shot_fast_reload = {
 		{2, 4}
 	}
-	self.values.player.gain_life_per_players = {1}
+	self.values.player.gain_life_per_players = {0.2}
 	self.damage_to_hot_data = {
 		armors_allowed = {"level_1", "level_2"},
 		works_with_armor_kit = true,
@@ -973,6 +973,63 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.dodge_replenish_armor = {true}
 	self.values.player.smoke_screen_ally_dodge_bonus = {0.1}
 	self.values.player.sicario_multiplier = {2}
+	self.values.team.crew_add_health = {6}
+	self.values.team.crew_add_armor = {3}
+	self.values.team.crew_add_dodge = {0.05}
+	self.values.team.crew_add_concealment = {3}
+	self.values.team.crew_add_stamina = {50}
+	self.values.team.crew_reduce_speed_penalty = {0.5}
+	self.values.team.crew_faster_reload = {1.5}
+	self.values.team.crew_faster_swap = {1.5}
+	self.values.team.crew_throwable_regen = {35}
+	self.values.team.crew_health_regen = {2}
+	self.values.team.crew_active = {
+		1,
+		2,
+		3
+	}
+	self.values.team.crew_inspire = {
+		{
+			360,
+			240,
+			120
+		}
+	}
+	self.values.team.crew_scavenge = {
+		{
+			0.2,
+			0.4,
+			0.6
+		}
+	}
+	self.values.team.crew_interact = {
+		{
+			0.75,
+			0.5,
+			0.25
+		}
+	}
+	self.values.team.crew_ai_ap_ammo = {true}
+	local editable_crew_descrition = {
+		crew_healthy = {"60"},
+		crew_sturdy = {"30"},
+		crew_evasive = {"5"},
+		crew_quiet = {"3"},
+		crew_motivated = {"50", "50%"},
+		crew_eager = {"50%", "50%"},
+		crew_generous = {"35"},
+		crew_regen = {"5", "5"},
+		crew_inspire = {"6", "2"},
+		crew_scavenge = {"20%", "+20%"},
+		crew_interact = {"30%", "+30%"}
+	}
+	self.crew_descs = {}
+	for id, desc in pairs(editable_crew_descrition) do
+		self.crew_descs[id] = {}
+		for i, value in ipairs(desc) do
+			self.crew_descs[id]["value" .. i] = value
+		end
+	end
 	local editable_skill_descs = {
 		ammo_2x = {
 			{"2"},
@@ -1167,7 +1224,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{},
 			{
 				"55%",
-				"100%",
+				"35%",
 				"65%"
 			}
 		},
@@ -1371,7 +1428,7 @@ function UpgradesTweakData:_init_pd2_values()
 			},
 			{
 				"18",
-				"15%",
+				"10%",
 				"7"
 			}
 		},
@@ -1559,7 +1616,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		tea_time = {
 			{"50%"},
-			{"15%", "120"}
+			{"10%", "120"}
 		},
 		awareness = {
 			{"10%", "20%"},
@@ -1802,7 +1859,11 @@ function UpgradesTweakData:_init_pd2_values()
 				"50%"
 			},
 			{"25%"},
-			{"50%", "25%"},
+			{
+				"50%",
+				"25%",
+				"6%"
+			},
 			{
 				"+1",
 				"15%",
@@ -1813,9 +1874,9 @@ function UpgradesTweakData:_init_pd2_values()
 			{"10%", "5%"},
 			{"5%", "20%"},
 			{
-				"2%",
-				"4%",
-				"10",
+				"6%",
+				"12%",
+				"4",
 				"8%",
 				"10%"
 			}
@@ -1864,7 +1925,7 @@ function UpgradesTweakData:_init_pd2_values()
 			}
 		},
 		{
-			{"10%"},
+			{"15%"},
 			{"25%"},
 			{"15%", "45%"},
 			{
@@ -1911,7 +1972,7 @@ function UpgradesTweakData:_init_pd2_values()
 			}
 		},
 		{
-			{"10%"},
+			{"15%"},
 			{"25%"},
 			{"5%", "20%"},
 			{
@@ -1926,7 +1987,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{"10%", "10%"}
 		},
 		{
-			{"10%"},
+			{"15%"},
 			{"25%"},
 			{"10%", "20%"},
 			{
@@ -1949,16 +2010,16 @@ function UpgradesTweakData:_init_pd2_values()
 			{"20%", "10%"}
 		},
 		{
-			{"8%"},
+			{"6%"},
 			{"25%"},
-			{"8%"},
+			{"6%"},
 			{
 				"+1",
 				"15%",
 				"45%"
 			},
 			{
-				"8%",
+				"6%",
 				"10%",
 				"7",
 				"4"
@@ -1978,30 +2039,30 @@ function UpgradesTweakData:_init_pd2_values()
 			}
 		},
 		{
-			{"8%"},
+			{"6%"},
 			{"25%"},
-			{"30", "2"},
+			{"30", "1"},
 			{
 				"+1",
 				"15%",
 				"45%"
 			},
-			{"10%", "2"},
+			{"10%", "1"},
 			{"135%"},
-			{"30", "2"},
+			{"30", "1"},
 			{"5%", "20%"},
 			{
 				"75%",
-				"2",
+				"1",
 				"10%"
 			}
 		},
 		{
 			{
-				"8",
-				"12",
+				"16",
+				"24",
 				"4",
-				"100%"
+				"20%"
 			},
 			{"25%"},
 			{"50%", "5"},
@@ -2010,11 +2071,11 @@ function UpgradesTweakData:_init_pd2_values()
 				"15%",
 				"45%"
 			},
-			{"100%"},
+			{"50%"},
 			{"135%"},
-			{"4"},
+			{"8"},
 			{"5%", "20%"},
-			{"4", "10%"}
+			{"8", "10%"}
 		},
 		{
 			{
@@ -2206,9 +2267,9 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		{
 			{
-				"6",
+				"10",
 				"50%",
-				"30",
+				"60",
 				"50%",
 				"1"
 			},
@@ -2219,7 +2280,7 @@ function UpgradesTweakData:_init_pd2_values()
 				"15%",
 				"45%"
 			},
-			{"10%"},
+			{"15%"},
 			{"135%"},
 			{},
 			{"5%", "20%"},
@@ -9896,6 +9957,125 @@ function UpgradesTweakData:_team_definitions()
 			upgrade = "team_damage_reduction",
 			value = 1
 		}
+	}
+	self:_crew_definitions()
+end
+function UpgradesTweakData:_crew_definitions()
+	self.crew_skill_definitions = self.crew_skill_definitions or {}
+	self.crew_ability_definitions = self.crew_ability_definitions or {}
+	self.crew_skill_definitions.crew_healthy = {
+		name_id = "menu_crew_healthy",
+		icon = "skill_1",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_health",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_sturdy = {
+		name_id = "menu_crew_sturdy",
+		icon = "skill_2",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_armor",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_evasive = {
+		name_id = "menu_crew_evasive",
+		icon = "skill_3",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_dodge",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_regen = {
+		name_id = "menu_crew_regen",
+		icon = "skill_5",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_health_regen",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_motivated = {
+		name_id = "menu_crew_motivated",
+		icon = "skill_4",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_stamina",
+				value = 1
+			},
+			{
+				category = "team",
+				upgrade = "crew_reduce_speed_penalty",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_eager = {
+		name_id = "menu_crew_eager",
+		icon = "skill_8",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_faster_swap",
+				value = 1
+			},
+			{
+				category = "team",
+				upgrade = "crew_faster_reload",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_quiet = {
+		name_id = "menu_crew_quiet",
+		icon = "skill_6",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_add_concealment",
+				value = 1
+			}
+		}
+	}
+	self.crew_skill_definitions.crew_generous = {
+		name_id = "menu_crew_generous",
+		icon = "skill_7",
+		upgrades = {
+			{
+				category = "team",
+				upgrade = "crew_throwable_regen",
+				value = 1
+			}
+		}
+	}
+	self.crew_ability_definitions.crew_inspire = {
+		name_id = "menu_crew_inspire",
+		icon = "ability_1"
+	}
+	self.crew_ability_definitions.crew_scavenge = {
+		name_id = "menu_crew_scavenge",
+		icon = "ability_2"
+	}
+	self.crew_ability_definitions.crew_interact = {
+		name_id = "menu_crew_interact",
+		icon = "ability_3"
+	}
+	self.crew_ability_definitions.crew_ai_ap_ammo = {
+		name_id = "menu_crew_ai_ap_ammo",
+		icon = "ability_4"
 	}
 end
 function UpgradesTweakData:_temporary_definitions()
