@@ -385,6 +385,9 @@ end
 function GenericDLCManager:has_mp2()
 	return self:is_dlc_unlocked("mp2")
 end
+function GenericDLCManager:has_ant()
+	return Global.dlc_manager.all_dlc_data.ant and Global.dlc_manager.all_dlc_data.ant.verified
+end
 function GenericDLCManager:has_pn2()
 	return self:is_dlc_unlocked("pn2")
 end
@@ -1098,6 +1101,11 @@ function WINDLCManager:init()
 			amp = {app_id = "218620", no_install = true},
 			mp2 = {app_id = "218620", no_install = true},
 			mom = {app_id = "218620", no_install = true},
+			ant = {
+				app_id = "489570",
+				no_install = true,
+				external = true
+			},
 			pn2 = {app_id = "618940", no_install = true},
 			max = {app_id = "218620", no_install = true}
 		}
