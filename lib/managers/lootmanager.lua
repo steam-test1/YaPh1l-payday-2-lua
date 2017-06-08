@@ -113,10 +113,7 @@ function LootManager:sync_secure_loot(carry_id, multiplier_level, silent)
 	end
 	self:check_achievements(carry_id, multiplier)
 end
-function LootManager:_check_secured(achievement, secured_data)
-	print("[LootManager:_check_secured]")
-	print(inspect(achievement))
-	print(inspect(secured_data))
+function LootManager:_count_achievement_secured(achievement, secured_data)
 	local amount = 0
 	local total_amount = 0
 	local value = 0
@@ -149,6 +146,13 @@ function LootManager:_check_secured(achievement, secured_data)
 			end
 		end
 	end
+	return total_amount, amount, value
+end
+function LootManager:_check_secured(achievement, secured_data)
+	print("[LootManager:_check_secured]")
+	print(inspect(achievement))
+	print(inspect(secured_data))
+	local total_amount, amount, value = self:_count_achievement_secured(achievement, secured_data)
 	print("Did we get it?", secured_data.total_amount and total_amount >= secured_data.total_amount or secured_data.amount and amount >= secured_data.amount or secured_data.value and value >= secured_data.value)
 	return secured_data.total_amount and total_amount >= secured_data.total_amount or secured_data.amount and amount >= secured_data.amount or secured_data.value and value >= secured_data.value
 end

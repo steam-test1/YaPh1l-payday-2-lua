@@ -537,7 +537,8 @@ function UnitNetworkHandler:sync_interacted(unit, unit_id, tweak_setting, status
 				unit:set_slot(0)
 			end
 		end
-		unit:interaction():sync_interacted(peer, nil, status)
+		local char_unit = managers.criminals:character_unit_by_peer_id(peer:id())
+		unit:interaction():sync_interacted(peer, char_unit, status)
 	end
 end
 function UnitNetworkHandler:sync_multiple_equipment_bag_interacted(unit, amount_wanted, sender)
@@ -549,7 +550,8 @@ function UnitNetworkHandler:sync_multiple_equipment_bag_interacted(unit, amount_
 		return
 	end
 	if unit and alive(unit) and unit:interaction() then
-		unit:interaction():sync_interacted(peer, nil, amount_wanted)
+		local char_unit = managers.criminals:character_unit_by_peer_id(peer:id())
+		unit:interaction():sync_interacted(peer, char_unit, amount_wanted)
 	end
 end
 function UnitNetworkHandler:sync_interacted_by_id(unit_id, tweak_setting, sender)

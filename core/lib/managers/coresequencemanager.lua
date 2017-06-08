@@ -3765,9 +3765,9 @@ MaterialElement.FUNC_MAP = MaterialElement.FUNC_MAP or {
 	state = "set_material_state"
 }
 MaterialElement.TIMER_STATE_MAP = MaterialElement.TIMER_STATE_MAP or {
-	play = true,
-	pause = true,
-	stop = true
+	play = 1,
+	pause = 0,
+	stop = 0
 }
 function MaterialElement:init(node, unit_element)
 	BaseElement.init(self, node, unit_element)
@@ -3815,14 +3815,23 @@ function MaterialElement:set_render_template(env, render_template, material)
 	material:set_render_template(render_template)
 end
 function MaterialElement:set_time(env, time, material)
-	material:set_render_template(time)
+	material:set_time(time)
 end
 function MaterialElement:set_variable(env, value, material, key)
 	material:set_variable(Idstring(key), value)
 end
 function MaterialElement:set_material_state(env, state, material)
+	local args = string.split(state, " ")
+	state = args[1]
+	table.remove(args, 1)
+	for i, arg in ipairs(args) do
+		args[i] = tonumber(arg)
+	end
 	if state and self.TIMER_STATE_MAP[state] then
-		material[state](material)
+		for i = #args, self.TIMER_STATE_MAP[state] - 1 do
+			table.insert(args, 1)
+		end
+		material[state](material, unpack(args))
 	else
 		local supported_values = SequenceManager:get_keys_as_string(self.TIMER_STATE_MAP, "", true)
 		self:print_attribute_error("state", state, supported_values, true, env, nil)

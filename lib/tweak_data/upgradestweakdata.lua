@@ -1987,7 +1987,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{"10%", "10%"}
 		},
 		{
-			{"15%"},
+			{"20%"},
 			{"25%"},
 			{"10%", "20%"},
 			{
@@ -8713,6 +8713,7 @@ function UpgradesTweakData:_grenades_definitions()
 	self.definitions.chico_injector = {category = "grenade", dlc = "chico"}
 	self.definitions.fir_com = {category = "grenade", dlc = "pd2_clan"}
 	self.definitions.smoke_screen_grenade = {category = "grenade", dlc = "max"}
+	self.definitions.dada_com = {category = "grenade", dlc = "pd2_clan"}
 end
 function UpgradesTweakData:_weapon_definitions()
 	self.definitions.weapon_steelsight_highlight_specials = {

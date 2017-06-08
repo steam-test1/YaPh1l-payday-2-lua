@@ -64,6 +64,9 @@ MenuComponentManager.init = function(self)
 	self._is_game_installing = is_installing
 	self._crimenet_enabled = not is_installing
 	self._crimenet_offline_enabled = not is_installing
+	if not self._generated then
+		self._generated = {}
+	end
 	self._active_components = {}
 	self._active_components.news = {create = callback(self, self, "_create_newsfeed_gui"), close = callback(self, self, "close_newsfeed_gui")}
 	self._active_components.profile = {create = callback(self, self, "_create_profile_gui"), close = callback(self, self, "_disable_profile_gui")}
@@ -161,6 +164,31 @@ MenuComponentManager.run_return_on_all_live_components = function(self, func, ..
 		end
 	end
 	return nil
+end
+
+MenuComponentManager.create_component_callback = function(self, class_name, component_name)
+	local key = class_name
+	return {create = callback(self, self, "_generated_create", {class_name, component_name}), close = callback(self, self, "_generated_close", component_name)}
+end
+
+MenuComponentManager._generated_create = function(self, params, node)
+	if not node then
+		return 
+	end
+	local class_name, component_name = unpack(params)
+	if not self._generated[component_name] then
+		self._generated[component_name] = _G[class_name]:new(self._ws, self._fullscreen_ws, node)
+	end
+	self:register_component(component_name, self._generated[component_name])
+end
+
+MenuComponentManager._generated_close = function(self, component_name)
+	local current = self._generated[component_name]
+	if current then
+		current:close()
+		self._generated[component_name] = nil
+		self:unregister_component(component_name)
+	end
 end
 
 MenuComponentManager.get_controller_input_bool = function(self, button)
