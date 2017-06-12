@@ -272,6 +272,24 @@ function table.true_for_all(t, predicate)
 	end
 	return true
 end
+function table.filter(t, func)
+	local res = {}
+	for key, value in pairs(t) do
+		if func(value, key) then
+			res[key] = value
+		end
+	end
+	return res
+end
+function table.filter_list(t, func)
+	local res = {}
+	for _, value in pairs(t) do
+		if func(value) then
+			table.insert(res, value)
+		end
+	end
+	return res
+end
 function table.collect(t, func)
 	local result = {}
 	for key, value in pairs(t) do
@@ -431,6 +449,7 @@ function table.map_append(t, ...)
 			t[key] = value
 		end
 	end
+	return t
 end
 function table.print_data(data, t)
 	if type(data) == "table" then

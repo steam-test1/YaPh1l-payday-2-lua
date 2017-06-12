@@ -640,6 +640,15 @@ function TweakData:_init_pd2()
 			32
 		}
 	}
+	self.hud_icons.dada_com = {
+		texture = "guis/textures/pd2/equipment_02",
+		texture_rect = {
+			96,
+			32,
+			32,
+			32
+		}
+	}
 	self.hud_icons.none_icon = {
 		texture = "guis/textures/pd2/equipment_02",
 		texture_rect = {

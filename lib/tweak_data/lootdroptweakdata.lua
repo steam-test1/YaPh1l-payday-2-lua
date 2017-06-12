@@ -159,6 +159,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.normal.track = false
 	self.global_values.normal.sort_number = 0
 	self.global_values.normal.category = "normal"
+	self.global_values.normal.ignore_ulti = true
 	self.global_values.superior = {}
 	self.global_values.superior.name_id = "bm_global_value_superior"
 	self.global_values.superior.desc_id = "menu_l_global_value_superior"
@@ -171,6 +172,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.superior.track = false
 	self.global_values.superior.sort_number = 25
 	self.global_values.superior.category = nil
+	self.global_values.superior.ignore_ulti = true
 	self.global_values.exceptional = {}
 	self.global_values.exceptional.name_id = "bm_global_value_exceptional"
 	self.global_values.exceptional.desc_id = "menu_l_global_value_exceptional"
@@ -183,6 +185,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.exceptional.track = false
 	self.global_values.exceptional.sort_number = 26
 	self.global_values.exceptional.category = nil
+	self.global_values.exceptional.ignore_ulti = true
 	self.global_values.infamous = {}
 	self.global_values.infamous.name_id = "bm_global_value_infamous"
 	self.global_values.infamous.desc_id = "menu_l_global_value_infamous"
@@ -195,6 +198,8 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.infamous.track = false
 	self.global_values.infamous.sort_number = 30
 	self.global_values.infamous.category = "infamous"
+	self.global_values.infamous.track = false
+	self.global_values.infamous.ignore_ulti = true
 	self.global_values.infamy = {}
 	self.global_values.infamy.name_id = "bm_global_value_infamous"
 	self.global_values.infamy.desc_id = "menu_l_global_value_infamous"
@@ -208,6 +213,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.infamy.sort_number = 35
 	self.global_values.infamy.hide_unavailable = true
 	self.global_values.infamy.category = "infamous"
+	self.global_values.infamy.ignore_ulti = true
 	self.global_values.preorder = {}
 	self.global_values.preorder.name_id = "bm_global_value_preorder"
 	self.global_values.preorder.desc_id = "menu_l_global_value_preorder"
@@ -221,6 +227,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.preorder.sort_number = -10
 	self.global_values.preorder.hide_unavailable = true
 	self.global_values.preorder.category = "dlc"
+	self.global_values.preorder.ignore_ulti = true
 	self.global_values.pd2_clan = {}
 	self.global_values.pd2_clan.name_id = "bm_global_value_pd2_clan"
 	self.global_values.pd2_clan.desc_id = "menu_l_global_value_pd2_clan"
@@ -234,6 +241,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.pd2_clan.track = true
 	self.global_values.pd2_clan.sort_number = -100
 	self.global_values.pd2_clan.unique_lock_icon = "guis/textures/pd2/lock_community"
+	self.global_values.pd2_clan.ignore_ulti = true
 	self.global_values.poetry_soundtrack = {}
 	self.global_values.poetry_soundtrack.name_id = "bm_global_value_poetry_soundtrack"
 	self.global_values.poetry_soundtrack.desc_id = "menu_l_global_value_poetry_soundtrack"
@@ -261,6 +269,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.halloween.sort_number = 50
 	self.global_values.halloween.hide_unavailable = true
 	self.global_values.halloween.category = "global_event"
+	self.global_values.halloween.ignore_ulti = true
 	self.global_values.xmas = {}
 	self.global_values.xmas.name_id = "bm_global_value_xmas"
 	self.global_values.xmas.desc_id = "menu_l_global_value_xmas"
@@ -274,6 +283,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.xmas.sort_number = 60
 	self.global_values.xmas.hide_unavailable = true
 	self.global_values.xmas.category = "global_event"
+	self.global_values.xmas.ignore_ulti = true
 	self.global_values.twitch_pack = {}
 	self.global_values.twitch_pack.name_id = "bm_global_value_twitch_pack"
 	self.global_values.twitch_pack.desc_id = "menu_l_global_value_twitch_pack"
@@ -288,6 +298,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.twitch_pack.sort_number = 70
 	self.global_values.twitch_pack.hide_unavailable = true
 	self.global_values.twitch_pack.category = "global_event"
+	self.global_values.twitch_pack.ignore_ulti = true
 	self.global_values.humble_pack2 = {}
 	self.global_values.humble_pack2.name_id = "bm_global_value_humble_pack2"
 	self.global_values.humble_pack2.desc_id = "menu_l_global_value_humble_pack2"
@@ -302,6 +313,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.humble_pack2.sort_number = 71
 	self.global_values.humble_pack2.hide_unavailable = true
 	self.global_values.humble_pack2.category = "global_event"
+	self.global_values.humble_pack2.ignore_ulti = true
 	self.global_values.alienware_alpha = {}
 	self.global_values.alienware_alpha.name_id = "bm_global_value_alienware_alpha"
 	self.global_values.alienware_alpha.desc_id = "menu_l_global_value_alienware_alpha"
@@ -316,6 +328,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.alienware_alpha.sort_number = 72
 	self.global_values.alienware_alpha.hide_unavailable = true
 	self.global_values.alienware_alpha.category = "global_event"
+	self.global_values.alienware_alpha.ignore_ulti = true
 	self.global_values.alienware_alpha_promo = {}
 	self.global_values.alienware_alpha_promo.name_id = "bm_global_value_alienware_alpha_promo"
 	self.global_values.alienware_alpha_promo.desc_id = "menu_l_global_value_alienware_alpha_promo"
@@ -330,6 +343,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.alienware_alpha_promo.sort_number = 73
 	self.global_values.alienware_alpha_promo.hide_unavailable = true
 	self.global_values.alienware_alpha_promo.category = "global_event"
+	self.global_values.alienware_alpha_promo.ignore_ulti = true
 	self.global_values.humble_pack3 = {}
 	self.global_values.humble_pack3.name_id = "bm_global_value_humble_pack3"
 	self.global_values.humble_pack3.desc_id = "menu_l_global_value_humble_pack3"
@@ -344,6 +358,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.humble_pack3.sort_number = 74
 	self.global_values.humble_pack3.hide_unavailable = true
 	self.global_values.humble_pack3.category = "global_event"
+	self.global_values.humble_pack3.ignore_ulti = true
 	self.global_values.humble_pack4 = {}
 	self.global_values.humble_pack4.name_id = "bm_global_value_humble_pack4"
 	self.global_values.humble_pack4.desc_id = "menu_l_global_value_humble_pack4"
@@ -358,6 +373,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.humble_pack4.sort_number = 75
 	self.global_values.humble_pack4.hide_unavailable = true
 	self.global_values.humble_pack4.category = "global_event"
+	self.global_values.humble_pack4.ignore_ulti = true
 	self.global_values.e3_s15a = {}
 	self.global_values.e3_s15a.name_id = "bm_global_value_e3_s15a"
 	self.global_values.e3_s15a.desc_id = "menu_l_global_value_e3_s15a"
@@ -372,6 +388,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.e3_s15a.sort_number = 76
 	self.global_values.e3_s15a.hide_unavailable = true
 	self.global_values.e3_s15a.category = "global_event"
+	self.global_values.e3_s15a.ignore_ulti = true
 	self.global_values.e3_s15b = {}
 	self.global_values.e3_s15b.name_id = "bm_global_value_e3_s15b"
 	self.global_values.e3_s15b.desc_id = "menu_l_global_value_e3_s15b"
@@ -386,6 +403,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.e3_s15b.sort_number = 77
 	self.global_values.e3_s15b.hide_unavailable = true
 	self.global_values.e3_s15b.category = "global_event"
+	self.global_values.e3_s15b.ignore_ulti = true
 	self.global_values.e3_s15c = {}
 	self.global_values.e3_s15c.name_id = "bm_global_value_e3_s15c"
 	self.global_values.e3_s15c.desc_id = "menu_l_global_value_e3_s15c"
@@ -400,6 +418,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.e3_s15c.sort_number = 78
 	self.global_values.e3_s15c.hide_unavailable = true
 	self.global_values.e3_s15c.category = "global_event"
+	self.global_values.e3_s15c.ignore_ulti = true
 	self.global_values.e3_s15d = {}
 	self.global_values.e3_s15d.name_id = "bm_global_value_e3_s15d"
 	self.global_values.e3_s15d.desc_id = "menu_l_global_value_e3_s15d"
@@ -414,6 +433,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.e3_s15d.sort_number = 79
 	self.global_values.e3_s15d.hide_unavailable = true
 	self.global_values.e3_s15d.category = "global_event"
+	self.global_values.e3_s15d.ignore_ulti = true
 	self.global_values.bobblehead = {}
 	self.global_values.bobblehead.name_id = "bm_global_value_bobblehead"
 	self.global_values.bobblehead.desc_id = "menu_l_global_value_bobblehead"
@@ -428,6 +448,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.bobblehead.sort_number = 80
 	self.global_values.bobblehead.hide_unavailable = true
 	self.global_values.bobblehead.category = "global_event"
+	self.global_values.bobblehead.ignore_ulti = true
 	self.global_values.pdcon_2015 = {}
 	self.global_values.pdcon_2015.name_id = "bm_global_value_pdcon_2015"
 	self.global_values.pdcon_2015.desc_id = "menu_l_global_value_pdcon_2015"
@@ -442,6 +463,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.pdcon_2015.sort_number = 81
 	self.global_values.pdcon_2015.hide_unavailable = true
 	self.global_values.pdcon_2015.category = "global_event"
+	self.global_values.pdcon_2015.ignore_ulti = true
 	self.global_values.pdcon_2016 = {}
 	self.global_values.pdcon_2016.name_id = "bm_global_value_pdcon_2016"
 	self.global_values.pdcon_2016.desc_id = "menu_l_global_value_pdcon_2016"
@@ -456,6 +478,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.pdcon_2016.sort_number = 83
 	self.global_values.pdcon_2016.hide_unavailable = true
 	self.global_values.pdcon_2016.category = "global_event"
+	self.global_values.pdcon_2016.ignore_ulti = true
 	self.global_values.jigg = {}
 	self.global_values.jigg.name_id = "bm_global_value_jigg"
 	self.global_values.jigg.desc_id = "menu_l_global_value_jigg"
@@ -615,6 +638,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.hlm_game.sort_number = 88
 	self.global_values.hlm_game.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	self.global_values.hlm_game.category = "collaboration"
+	self.global_values.hlm_game.ignore_ulti = true
 	self.global_values.hlm2 = {}
 	self.global_values.hlm2.name_id = "bm_global_value_hlm2"
 	self.global_values.hlm2.desc_id = "menu_l_global_value_hlm2"
@@ -629,6 +653,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.hlm2.sort_number = 89
 	self.global_values.hlm2.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	self.global_values.hlm2.category = "collaboration"
+	self.global_values.hlm2.ignore_ulti = true
 	self.global_values.hlm2_deluxe = {}
 	self.global_values.hlm2_deluxe.name_id = "bm_global_value_hlm2_deluxe"
 	self.global_values.hlm2_deluxe.desc_id = "menu_l_global_value_hlm2_deluxe"
@@ -643,6 +668,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.hlm2_deluxe.sort_number = 90
 	self.global_values.hlm2_deluxe.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	self.global_values.hlm2_deluxe.category = "collaboration"
+	self.global_values.hlm2_deluxe.ignore_ulti = true
 	self.global_values.speedrunners = {}
 	self.global_values.speedrunners.name_id = "bm_global_value_speedrunners"
 	self.global_values.speedrunners.desc_id = "menu_l_global_value_speedrunners"
@@ -657,6 +683,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.speedrunners.sort_number = 91
 	self.global_values.speedrunners.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	self.global_values.speedrunners.category = "collaboration"
+	self.global_values.speedrunners.ignore_ulti = true
 	self.global_values.gage_pack_historical = {}
 	self.global_values.gage_pack_historical.name_id = "bm_global_value_gage_pack_historical"
 	self.global_values.gage_pack_historical.desc_id = "menu_l_global_value_gage_pack_historical"
@@ -800,6 +827,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.complete_overkill_pack.track = true
 	self.global_values.complete_overkill_pack.sort_number = 99
 	self.global_values.complete_overkill_pack.category = "dlc"
+	self.global_values.complete_overkill_pack.ignore_ulti = true
 	self.global_values.butch_pack_free = {}
 	self.global_values.butch_pack_free.name_id = "bm_global_value_butch_pack_free"
 	self.global_values.butch_pack_free.desc_id = "menu_l_global_value_butch_pack_free"
@@ -1009,6 +1037,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.dbd_clan.unique_lock_icon = "guis/textures/pd2/lock_community"
 	self.global_values.dbd_clan.sort_number = 2
 	self.global_values.dbd_clan.category = "pd2_clan"
+	self.global_values.dbd_clan.ignore_ulti = true
 	self.global_values.dbd_deluxe = {}
 	self.global_values.dbd_deluxe.name_id = "bm_global_value_dbd_deluxe"
 	self.global_values.dbd_deluxe.desc_id = "menu_l_global_value_dbd_deluxe"
@@ -1023,6 +1052,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.dbd_deluxe.sort_number = 90
 	self.global_values.dbd_deluxe.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	self.global_values.dbd_deluxe.category = "collaboration"
+	self.global_values.dbd_deluxe.ignore_ulti = true
 	self.global_values.wild = {}
 	self.global_values.wild.name_id = "bm_global_value_wild"
 	self.global_values.wild.desc_id = "menu_l_global_value_wild"
@@ -1064,6 +1094,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.solus_clan.unique_lock_icon = "guis/textures/pd2/lock_community"
 	self.global_values.solus_clan.sort_number = 2
 	self.global_values.solus_clan.category = "pd2_clan"
+	self.global_values.solus_clan.ignore_ulti = true
 	self.global_values.legendary = {}
 	self.global_values.legendary.name_id = "bm_global_value_legendary"
 	self.global_values.legendary.desc_id = "menu_l_global_value_legendary"
@@ -1090,6 +1121,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.sparkle.sort_number = 71
 	self.global_values.sparkle.hide_unavailable = true
 	self.global_values.sparkle.category = "global_event"
+	self.global_values.sparkle.ignore_ulti = true
 	self.global_values.rota = {}
 	self.global_values.rota.name_id = "bm_global_value_rota"
 	self.global_values.rota.desc_id = "menu_l_global_value_rota"
@@ -1156,6 +1188,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.swm.sort_number = 301
 	self.global_values.swm.hide_unavailable = true
 	self.global_values.swm.category = "global_event"
+	self.global_values.swm.ignore_ulti = true
 	self.global_values.sha = {}
 	self.global_values.sha.name_id = "bm_global_value_sha"
 	self.global_values.sha.desc_id = "menu_l_global_value_sha"
@@ -1169,6 +1202,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.sha.track = true
 	self.global_values.sha.sort_number = 302
 	self.global_values.sha.category = "collaboration"
+	self.global_values.sha.ignore_ulti = true
 	self.global_values.spa = {}
 	self.global_values.spa.name_id = "bm_global_value_spa"
 	self.global_values.spa.desc_id = "menu_l_global_value_spa"
@@ -1235,6 +1269,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.ant.sort_number = 305
 	self.global_values.ant.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	self.global_values.ant.category = "collaboration"
+	self.global_values.ant.ignore_ulti = true
 	self.global_values.ant_free = {}
 	self.global_values.ant_free.name_id = "bm_global_value_ant"
 	self.global_values.ant_free.desc_id = "menu_l_global_value_ant"
@@ -1249,6 +1284,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.ant_free.sort_number = 305
 	self.global_values.ant_free.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	self.global_values.ant_free.category = "collaboration"
+	self.global_values.ant_free.ignore_ulti = true
 	self.global_values.pn2 = {}
 	self.global_values.pn2.name_id = "bm_global_value_pn2"
 	self.global_values.pn2.desc_id = "menu_l_global_value_pn2"
@@ -1263,6 +1299,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.pn2.sort_number = 306
 	self.global_values.pn2.hide_unavailable = true
 	self.global_values.pn2.category = "global_event"
+	self.global_values.pn2.ignore_ulti = true
 	self.global_values.max = {}
 	self.global_values.max.name_id = "bm_global_value_max"
 	self.global_values.max.desc_id = "menu_l_global_value_max"
@@ -1276,6 +1313,19 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.max.track = true
 	self.global_values.max.sort_number = 300
 	self.global_values.max.category = "dlc"
+	self.global_values.dgm = {}
+	self.global_values.dgm.name_id = "bm_global_value_dgm"
+	self.global_values.dgm.desc_id = "menu_l_global_value_dgm"
+	self.global_values.dgm.unlock_id = "bm_global_value_dgm_unlock"
+	self.global_values.dgm.color = Color(255, 255, 212, 0) / 255
+	self.global_values.dgm.dlc = true
+	self.global_values.dgm.chance = 1
+	self.global_values.dgm.value_multiplier = 1
+	self.global_values.dgm.durability_multiplier = 1
+	self.global_values.dgm.drops = true
+	self.global_values.dgm.track = true
+	self.global_values.dgm.sort_number = 301
+	self.global_values.dgm.category = "dlc"
 	if SystemInfo:platform() == Idstring("PS3") then
 		self.global_values.sweettooth = {}
 		self.global_values.sweettooth.name_id = "bm_global_value_sweettooth"
@@ -1290,6 +1340,12 @@ function LootDropTweakData:init(tweak_data)
 		self.global_values.sweettooth.track = true
 		self.global_values.sweettooth.sort_number = 200
 		self.global_values.sweettooth.category = nil
+	end
+	for _, gv_data in pairs(self.global_values) do
+		if not gv_data.ignore_ulti then
+			gv_data.desc_id = "menu_l_global_value_ue"
+			gv_data.unlock_id = "bm_global_value_ue_unlock"
+		end
 	end
 	self.global_value_list_index = {
 		"normal",
@@ -1347,7 +1403,8 @@ function LootDropTweakData:init(tweak_data)
 		"ant",
 		"ant_free",
 		"pn2",
-		"max"
+		"max",
+		"dgm"
 	}
 	self:_create_global_value_list_map()
 end
