@@ -13,7 +13,7 @@ local BAR_X = (SPOT_W - BAR_W) / 2
 local BAR_Y = 0
 function NewHeistsGui:init(ws, fullscreen_ws)
 	local tweak = tweak_data.gui.new_heists
-	self._page_count = math.min(#tweak, 5)
+	self._page_count = math.min(#tweak, tweak.limit)
 	self._current_page = 1
 	self._block_change = false
 	self._highlighted = false

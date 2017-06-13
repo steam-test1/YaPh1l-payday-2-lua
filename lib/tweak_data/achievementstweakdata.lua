@@ -87,7 +87,8 @@ function AchievementsTweakData:init(tweak_data)
 		grenade = {
 			"frag",
 			"frag_com",
-			"concussion"
+			"concussion",
+			"dada_com"
 		}
 	}
 	self.tango_4 = {
@@ -396,6 +397,12 @@ function AchievementsTweakData:init(tweak_data)
 		daily_grenades_dynamite = {
 			trophy_stat = "daily_grenades",
 			grenade_type = "dynamite",
+			kill = true,
+			is_civilian = false
+		},
+		daily_grenades_dada = {
+			trophy_stat = "daily_grenades",
+			grenade_type = "dada_com",
 			kill = true,
 			is_civilian = false
 		}
