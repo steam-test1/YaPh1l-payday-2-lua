@@ -28,6 +28,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_hk21_npc()
 	self:_init_data_m249_npc()
 	self:_init_data_contraband_npc()
+	self:_init_data_mini_npc()
 	self:_init_data_m4_crew()
 	self:_init_data_m14_crew()
 	self:_init_data_c45_crew()
@@ -743,7 +744,7 @@ function WeaponTweakData:_init_data_m249_npc()
 	self.rpk_lmg_npc = deep_clone(self.m249_npc)
 end
 function WeaponTweakData:_init_data_mini_npc()
-	self.mini_npc.sounds.prefix = "m249_npc"
+	self.mini_npc.sounds.prefix = "minigun_npc"
 	self.mini_npc.use_data.selection_index = 2
 	self.mini_npc.DAMAGE = 2
 	self.mini_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
@@ -14250,6 +14251,12 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.contraband_m203_npc = {
 		usage = "r870",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.mini_npc = {
+		usage = "ak47",
 		sounds = {},
 		use_data = {},
 		auto = {}

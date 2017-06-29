@@ -8909,6 +8909,16 @@ function UpgradesTweakData:_weapon_definitions()
 			value = 3
 		}
 	}
+	self.definitions.akimbo_recoil_index_addend_4 = {
+		category = "feature",
+		incremental = true,
+		name_id = "menu_akimbo_recoil_index_addend",
+		upgrade = {
+			category = "akimbo",
+			upgrade = "recoil_index_addend",
+			value = 4
+		}
+	}
 	self.definitions.weapon_silencer_recoil_index_addend = {
 		category = "feature",
 		name_id = "menu_weapon_silencer_recoil_index_addend",
@@ -11253,6 +11263,16 @@ function UpgradesTweakData:_akimbo_definitions()
 			category = "akimbo",
 			upgrade = "extra_ammo_multiplier",
 			value = 2
+		}
+	}
+	self.definitions.akimbo_extra_ammo_multiplier_3 = {
+		category = "feature",
+		incremental = true,
+		name_id = "menu_akimbo_extra_ammo_multiplier",
+		upgrade = {
+			category = "akimbo",
+			upgrade = "extra_ammo_multiplier",
+			value = 3
 		}
 	}
 	self.definitions.akimbo_recoil_multiplier_1 = {

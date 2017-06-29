@@ -97,11 +97,6 @@ function NewRaycastWeaponBase:assemble(factory_id)
 	end), skip_queue)
 	self:_check_thq_align_anim()
 	self:_update_stats_values()
-	do return end
-	local third_person = self:is_npc()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person)
-	self:_update_fire_object()
-	self:_update_stats_values()
 end
 function NewRaycastWeaponBase:assemble_from_blueprint(factory_id, blueprint, clbk)
 	local third_person = self:_third_person()
@@ -109,11 +104,6 @@ function NewRaycastWeaponBase:assemble_from_blueprint(factory_id, blueprint, clb
 	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person, callback(self, self, "clbk_assembly_complete", clbk or function()
 	end), skip_queue)
 	self:_check_thq_align_anim()
-	self:_update_stats_values()
-	do return end
-	local third_person = self:is_npc()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person)
-	self:_update_fire_object()
 	self:_update_stats_values()
 end
 function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
@@ -680,8 +670,9 @@ end
 function NewRaycastWeaponBase:_set_parts_visible(visible)
 	if self._parts then
 		for part_id, data in pairs(self._parts) do
-			if alive(data.unit) then
-				data.unit:set_visible(visible)
+			local unit = data.unit or data.link_to_unit
+			if alive(unit) then
+				unit:set_visible(visible)
 			end
 		end
 	end

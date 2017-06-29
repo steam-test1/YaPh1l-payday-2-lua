@@ -578,6 +578,7 @@ function WeaponFactoryManager:clbk_part_unit_loaded(task_data, status, u_type, u
 			local unit = self:_spawn_and_link_unit(part.name, part.a_obj, task_data.third_person, part.link_to_unit)
 			unit:set_enabled(false)
 			part.unit = unit
+			part.unit:set_visible(part.link_to_unit:visible())
 			part.a_obj = nil
 			part.link_to_unit = nil
 		end
