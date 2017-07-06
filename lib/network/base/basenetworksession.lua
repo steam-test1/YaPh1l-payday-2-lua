@@ -954,7 +954,7 @@ function BaseNetworkSession:are_all_peer_assets_loaded()
 end
 function BaseNetworkSession:_get_peer_outfit_versions_str()
 	local outfit_versions_str = ""
-	for peer_id = 1, 4 do
+	for peer_id = 1, tweak_data.max_players do
 		local peer
 		if peer_id == self._local_peer:id() then
 			peer = self._local_peer
@@ -988,7 +988,7 @@ function BaseNetworkSession:check_send_outfit(peer)
 	end
 end
 function BaseNetworkSession:on_network_stopped()
-	for k = 1, 4 do
+	for k = 1, tweak_data.max_players do
 		self:on_drop_in_pause_request_received(k, nil, false)
 		local peer = self:peer(k)
 		if peer then

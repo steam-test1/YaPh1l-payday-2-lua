@@ -92,9 +92,12 @@ function MenuTitlescreenState:at_enter()
 	managers.platform:add_event_callback("media_player_control", self._clbk_game_has_music_control_callback)
 	self:reset_attract_video()
 end
+function MenuTitlescreenState:get_video_volume()
+	return 1
+end
 function MenuTitlescreenState:clbk_game_has_music_control(status)
 	if alive(self._attract_video_gui) then
-		self._attract_video_gui:set_volume_gain(status and 1 or 0)
+		self._attract_video_gui:set_volume_gain(status and self:get_video_volume() or 0)
 	end
 end
 function MenuTitlescreenState:update(t, dt)
@@ -277,7 +280,7 @@ function MenuTitlescreenState:play_attract_video()
 		layer = tweak_data.gui.ATTRACT_SCREEN_LAYER
 	})
 	self._attract_video_gui:play()
-	self._attract_video_gui:set_volume_gain(managers.music:has_music_control() and 1 or 0)
+	self._attract_video_gui:set_volume_gain(managers.music:has_music_control() and self:get_video_volume() or 0)
 end
 function MenuTitlescreenState:at_exit()
 	managers.platform:remove_event_callback("media_player_control", self._clbk_game_has_music_control_callback)

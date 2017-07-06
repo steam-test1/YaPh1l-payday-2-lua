@@ -471,7 +471,7 @@ MissionEndState.generate_safehouse_statistics = function(self)
 	if was_safehouse_raid then
 		exp_income = exp_income - raid_income
 	end
-	if managers.crime_spree:_is_active() and total_income > 0 then
+	if managers.crime_spree:is_active() and total_income > 0 then
 		stage_safehouse_summary_string = managers.localization:text("menu_es_safehouse_earned", {amount = tostring(total_income)}) .. "\n"
 	end
 	if exp_income > 0 then
@@ -590,7 +590,7 @@ MissionEndState.update = function(self, t, dt)
 		managers.mission:pre_destroy()
 		self._mission_destroy_t = nil
 	end
-	if managers.crime_spree:_is_active() then
+	if managers.crime_spree:is_active() then
 		self._total_xp_bonus = false
 	end
 	if self._total_xp_bonus then
@@ -664,7 +664,6 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 				end
 				local last_jump_t = managers.job:get_memory("last_jump_t", true) or 0
 				if last_jump_t and last_jump_t + tweak_data.achievement.complete_heist_achievements.jordan_4.jump_timer < t then
-					print("[achievement] Failed Achievement " .. "brooklyn_4")
 					managers.job:set_memory("jordan_4", false)
 				end
 				local ach_data = tweak_data.achievement.close_and_personal
@@ -1191,7 +1190,7 @@ MissionEndState.chk_complete_heist_achievements = function(self)
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1697 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 1692 
 end
 
 

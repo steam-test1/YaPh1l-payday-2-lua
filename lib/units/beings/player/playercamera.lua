@@ -172,11 +172,14 @@ function PlayerCamera:set_rotation(rot)
 	local sync_pitch = math.clamp(rot:pitch(), -85, 85) + 85
 	sync_pitch = math.floor(127 * sync_pitch / 170)
 	local angle_delta = math.abs(self._sync_dir.yaw - sync_yaw) + math.abs(self._sync_dir.pitch - sync_pitch)
-	if sync_dt > 1 and angle_delta > 0 or angle_delta > 5 then
-		self._unit:network():send("set_look_dir", sync_yaw, sync_pitch)
-		self._sync_dir.yaw = sync_yaw
-		self._sync_dir.pitch = sync_pitch
-		self._last_sync_t = t
+	if tweak_data.network then
+		local update_network = sync_dt > tweak_data.network.camera.network_sync_delta_t and angle_delta > 0 or angle_delta > tweak_data.network.camera.network_angle_delta
+		if update_network then
+			self._unit:network():send("set_look_dir", sync_yaw, sync_pitch)
+			self._sync_dir.yaw = sync_yaw
+			self._sync_dir.pitch = sync_pitch
+			self._last_sync_t = t
+		end
 	end
 end
 function PlayerCamera:set_FOV(fov_value)

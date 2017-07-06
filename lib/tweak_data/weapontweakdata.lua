@@ -398,6 +398,8 @@ function WeaponTweakData:_init_data_r870_npc()
 	self.r870_npc.alert_size = 4500
 	self.r870_npc.suppression = 1.8
 	self.r870_npc.is_shotgun = true
+	self.r870_npc.rays = 12
+	self.r870_npc.spread = 3
 	self.benelli_npc = deep_clone(self.r870_npc)
 end
 function WeaponTweakData:_init_data_mossberg_npc()
@@ -412,6 +414,8 @@ function WeaponTweakData:_init_data_mossberg_npc()
 	self.mossberg_npc.alert_size = 3000
 	self.mossberg_npc.suppression = 2
 	self.mossberg_npc.is_shotgun = true
+	self.mossberg_npc.rays = 12
+	self.mossberg_npc.spread = 3
 end
 function WeaponTweakData:_init_data_mp5_npc()
 	self.mp5_npc.sounds.prefix = "mp5_npc"
@@ -443,7 +447,7 @@ function WeaponTweakData:_init_data_mac11_npc()
 	self.mac11_npc.CLIP_AMMO_MAX = 40
 	self.mac11_npc.NR_CLIPS_MAX = 5
 	self.mac11_npc.auto.fire_rate = 0.11
-	self.mac11_npc.hold = "pistol"
+	self.mac11_npc.hold = {"uzi", "pistol"}
 	self.mac11_npc.alert_size = 2500
 	self.mac11_npc.suppression = 1
 end
@@ -488,6 +492,8 @@ function WeaponTweakData:_init_data_saiga_npc()
 	self.saiga_npc.alert_size = 4500
 	self.saiga_npc.suppression = 1.8
 	self.saiga_npc.is_shotgun = true
+	self.saiga_npc.rays = 12
+	self.saiga_npc.spread = 3
 end
 function WeaponTweakData:_init_data_sentry_gun_npc()
 	self.sentry_gun.categories = {}
@@ -776,6 +782,7 @@ function WeaponTweakData:_init_data_contraband_npc()
 	self.contraband_m203_npc.no_trail = true
 	self.contraband_m203_npc.CLIP_AMMO_MAX = 1
 	self.contraband_m203_npc.NR_CLIPS_MAX = 4
+	self.contraband_m203_npc.looped_reload_speed = 0.16666667
 	self.contraband_m203_npc.auto.fire_rate = 0.1
 	self.contraband_m203_npc.hold = "rifle"
 	self.contraband_m203_npc.alert_size = 2800
@@ -790,6 +797,7 @@ function WeaponTweakData:_init_data_c45_crew()
 	self.c45_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.c45_crew.CLIP_AMMO_MAX = 10
 	self.c45_crew.NR_CLIPS_MAX = 9
+	self.c45_crew.pull_magazine_during_reload = "pistol"
 	self.c45_crew.hold = "pistol"
 	self.c45_crew.alert_size = 2500
 	self.c45_crew.suppression = 1
@@ -818,6 +826,7 @@ function WeaponTweakData:_init_data_beretta92_crew()
 	self.beretta92_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.beretta92_crew.CLIP_AMMO_MAX = 14
 	self.beretta92_crew.NR_CLIPS_MAX = 11
+	self.beretta92_crew.pull_magazine_during_reload = "pistol"
 	self.beretta92_crew.hold = "pistol"
 	self.beretta92_crew.alert_size = 300
 	self.beretta92_crew.suppression = 0.3
@@ -833,6 +842,7 @@ function WeaponTweakData:_init_data_glock_18_crew()
 	self.glock_18_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.glock_18_crew.CLIP_AMMO_MAX = 20
 	self.glock_18_crew.NR_CLIPS_MAX = 8
+	self.glock_18_crew.pull_magazine_during_reload = "pistol"
 	self.glock_18_crew.hold = "pistol"
 	self.glock_18_crew.auto = {}
 	self.glock_18_crew.auto.fire_rate = 0.066
@@ -851,6 +861,7 @@ function WeaponTweakData:_init_data_raging_bull_crew()
 	self.raging_bull_crew.CLIP_AMMO_MAX = 6
 	self.raging_bull_crew.NR_CLIPS_MAX = 8
 	self.raging_bull_crew.hold = "pistol"
+	self.raging_bull_crew.reload = "revolver"
 	self.raging_bull_crew.alert_size = 5000
 	self.raging_bull_crew.suppression = 1.8
 	self.raging_bull_primary_crew = deep_clone(self.raging_bull_crew)
@@ -864,6 +875,7 @@ function WeaponTweakData:_init_data_m4_crew()
 	self.m4_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.m4_crew.CLIP_AMMO_MAX = 30
 	self.m4_crew.NR_CLIPS_MAX = 5
+	self.m4_crew.pull_magazine_during_reload = "rifle"
 	self.m4_crew.auto.fire_rate = 0.1
 	self.m4_crew.hold = "rifle"
 	self.m4_crew.alert_size = 5000
@@ -893,6 +905,7 @@ function WeaponTweakData:_init_data_m14_crew()
 	self.m14_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.m14_crew.CLIP_AMMO_MAX = 10
 	self.m14_crew.NR_CLIPS_MAX = 8
+	self.m14_crew.pull_magazine_during_reload = "rifle"
 	self.m14_crew.auto.fire_rate = 0.085
 	self.m14_crew.hold = "rifle"
 	self.m14_crew.alert_size = 5000
@@ -901,7 +914,7 @@ end
 function WeaponTweakData:_init_data_r870_crew()
 	self.r870_crew.sounds.prefix = "remington_npc"
 	self.r870_crew.use_data.selection_index = 2
-	self.r870_crew.DAMAGE = 45
+	self.r870_crew.DAMAGE = 8.7
 	self.r870_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.r870_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
 	self.r870_crew.CLIP_AMMO_MAX = 6
@@ -934,6 +947,7 @@ function WeaponTweakData:_init_data_mp5_crew()
 	self.mp5_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.mp5_crew.CLIP_AMMO_MAX = 30
 	self.mp5_crew.NR_CLIPS_MAX = 5
+	self.mp5_crew.pull_magazine_during_reload = "smg"
 	self.mp5_crew.auto.fire_rate = 0.08
 	self.mp5_crew.hold = "rifle"
 	self.mp5_crew.alert_size = 2500
@@ -947,6 +961,7 @@ function WeaponTweakData:_init_data_g36_crew()
 	self.g36_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.g36_crew.CLIP_AMMO_MAX = 30
 	self.g36_crew.NR_CLIPS_MAX = 5
+	self.g36_crew.pull_magazine_during_reload = "rifle"
 	self.g36_crew.auto.fire_rate = 0.085
 	self.g36_crew.hold = "rifle"
 	self.g36_crew.alert_size = 5000
@@ -961,6 +976,7 @@ function WeaponTweakData:_init_data_g17_crew()
 	self.g17_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.g17_crew.CLIP_AMMO_MAX = 17
 	self.g17_crew.NR_CLIPS_MAX = 5
+	self.g17_crew.pull_magazine_during_reload = "pistol"
 	self.g17_crew.hold = "pistol"
 	self.g17_crew.alert_size = 2500
 	self.g17_crew.suppression = 1
@@ -974,8 +990,13 @@ function WeaponTweakData:_init_data_mp9_crew()
 	self.mp9_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.mp9_crew.CLIP_AMMO_MAX = 30
 	self.mp9_crew.NR_CLIPS_MAX = 5
+	self.mp9_crew.pull_magazine_during_reload = "smg"
 	self.mp9_crew.auto.fire_rate = 0.063
-	self.mp9_crew.hold = "pistol"
+	self.mp9_crew.hold = {
+		"uzi",
+		"bullpup",
+		"rifle"
+	}
 	self.mp9_crew.alert_size = 1000
 	self.mp9_crew.suppression = 1
 end
@@ -988,6 +1009,7 @@ function WeaponTweakData:_init_data_olympic_crew()
 	self.olympic_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.olympic_crew.CLIP_AMMO_MAX = 25
 	self.olympic_crew.NR_CLIPS_MAX = 5
+	self.olympic_crew.pull_magazine_during_reload = "rifle"
 	self.olympic_crew.auto.fire_rate = 0.088
 	self.olympic_crew.hold = "rifle"
 	self.olympic_crew.alert_size = 1000
@@ -1003,6 +1025,7 @@ function WeaponTweakData:_init_data_m16_crew()
 	self.m16_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.m16_crew.CLIP_AMMO_MAX = 30
 	self.m16_crew.NR_CLIPS_MAX = 8
+	self.m16_crew.pull_magazine_during_reload = "rifle"
 	self.m16_crew.auto.fire_rate = 0.07
 	self.m16_crew.hold = "rifle"
 	self.m16_crew.alert_size = 5000
@@ -1016,8 +1039,9 @@ function WeaponTweakData:_init_data_aug_crew()
 	self.aug_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.aug_crew.CLIP_AMMO_MAX = 30
 	self.aug_crew.NR_CLIPS_MAX = 5
+	self.aug_crew.pull_magazine_during_reload = "rifle"
 	self.aug_crew.auto.fire_rate = 0.08
-	self.aug_crew.hold = "rifle"
+	self.aug_crew.hold = {"bullpup", "rifle"}
 	self.aug_crew.alert_size = 5000
 	self.aug_crew.suppression = 1
 	self.aug_secondary_crew = deep_clone(self.aug_crew)
@@ -1031,6 +1055,7 @@ function WeaponTweakData:_init_data_ak74_crew()
 	self.ak74_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.ak74_crew.CLIP_AMMO_MAX = 30
 	self.ak74_crew.NR_CLIPS_MAX = 5
+	self.ak74_crew.pull_magazine_during_reload = "rifle"
 	self.ak74_crew.auto.fire_rate = 0.092
 	self.ak74_crew.hold = "rifle"
 	self.ak74_crew.alert_size = 5000
@@ -1046,6 +1071,7 @@ function WeaponTweakData:_init_data_ak5_crew()
 	self.ak5_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.ak5_crew.CLIP_AMMO_MAX = 30
 	self.ak5_crew.NR_CLIPS_MAX = 5
+	self.ak5_crew.pull_magazine_during_reload = "rifle"
 	self.ak5_crew.auto.fire_rate = 0.085
 	self.ak5_crew.hold = "rifle"
 	self.ak5_crew.alert_size = 5000
@@ -1060,8 +1086,10 @@ function WeaponTweakData:_init_data_p90_crew()
 	self.p90_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.p90_crew.CLIP_AMMO_MAX = 50
 	self.p90_crew.NR_CLIPS_MAX = 4
+	self.p90_crew.reload = "looped"
+	self.p90_crew.looped_reload_speed = 0.14285715
 	self.p90_crew.auto.fire_rate = 0.066
-	self.p90_crew.hold = "pistol"
+	self.p90_crew.hold = {"bullpup", "rifle"}
 	self.p90_crew.alert_size = 1000
 	self.p90_crew.suppression = 1
 end
@@ -1073,6 +1101,7 @@ function WeaponTweakData:_init_data_amcar_crew()
 	self.amcar_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.amcar_crew.CLIP_AMMO_MAX = 20
 	self.amcar_crew.NR_CLIPS_MAX = 5
+	self.amcar_crew.pull_magazine_during_reload = "rifle"
 	self.amcar_crew.auto.fire_rate = 0.11
 	self.amcar_crew.hold = "rifle"
 	self.amcar_crew.alert_size = 5000
@@ -1087,6 +1116,7 @@ function WeaponTweakData:_init_data_mac10_crew()
 	self.mac10_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.mac10_crew.CLIP_AMMO_MAX = 32
 	self.mac10_crew.NR_CLIPS_MAX = 5
+	self.mac10_crew.pull_magazine_during_reload = "smg"
 	self.mac10_crew.auto.fire_rate = 0.06
 	self.mac10_crew.hold = "pistol"
 	self.mac10_crew.alert_size = 1000
@@ -1101,6 +1131,7 @@ function WeaponTweakData:_init_data_akmsu_crew()
 	self.akmsu_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.akmsu_crew.CLIP_AMMO_MAX = 30
 	self.akmsu_crew.NR_CLIPS_MAX = 5
+	self.akmsu_crew.pull_magazine_during_reload = "rifle"
 	self.akmsu_crew.auto.fire_rate = 0.073
 	self.akmsu_crew.hold = "rifle"
 	self.akmsu_crew.alert_size = 1000
@@ -1116,6 +1147,7 @@ function WeaponTweakData:_init_data_akm_crew()
 	self.akm_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.akm_crew.CLIP_AMMO_MAX = 30
 	self.akm_crew.NR_CLIPS_MAX = 5
+	self.akm_crew.pull_magazine_during_reload = "rifle"
 	self.akm_crew.auto.fire_rate = 0.107
 	self.akm_crew.hold = "rifle"
 	self.akm_crew.alert_size = 5000
@@ -1129,6 +1161,7 @@ function WeaponTweakData:_init_data_akm_gold_crew()
 	self.akm_gold_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.akm_gold_crew.CLIP_AMMO_MAX = 30
 	self.akm_gold_crew.NR_CLIPS_MAX = 5
+	self.akm_gold_crew.pull_magazine_during_reload = "rifle"
 	self.akm_gold_crew.auto.fire_rate = 0.107
 	self.akm_gold_crew.hold = "rifle"
 	self.akm_gold_crew.alert_size = 5000
@@ -1143,6 +1176,7 @@ function WeaponTweakData:_init_data_deagle_crew()
 	self.deagle_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.deagle_crew.CLIP_AMMO_MAX = 10
 	self.deagle_crew.NR_CLIPS_MAX = 5
+	self.deagle_crew.pull_magazine_during_reload = "pistol"
 	self.deagle_crew.hold = "pistol"
 	self.deagle_crew.alert_size = 2500
 	self.deagle_crew.suppression = 1
@@ -1171,6 +1205,7 @@ function WeaponTweakData:_init_data_saiga_crew()
 	self.saiga_crew.auto.fire_rate = 0.18
 	self.saiga_crew.CLIP_AMMO_MAX = 7
 	self.saiga_crew.NR_CLIPS_MAX = 10
+	self.saiga_crew.pull_magazine_during_reload = "rifle"
 	self.saiga_crew.hold = "rifle"
 	self.saiga_crew.alert_size = 4500
 	self.saiga_crew.suppression = 1.8
@@ -1179,11 +1214,12 @@ end
 function WeaponTweakData:_init_data_huntsman_crew()
 	self.huntsman_crew.sounds.prefix = "huntsman_npc"
 	self.huntsman_crew.use_data.selection_index = 2
-	self.huntsman_crew.DAMAGE = 45
+	self.huntsman_crew.DAMAGE = 17.4
 	self.huntsman_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.huntsman_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.huntsman_crew.CLIP_AMMO_MAX = 2
 	self.huntsman_crew.NR_CLIPS_MAX = 4
+	self.huntsman_crew.looped_reload_speed = 0.2
 	self.huntsman_crew.hold = "rifle"
 	self.huntsman_crew.alert_size = 4500
 	self.huntsman_crew.suppression = 1.8
@@ -1199,7 +1235,7 @@ function WeaponTweakData:_init_data_saw_crew()
 	self.saw_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.saw_crew.CLIP_AMMO_MAX = 2
 	self.saw_crew.NR_CLIPS_MAX = 4
-	self.saw_crew.hold = "rifle"
+	self.saw_crew.hold = "bullpup"
 	self.saw_crew.alert_size = 4500
 	self.saw_crew.suppression = 1.8
 	self.saw_secondary_crew = deep_clone(self.saw_crew)
@@ -1214,6 +1250,7 @@ function WeaponTweakData:_init_data_usp_crew()
 	self.usp_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.usp_crew.CLIP_AMMO_MAX = 13
 	self.usp_crew.NR_CLIPS_MAX = 6
+	self.usp_crew.pull_magazine_during_reload = "pistol"
 	self.usp_crew.auto.fire_rate = 0.1
 	self.usp_crew.hold = "pistol"
 	self.usp_crew.alert_size = 1800
@@ -1228,6 +1265,7 @@ function WeaponTweakData:_init_data_g22c_crew()
 	self.g22c_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.g22c_crew.CLIP_AMMO_MAX = 16
 	self.g22c_crew.NR_CLIPS_MAX = 6
+	self.g22c_crew.pull_magazine_during_reload = "pistol"
 	self.g22c_crew.auto.fire_rate = 0.1
 	self.g22c_crew.hold = "pistol"
 	self.g22c_crew.alert_size = 1800
@@ -1243,6 +1281,7 @@ function WeaponTweakData:_init_data_judge_crew()
 	self.judge_crew.CLIP_AMMO_MAX = 5
 	self.judge_crew.NR_CLIPS_MAX = 5
 	self.judge_crew.hold = "pistol"
+	self.judge_crew.reload = "revolver"
 	self.judge_crew.alert_size = 5000
 	self.judge_crew.suppression = 1.8
 end
@@ -1268,6 +1307,7 @@ function WeaponTweakData:_init_data_s552_crew()
 	self.s552_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.s552_crew.CLIP_AMMO_MAX = 30
 	self.s552_crew.NR_CLIPS_MAX = 5
+	self.s552_crew.pull_magazine_during_reload = "rifle"
 	self.s552_crew.auto.fire_rate = 0.084
 	self.s552_crew.hold = "rifle"
 	self.s552_crew.alert_size = 5000
@@ -1284,6 +1324,7 @@ function WeaponTweakData:_init_data_ppk_crew()
 	self.ppk_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.ppk_crew.CLIP_AMMO_MAX = 14
 	self.ppk_crew.NR_CLIPS_MAX = 5
+	self.ppk_crew.pull_magazine_during_reload = "pistol"
 	self.ppk_crew.hold = "pistol"
 	self.ppk_crew.alert_size = 2500
 	self.ppk_crew.suppression = 1
@@ -1297,8 +1338,13 @@ function WeaponTweakData:_init_data_mp7_crew()
 	self.mp7_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.mp7_crew.CLIP_AMMO_MAX = 20
 	self.mp7_crew.NR_CLIPS_MAX = 5
+	self.mp7_crew.pull_magazine_during_reload = "smg"
 	self.mp7_crew.auto.fire_rate = 0.063
-	self.mp7_crew.hold = "pistol"
+	self.mp7_crew.hold = {
+		"uzi",
+		"bullpup",
+		"rifle"
+	}
 	self.mp7_crew.alert_size = 2800
 	self.mp7_crew.suppression = 1
 end
@@ -1310,6 +1356,7 @@ function WeaponTweakData:_init_data_scar_crew()
 	self.scar_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.scar_crew.CLIP_AMMO_MAX = 20
 	self.scar_crew.NR_CLIPS_MAX = 5
+	self.scar_crew.pull_magazine_during_reload = "rifle"
 	self.scar_crew.auto.fire_rate = 0.098
 	self.scar_crew.hold = "rifle"
 	self.scar_crew.alert_size = 5000
@@ -1324,6 +1371,7 @@ function WeaponTweakData:_init_data_p226_crew()
 	self.p226_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.p226_crew.CLIP_AMMO_MAX = 12
 	self.p226_crew.NR_CLIPS_MAX = 5
+	self.p226_crew.pull_magazine_during_reload = "pistol"
 	self.p226_crew.hold = "pistol"
 	self.p226_crew.alert_size = 2500
 	self.p226_crew.suppression = 1
@@ -1375,8 +1423,10 @@ function WeaponTweakData:_init_data_m95_crew()
 	self.m95_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper_m95"
 	self.m95_crew.CLIP_AMMO_MAX = 5
 	self.m95_crew.NR_CLIPS_MAX = 5
-	self.m95_crew.auto.fire_rate = 1.5
+	self.m95_crew.pull_magazine_during_reload = "rifle"
 	self.m95_crew.hold = "rifle"
+	self.m95_crew.reload = "bullpup"
+	self.m95_crew.auto.fire_rate = 1.5
 	self.m95_crew.alert_size = 5000
 	self.m95_crew.suppression = 1
 end
@@ -1388,6 +1438,7 @@ function WeaponTweakData:_init_data_msr_crew()
 	self.msr_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.msr_crew.CLIP_AMMO_MAX = 10
 	self.msr_crew.NR_CLIPS_MAX = 5
+	self.msr_crew.pull_magazine_during_reload = "rifle"
 	self.msr_crew.auto.fire_rate = 1
 	self.msr_crew.hold = "rifle"
 	self.msr_crew.alert_size = 5000
@@ -1401,6 +1452,7 @@ function WeaponTweakData:_init_data_r93_crew()
 	self.r93_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.r93_crew.CLIP_AMMO_MAX = 6
 	self.r93_crew.NR_CLIPS_MAX = 5
+	self.r93_crew.pull_magazine_during_reload = "rifle"
 	self.r93_crew.auto.fire_rate = 1.2
 	self.r93_crew.hold = "rifle"
 	self.r93_crew.alert_size = 5000
@@ -1414,6 +1466,7 @@ function WeaponTweakData:_init_data_fal_crew()
 	self.fal_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.fal_crew.CLIP_AMMO_MAX = 20
 	self.fal_crew.NR_CLIPS_MAX = 5
+	self.fal_crew.pull_magazine_during_reload = "rifle"
 	self.fal_crew.auto.fire_rate = 0.08
 	self.fal_crew.hold = "rifle"
 	self.fal_crew.alert_size = 5000
@@ -1429,6 +1482,8 @@ function WeaponTweakData:_init_data_ben_crew()
 	self.ben_crew.CLIP_AMMO_MAX = 8
 	self.ben_crew.NR_CLIPS_MAX = 4
 	self.ben_crew.hold = "rifle"
+	self.ben_crew.reload = "looped"
+	self.ben_crew.looped_reload_speed = 0.8
 	self.ben_crew.alert_size = 4500
 	self.ben_crew.suppression = 1.8
 	self.ben_crew.is_shotgun = true
@@ -1442,7 +1497,8 @@ function WeaponTweakData:_init_data_striker_crew()
 	self.striker_crew.auto.fire_rate = 0.14
 	self.striker_crew.CLIP_AMMO_MAX = 12
 	self.striker_crew.NR_CLIPS_MAX = 4
-	self.striker_crew.hold = "rifle"
+	self.striker_crew.looped_reload_speed = 0.6666667
+	self.striker_crew.hold = {"bullpup", "rifle"}
 	self.striker_crew.alert_size = 4500
 	self.striker_crew.suppression = 1.8
 	self.striker_crew.is_shotgun = true
@@ -1471,6 +1527,7 @@ function WeaponTweakData:_init_data_gre_m79_crew()
 	self.gre_m79_crew.no_trail = true
 	self.gre_m79_crew.CLIP_AMMO_MAX = 1
 	self.gre_m79_crew.NR_CLIPS_MAX = 4
+	self.gre_m79_crew.looped_reload_speed = 0.16666667
 	self.gre_m79_crew.auto.fire_rate = 0.1
 	self.gre_m79_crew.hold = "rifle"
 	self.gre_m79_crew.alert_size = 2800
@@ -1484,6 +1541,7 @@ function WeaponTweakData:_init_data_g3_crew()
 	self.g3_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.g3_crew.CLIP_AMMO_MAX = 20
 	self.g3_crew.NR_CLIPS_MAX = 5
+	self.g3_crew.pull_magazine_during_reload = "rifle"
 	self.g3_crew.auto.fire_rate = 0.092
 	self.g3_crew.hold = "rifle"
 	self.g3_crew.alert_size = 5000
@@ -1497,6 +1555,7 @@ function WeaponTweakData:_init_data_galil_crew()
 	self.galil_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.galil_crew.CLIP_AMMO_MAX = 30
 	self.galil_crew.NR_CLIPS_MAX = 5
+	self.galil_crew.pull_magazine_during_reload = "rifle"
 	self.galil_crew.auto.fire_rate = 0.071
 	self.galil_crew.hold = "rifle"
 	self.galil_crew.alert_size = 5000
@@ -1510,8 +1569,9 @@ function WeaponTweakData:_init_data_famas_crew()
 	self.famas_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.famas_crew.CLIP_AMMO_MAX = 30
 	self.famas_crew.NR_CLIPS_MAX = 5
+	self.famas_crew.pull_magazine_during_reload = "rifle"
 	self.famas_crew.auto.fire_rate = 0.06
-	self.famas_crew.hold = "rifle"
+	self.famas_crew.hold = {"bullpup", "rifle"}
 	self.famas_crew.alert_size = 5000
 	self.famas_crew.suppression = 1
 end
@@ -1524,6 +1584,7 @@ function WeaponTweakData:_init_data_scorpion_crew()
 	self.scorpion_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.scorpion_crew.CLIP_AMMO_MAX = 20
 	self.scorpion_crew.NR_CLIPS_MAX = 5
+	self.scorpion_crew.pull_magazine_during_reload = "smg"
 	self.scorpion_crew.auto.fire_rate = 0.06
 	self.scorpion_crew.hold = "pistol"
 	self.scorpion_crew.alert_size = 2800
@@ -1538,6 +1599,7 @@ function WeaponTweakData:_init_data_tec9_crew()
 	self.tec9_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.tec9_crew.CLIP_AMMO_MAX = 20
 	self.tec9_crew.NR_CLIPS_MAX = 5
+	self.tec9_crew.pull_magazine_during_reload = "smg"
 	self.tec9_crew.auto.fire_rate = 0.067
 	self.tec9_crew.hold = "pistol"
 	self.tec9_crew.alert_size = 2800
@@ -1552,8 +1614,13 @@ function WeaponTweakData:_init_data_uzi_crew()
 	self.uzi_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.uzi_crew.CLIP_AMMO_MAX = 40
 	self.uzi_crew.NR_CLIPS_MAX = 5
+	self.uzi_crew.pull_magazine_during_reload = "smg"
 	self.uzi_crew.auto.fire_rate = 0.086
-	self.uzi_crew.hold = "pistol"
+	self.uzi_crew.hold = {
+		"uzi",
+		"bullpup",
+		"rifle"
+	}
 	self.uzi_crew.alert_size = 2800
 	self.uzi_crew.suppression = 1
 end
@@ -1618,6 +1685,7 @@ function WeaponTweakData:_init_data_g26_crew()
 	self.g26_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.g26_crew.CLIP_AMMO_MAX = 10
 	self.g26_crew.NR_CLIPS_MAX = 5
+	self.g26_crew.pull_magazine_during_reload = "pistol"
 	self.g26_crew.hold = "pistol"
 	self.g26_crew.alert_size = 2500
 	self.g26_crew.suppression = 1
@@ -1703,6 +1771,7 @@ function WeaponTweakData:_init_data_m1928_crew()
 	self.m1928_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.m1928_crew.CLIP_AMMO_MAX = 50
 	self.m1928_crew.NR_CLIPS_MAX = 3
+	self.m1928_crew.pull_magazine_during_reload = "large_metal"
 	self.m1928_crew.auto.fire_rate = 0.083
 	self.m1928_crew.hold = "rifle"
 	self.m1928_crew.alert_size = 5000
@@ -1717,8 +1786,10 @@ function WeaponTweakData:_init_data_l85a2_crew()
 	self.l85a2_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.l85a2_crew.CLIP_AMMO_MAX = 30
 	self.l85a2_crew.NR_CLIPS_MAX = 5
+	self.l85a2_crew.pull_magazine_during_reload = "rifle"
 	self.l85a2_crew.auto.fire_rate = 0.083
 	self.l85a2_crew.hold = "rifle"
+	self.l85a2_crew.reload = "bullpup"
 	self.l85a2_crew.alert_size = 5000
 	self.l85a2_crew.suppression = 1
 end
@@ -1731,8 +1802,9 @@ function WeaponTweakData:_init_data_vhs_crew()
 	self.vhs_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.vhs_crew.CLIP_AMMO_MAX = 30
 	self.vhs_crew.NR_CLIPS_MAX = 5
+	self.vhs_crew.pull_magazine_during_reload = "rifle"
 	self.vhs_crew.auto.fire_rate = 0.07
-	self.vhs_crew.hold = "rifle"
+	self.vhs_crew.hold = {"bullpup", "rifle"}
 	self.vhs_crew.alert_size = 5000
 	self.vhs_crew.suppression = 1
 end
@@ -1776,6 +1848,7 @@ function WeaponTweakData:_init_data_hs2000_crew()
 	self.hs2000_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.hs2000_crew.CLIP_AMMO_MAX = 19
 	self.hs2000_crew.NR_CLIPS_MAX = 5
+	self.hs2000_crew.pull_magazine_during_reload = "pistol"
 	self.hs2000_crew.hold = "pistol"
 	self.hs2000_crew.alert_size = 2500
 	self.hs2000_crew.suppression = 1
@@ -1789,19 +1862,25 @@ function WeaponTweakData:_init_data_cobray_crew()
 	self.cobray_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.cobray_crew.CLIP_AMMO_MAX = 32
 	self.cobray_crew.NR_CLIPS_MAX = 5
+	self.cobray_crew.pull_magazine_during_reload = "smg"
 	self.cobray_crew.auto.fire_rate = 0.05
-	self.cobray_crew.hold = "pistol"
+	self.cobray_crew.hold = {
+		"uzi",
+		"bullpup",
+		"rifle"
+	}
 	self.cobray_crew.alert_size = 5000
 	self.cobray_crew.suppression = 1
 end
 function WeaponTweakData:_init_data_b682_crew()
 	self.b682_crew.sounds.prefix = "b682_npc"
 	self.b682_crew.use_data.selection_index = 2
-	self.b682_crew.DAMAGE = 45
+	self.b682_crew.DAMAGE = 17.4
 	self.b682_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.b682_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.b682_crew.CLIP_AMMO_MAX = 2
 	self.b682_crew.NR_CLIPS_MAX = 4
+	self.b682_crew.looped_reload_speed = 0.2
 	self.b682_crew.hold = "rifle"
 	self.b682_crew.alert_size = 4500
 	self.b682_crew.suppression = 1.8
@@ -1857,7 +1936,8 @@ function WeaponTweakData:_init_data_flamethrower_mk2_crew()
 	self.flamethrower_mk2_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.flamethrower_mk2_crew.CLIP_AMMO_MAX = 300
 	self.flamethrower_mk2_crew.NR_CLIPS_MAX = 4
-	self.flamethrower_mk2_crew.hold = "rifle"
+	self.flamethrower_mk2_crew.pull_magazine_during_reload = "large_metal"
+	self.flamethrower_mk2_crew.hold = {"bullpup", "rifle"}
 	self.flamethrower_mk2_crew.auto.fire_rate = 0.05
 	self.flamethrower_mk2_crew.hud_icon = "rifle"
 	self.flamethrower_mk2_crew.alert_size = 2500
@@ -1873,6 +1953,7 @@ function WeaponTweakData:_init_data_m32_crew()
 	self.m32_crew.no_trail = true
 	self.m32_crew.CLIP_AMMO_MAX = 6
 	self.m32_crew.NR_CLIPS_MAX = 4
+	self.m32_crew.looped_reload_speed = 0.2
 	self.m32_crew.auto.fire_rate = 0.1
 	self.m32_crew.hold = "rifle"
 	self.m32_crew.alert_size = 2800
@@ -1887,6 +1968,7 @@ function WeaponTweakData:_init_data_aa12_crew()
 	self.aa12_crew.auto.fire_rate = 0.2
 	self.aa12_crew.CLIP_AMMO_MAX = 8
 	self.aa12_crew.NR_CLIPS_MAX = 4
+	self.aa12_crew.pull_magazine_during_reload = "large_plastic"
 	self.aa12_crew.hold = "rifle"
 	self.aa12_crew.alert_size = 4500
 	self.aa12_crew.suppression = 1.8
@@ -1901,6 +1983,8 @@ function WeaponTweakData:_init_data_peacemaker_crew()
 	self.peacemaker_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.peacemaker_crew.CLIP_AMMO_MAX = 6
 	self.peacemaker_crew.NR_CLIPS_MAX = 8
+	self.peacemaker_crew.reload = "looped"
+	self.peacemaker_crew.looped_reload_speed = 0.5
 	self.peacemaker_crew.hold = "pistol"
 	self.peacemaker_crew.alert_size = 5000
 	self.peacemaker_crew.suppression = 1.8
@@ -1913,6 +1997,7 @@ function WeaponTweakData:_init_data_winchester1874_crew()
 	self.winchester1874_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.winchester1874_crew.CLIP_AMMO_MAX = 15
 	self.winchester1874_crew.NR_CLIPS_MAX = 8
+	self.winchester1874_crew.looped_reload_speed = 0.7407407
 	self.winchester1874_crew.auto.fire_rate = 0.7
 	self.winchester1874_crew.hold = "rifle"
 	self.winchester1874_crew.alert_size = 5000
@@ -1947,6 +2032,7 @@ function WeaponTweakData:_init_data_mateba_crew()
 	self.mateba_crew.CLIP_AMMO_MAX = 6
 	self.mateba_crew.NR_CLIPS_MAX = 8
 	self.mateba_crew.hold = "pistol"
+	self.mateba_crew.reload = "revolver"
 	self.mateba_crew.alert_size = 5000
 	self.mateba_crew.suppression = 1.8
 end
@@ -1958,6 +2044,7 @@ function WeaponTweakData:_init_data_asval_crew()
 	self.asval_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.asval_crew.CLIP_AMMO_MAX = 20
 	self.asval_crew.NR_CLIPS_MAX = 5
+	self.asval_crew.pull_magazine_during_reload = "rifle"
 	self.asval_crew.auto.fire_rate = 0.067
 	self.asval_crew.hold = "rifle"
 	self.asval_crew.alert_size = 5000
@@ -1971,8 +2058,10 @@ function WeaponTweakData:_init_data_sub2000_crew()
 	self.sub2000_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.sub2000_crew.CLIP_AMMO_MAX = 33
 	self.sub2000_crew.NR_CLIPS_MAX = 8
+	self.sub2000_crew.pull_magazine_during_reload = "smg"
 	self.sub2000_crew.auto.fire_rate = 0.085
 	self.sub2000_crew.hold = "rifle"
+	self.sub2000_crew.reload = "uzi"
 	self.sub2000_crew.alert_size = 5000
 	self.sub2000_crew.suppression = 1
 end
@@ -1985,8 +2074,9 @@ function WeaponTweakData:_init_data_wa2000_crew()
 	self.wa2000_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.wa2000_crew.CLIP_AMMO_MAX = 10
 	self.wa2000_crew.NR_CLIPS_MAX = 5
+	self.wa2000_crew.pull_magazine_during_reload = "rifle"
 	self.wa2000_crew.auto.fire_rate = 0.5
-	self.wa2000_crew.hold = "rifle"
+	self.wa2000_crew.hold = {"bullpup", "rifle"}
 	self.wa2000_crew.alert_size = 5000
 	self.wa2000_crew.suppression = 1
 end
@@ -1999,8 +2089,10 @@ function WeaponTweakData:_init_data_polymer_crew()
 	self.polymer_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.polymer_crew.CLIP_AMMO_MAX = 30
 	self.polymer_crew.NR_CLIPS_MAX = 5
+	self.polymer_crew.reload = "rifle"
+	self.polymer_crew.pull_magazine_during_reload = "smg"
 	self.polymer_crew.auto.fire_rate = 0.05
-	self.polymer_crew.hold = "pistol"
+	self.polymer_crew.hold = {"bullpup", "rifle"}
 	self.polymer_crew.alert_size = 5000
 	self.polymer_crew.suppression = 1
 end
@@ -2013,6 +2105,8 @@ function WeaponTweakData:_init_data_hunter_crew()
 	self.hunter_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.hunter_crew.CLIP_AMMO_MAX = 1
 	self.hunter_crew.NR_CLIPS_MAX = 5
+	self.hunter_crew.looped_reload_speed = 0.5
+	self.hunter_crew.reload = "looped"
 	self.hunter_crew.auto.fire_rate = 20
 	self.hunter_crew.hold = "pistol"
 	self.hunter_crew.alert_size = 5000
@@ -2027,6 +2121,7 @@ function WeaponTweakData:_init_data_baka_crew()
 	self.baka_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.baka_crew.CLIP_AMMO_MAX = 32
 	self.baka_crew.NR_CLIPS_MAX = 5
+	self.baka_crew.pull_magazine_during_reload = "smg"
 	self.baka_crew.auto.fire_rate = 0.05
 	self.baka_crew.hold = "pistol"
 	self.baka_crew.alert_size = 5000
@@ -2041,6 +2136,8 @@ function WeaponTweakData:_init_data_arblast_crew()
 	self.arblast_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.arblast_crew.CLIP_AMMO_MAX = 1
 	self.arblast_crew.NR_CLIPS_MAX = 5
+	self.arblast_crew.reload = "looped"
+	self.arblast_crew.looped_reload_speed = 0.2
 	self.arblast_crew.auto.fire_rate = 20
 	self.arblast_crew.hold = "rifle"
 	self.arblast_crew.alert_size = 5000
@@ -2055,6 +2152,8 @@ function WeaponTweakData:_init_data_frankish_crew()
 	self.frankish_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.frankish_crew.CLIP_AMMO_MAX = 1
 	self.frankish_crew.NR_CLIPS_MAX = 5
+	self.frankish_crew.reload = "looped"
+	self.frankish_crew.looped_reload_speed = 0.5
 	self.frankish_crew.auto.fire_rate = 20
 	self.frankish_crew.hold = "rifle"
 	self.frankish_crew.alert_size = 5000
@@ -2102,6 +2201,7 @@ function WeaponTweakData:_init_data_sparrow_crew()
 	self.sparrow_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.sparrow_crew.CLIP_AMMO_MAX = 12
 	self.sparrow_crew.NR_CLIPS_MAX = 5
+	self.sparrow_crew.pull_magazine_during_reload = "pistol"
 	self.sparrow_crew.hold = "pistol"
 	self.sparrow_crew.alert_size = 2500
 	self.sparrow_crew.suppression = 1
@@ -2130,6 +2230,7 @@ function WeaponTweakData:_init_data_m37_crew()
 	self.m37_crew.auto.fire_rate = 0.14
 	self.m37_crew.CLIP_AMMO_MAX = 7
 	self.m37_crew.NR_CLIPS_MAX = 6
+	self.m37_crew.looped_reload_speed = 0.7
 	self.m37_crew.hold = "rifle"
 	self.m37_crew.alert_size = 4500
 	self.m37_crew.suppression = 1.8
@@ -2145,6 +2246,7 @@ function WeaponTweakData:_init_data_china_crew()
 	self.china_crew.no_trail = true
 	self.china_crew.CLIP_AMMO_MAX = 3
 	self.china_crew.NR_CLIPS_MAX = 2
+	self.china_crew.looped_reload_speed = 0.33333334
 	self.china_crew.auto.fire_rate = 0.1
 	self.china_crew.hold = "rifle"
 	self.china_crew.alert_size = 2800
@@ -2159,8 +2261,13 @@ function WeaponTweakData:_init_data_sr2_crew()
 	self.sr2_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.sr2_crew.CLIP_AMMO_MAX = 32
 	self.sr2_crew.NR_CLIPS_MAX = 5
+	self.sr2_crew.pull_magazine_during_reload = "smg"
 	self.sr2_crew.auto.fire_rate = 0.08
-	self.sr2_crew.hold = "pistol"
+	self.sr2_crew.hold = {
+		"uzi",
+		"bullpup",
+		"rifle"
+	}
 	self.sr2_crew.alert_size = 5000
 	self.sr2_crew.suppression = 1
 end
@@ -2186,6 +2293,7 @@ function WeaponTweakData:_init_data_pl14_crew()
 	self.pl14_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.pl14_crew.CLIP_AMMO_MAX = 12
 	self.pl14_crew.NR_CLIPS_MAX = 5
+	self.pl14_crew.pull_magazine_during_reload = "pistol"
 	self.pl14_crew.hold = "pistol"
 	self.pl14_crew.alert_size = 2500
 	self.pl14_crew.suppression = 1
@@ -2224,7 +2332,8 @@ function WeaponTweakData:_init_data_tecci_crew()
 	self.tecci_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.tecci_crew.CLIP_AMMO_MAX = 100
 	self.tecci_crew.NR_CLIPS_MAX = 5
-	self.tecci_crew.auto.fire_rate = 0.9
+	self.tecci_crew.pull_magazine_during_reload = "large_plastic"
+	self.tecci_crew.auto.fire_rate = 0.09
 	self.tecci_crew.hold = "rifle"
 	self.tecci_crew.alert_size = 5000
 	self.tecci_crew.suppression = 1
@@ -2238,6 +2347,7 @@ function WeaponTweakData:_init_data_hajk_crew()
 	self.hajk_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.hajk_crew.CLIP_AMMO_MAX = 30
 	self.hajk_crew.NR_CLIPS_MAX = 5
+	self.hajk_crew.pull_magazine_during_reload = "rifle"
 	self.hajk_crew.auto.fire_rate = 0.08
 	self.hajk_crew.hold = "rifle"
 	self.hajk_crew.alert_size = 1000
@@ -2267,6 +2377,7 @@ function WeaponTweakData:_init_data_packrat_crew()
 	self.packrat_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.packrat_crew.CLIP_AMMO_MAX = 15
 	self.packrat_crew.NR_CLIPS_MAX = 5
+	self.packrat_crew.pull_magazine_during_reload = "pistol"
 	self.packrat_crew.hold = "pistol"
 	self.packrat_crew.alert_size = 2500
 	self.packrat_crew.suppression = 1
@@ -2280,7 +2391,9 @@ function WeaponTweakData:_init_data_schakal_crew()
 	self.schakal_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.schakal_crew.CLIP_AMMO_MAX = 30
 	self.schakal_crew.NR_CLIPS_MAX = 5
+	self.schakal_crew.pull_magazine_during_reload = "pistol"
 	self.schakal_crew.auto.fire_rate = 0.092
+	self.schakal_crew.hold = {"bullpup", "rifle"}
 	self.schakal_crew.hold = "rifle"
 	self.schakal_crew.alert_size = 5000
 	self.schakal_crew.suppression = 1
@@ -2293,8 +2406,10 @@ function WeaponTweakData:_init_data_desertfox_crew()
 	self.desertfox_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.desertfox_crew.CLIP_AMMO_MAX = 5
 	self.desertfox_crew.NR_CLIPS_MAX = 8
+	self.desertfox_crew.pull_magazine_during_reload = "rifle"
 	self.desertfox_crew.auto.fire_rate = 20
 	self.desertfox_crew.hold = "rifle"
+	self.desertfox_crew.reload = "bullpup"
 	self.desertfox_crew.alert_size = 5000
 	self.desertfox_crew.suppression = 1
 	self.desertfox_secondary_crew = deep_clone(self.desertfox_crew)
@@ -2322,7 +2437,7 @@ function WeaponTweakData:_init_data_rota_crew()
 	self.rota_crew.auto.fire_rate = 0.14
 	self.rota_crew.CLIP_AMMO_MAX = 6
 	self.rota_crew.NR_CLIPS_MAX = 6
-	self.rota_crew.hold = "rifle"
+	self.rota_crew.hold = {"bullpup", "rifle"}
 	self.rota_crew.alert_size = 4500
 	self.rota_crew.suppression = 1.8
 	self.rota_crew.is_shotgun = true
@@ -2337,8 +2452,10 @@ function WeaponTweakData:_init_data_arbiter_crew()
 	self.arbiter_crew.no_trail = true
 	self.arbiter_crew.CLIP_AMMO_MAX = 5
 	self.arbiter_crew.NR_CLIPS_MAX = 4
+	self.arbiter_crew.pull_magazine_during_reload = "rifle"
 	self.arbiter_crew.auto.fire_rate = 0.1
 	self.arbiter_crew.hold = "rifle"
+	self.arbiter_crew.reload = "bullpup"
 	self.arbiter_crew.alert_size = 2800
 	self.arbiter_crew.suppression = 1
 end
@@ -2350,8 +2467,10 @@ function WeaponTweakData:_init_data_contraband_crew()
 	self.contraband_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.contraband_crew.CLIP_AMMO_MAX = 20
 	self.contraband_crew.NR_CLIPS_MAX = 5
+	self.contraband_crew.pull_magazine_during_reload = "rifle"
 	self.contraband_crew.auto.fire_rate = 0.098
-	self.contraband_crew.hold = "rifle"
+	self.contraband_crew.hold = {"bullpup", "rifle"}
+	self.contraband_crew.reload = "rifle"
 	self.contraband_crew.alert_size = 5000
 	self.contraband_crew.suppression = 1
 	self.contraband_m203_crew.sounds.prefix = "contrabandm203_npc"
@@ -2363,7 +2482,7 @@ function WeaponTweakData:_init_data_contraband_crew()
 	self.contraband_m203_crew.CLIP_AMMO_MAX = 1
 	self.contraband_m203_crew.NR_CLIPS_MAX = 4
 	self.contraband_m203_crew.auto.fire_rate = 0.1
-	self.contraband_m203_crew.hold = "rifle"
+	self.contraband_m203_crew.hold = {"bullpup", "rifle"}
 	self.contraband_m203_crew.alert_size = 2800
 	self.contraband_m203_crew.suppression = 1
 end
@@ -2393,6 +2512,7 @@ function WeaponTweakData:_init_data_tti_crew()
 	self.tti_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.tti_crew.CLIP_AMMO_MAX = 20
 	self.tti_crew.NR_CLIPS_MAX = 5
+	self.tti_crew.pull_magazine_during_reload = "rifle"
 	self.tti_crew.auto.fire_rate = 0.4
 	self.tti_crew.hold = "rifle"
 	self.tti_crew.alert_size = 5000
@@ -2420,6 +2540,7 @@ function WeaponTweakData:_init_data_flint_crew()
 	self.flint_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.flint_crew.CLIP_AMMO_MAX = 35
 	self.flint_crew.NR_CLIPS_MAX = 5
+	self.flint_crew.pull_magazine_during_reload = "rifle"
 	self.flint_crew.auto.fire_rate = 0.092
 	self.flint_crew.hold = "rifle"
 	self.flint_crew.alert_size = 5000
@@ -2434,6 +2555,7 @@ function WeaponTweakData:_init_data_coal_crew()
 	self.coal_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.coal_crew.CLIP_AMMO_MAX = 64
 	self.coal_crew.NR_CLIPS_MAX = 5
+	self.coal_crew.pull_magazine_during_reload = "rifle"
 	self.coal_crew.auto.fire_rate = 0.092
 	self.coal_crew.hold = "rifle"
 	self.coal_crew.alert_size = 5000
@@ -2448,6 +2570,7 @@ function WeaponTweakData:_init_data_lemming_crew()
 	self.lemming_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
 	self.lemming_crew.CLIP_AMMO_MAX = 10
 	self.lemming_crew.NR_CLIPS_MAX = 5
+	self.lemming_crew.pull_magazine_during_reload = "pistol"
 	self.lemming_crew.hold = "pistol"
 	self.lemming_crew.alert_size = 2500
 	self.lemming_crew.suppression = 1
@@ -2461,6 +2584,7 @@ function WeaponTweakData:_init_data_chinchilla_crew()
 	self.chinchilla_crew.CLIP_AMMO_MAX = 6
 	self.chinchilla_crew.NR_CLIPS_MAX = 5
 	self.chinchilla_crew.hold = "pistol"
+	self.chinchilla_crew.reload = "revolver"
 	self.chinchilla_crew.alert_size = 2500
 	self.chinchilla_crew.suppression = 1
 end
@@ -6255,7 +6379,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hk21.sounds.enter_steelsight = "lmg_steelsight_enter"
 	self.hk21.sounds.leave_steelsight = "lmg_steelsight_exit"
 	self.hk21.timers = {}
-	self.hk21.timers.reload_not_empty = 4.15
+	self.hk21.timers.reload_not_empty = 4.65
 	self.hk21.timers.reload_empty = 6.7
 	self.hk21.timers.unequip = 0.9
 	self.hk21.timers.equip = 0.9
@@ -14108,7 +14232,7 @@ function WeaponTweakData:_init_data_offhand_weapons()
 end
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {}
 	}
@@ -14118,91 +14242,92 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {}
 	}
 	self.beretta92_npc = {
-		usage = "beretta92",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {}
 	}
 	self.raging_bull_npc = {
-		usage = "raging_bull",
+		usage = "is_revolver",
 		sounds = {},
 		use_data = {}
 	}
 	self.m4_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m14_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m14_sniper_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
-		use_data = {}
+		use_data = {},
+		auto = {}
 	}
 	self.r870_npc = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.benelli_npc = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.mossberg_npc = {
-		usage = "mossberg",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.mp5_npc = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.mac11_npc = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m79_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.glock_18_npc = {
-		usage = "glock18",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.ak47_npc = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.g36_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.mp9_npc = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.saiga_npc = {
-		usage = "saiga",
+		usage = "is_shotgun_mag",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14220,49 +14345,49 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.s552_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.scar_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.hk21_npc = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m249_npc = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.contraband_npc = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.contraband_m203_npc = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.mini_npc = {
-		usage = "ak47",
+		usage = "mini",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.c45_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {}
 	}
@@ -14273,175 +14398,175 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.colt_1911_primary_crew = deep_clone(self.c45_crew)
 	self.beretta92_crew = {
-		usage = "beretta92",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {}
 	}
 	self.beretta92_primary_crew = deep_clone(self.beretta92_crew)
 	self.raging_bull_crew = {
-		usage = "raging_bull",
+		usage = "is_revolver",
 		sounds = {},
 		use_data = {}
 	}
 	self.raging_bull_primary_crew = deep_clone(self.raging_bull_crew)
 	self.m4_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m4_secondary_crew = deep_clone(self.m4_crew)
 	self.m14_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.r870_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.benelli_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.mossberg_crew = {
-		usage = "mossberg",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.mp5_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.glock_18_crew = {
-		usage = "glock18",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.glock_18c_primary_crew = deep_clone(self.glock_18_crew)
 	self.ak47_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.g36_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.g17_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {}
 	}
 	self.mp9_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.olympic_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.olympic_primary_crew = deep_clone(self.olympic_crew)
 	self.m16_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.aug_crew = {
-		usage = "m4",
+		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.aug_secondary_crew = deep_clone(self.aug_crew)
 	self.ak74_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.ak74_secondary_crew = deep_clone(self.ak74_crew)
 	self.ak5_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.p90_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.amcar_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.mac10_crew = {
-		usage = "mp5",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.akmsu_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.akmsu_primary_crew = deep_clone(self.akmsu_crew)
 	self.akm_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.akm_gold_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.deagle_crew = {
-		usage = "raging_bull",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {}
 	}
 	self.deagle_primary_crew = deep_clone(self.deagle_crew)
 	self.serbu_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.saiga_crew = {
-		usage = "saiga",
+		usage = "is_shotgun_mag",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.huntsman_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {}
 	}
 	self.saw_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {}
 	}
@@ -14451,158 +14576,161 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.usp_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.g22c_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.judge_crew = {
-		usage = "c45",
+		usage = "is_revolver",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m45_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.s552_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.s552_secondary_crew = deep_clone(self.s552_crew)
 	self.ppk_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.mp7_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.scar_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.p226_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.hk21_crew = {
-		usage = "ak47",
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m249_crew = {
-		usage = "ak47",
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.rpk_crew = {
-		usage = "ak47",
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m95_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.msr_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.r93_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.fal_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.ben_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.striker_crew = {
-		usage = "ak47",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.ksg_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.gre_m79_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.g3_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.galil_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.famas_crew = {
-		usage = "ak47",
+		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.scorpion_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.tec9_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.uzi_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14632,85 +14760,86 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.g26_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.spas12_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.mg42_crew = {
-		usage = "ak47",
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.c96_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.sterling_crew = {
-		usage = "mp5",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.mosin_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m1928_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.l85a2_crew = {
-		usage = "ak47",
+		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.hs2000_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.vhs_crew = {
-		usage = "ak47",
+		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m134_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.rpg7_crew = {
-		usage = "rifle",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.cobray_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.b682_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14734,31 +14863,32 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.flamethrower_mk2_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m32_crew = {
-		usage = "rifle",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.aa12_crew = {
-		usage = "saiga",
+		usage = "is_shotgun_mag",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.peacemaker_crew = {
-		usage = "c45",
+		usage = "is_revolver",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.winchester1874_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14770,55 +14900,56 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.mateba_crew = {
-		usage = "c45",
+		usage = "is_revolver",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.asval_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.sub2000_crew = {
-		usage = "rifle",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.wa2000_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.polymer_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.hunter_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.baka_crew = {
-		usage = "mp5",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.arblast_crew = {
-		usage = "rifle",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.frankish_crew = {
-		usage = "rifle",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14830,37 +14961,38 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.par_crew = {
-		usage = "ak47",
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.sparrow_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.model70_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m37_crew = {
-		usage = "ak47",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.china_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.sr2_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14872,7 +15004,7 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.pl14_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14890,37 +15022,38 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.tecci_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.hajk_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.boot_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.packrat_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.schakal_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.desertfox_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -14932,67 +15065,69 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.rota_crew = {
-		usage = "saiga",
+		usage = "is_shotgun_mag",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.arbiter_crew = {
-		usage = "r870",
+		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.contraband_crew = {
-		usage = "m4",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.contraband_m203_crew = {
-		usage = "r870",
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.ray_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.tti_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.siltstone_crew = {
-		usage = "rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.flint_crew = {
-		usage = "ak47",
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.coal_crew = {
-		usage = "mp5",
+		usage = "is_smg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.lemming_crew = {
-		usage = "c45",
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.chinchilla_crew = {
-		usage = "c45",
+		usage = "is_revolver",
 		sounds = {},
 		use_data = {},
 		auto = {}

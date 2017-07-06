@@ -1874,7 +1874,7 @@ MenuComponentManager.close_friends_gui = function(self)
 end
 
 MenuComponentManager._contract_gui_class = function(self)
-	if managers.crime_spree:_is_active() then
+	if managers.crime_spree:is_active() then
 		return CrimeSpreeContractBoxGui
 	else
 		return ContractBoxGui
@@ -1896,7 +1896,7 @@ MenuComponentManager.create_contract_gui = function(self)
 	if not managers.menu:get_all_peers_state() then
 		local peers_state = {}
 	end
-	for i = 1, 4 do
+	for i = 1, tweak_data.max_players do
 		self._contract_gui:update_character_menu_state(i, peers_state[i])
 	end
 end
@@ -1916,16 +1916,14 @@ end
 
 MenuComponentManager.show_contract_character = function(self, state)
 	if self._contract_gui then
-		for i = 1, 4 do
+		for i = 1, tweak_data.max_players do
 			self._contract_gui:set_character_panel_alpha(i, state and 1 or 0.4)
 		end
 	end
 end
 
 MenuComponentManager._disable_contract_gui = function(self)
-	if self._contract_gui then
-		self._contract_gui:set_enabled(false)
-	end
+	self:close_contract_gui()
 end
 
 MenuComponentManager.close_contract_gui = function(self)
@@ -2595,7 +2593,7 @@ end
 
 MenuComponentManager.create_ingame_contract_gui = function(self)
 	self:close_ingame_contract_gui()
-	if managers.crime_spree:_is_active() then
+	if managers.crime_spree:is_active() then
 		self._ingame_contract_gui = IngameContractGuiCrimeSpree:new(self._ws)
 		self:register_component("ingame_contract", self._ingame_contract_gui)
 	else
@@ -3755,7 +3753,7 @@ MenuComponentManager.close_crime_spree_contract_gui = function(self, node)
 end
 
 MenuComponentManager.create_crime_spree_missions_gui = function(self, node)
-	if not node or not managers.crime_spree:_is_active() then
+	if not node or not managers.crime_spree:is_active() then
 		return 
 	end
 	if not self._crime_spree_missions then
@@ -3777,7 +3775,7 @@ MenuComponentManager.crime_spree_missions_gui = function(self)
 end
 
 MenuComponentManager.create_crime_spree_details_gui = function(self, node)
-	if not node or not managers.crime_spree:_is_active() then
+	if not node or not managers.crime_spree:is_active() then
 		return 
 	end
 	if not self._crime_spree_details then
@@ -3834,11 +3832,9 @@ MenuComponentManager.check_crime_spree_forced_modifiers = function(self, node)
 end
 
 MenuComponentManager.create_crime_spree_forced_modifiers_gui = function(self, node)
-	print("[Debug] MenuComponentManager:create_crime_spree_forced_modifiers_gui")
 	if not node then
 		return 
 	end
-	print("[Debug] Pass!")
 	if not self._crime_spree_forced_modifiers then
 		self._crime_spree_forced_modifiers = CrimeSpreeForcedModifiersMenuComponent:new(self._ws, self._fullscreen_ws, node)
 	end
@@ -3876,7 +3872,7 @@ MenuComponentManager.close_crime_spree_rewards_gui = function(self, node)
 end
 
 MenuComponentManager.create_crime_spree_mission_end_gui = function(self, node)
-	if not node or not managers.crime_spree:_is_active() then
+	if not node or not managers.crime_spree:is_active() then
 		return 
 	end
 	if not self._crime_spree_mission_end then

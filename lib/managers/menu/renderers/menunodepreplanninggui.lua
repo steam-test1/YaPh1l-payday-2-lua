@@ -424,7 +424,7 @@ function MenuNodePrePlanningGui:_set_item_positions()
 							w = row_item.gui_panel:h(),
 							h = row_item.gui_panel:h(),
 							blend_mode = "add",
-							color = tweak_data.chat_colors[peer_id],
+							color = tweak_data.chat_colors[peer_id] or tweak_data.chat_colors[#tweak_data.chat_colors],
 							layer = self.layers.items
 						})
 						if not prev_icon or not (prev_icon:world_left() - 2) then

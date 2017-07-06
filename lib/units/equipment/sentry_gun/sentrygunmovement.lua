@@ -484,13 +484,13 @@ function SentryGunMovement:warming_up(t)
 	return t < self._warmup_t
 end
 function SentryGunMovement:is_activating()
-	return self._activating
+	return self._updator_name == "_update_activating"
 end
 function SentryGunMovement:is_inactivating()
-	return self._inactivating
+	return self._updator_name == "_update_inactivating"
 end
 function SentryGunMovement:is_inactivated()
-	return self._inactivated
+	return self._updator_name == "_update_inactive"
 end
 function SentryGunMovement:switch_off()
 	self._switched_off = true

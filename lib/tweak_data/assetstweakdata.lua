@@ -43,7 +43,8 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 		"cage",
 		"kosugi",
 		"dark",
-		"mad"
+		"mad",
+		"fish"
 	}
 	self.risk_pd.risk_lock = 0
 	self.risk_swat = {}
@@ -58,7 +59,8 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 		"cage",
 		"kosugi",
 		"dark",
-		"mad"
+		"mad",
+		"fish"
 	}
 	self.risk_swat.risk_lock = 1
 	self.risk_fbi = {}
@@ -73,7 +75,8 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 		"cage",
 		"kosugi",
 		"dark",
-		"mad"
+		"mad",
+		"fish"
 	}
 	self.risk_fbi.risk_lock = 2
 	self.risk_death_squad = {}
@@ -83,11 +86,13 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_death_squad.exclude_stages = {
 		"safehouse",
 		"chill",
+		"crojob1",
 		"haunted",
 		"cage",
 		"kosugi",
 		"dark",
-		"mad"
+		"mad",
+		"fish"
 	}
 	self.risk_death_squad.risk_lock = 3
 	self.risk_easy_wish = {}
@@ -97,11 +102,13 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_easy_wish.exclude_stages = {
 		"safehouse",
 		"chill",
+		"crojob1",
 		"haunted",
 		"cage",
 		"kosugi",
 		"dark",
-		"mad"
+		"mad",
+		"fish"
 	}
 	self.risk_easy_wish.risk_lock = 4
 	self.risk_death_wish = {}
@@ -111,11 +118,13 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_death_wish.exclude_stages = {
 		"safehouse",
 		"chill",
+		"crojob1",
 		"haunted",
 		"cage",
 		"kosugi",
 		"dark",
-		"mad"
+		"mad",
+		"fish"
 	}
 	self.risk_death_wish.risk_lock = 5
 	self.risk_sm_wish = {}
@@ -125,11 +134,13 @@ function AssetsTweakData:_init_risk_assets(tweak_data)
 	self.risk_sm_wish.exclude_stages = {
 		"safehouse",
 		"chill",
+		"crojob1",
 		"haunted",
 		"cage",
 		"kosugi",
 		"dark",
-		"mad"
+		"mad",
+		"fish"
 	}
 	self.risk_sm_wish.risk_lock = 6
 end

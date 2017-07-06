@@ -415,7 +415,7 @@ function CopDamage:damage_bullet(attack_data)
 		end
 		if attack_data.attacker_unit == managers.player:player_unit() then
 			local special_comment = self:_check_special_death_conditions(attack_data.variant, attack_data.col_ray.body, attack_data.attacker_unit, attack_data.weapon_unit)
-			self:_comment_death(attack_data.attacker_unit, self._unit:base()._tweak_table, special_comment)
+			self:_comment_death(attack_data.attacker_unit, self._unit, special_comment)
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			local attacker_state = managers.player:current_state()
 			data.attacker_state = attacker_state
@@ -428,7 +428,7 @@ function CopDamage:damage_bullet(attack_data)
 				managers.money:civilian_killed()
 			end
 		elseif attack_data.attacker_unit:in_slot(managers.slot:get_mask("criminals_no_deployables")) then
-			self:_AI_comment_death(attack_data.attacker_unit, self._unit:base()._tweak_table)
+			self:_AI_comment_death(attack_data.attacker_unit, self._unit)
 		elseif attack_data.attacker_unit:base().sentry_gun then
 			if Network:is_server() then
 				local server_info = attack_data.weapon_unit:base():server_information()
@@ -633,35 +633,37 @@ function CopDamage:_show_death_hint(type)
 	if not CopDamage.is_civilian(type) or not self._unit:base().enemy then
 	end
 end
-function CopDamage:_comment_death(unit, type, special_comment)
+function CopDamage:_comment_death(attacker, killed_unit, special_comment)
+	local victim_base = killed_unit:base()
 	if special_comment then
-		PlayerStandard.say_line(unit:sound(), special_comment)
-	elseif type == "tank" or type == "tank_hw" then
-		PlayerStandard.say_line(unit:sound(), "g30x_any")
-	elseif type == "spooc" then
-		PlayerStandard.say_line(unit:sound(), "g33x_any")
-	elseif type == "taser" then
-		PlayerStandard.say_line(unit:sound(), "g32x_any")
-	elseif type == "shield" then
-		PlayerStandard.say_line(unit:sound(), "g31x_any")
-	elseif type == "sniper" then
-		PlayerStandard.say_line(unit:sound(), "g35x_any")
-	elseif type == "medic" then
-		PlayerStandard.say_line(unit:sound(), "g36x_any")
+		PlayerStandard.say_line(attacker:sound(), special_comment)
+	elseif victim_base:has_tag("tank") then
+		PlayerStandard.say_line(attacker:sound(), "g30x_any")
+	elseif victim_base:has_tag("spooc") then
+		PlayerStandard.say_line(attacker:sound(), "g33x_any")
+	elseif victim_base:has_tag("taser") then
+		PlayerStandard.say_line(attacker:sound(), "g32x_any")
+	elseif victim_base:has_tag("shield") then
+		PlayerStandard.say_line(attacker:sound(), "g31x_any")
+	elseif victim_base:has_tag("sniper") then
+		PlayerStandard.say_line(attacker:sound(), "g35x_any")
+	elseif victim_base:has_tag("medic") then
+		PlayerStandard.say_line(attacker:sound(), "g36x_any")
 	end
 end
-function CopDamage:_AI_comment_death(unit, type)
-	if type == "tank" or type == "tank_hw" then
+function CopDamage:_AI_comment_death(unit, killed_unit)
+	local victim_base = killed_unit:base()
+	if victim_base:has_tag("tank") then
 		unit:sound():say("g30x_any", true)
-	elseif type == "spooc" then
+	elseif victim_base:has_tag("spooc") then
 		unit:sound():say("g33x_any", true)
-	elseif type == "taser" then
+	elseif victim_base:has_tag("taser") then
 		unit:sound():say("g32x_any", true)
-	elseif type == "shield" then
+	elseif victim_base:has_tag("shield") then
 		unit:sound():say("g31x_any", true)
-	elseif type == "sniper" then
+	elseif victim_base:has_tag("sniper") then
 		unit:sound():say("g35x_any", true)
-	elseif type == "medic" then
+	elseif victim_base:has_tag("medic") then
 		unit:sound():say("g36x_any", true)
 	end
 end
@@ -773,7 +775,7 @@ function CopDamage:damage_fire(attack_data)
 		end
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
-				self:_comment_death(attacker_unit, self._unit:base()._tweak_table)
+				self:_comment_death(attacker_unit, self._unit)
 			end
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			if not attack_data.is_fire_dot_damage or data.is_molotov then
@@ -885,7 +887,7 @@ function CopDamage:damage_dot(attack_data)
 		managers.statistics:killed_by_anyone(data)
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
-				self:_comment_death(attacker_unit, self._unit:base()._tweak_table)
+				self:_comment_death(attacker_unit, self._unit)
 			end
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			managers.statistics:killed(data)
@@ -995,7 +997,7 @@ function CopDamage:damage_explosion(attack_data)
 		self:chk_killshot(attacker_unit, "explosion")
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
-				self:_comment_death(attacker_unit, self._unit:base()._tweak_table)
+				self:_comment_death(attacker_unit, self._unit)
 			end
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			managers.statistics:killed(data)
@@ -1149,7 +1151,7 @@ function CopDamage:damage_tase(attack_data)
 		end
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
-				self:_comment_death(attacker_unit, self._unit:base()._tweak_table)
+				self:_comment_death(attacker_unit, self._unit)
 			end
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			managers.statistics:killed(data)
@@ -1264,7 +1266,7 @@ function CopDamage:damage_melee(attack_data)
 		}
 		managers.statistics:killed_by_anyone(data)
 		if attack_data.attacker_unit == managers.player:player_unit() then
-			self:_comment_death(attack_data.attacker_unit, self._unit:base()._tweak_table)
+			self:_comment_death(attack_data.attacker_unit, self._unit)
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			managers.statistics:killed(data)
 			local is_civlian = CopDamage.is_civilian(self._unit:base()._tweak_table)
@@ -1666,6 +1668,7 @@ function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, hit
 	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
+	attack_data.is_synced = true
 	if not self._no_blood then
 		managers.game_play_central:sync_play_impact_flesh(hit_pos, attack_dir)
 	end
@@ -1706,6 +1709,7 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 	end
 	attack_data.result = result
 	attack_data.damage = damage
+	attack_data.is_synced = true
 	local attack_dir
 	if direction then
 		attack_dir = direction
@@ -1748,7 +1752,7 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 		self:chk_killshot(attacker_unit, "explosion")
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
-				self:_comment_death(attacker_unit, self._unit:base()._tweak_table)
+				self:_comment_death(attacker_unit, self._unit)
 			end
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			managers.statistics:killed(data)
@@ -1782,6 +1786,7 @@ function CopDamage:sync_damage_stun(attacker_unit, damage_percent, i_attack_vari
 	result = {type = result_type, variant = variant}
 	attack_data.result = result
 	attack_data.damage = damage
+	attack_data.is_synced = true
 	local attack_dir
 	if direction then
 		attack_dir = direction
@@ -1852,6 +1857,7 @@ function CopDamage:sync_damage_fire(attacker_unit, damage_percent, start_dot_dan
 	attack_data.damage = damage
 	attack_data.ignite_character = true
 	attack_data.is_fire_dot_damage = is_fire_dot_damage
+	attack_data.is_synced = true
 	local attack_dir
 	if direction then
 		attack_dir = direction
@@ -1886,7 +1892,7 @@ function CopDamage:sync_damage_fire(attacker_unit, damage_percent, start_dot_dan
 		end
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
-				self:_comment_death(attacker_unit, self._unit:base()._tweak_table)
+				self:_comment_death(attacker_unit, self._unit)
 			end
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			managers.statistics:killed(data)
@@ -1943,6 +1949,7 @@ function CopDamage:sync_damage_dot(attacker_unit, damage_percent, death, variant
 	attack_data.result = result
 	attack_data.damage = damage
 	attack_data.weapon_id = weapon_id
+	attack_data.is_synced = true
 	self:_on_damage_received(attack_data)
 end
 function CopDamage:_sync_dismember(attacker_unit)
@@ -1988,6 +1995,7 @@ function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effec
 	end
 	attack_data.result = result
 	attack_data.damage = damage
+	attack_data.is_synced = true
 	local attack_dir
 	if attacker_unit then
 		attack_dir = self._unit:position() - attacker_unit:position()
@@ -2038,6 +2046,7 @@ function CopDamage:sync_damage_tase(attacker_unit, damage_percent, variant, deat
 	end
 	attack_data.result = result
 	attack_data.damage = damage
+	attack_data.is_synced = true
 	local attack_dir
 	if attacker_unit then
 		attack_dir = self._unit:position() - attacker_unit:position()
@@ -2408,7 +2417,7 @@ function CopDamage:_update_debug_ws(damage_info)
 end
 function CopDamage:save(data)
 	local save_health = self._health ~= self._HEALTH_INIT
-	save_health = managers.crime_spree:_is_active() and ModifierEnemyHealthAndDamage:is_active() or save_health
+	save_health = managers.crime_spree:is_active() and ModifierEnemyHealthAndDamage:is_active() or save_health
 	if save_health then
 		data.char_dmg = data.char_dmg or {}
 		data.char_dmg.health = self._health
@@ -2429,6 +2438,10 @@ function CopDamage:save(data)
 	if self._lower_health_percentage_limit then
 		data.char_dmg = data.char_dmg or {}
 		data.char_dmg.lower_health_percentage_limit = self._lower_health_percentage_limit
+	end
+	if self._dead then
+		data.char_dmg = data.char_dmg or {}
+		data.char_dmg.is_dead = true
 	end
 end
 function CopDamage:load(data)
@@ -2462,6 +2475,14 @@ function CopDamage:load(data)
 	end
 	if data.char_dmg.lower_health_percentage_limit then
 		self:_set_lower_health_percentage_limit(data.char_dmg.lower_health_percentage_limit)
+	end
+	if data.char_dmg.is_dead then
+		self._dead = true
+		self:_remove_debug_gui()
+		self._unit:base():set_slot(self._unit, 17)
+		self._unit:inventory():drop_shield()
+		self:set_mover_collision_state(false)
+		managers.enemy:on_enemy_died(self._unit, {})
 	end
 end
 function CopDamage:_apply_damage_to_health(damage)
@@ -2500,7 +2521,6 @@ function CopDamage:_apply_damage_reduction(damage)
 	local damage_reduction = self._unit:movement():team().damage_reduction or 0
 	if damage_reduction > 0 then
 		damage = damage * (1 - damage_reduction)
-		print("Applying damage reduction of ", damage_reduction * 100, "%")
 	end
 	if self._damage_reduction_multiplier then
 		damage = damage * self._damage_reduction_multiplier

@@ -82,7 +82,6 @@ PlayerInventoryGui.init = function(self, ws, fullscreen_ws, node)
 	self._boxes_by_layer = {}
 	self._mod_boxes = {}
 	self._max_layer = 1
-	managers.menu_component:close_contract_gui()
 	if not node:parameters().menu_component_data then
 		self._data = {selected_box = "character"}
 	end
@@ -219,6 +218,7 @@ sides = {1, 1, 2, 2}})
 					make_fine_text(alias_text)
 					local player_panel = self._panel:panel({x = 0, y = TOP_ADJUSTMENT + tweak_data.menu.pd2_small_font_size, w = 320, h = 290})
 					self._player_panel = player_panel
+					self._player_panel:rect({color = Color.black, alpha = 0.4, layer = -100})
 					self._player_box_panel = self._panel:panel()
 					self._player_box_panel:set_shape(player_panel:shape())
 					self._player_box = BoxGuiObject:new(self._player_box_panel, {
@@ -274,6 +274,7 @@ texture_rect = {16, 16, 224, 224}, color = Color((next_level_data.current_points
 					local info_panel = self._panel:panel({name = "info_panel", x = 0, y = player_panel:bottom() + 10, w = player_panel:w(), h = self._panel:h() - player_panel:top() - BOT_ADJUSTMENT - player_panel:h() - 10})
 					BoxGuiObject:new(info_panel, {
 sides = {1, 1, 1, 1}})
+					info_panel:rect({color = Color.black, alpha = 0.4, layer = -100})
 					local info_content_panel = info_panel:panel({layer = 1})
 					info_content_panel:grow(-20, -20)
 					info_content_panel:move(10, 10)
@@ -616,7 +617,7 @@ sides = {1, 1, 2, 1}})
 		end
 		 -- WARNING: missing end command somewhere! Added here
 	end
-	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 375 446 837 1349 
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 371 442 833 1345 
 end
 
 PlayerInventoryGui._update_legends = function(self, name)
