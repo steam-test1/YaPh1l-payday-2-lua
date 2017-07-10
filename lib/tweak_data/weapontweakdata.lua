@@ -385,6 +385,8 @@ function WeaponTweakData:_init_data_m14_sniper_npc()
 	self.svd_snp_npc = deep_clone(self.m14_sniper_npc)
 	self.svdsil_snp_npc = deep_clone(self.m14_sniper_npc)
 	self.svdsil_snp_npc.has_suppressor = "suppressed_a"
+	self.heavy_snp_npc = deep_clone(self.m14_sniper_npc)
+	self.heavy_snp_npc.sounds.prefix = "zsniper_npc"
 end
 function WeaponTweakData:_init_data_r870_npc()
 	self.r870_npc.sounds.prefix = "remington_npc"
