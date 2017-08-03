@@ -174,6 +174,15 @@ function table.size(v)
 	end
 	return i
 end
+function table.count(v, func)
+	local i = 0
+	for k, item in pairs(v) do
+		if func(item, k) then
+			i = i + 1
+		end
+	end
+	return i
+end
 function table.crop(t, size)
 	while t[size + 1] do
 		table.remove(t, size + 1)
