@@ -149,6 +149,17 @@ function WalletGuiObject.move_wallet(mx, my)
 	end
 	Global.wallet_panel:move(mx, my)
 end
+function WalletGuiObject.set_wallet_pos(mx, my)
+	if not alive(Global.wallet_panel) then
+		return
+	end
+	if mx then
+		Global.wallet_panel:set_x(mx)
+	end
+	if my then
+		Global.wallet_panel:set_y(my)
+	end
+end
 function WalletGuiObject.set_object_visible(object, visible)
 	if not alive(Global.wallet_panel) then
 		return

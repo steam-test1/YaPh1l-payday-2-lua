@@ -63,6 +63,7 @@ function SentryGunWeapon:_set_fire_mode(use_armor_piercing)
 end
 function SentryGunWeapon:set_fire_mode_net(use_armor_piercing)
 	self:_set_fire_mode(use_armor_piercing)
+	self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
 end
 function SentryGunWeapon:flip_fire_sound()
 	if self._shooting then

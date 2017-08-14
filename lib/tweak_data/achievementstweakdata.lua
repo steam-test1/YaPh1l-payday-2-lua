@@ -1252,11 +1252,6 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = deathwish_and_above,
 			job = "firestarter"
 		},
-		death_firestarter_prof = {
-			award = "death_8",
-			difficulty = deathwish_and_above,
-			job = "firestarter_prof"
-		},
 		death_framing_frame = {
 			award = "death_35",
 			difficulty = deathwish_and_above,
