@@ -2306,16 +2306,20 @@ function UpgradesTweakData:_init_pd2_values()
 end
 function UpgradesTweakData:init(tweak_data)
 	self.level_tree = {}
+	self.level_tree[0] = {
+		upgrades = {
+			"frag_com",
+			"frag",
+			"dynamite",
+			"molotov"
+		}
+	}
 	self.level_tree[1] = {
 		name_id = "body_armor",
 		upgrades = {
 			"body_armor2",
 			"ak74",
 			"nin",
-			"frag_com",
-			"frag",
-			"dynamite",
-			"molotov",
 			"concussion",
 			"fir_com",
 			"dada_com"
