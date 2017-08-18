@@ -1990,7 +1990,7 @@ function CopMovement:sync_action_spooc_strike(pos, action_id)
 	end
 end
 function CopMovement:sync_action_tase_end()
-	self:_cancel_latest_action("tase", true)
+	self:_cancel_latest_action("tase")
 end
 function CopMovement:sync_pose(pose_code)
 	if self._ext_damage:dead() then
